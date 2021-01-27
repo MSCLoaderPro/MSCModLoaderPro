@@ -123,12 +123,11 @@ namespace MSCLoader
 
     public class StartDisable : MonoBehaviour
     {
-        public GameObject modSettings;//, prefabSettingTypes;
+        public GameObject modSettings;
 
         void Awake()
         {
             modSettings.SetActive(false);
-            //prefabSettingTypes.SetActive(false);
             gameObject.SetActive(false);
         }
     }

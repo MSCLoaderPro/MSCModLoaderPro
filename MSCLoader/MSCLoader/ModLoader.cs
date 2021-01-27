@@ -51,7 +51,8 @@ namespace MSCLoader
 
         public static string GetModAssetsFolder(Mod mod) => Path.Combine(AssetsFolder, mod.ID);
 
-        public static bool IsModPresent(string ModID) => LoadedMods.FirstOrDefault(mod => mod.ID.Equals(ModID) && !mod.isDisabled) != null;
+        public static bool IsModPresent(string ModID) => 
+            LoadedMods.FirstOrDefault(mod => mod.ID.Equals(ModID) && !mod.isDisabled) != null;
 
         internal static void Init()
         {
