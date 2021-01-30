@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
+// GNU GPL 3.0
+#pragma warning disable IDE1006 // Naming Styles
 namespace MSCLoader
 {
     /// <summary>
     /// Parse playlists files
     /// </summary>
     public class Playlists
-    {
+    { 
         /// <summary>
         /// Parse *.pls playlist file and return List of paths
         /// </summary>
@@ -136,3 +138,4 @@ namespace MSCLoader
     }
 
 }
+#pragma warning restore IDE1006 // Naming Styles

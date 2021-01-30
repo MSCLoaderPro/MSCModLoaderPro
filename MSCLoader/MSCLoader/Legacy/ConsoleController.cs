@@ -46,11 +46,11 @@ namespace MSCLoader
 
             ConsoleCommand.cc = this;
 
-            if (MSCUnloader.consoleText != null)
+            if (ModUnloader.consoleText != null)
             {
-                scrollback = MSCUnloader.consoleText;
+                scrollback = ModUnloader.consoleText;
                 scrollback.Enqueue("\n----------------------------------\n");
-                MSCUnloader.consoleText = null;
+                ModUnloader.consoleText = null;
                 while (scrollback.Count >= scrollbackSize) scrollback.Dequeue();
             }
         }

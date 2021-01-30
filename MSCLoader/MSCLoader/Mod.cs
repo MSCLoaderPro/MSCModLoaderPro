@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
 
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS0618 // Type or member is obsolete
 namespace MSCLoader
 {
     public abstract class Mod
@@ -14,9 +15,6 @@ namespace MSCLoader
         string compiledVer = null;
         internal virtual string compiledVersion { get => compiledVer;  set => compiledVer = value; }
 
-        string filePath = null;
-        internal virtual string fileName { get => filePath;  set => filePath = value; }
-
         public abstract string ID { get; }
         public virtual string Name => ID;
         public abstract string Author { get; }
@@ -29,7 +27,11 @@ namespace MSCLoader
 
         public virtual void ModSettings() { }
         public virtual void ModSettingsLoaded() { }
+
         public virtual void OnMenuLoad() { }
+        public virtual void MenuUpdate() { }
+        public virtual void MenuOnGUI() { }
+        public virtual void MenuFixedUpdate() { }
 
         public virtual void OnNewGame() { }
         public virtual void PreLoad() { }
@@ -42,10 +44,18 @@ namespace MSCLoader
         public virtual void FixedUpdate() { }
 
         // LEGACY
+        [Obsolete("Deprecated, not needed.")]
         public virtual bool UseAssetsFolder => false;
+        [Obsolete("Deprecated, not needed.")]
         public virtual bool LoadInMenu => false;
+        [Obsolete("Deprecated, not needed.")]
         public virtual bool SecondPass => false;
+        [Obsolete("Deprecated, use PostLoad() instead.")]
         public virtual void SecondPassOnLoad() { }
+
+        string filePath = null;
+        internal virtual string fileName { get => filePath;  set => filePath = value; }
     }
 }
+#pragma warning restore CS0618 // Type or member is obsolete
 #pragma warning restore IDE1006 // Naming Styles

@@ -3,8 +3,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace MSCLoader
@@ -125,11 +123,11 @@ namespace MSCLoader
             public bool EnableModLoader;
             public bool UseOutputLog;
 
-            IniFile settingINI;
+            ModINI settingINI;
 
             public LoaderSettings()
             {
-                settingINI = new IniFile("ModLoaderSettings");
+                settingINI = new ModINI("ModLoaderSettings");
 
                 SkipGameLauncher = settingINI.Read<bool>("SkipGameLauncher", "General");
                 SkipSplashScreen = settingINI.Read<bool>("SkipSplashScreen", "General");

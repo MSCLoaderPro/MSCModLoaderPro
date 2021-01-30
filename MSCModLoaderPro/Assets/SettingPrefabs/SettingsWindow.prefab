@@ -431,12 +431,19 @@ MonoBehaviour:
   modContainer: {fileID: 0}
   settingsList: {fileID: 22494364}
   settings: []
+  prefabButton: {fileID: 194478, guid: 74695ac3d92e6c84896027b2db077f51, type: 2}
+  prefabHeader: {fileID: 151234, guid: cc665989006f8134d8e2ef4009e382af, type: 2}
+  prefabKeybind: {fileID: 171968, guid: aa6886227cb477548a0a58f620b42c63, type: 2}
+  prefabRadioButtons: {fileID: 128596, guid: 309a98e42a0f47b40b01aae059e49e61, type: 2}
+  prefabSlider: {fileID: 139220, guid: fc0e280717914064db4762d8538ebbbd, type: 2}
+  prefabText: {fileID: 126086, guid: 5d17d8006b7b50f438e4d3288c9586e2, type: 2}
+  prefabTextBox: {fileID: 134798, guid: 83defc9ec63c00e40816d302b1aad4d5, type: 2}
+  prefabToggle: {fileID: 109494, guid: 6b966a799a914fb4da544369872bf574, type: 2}
+  prefabSpacer: {fileID: 198202, guid: 51849d0039a356048abac92e23a7ff3b, type: 2}
   nameText: {fileID: 11402648}
   idText: {fileID: 11415178}
   descriptionHeader: {fileID: 112114}
   descriptionText: {fileID: 11496060}
-  headerPrefab: {fileID: 0}
-  keybindPrefab: {fileID: 0}
 --- !u!114 &11422440
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -521,7 +528,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11499758}
   m_HandleRect: {fileID: 22499420}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1153,10 +1160,10 @@ RectTransform:
   - {fileID: 22490022}
   m_Father: {fileID: 22442758}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 5, y: -52.5}
+  m_SizeDelta: {x: 310.969971, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &22429792
 RectTransform:
@@ -1231,7 +1238,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -338, y: 5}
+  m_AnchoredPosition: {x: -684, y: 5}
   m_SizeDelta: {x: -959.030029, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &22443208

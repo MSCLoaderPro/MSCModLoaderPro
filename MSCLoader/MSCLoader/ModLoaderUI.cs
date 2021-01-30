@@ -5,6 +5,26 @@ using UnityEngine.UI;
 
 namespace MSCLoader
 {
+    public class ModUI
+    {
+        internal static GameObject canvasGO;
+
+        public static GameObject GetCanvas() => canvasGO;
+
+        public static GameObject messageBox;
+
+        public static void ShowMessage(string message, string title = "Message")
+        {
+            //SHOW PROMPT
+        }
+
+        public static void ShowYesNoMessage(string message, System.Action ifYes) => ShowYesNoMessage(message, "Message", ifYes);
+
+        public static void ShowYesNoMessage(string message, string title, System.Action ifYes)
+        {
+            // SHOW PROMPT
+        }
+    }
     public class SwitchToggleGraphic : MonoBehaviour
     {
         public Toggle toggle;
@@ -36,7 +56,7 @@ namespace MSCLoader
 
         void OnDisable()
         {
-            element.localScale = normalScale;
+            if (element) element.localScale = normalScale;
         }
     }
 

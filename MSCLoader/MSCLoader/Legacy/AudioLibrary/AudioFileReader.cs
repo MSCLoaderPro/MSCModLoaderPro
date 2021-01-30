@@ -4,6 +4,7 @@ using NAudio.Vorbis;
 using System.IO;
 using UnityEngine;
 
+// GNU GPL 3.0
 namespace AudioLibrary
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member

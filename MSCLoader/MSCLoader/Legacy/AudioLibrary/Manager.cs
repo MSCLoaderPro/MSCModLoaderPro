@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
+// GNU GPL 3.0
 #pragma warning disable CS1591 
+#pragma warning disable IDE1006 // Naming Styles
 namespace AudioLibrary
 {
     public class Manager : MonoBehaviour
@@ -65,8 +67,7 @@ namespace AudioLibrary
                 Debug.LogError("Could not load AudioClip at path '" + filePath + "' it's extensions marks unsupported format, supported formats are: " + string.Join(", ", Enum.GetNames(typeof(AudioFormat))));
                 return null;
             }
-            AudioClip audioClip;
-            if (useCache && cache.TryGetValue(filePath, out audioClip) && audioClip)
+            if (useCache && cache.TryGetValue(filePath, out AudioClip audioClip) && audioClip)
             {
                 return audioClip;
             }
@@ -160,8 +161,10 @@ namespace AudioLibrary
         {
             if (deferredLoaderThread == null || !deferredLoaderThread.IsAlive)
             {
-                deferredLoaderThread = new Thread(new ThreadStart(DeferredLoaderMain));
-                deferredLoaderThread.IsBackground = true;
+                deferredLoaderThread = new Thread(new ThreadStart(DeferredLoaderMain))
+                {
+                    IsBackground = true
+                };
                 deferredLoaderThread.Start();
             }
         }
@@ -251,8 +254,10 @@ namespace AudioLibrary
         {
             if (!managerInstance)
             {
-                managerInstance = new GameObject("Runtime AudioClip Loader Manger singleton instance");
-                managerInstance.hideFlags = HideFlags.HideAndDontSave;
+                managerInstance = new GameObject("Runtime AudioClip Loader Manger singleton instance")
+                {
+                    hideFlags = HideFlags.HideAndDontSave
+                };
                 managerInstance.AddComponent<Manager>();
             }
         }
@@ -318,4 +323,5 @@ namespace AudioLibrary
         }
     }
 }
+#pragma warning restore IDE1006 // Naming Styles
 #pragma warning restore CS1591

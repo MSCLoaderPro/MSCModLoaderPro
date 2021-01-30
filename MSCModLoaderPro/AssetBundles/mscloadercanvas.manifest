@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3012472513
+CRC: 1694413957
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e7f9f6c101316d597b6538b456ed5c17
+    Hash: e0bb3788b05e5abfcbb72e2e9bcfa588
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 3a7a4a14b5cc2c5a8390679a13b1e996
+    Hash: bc8905a3c2530b3ff102b1651a3e6ca6
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -88,6 +88,10 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1971707241, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
+  Script: {fileID: -1659642841, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
+  Script: {fileID: -1312237520, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
   Script: {fileID: 1578553505, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
   Script: {fileID: 8380973, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
@@ -103,6 +107,10 @@ ClassTypes:
   Script: {fileID: -735957281, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
   Script: {fileID: -636989493, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
+  Script: {fileID: 12001, guid: 0000000000000000e000000000000000, type: 0}
+- Class: 114
+  Script: {fileID: 508029086, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -116,5 +124,22 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
+- Assets/GUISkin/toggle hover2 on.png
+- Assets/GUISkin/button hover.png
 - Assets/MSCLoaderCanvas.prefab
+- Assets/GUISkin/toggle active.png
+- Assets/GUISkin/selectorV.png
+- Assets/GUISkin/button active.png
+- Assets/GUISkin/window.png
+- Assets/GUISkin/Background.png
+- Assets/GUISkin/window on.png
+- Assets/GUISkin/selector point.png
+- Assets/GUISkin/selector.png
+- Assets/GUISkin/ModLoaderSkin.guiskin
+- Assets/GUISkin/textarea.png
+- Assets/GUISkin/toggle hover.png
+- Assets/GUISkin/toggle hover on.png
+- Assets/GUISkin/toggle active hover.png
+- Assets/GUISkin/box.png
+- Assets/GUISkin/button up.png
 Dependencies: []

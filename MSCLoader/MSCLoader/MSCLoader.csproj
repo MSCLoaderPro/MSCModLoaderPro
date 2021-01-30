@@ -50,6 +50,7 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
+      <Aliases>global</Aliases>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
@@ -90,7 +91,7 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
-      <Aliases>global</Aliases>
+      <Aliases>global, unityUI</Aliases>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -98,13 +99,10 @@
     <Compile Include="Legacy\AudioLibrary\MP3_Streaming\ReadFullyStream.cs" />
     <Compile Include="Legacy\AudioLibrary\Playlists.cs" />
     <Compile Include="Legacy\Commands\CommandVersion.cs" />
-    <Compile Include="Legacy\Commands\CommandLogAll.cs" />
-    <Compile Include="Legacy\Commands\ManifestCommand.cs" />
-    <Compile Include="IniFile.cs" />
+    <Compile Include="ModINI.cs" />
     <Compile Include="Legacy\ConsoleController.cs" />
     <Compile Include="Legacy\FsmHook.cs" />
     <Compile Include="Legacy\Keybind.cs" />
-    <Compile Include="Legacy\KeyBinding.cs" />
     <Compile Include="Legacy\LoadAssets.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Legacy\AudioLibrary\ModAudio.cs" />
@@ -114,9 +112,8 @@
     <Compile Include="ModSettings.cs" />
     <Compile Include="ModLoaderSettings.cs" />
     <Compile Include="ModLoaderUI.cs" />
-    <Compile Include="Legacy\ModUI.cs" />
     <Compile Include="MSCLoader.cs" />
-    <Compile Include="MSCUnloader.cs" />
+    <Compile Include="ModUnloader.cs" />
     <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Legacy\AudioLibrary\AudioFileReader.cs" />
@@ -128,8 +125,7 @@
     </Compile>
     <Compile Include="Legacy\SaveLoad.cs" />
     <Compile Include="Legacy\Settings.cs" />
-    <Compile Include="Legacy\SettingsView.cs" />
-    <Compile Include="SettingTypes.cs" />
+    <Compile Include="ModSettingTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
