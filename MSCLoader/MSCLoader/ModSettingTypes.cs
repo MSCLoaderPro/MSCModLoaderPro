@@ -202,6 +202,7 @@ namespace MSCLoader
             stringBuilder.Replace("Mouse4", "Mb5");
             stringBuilder.Replace("Mouse3", "Mb4");
             stringBuilder.Replace("Mouse2", "Mb3");
+            stringBuilder.Replace("Alpha", "");
 
             return stringBuilder.ToString().ToUpper();
         }

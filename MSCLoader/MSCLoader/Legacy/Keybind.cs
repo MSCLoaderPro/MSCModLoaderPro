@@ -6,8 +6,8 @@ using UnityEngine;
 namespace MSCLoader
 {
     [Obsolete("Old Keybind is obsolete, use SettingKeybind instead")]
-    public class Keybind
-    {
+	public class Keybind
+	{
         public static List<Keybind> Keybinds = new List<Keybind>();
         public static List<Keybind> DefaultKeybinds = new List<Keybind>();
 
@@ -22,10 +22,10 @@ namespace MSCLoader
 
         [Obsolete("Old Keybind is obsolete, use modSettings.AddKeybind() instead.")]
         public static void Add(Mod mod, Keybind key)
-        {
-            key.Mod = mod;
-            Keybinds.Add(key);
-            DefaultKeybinds.Add(new Keybind(key.ID, key.Name, key.Key, key.Modifier) { Mod = mod });
+		{
+			key.Mod = mod;
+			Keybinds.Add(key);
+			DefaultKeybinds.Add(new Keybind(key.ID, key.Name, key.Key, key.Modifier) { Mod = mod });
 
             if (key.noModifier)
                 key.keybind = mod.modSettings.AddKeybind(key.ID, key.Name, key.Key);
@@ -34,11 +34,11 @@ namespace MSCLoader
         }
 
         [Obsolete("Old header is obsolete, use modSettings.AddHeader() instead.")]
-        public static void AddHeader(Mod mod, string HeaderTitle) =>
+        public static void AddHeader(Mod mod, string HeaderTitle) => 
             mod.modSettings.AddHeader(HeaderTitle);
 
         [Obsolete("Old header is obsolete, use modSettings.AddHeader() instead.")]
-        public static void AddHeader(Mod mod, string HeaderTitle, Color backgroundColor, Color textColor) =>
+        public static void AddHeader(Mod mod, string HeaderTitle, Color backgroundColor, Color textColor) => 
             mod.modSettings.AddHeader(HeaderTitle, backgroundColor, textColor);
 
         [Obsolete("Old Keybind is obsolete")]
@@ -58,11 +58,11 @@ namespace MSCLoader
 
         [Obsolete("Old Keybind is obsolete, use modSettings.AddKeybind() instead.")]
         public Keybind(string id, string name, KeyCode key, KeyCode modifier)
-        {
-            ID = id;
-            Name = name;
-            Key = key;
-            Modifier = modifier;
+		{
+			ID = id;
+			Name = name;
+			Key = key;
+			Modifier = modifier;
             noModifier = false;
 
         }

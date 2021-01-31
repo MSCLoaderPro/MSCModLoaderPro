@@ -15,9 +15,14 @@ namespace MSCLoader
 
         public static GameObject prompt;
 
+        public static Color32 MSCYellow = new Color32(255, 255, 0, 255);
+        public static Color32 MSCRed = new Color32(101, 34, 18, 255);
+        public static Color32 MSCRose = new Color32(199, 152, 129, 255);
+        public static Color32 ModDisabledRed = new Color32(215, 0, 0, 255);
+
         [Obsolete("Please use CreatePrompt() instead.")]
-        public static void ShowMessage(string message, string title = "Message") => CreatePrompt(message, title); 
-        
+        public static void ShowMessage(string message, string title = "Message") => CreatePrompt(message, title);
+
         [Obsolete("Please use CreateYesNoPrompt() instead.")]
         public static void ShowYesNoMessage(string message, System.Action ifYes) => ShowYesNoMessage(message, "Message", ifYes);
 
@@ -33,7 +38,7 @@ namespace MSCLoader
             GameObject newPrompt = GameObject.Instantiate(prompt);
             newPrompt.transform.SetParent(GetCanvas().transform);
             newPrompt.transform.localPosition = Vector3.zero;
-            
+
             return newPrompt.GetComponent<ModPrompt>();
         }
 
@@ -112,6 +117,7 @@ namespace MSCLoader
             return NewPrompt();
         }
     }
+
     public class SwitchToggleGraphic : MonoBehaviour
     {
         public Toggle toggle;

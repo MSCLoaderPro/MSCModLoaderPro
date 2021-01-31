@@ -11,8 +11,12 @@ namespace MSCLoader
 {
     public class ModContainer : MonoBehaviour
     {
+        public ModLoader modLoader;
+
         public Dictionary<Mod, ModSettings> settingsDictionary = new Dictionary<Mod, ModSettings>();
         public Dictionary<Mod, ModListElement> modListDictionary = new Dictionary<Mod, ModListElement>();
+
+        public Text modCountText;
 
         public ModLoaderSettings modLoaderSettings;
 
@@ -36,6 +40,13 @@ namespace MSCLoader
             {
                 Texture2D iconTexture = new Texture2D(1, 1);
                 iconTexture.LoadImage(mod.Icon);
+
+                modListElement.SetModIcon(iconTexture);
+            }
+            else if (!string.IsNullOrEmpty(mod.IconName))
+            {
+                Texture2D iconTexture = new Texture2D(1, 1);
+                iconTexture.LoadImage(GetIcon(mod, mod.IconName));
 
                 modListElement.SetModIcon(iconTexture);
             }
@@ -69,6 +80,30 @@ namespace MSCLoader
 
             return modSettings;
         }
+
+        public void UpdateModCountText()
+        {
+            modCountText.text = $"{ModLoader.LoadedMods.Count} MODS";
+            if (ModLoader.LoadedMods.Any(mod => mod.isDisabled)) modCountText.text += $", {ModLoader.LoadedMods.Count(mod => mod.isDisabled)} DISABLED.";
+        }
+
+        // NOT WORKING BECAUSE OF UNITY SYSTEM.DRAWING
+        public byte[] GetIcon(Mod mod, string name)
+        {
+            //https://stackoverflow.com/a/9901769
+            System.Reflection.Assembly assembly = mod.GetType().Assembly;
+
+            string resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x => x.Contains(name));
+
+            ModConsole.Print(resourceName);
+
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                byte[] buffer = new byte[stream.Length];
+                stream.Read(buffer, 0, (int)stream.Length);
+                return buffer;
+            }
+        }
     }
 
     public class ModListElement : MonoBehaviour
@@ -85,7 +120,7 @@ namespace MSCLoader
 
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         public string Name { get => nameText.text; set => nameText.text = value; }
-        public string Author { get => authorText.text; set => authorText.text = $"AUTHOR{(value.Contains(",") ? "S" : "")}: {value}"; }
+        public string Author { get => authorText.text; set => authorText.text = $"AUTHOR{(value.Contains(",") || value.Contains("&") ? "S" : "")}: {value}"; }
         public string Version { get => versionText.text; set => versionText.text = $"VERSION: {value}"; }
 
         public void SetModIcon(Texture2D icon)
@@ -117,8 +152,11 @@ namespace MSCLoader
 
         public void ToggleModEnabled()
         {
-            mod.isDisabled = !modToggle.isOn;
+            mod.disabled = !modToggle.isOn;
             modSettings.SaveSettings();
+
+            nameText.color = modToggle.isOn ? ModUI.MSCYellow : ModUI.ModDisabledRed;
+            modContainer.UpdateModCountText();
         }
 
         public void SetModEnabled(bool enabled)
@@ -166,8 +204,8 @@ namespace MSCLoader
             get => descriptionText.text;
             set
             {
-                descriptionHeader.SetActive(!string.IsNullOrEmpty(value));
                 descriptionText.text = value;
+                descriptionHeader.SetActive(!string.IsNullOrEmpty(value));
             }
         }
 

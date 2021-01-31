@@ -19,7 +19,7 @@ namespace MSCLoader.Commands
             {
                 ModConsole.Print(string.Format("<color=red>Failed to get build ID:</color> <b>{0}</b>", e.Message)); //Show steamworks error
             }
-            ModConsole.Print(string.Format("MSCLoader: <b>{0}</b>", ModLoader.ModLoaderVersion));
+            ModConsole.Print(string.Format("MSCLoader: <b>{0}</b>", ModLoader.Version));
         }
     }
 }

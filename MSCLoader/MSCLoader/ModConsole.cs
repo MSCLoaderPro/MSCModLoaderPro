@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -137,6 +138,12 @@ namespace MSCLoader
         {
             controller.AppendLogLine(obj.ToString());
             System.Console.WriteLine($"MSCLoader: {obj}");
+        }
+
+        public static void Print(IList list)
+        {
+            for (int i = 0; i < list.Count; i++)
+                Print(list[i]);
         }
 
         public static void Error(string str = "")

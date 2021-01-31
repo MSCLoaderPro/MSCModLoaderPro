@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -6,14 +7,8 @@ namespace MSCLoader
 {
     public abstract class Mod
 	{
-        bool disabled = false;
-        public virtual bool isDisabled { get => disabled; internal set => disabled = value; }
-
-        bool update = false;
-        internal virtual bool hasUpdate { get => update;  set => update = value; }
-
-        string compiledVer = null;
-        internal virtual string compiledVersion { get => compiledVer;  set => compiledVer = value; }
+        internal bool disabled = false;
+        public virtual bool isDisabled { get => disabled; internal set { disabled = value;  modListElement.SetModEnabled(!value); } }
 
         public abstract string ID { get; }
         public virtual string Name => ID;
@@ -21,6 +16,7 @@ namespace MSCLoader
         public abstract string Version { get; }
         public virtual string Description { get; } = "";
         public virtual byte[] Icon { get; set; } = null;
+        public virtual string IconName { get; set; } = "";
 
         public ModListElement modListElement;
         public ModSettings modSettings;
@@ -52,6 +48,12 @@ namespace MSCLoader
         public virtual bool SecondPass => false;
         [Obsolete("Deprecated, use PostLoad() instead.")]
         public virtual void SecondPassOnLoad() { }
+
+        bool update = false;
+        internal virtual bool hasUpdate { get => update;  set => update = value; }
+
+        string compiledVer = null;
+        internal virtual string compiledVersion { get => compiledVer;  set => compiledVer = value; }
 
         string filePath = null;
         internal virtual string fileName { get => filePath;  set => filePath = value; }

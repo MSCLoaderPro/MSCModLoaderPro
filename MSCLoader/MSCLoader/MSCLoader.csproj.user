@@ -3,8 +3,4 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartAction>Program</StartAction>
-    <StartProgram>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar.exe</StartProgram>
-  </PropertyGroup>
 </Project>

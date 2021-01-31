@@ -48,12 +48,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
       <Aliases>global</Aliases>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NAudio">
@@ -69,7 +69,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayMaker">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -85,11 +85,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
       <Aliases>global, unityUI</Aliases>
     </Reference>
@@ -112,7 +112,7 @@
     <Compile Include="ModPrompt.cs" />
     <Compile Include="ModSettings.cs" />
     <Compile Include="ModLoaderSettings.cs" />
-    <Compile Include="ModLoaderUI.cs" />
+    <Compile Include="ModUI.cs" />
     <Compile Include="MSCLoader.cs" />
     <Compile Include="ModUnloader.cs" />
     <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
@@ -140,11 +140,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Debug" (
-copy $(TargetPath) "D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed" /y
-) ELSE (
-copy $(TargetPath) "D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed" /y
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

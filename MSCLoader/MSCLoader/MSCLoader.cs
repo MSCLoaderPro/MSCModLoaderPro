@@ -60,7 +60,6 @@ namespace MSCLoader
             };
             try
             {
-
                 settings = new LoaderSettings();
                 offset = FindBytes(@"mysummercar_Data\mainData", data);
 

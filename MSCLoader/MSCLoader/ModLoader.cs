@@ -14,12 +14,15 @@ namespace MSCLoader
 
     public class ModLoader : MonoBehaviour
     {
-        public static readonly string ModLoaderVersion = "1.0";
+        /// <summary> Current Mod Loader Version. </summary>
+        public static readonly string Version = "1.0";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
 
+        /// <summary> List of Loaded Mods. </summary>
         public static List<Mod> LoadedMods { get; internal set; }
+        /// <summary> List of used Mod Class methods. </summary>
         public static List<List<Mod>> ModMethods;
 
         internal static ModLoader modLoaderInstance;
@@ -36,9 +39,11 @@ namespace MSCLoader
         bool newGameStarted = false, vSyncEnabled = false;
         GUISkin modLoaderSkin;
 
-        static CurrentScene CurrentGameScene;
-        public static CurrentScene GetCurrentScene() => CurrentGameScene;
+        /// <summary> Get the current game scene. </summary>
+        public static CurrentScene CurrentScene { get; internal set; }
 
+        /// <summary>Get the settings folder for a specific mod.</summary>
+        /// <param name="create"> Should the folder be created if it doesn't exist? </param>
         internal static string GetModSettingsFolder(Mod mod, bool create = true)
         {
             string path = Path.Combine(SettingsFolder, mod.ID);
@@ -48,15 +53,20 @@ namespace MSCLoader
             return path;
         }
 
+        /// <summary>Get the asset folder for a specific mod.</summary>
         public static string GetModAssetsFolder(Mod mod) => Path.Combine(AssetsFolder, mod.ID);
 
+        /// <summary>Check if the specified mod ID is loaded and isn't disabled.</summary>
+        /// <param name="ModID">ID of the mod.</param>
         public static bool IsModPresent(string ModID) => 
             LoadedMods.FirstOrDefault(mod => mod.ID.Equals(ModID) && !mod.isDisabled) != null;
 
         internal static void Init()
         {
+            // Make sure the ModLoader isn't loaded while it is unloading.
             if (unloading) return;
 
+            // Prevent the loader from initializing more than once.
             if (!loaderInitialized)
             {
                 loaderInitialized = true;
@@ -66,59 +76,23 @@ namespace MSCLoader
             }
         }
 
-        void OnLevelWasLoaded(int level)
-        {
-            switch (Application.loadedLevelName)
-            {
-                case "MainMenu":
-                    CurrentGameScene = CurrentScene.MainMenu;
-
-                    if (GameObject.Find("Music")) GameObject.Find("Music").GetComponent<AudioSource>().Play();
-
-                    if (QualitySettings.vSyncCount != 0) vSyncEnabled = true;
-                    if (modLoaderSettings.UseVsyncInMenu && !vSyncEnabled) QualitySettings.vSyncCount = 1;
-
-                    if (mainMenuReturn)
-                    {
-                        mainMenuReturn = false;
-                        loaderInitialized = false;
-                        modUnloader.Reset();
-                        unloading = true;
-                    }
-                    break;
-
-                case "Intro":
-                    CurrentGameScene = CurrentScene.NewGameIntro;
-
-                    newGameStarted = true;
-                    break;
-
-                case "GAME":
-                    CurrentGameScene = CurrentScene.Game;
-
-                    if (modLoaderSettings.UseVsyncInMenu && !vSyncEnabled) QualitySettings.vSyncCount = 0;
-
-                    mainMenuReturn = true;
-
-                    SetupModMenuHandler();
-
-                    StartCoroutine(LoadMods());
-                    break;
-            }
-        }
-
         void Awake()
         {
+            // Create the stopwatch for method execution time.
             timer = new Stopwatch();
 
+            // Prevent the menu music from being heard a split second when the loader is initializing.
             if (GameObject.Find("Music") && Application.loadedLevelName == "MainMenu")
                 GameObject.Find("Music").GetComponent<AudioSource>().Stop();
 
+            // Create the ModUnloader.
             CreateUnloader();
 
+            // Create the Mod UI and load the settings.
             LoadModLoaderUI();
             LoadModLoaderSettings();
 
+            // Prepare the mod lists.
             LoadedMods = new List<Mod>();
             ModMethods = new List<List<Mod>>() {
                 new List<Mod>(), // 0 - OnGUI
@@ -134,35 +108,78 @@ namespace MSCLoader
                 new List<Mod>(), // 10 - MenuFixedUpdate
             };
 
-            ModConsole.Print($"MOD LOADER PRO <b>VERSION: {ModLoaderVersion}</b> READY!");
+            ModConsole.Print($"MOD LOADER PRO <b>VERSION: {Version}</b> READY!");
 
+            // Load the mods, their references and set up mod list and mod settings windows for each of them.
             LoadReferences();
             InitializeMods();
             SetupModList();
 
             ModConsole.Print($"<b>{LoadedMods.Count}</b> MOD(S) FOUND!");
-
-            LoadModsSettings();
-            CallOnMenuLoad();
-
             string[] methodNames = { "OnGUI", "Update", "FixedUpdate", "PostLoad", "OnSave", "OnNewGame", "PreLoad", "OnMenuLoad" };
             string modString = "";
             for (int i = 0; i < methodNames.Length; i++)
                 modString += $"\n{ModMethods[i].Count} Mod(s) using {methodNames[i]}.{(ModMethods[i].Count > 0 ? "\n  " : "")}{string.Join("\n  ", ModMethods[i].Select(x => x.Name).ToArray())}";
             ModConsole.Print(modString);
 
-            /*
-                LOAD MOD UI
-                LOAD MOD LOADER SETTINGS
+            // Load mod settings for each loaded mod. Then call OnMenuLoad
+            LoadModsSettings();
+            CallOnMenuLoad();
 
-                LOAD MOD DLL
-                MODSETTINGS()
-                LOAD MOD SETTINGS
-            */
+            // Update the mod count in the mod list.
+            modContainer.UpdateModCountText();
+        }
+
+        void OnLevelWasLoaded(int level)
+        {
+            switch (Application.loadedLevelName)
+            {
+                case "MainMenu":
+                    CurrentScene = CurrentScene.MainMenu;
+
+                    // Enable the menu music again.
+                    if (GameObject.Find("Music")) GameObject.Find("Music").GetComponent<AudioSource>().Play();
+
+                    // Check if Vsync is enabled globally, save it, then if the menu vsync setting is enabled start the vsync in the menu.
+                    if (QualitySettings.vSyncCount != 0) vSyncEnabled = true;
+                    if (modLoaderSettings.UseVsyncInMenu && !vSyncEnabled) QualitySettings.vSyncCount = 1;
+
+                    // Start the unloading/reset if the game returns from the main menu after being loaded into the game once.
+                    if (mainMenuReturn)
+                    {
+                        mainMenuReturn = false;
+                        loaderInitialized = false;
+                        modUnloader.Reset();
+                        unloading = true;
+                    }
+                    break;
+
+                case "Intro":
+                    CurrentScene = CurrentScene.NewGameIntro;
+
+                    newGameStarted = true;
+                    break;
+
+                case "GAME":
+                    CurrentScene = CurrentScene.Game;
+
+                    // Disable Vsync again if it was enabled in the menu.
+                    if (modLoaderSettings.UseVsyncInMenu && !vSyncEnabled) QualitySettings.vSyncCount = 0;
+
+                    mainMenuReturn = true;
+
+                    // Make sure the UI reacts accordingly to the game's default menus.
+                    SetupModMenuHandler();
+
+                    // Lastly start the mod loading.
+                    StartCoroutine(LoadMods());
+                    break;
+            }
         }
 
         void CreateUnloader()
         {
+            // Make sure to only create it once. Assign the modUnloader variable if it has.
             if (GameObject.Find("MSCUnloader") == null)
             {
                 GameObject go = new GameObject("MSCUnloader");
@@ -175,38 +192,47 @@ namespace MSCLoader
 
         void LoadModLoaderUI()
         {
+            // Load the embedded bundle, create and assign the canvas.
             AssetBundle bundle = AssetBundle.CreateFromMemoryImmediate(Properties.Resources.mscloadercanvas);
             GameObject loadedObject = bundle.LoadAsset<GameObject>("MSCLoaderCanvas.prefab");
             ModUI.canvasGO = Instantiate(loadedObject);
+            ModUI.canvasGO.name = "MSCLoader Canvas";
             Destroy(loadedObject);
             DontDestroyOnLoad(ModUI.canvasGO);
 
+            // Load the prefab for prompts.
             ModUI.prompt = bundle.LoadAsset<GameObject>("ModPrompt.prefab");
 
-            ModUI.canvasGO.name = "MSCLoader Canvas";
-
+            // Assign the loading screen for easy access.
             modUILoadScreen = ModUI.canvasGO.transform.Find("ModLoaderUI/ModLoadScreen").gameObject;
+            // Handle the disabling of the UI when a scene is loaded. Does not apply for the menu to game loading.
             modSceneLoadHandler = ModUI.canvasGO.GetComponent<UILoadHandler>();
+            // Handle disabling the UI when loading the game from the menu.
             Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(x => !x.activeSelf && x.name == "Loading").AddComponent<UIMainMenuLoad>().loadHandler = modSceneLoadHandler;
 
+            // Load a nicer looking skin for the old GUI.
             modLoaderSkin = bundle.LoadAsset<GUISkin>("ModLoaderSkin.guiskin");
+
             bundle.Unload(false);
         }
 
         void LoadModLoaderSettings()
         {
+            // Get the Settings Component sloppily.
             modLoaderSettings = ModUI.canvasGO.GetComponentsInChildren<ModLoaderSettings>(true)[0];
-
+            
+            // Disable saving to the INI while the settings are loaded.
             modLoaderSettings.disableSave = true;
 
-            modLoaderSettings.Version = ModLoaderVersion;
+            // Apply the various settings.
+            modLoaderSettings.Version = Version;
             modLoaderSettings.SkipGameLauncher = MSCLoader.settings.SkipGameLauncher;
             modLoaderSettings.SkipSplashScreen = MSCLoader.settings.SkipSplashScreen;
 
             modLoaderSettings.UseVsyncInMenu = MSCLoader.settings.UseVsyncInMenu;
-            modLoaderSettings.useVsyncInMenu.OnValueChanged.AddListener(delegate
+            modLoaderSettings.useVsyncInMenu.OnValueChanged.AddListener((value) =>
             {
-                if (!vSyncEnabled && CurrentGameScene == CurrentScene.MainMenu)
+                if (!vSyncEnabled && CurrentScene == CurrentScene.MainMenu)
                     QualitySettings.vSyncCount = modLoaderSettings.UseVsyncInMenu ? 1 : 0;
             });
 
@@ -221,6 +247,7 @@ namespace MSCLoader
             modLoaderSettings.ConsoleWindowHeight = MSCLoader.settings.ConsoleWindowHeight;
             modLoaderSettings.ConsoleWindowWidth = MSCLoader.settings.ConsoleWindowWidth;
 
+            // Enable saving again if any of the values are changed.
             modLoaderSettings.disableSave = false;
         }
         
@@ -390,6 +417,9 @@ namespace MSCLoader
             ModConsole.Print("<color=#FFFF00>Loading mods...</color>");
             ModConsole.controller.AppendLogLine("<color=#505050ff>");
 
+            timer.Reset();
+            timer.Start();
+
             if (newGameStarted && ModMethods[5].Count > 0)
             {
                 ModConsole.Print("Calling OnNewGame()..");
@@ -415,9 +445,12 @@ namespace MSCLoader
                 yield return null;
             }
 
+            timer.Stop();
+            ModConsole.Print($"<color=#FFFF00>Preload Done! ({timer.ElapsedMilliseconds}ms)</color>");
+
             while (GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera") == null) yield return null;
 
-            Stopwatch timer = new Stopwatch();
+            timer.Reset();
             timer.Start();
 
             yield return null;
@@ -464,6 +497,7 @@ namespace MSCLoader
             System.Console.WriteLine(e);
         }
 
+        // Below Methods handle the various recurring methods in the mod class.
         internal void ModMenuOnGUI()
         {
             GUI.skin = modLoaderSkin;
@@ -534,7 +568,7 @@ namespace MSCLoader
         [Obsolete("Obsolete, does not do anything.")]
         public static bool CheckSteam() => true;
         internal static string steamID = "NOYOUDONT";
-        public static readonly string MSCLoader_Ver = ModLoaderVersion;
+        public static readonly string MSCLoader_Ver = Version;
         public static bool LogAllErrors = false;
         public static bool CheckIfExperimental()
         {
@@ -549,6 +583,8 @@ namespace MSCLoader
         }
         [Obsolete("Deprecated, use GetModSettingsFolder() instead.")]
         public static string GetModConfigFolder(Mod mod) => GetModSettingsFolder(mod);
+        [Obsolete("Deprecated, use ModLoader.CurrentScene instead.")]
+        public static CurrentScene GetCurrentScene() => CurrentScene;
     }
 
     class ModMenuOnGUICall : MonoBehaviour
