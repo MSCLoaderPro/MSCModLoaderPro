@@ -76,7 +76,15 @@ namespace MSCLoader
         public Shadow buttonTextShadow;
 
         public string ID { get => gameObject.name; set => gameObject.name = value; }
-        public string Name { get => nameText.text; set => nameText.text = value; }
+        public string Name
+        {
+            get => nameText.text; set
+            {
+                nameText.text = value;
+                nameText.gameObject.SetActive(!string.IsNullOrEmpty(value));
+            }
+        }
+        public string ButtonText { get => buttonText.text; set => buttonText.text = value; }
         public Button.ButtonClickedEvent OnClick { get => button.onClick; set => button.onClick = value; }
 
         public bool suspendOnClickActions = false;
@@ -353,9 +361,9 @@ namespace MSCLoader
         public void Start() => ChangeValueText();
         public void ChangeValueText()
         {
-            valueText.text = (textValues.Length > 0) ?
-                $"{valuePrefix}{textValues[(int)Value]}{valueSuffix}" :
-                $"{valuePrefix}{Value}{valueSuffix}";
+                valueText.text = (textValues.Length > ValueInt) ?
+                    $"{valuePrefix}{textValues[ValueInt]}{valueSuffix}" :
+                    $"{valuePrefix}{Value}{valueSuffix}";
         }
 
         public int roundDigits = -1;

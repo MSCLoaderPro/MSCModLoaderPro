@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1694413957
+CRC: 2999710711
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e0bb3788b05e5abfcbb72e2e9bcfa588
+    Hash: f3af70ddf26130a262a6706339dd11eb
   TypeTreeHash:
     serializedVersion: 2
-    Hash: bc8905a3c2530b3ff102b1651a3e6ca6
+    Hash: a9d92565b4cc2932d27653e1cad9d533
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -88,6 +88,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1971707241, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
+  Script: {fileID: 508029086, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
   Script: {fileID: -1659642841, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
   Script: {fileID: -1312237520, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
@@ -110,7 +112,9 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 12001, guid: 0000000000000000e000000000000000, type: 0}
 - Class: 114
-  Script: {fileID: 508029086, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+  Script: {fileID: -477065389, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
+  Script: {fileID: 1625282417, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -124,21 +128,35 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
+- Assets/SettingPrefabs/SettingText.prefab
+- Assets/SettingPrefabs/SettingsWindow.prefab
+- Assets/SettingPrefabs/SettingSpacer.prefab
 - Assets/GUISkin/toggle hover2 on.png
 - Assets/GUISkin/button hover.png
+- Assets/SettingPrefabs/ModPrompt.prefab
+- Assets/SettingPrefabs/ModListElement.prefab
+- Assets/SettingPrefabs/SettingKeybind.prefab
+- Assets/SettingPrefabs/ModPromptButton.prefab
 - Assets/MSCLoaderCanvas.prefab
+- Assets/SettingPrefabs/SettingButton.prefab
 - Assets/GUISkin/toggle active.png
+- Assets/SettingPrefabs/SettingRadioButtons.prefab
 - Assets/GUISkin/selectorV.png
 - Assets/GUISkin/button active.png
+- Assets/SettingPrefabs/SettingRadioButton.prefab
 - Assets/GUISkin/window.png
+- Assets/SettingPrefabs/SettingSlider.prefab
 - Assets/GUISkin/Background.png
 - Assets/GUISkin/window on.png
+- Assets/SettingPrefabs/SettingToggle.prefab
+- Assets/SettingPrefabs/SettingHeader.prefab
 - Assets/GUISkin/selector point.png
 - Assets/GUISkin/selector.png
 - Assets/GUISkin/ModLoaderSkin.guiskin
 - Assets/GUISkin/textarea.png
 - Assets/GUISkin/toggle hover.png
 - Assets/GUISkin/toggle hover on.png
+- Assets/SettingPrefabs/SettingTextBox.prefab
 - Assets/GUISkin/toggle active hover.png
 - Assets/GUISkin/box.png
 - Assets/GUISkin/button up.png

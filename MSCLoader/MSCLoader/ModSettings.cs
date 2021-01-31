@@ -27,6 +27,7 @@ namespace MSCLoader
             ModListElement modListElement = Instantiate(modListElementPrefab).GetComponent<ModListElement>();
             modListElement.modContainer = this;
             modListElement.mod = mod;
+            modListElement.ID = mod.ID;
             modListElement.Name = mod.Name;
             modListElement.Author = mod.Author;
             modListElement.Version = mod.Version;
@@ -82,15 +83,9 @@ namespace MSCLoader
         public Text nameText, authorText, versionText;
         public RawImage iconImage;
 
-        public string Name
-        {
-            get => nameText.text; set
-            {
-                nameText.text = value;
-                gameObject.name = value;
-            }
-        }
-        public string Author { get => authorText.text; set => authorText.text = $"AUTHOR(S): {value}"; }
+        public string ID { get => gameObject.name; set => gameObject.name = value; }
+        public string Name { get => nameText.text; set => nameText.text = value; }
+        public string Author { get => authorText.text; set => authorText.text = $"AUTHOR{(value.Contains(",") ? "S" : "")}: {value}"; }
         public string Version { get => versionText.text; set => versionText.text = $"VERSION: {value}"; }
 
         public void SetModIcon(Texture2D icon)
@@ -212,20 +207,21 @@ namespace MSCLoader
             File.WriteAllText(path, data);
         }
 
-        public SettingButton AddButton(string id, string name)
+        public SettingButton AddButton(string id, string name, string buttonText)
         {
             SettingButton button = Instantiate(prefabButton).GetComponent<SettingButton>();
             button.ID = id;
             button.Name = name;
+            button.ButtonText = buttonText;
 
             button.transform.SetParent(settingsList, false);
 
             return button;
         }
 
-        public SettingButton AddButton(string id, string name, UnityAction action, bool blockSuspension = false)
+        public SettingButton AddButton(string id, string name, string buttonText, UnityAction action, bool blockSuspension = false)
         {
-            SettingButton button = AddButton(id, name);
+            SettingButton button = AddButton(id, name, buttonText);
             button.AddAction(action, blockSuspension);
 
             return button;
@@ -249,10 +245,17 @@ namespace MSCLoader
             return header;
         }
 
-        public SettingHeader AddHeader(string text, Color backgroundColor, Color outlineColor)
+        public SettingHeader AddHeader(string text, Color backgroundColor, Color textColor)
         {
-            SettingHeader header = AddHeader(text);
-            header.BackgroundColor = backgroundColor;
+            SettingHeader header = AddHeader(text, backgroundColor);
+            header.text.color = textColor;
+
+            return header;
+        }
+
+        public SettingHeader AddHeader(string text, Color backgroundColor, Color textColor, Color outlineColor)
+        {
+            SettingHeader header = AddHeader(text, backgroundColor, textColor);
             header.OutlineColor = outlineColor;
 
             return header;
@@ -333,6 +336,13 @@ namespace MSCLoader
             return slider;
         }
 
+        public SettingSlider AddSlider(string id, string name, float value, float minValue, float maxValue)
+        {
+            SettingSlider slider = AddSlider(id, name, value, maxValue, minValue, -1, null);
+
+            return slider;
+        }
+
         public SettingSlider AddSlider(string id, string name, int value, int minValue, int maxValue, UnityAction<float> action = null)
         {
             SettingSlider slider = AddSlider(id, name, (float)value, maxValue, minValue, action: action);
@@ -341,7 +351,7 @@ namespace MSCLoader
             return slider;
         }
         
-        public SettingSpacer AddSpacer(float height = 40f)
+        public SettingSpacer AddSpacer(float height)
         {
             SettingSpacer spacer = Instantiate(prefabSpacer).GetComponent<SettingSpacer>();
             spacer.Height = height;

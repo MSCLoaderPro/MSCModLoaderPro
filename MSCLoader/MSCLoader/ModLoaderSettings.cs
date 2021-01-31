@@ -16,49 +16,23 @@ namespace MSCLoader
         public Toggle modLoaderSettingsToggle;
 
         public Text version;
-        public string Version { get => version.text.Remove(0, 9); set { version.text = $"VERSION: {value}"; } }
-
-        public SettingToggle skipGameLauncher;
-        public bool SkipGameLauncher { get => skipGameLauncher.Value; set { skipGameLauncher.Value = value; } }
-
-        public SettingToggle skipSplashScreen;
-        public bool SkipSplashScreen { get => skipSplashScreen.Value; set { skipSplashScreen.Value = value; } }
-
-        public SettingToggle useVsyncInMenu;
-        public bool UseVsyncInMenu { get => useVsyncInMenu.Value; set { useVsyncInMenu.Value = value; } }
-
-        public SettingToggle checkUpdatesAutomatically;
-        public bool CheckUpdatesAutomatically { get => checkUpdatesAutomatically.Value; set { checkUpdatesAutomatically.Value = value; } }
-
+        public SettingToggle skipGameLauncher, skipSplashScreen, useVsyncInMenu, checkUpdatesAutomatically;
         public SettingKeybind openConsoleKey;
-        public KeyCode OpenConsoleKeyKeybind { get => openConsoleKey.keybind; set { openConsoleKey.keybind = value; } }
-        public KeyCode[] OpenConsoleKeyModifiers { get => openConsoleKey.modifiers; set { openConsoleKey.modifiers = value; } }
-
         public SettingSlider consoleFontSize;
-        public float ConsoleFontSize { get => consoleFontSize.Value; set { consoleFontSize.Value = value; } }
-
         public SettingRadioButtons consoleAutoOpen;
-        public int ConsoleAutoOpen { get => consoleAutoOpen.Value; set { consoleAutoOpen.Value = value; } }
+        public SettingSlider consoleWindowHeight, consoleWindowWidth;
 
-        public SettingSlider consoleWindowHeight;
-        public float ConsoleWindowHeight
-        {
-            get => consoleWindowHeight.Value; set
-            {
-                consoleWindowHeight.MaxValue = Screen.height;
-                consoleWindowHeight.Value = value;
-            }
-        }
-
-        public SettingSlider consoleWindowWidth;
-        public float ConsoleWindowWidth
-        {
-            get => consoleWindowWidth.Value; set
-            {
-                consoleWindowWidth.MaxValue = Screen.width;
-                consoleWindowWidth.Value = value;
-            }
-        }
+        public string Version { get => version.text.Remove(0, 9); set => version.text = $"VERSION: {value}"; }
+        public bool SkipGameLauncher { get => skipGameLauncher.Value; set => skipGameLauncher.Value = value; }
+        public bool SkipSplashScreen { get => skipSplashScreen.Value; set => skipSplashScreen.Value = value; }
+        public bool UseVsyncInMenu { get => useVsyncInMenu.Value; set => useVsyncInMenu.Value = value; }
+        public bool CheckUpdatesAutomatically { get => checkUpdatesAutomatically.Value; set => checkUpdatesAutomatically.Value = value; }
+        public KeyCode OpenConsoleKeyKeybind { get => openConsoleKey.keybind; set => openConsoleKey.keybind = value; }
+        public KeyCode[] OpenConsoleKeyModifiers { get => openConsoleKey.modifiers; set => openConsoleKey.modifiers = value; }
+        public float ConsoleFontSize { get => consoleFontSize.Value; set => consoleFontSize.Value = value; }
+        public int ConsoleAutoOpen { get => consoleAutoOpen.Value; set => consoleAutoOpen.Value = value; }
+        public float ConsoleWindowHeight { get => consoleWindowHeight.Value; set => consoleWindowHeight.Value = value; }
+        public float ConsoleWindowWidth { get => consoleWindowWidth.Value; set => consoleWindowWidth.Value = value; }
 
         public void SetupKeyAction()
         {

@@ -109,6 +109,7 @@
     <Compile Include="Legacy\AudioLibrary\ModAudioStream.cs" />
     <Compile Include="ModConsole.cs" />
     <Compile Include="ModLoader.cs" />
+    <Compile Include="ModPrompt.cs" />
     <Compile Include="ModSettings.cs" />
     <Compile Include="ModLoaderSettings.cs" />
     <Compile Include="ModLoaderUI.cs" />

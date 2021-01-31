@@ -181,6 +181,10 @@ namespace MSCLoader
             Destroy(loadedObject);
             DontDestroyOnLoad(ModUI.canvasGO);
 
+            ModUI.prompt = bundle.LoadAsset<GameObject>("ModPrompt.prefab");
+
+            ModUI.canvasGO.name = "MSCLoader Canvas";
+
             modUILoadScreen = ModUI.canvasGO.transform.Find("ModLoaderUI/ModLoadScreen").gameObject;
             modSceneLoadHandler = ModUI.canvasGO.GetComponent<UILoadHandler>();
             Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(x => !x.activeSelf && x.name == "Loading").AddComponent<UIMainMenuLoad>().loadHandler = modSceneLoadHandler;

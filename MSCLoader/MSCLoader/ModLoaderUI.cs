@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,7 +12,7 @@ namespace MSCLoader
 
         public static GameObject GetCanvas() => canvasGO;
 
-        public static GameObject messageBox;
+        public static GameObject prompt;
 
         public static void ShowMessage(string message, string title = "Message")
         {
@@ -24,6 +25,9 @@ namespace MSCLoader
         {
             // SHOW PROMPT
         }
+
+        [Obsolete()]
+        public static GameObject messageBox { get => prompt; set => prompt = value; }
     }
     public class SwitchToggleGraphic : MonoBehaviour
     {
