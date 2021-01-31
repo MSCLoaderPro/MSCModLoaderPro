@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -14,20 +15,102 @@ namespace MSCLoader
 
         public static GameObject prompt;
 
-        public static void ShowMessage(string message, string title = "Message")
-        {
-            //SHOW PROMPT
-        }
-
+        [Obsolete("Please use CreatePrompt() instead.")]
+        public static void ShowMessage(string message, string title = "Message") => CreatePrompt(message, title); 
+        
+        [Obsolete("Please use CreateYesNoPrompt() instead.")]
         public static void ShowYesNoMessage(string message, System.Action ifYes) => ShowYesNoMessage(message, "Message", ifYes);
 
-        public static void ShowYesNoMessage(string message, string title, System.Action ifYes)
-        {
-            // SHOW PROMPT
-        }
+        [Obsolete("Please use CreateYesNoPrompt() instead.")]
+        public static void ShowYesNoMessage(string message, string title, System.Action ifYes) => CreateYesNoPrompt(message, title, () => { ifYes(); });
 
         [Obsolete()]
         public static GameObject messageBox { get => prompt; set => prompt = value; }
+
+        // This one creates a dummy button and returns ModPrompt. Not meant to be accessed publicly.
+        private static ModPrompt NewPrompt()
+        {
+            GameObject newPrompt = GameObject.Instantiate(prompt);
+            newPrompt.transform.SetParent(GetCanvas().transform);
+            newPrompt.transform.localPosition = Vector3.zero;
+            
+            return newPrompt.GetComponent<ModPrompt>();
+        }
+
+        /// <summary>
+        /// Creates a prompt with "OK" button.
+        /// </summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button. Can be</returns>
+        public static ModPrompt CreatePrompt(string message, string title = "Message", UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.AddButton("OK", null);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+
+        /// <summary>
+        /// Creates a prompt with "Yes" and "No" buttons.
+        /// </summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onYes">Action that will happen after player clicks Yes button.</param>
+        /// <param name="onNo">(Optional) Action that will happen after player clicks No button.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        public static ModPrompt CreateYesNoPrompt(string message, string title, UnityAction onYes, UnityAction onNo = null, UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.AddButton("Yes", onYes);
+            modPrompt.AddButton("No", onNo);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+
+        /// <summary>
+        /// Creates a prompt with "Retry" and "Cancel" buttons.<br></br
+        /// </summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onRetry">Action that will happen after player clicks Retry button.</param>
+        /// <param name="onCancel">(Optional) Action that will happen after player clicks Cancel button.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        public static ModPrompt CreateRetryCancelPrompt(string message, string title, UnityAction onRetry, UnityAction onCancel = null, UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.AddButton("Retry", onRetry);
+            modPrompt.AddButton("Cancel", onCancel);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+
+        /// <summary>
+        /// Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
+        /// Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        public static ModPrompt CreateCustomPrompt(string message = null, string title = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.gameObject.SetActive(false); // Custom prompts have to be showed manually using ModPrompt.Show().
+
+            return NewPrompt();
+        }
     }
     public class SwitchToggleGraphic : MonoBehaviour
     {

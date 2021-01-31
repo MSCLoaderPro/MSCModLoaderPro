@@ -21,6 +21,8 @@ namespace MSCLoader
 
         public bool destroyOnDisable = true;
 
+        public UnityAction OnCloseAction;
+
         public string Title
         {
             get => titleText.text; set
@@ -53,7 +55,21 @@ namespace MSCLoader
 
         void OnDisable()
         {
+            if (OnCloseAction != null) OnCloseAction();
             if (destroyOnDisable) Destroy(gameObject);
+        }
+
+        public void Show()
+        {
+            // We are checking if the custom prompt has buttons.
+            // If it doesn't, we're adding a dummy "OK" button.
+            // This is to prevent modders from creating prompts that can't be closed.
+            if (buttons.Count == 0)
+            {
+                AddButton("OK", null);
+            }
+
+            gameObject.SetActive(true);
         }
     }
 
