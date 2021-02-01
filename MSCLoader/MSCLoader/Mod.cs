@@ -17,6 +17,11 @@ namespace MSCLoader
         public virtual string Description { get; } = "";
         public virtual byte[] Icon { get; set; } = null;
         public virtual string IconName { get; set; } = "";
+        /// <summary>
+        /// A link from which ModLoader will check for updates. Must be GitHub or NexusMods.<br></br>
+        /// Ex.: https://github.com/Athlon007/MOP
+        /// </summary>
+        public virtual string UpdateLink { get; set; } = "";
 
         public ModListElement modListElement;
         public ModSettings modSettings;
@@ -57,6 +62,8 @@ namespace MSCLoader
 
         string filePath = null;
         internal virtual string fileName { get => filePath;  set => filePath = value; }
+
+        internal ModUpdateData ModUpdateData;
     }
 }
 #pragma warning restore CS0618 // Type or member is obsolete

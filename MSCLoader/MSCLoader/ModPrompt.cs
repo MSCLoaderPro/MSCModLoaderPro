@@ -55,7 +55,7 @@ namespace MSCLoader
 
         void OnDisable()
         {
-            if (OnCloseAction != null) OnCloseAction();
+            OnCloseAction?.Invoke();
             if (destroyOnDisable) Destroy(gameObject);
         }
 
