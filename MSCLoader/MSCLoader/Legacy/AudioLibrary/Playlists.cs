@@ -2,7 +2,7 @@
 using System.IO;
 
 // GNU GPL 3.0
-#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
 {
     /// <summary>
@@ -136,6 +136,4 @@ namespace MSCLoader
             return playlist;
         }
     }
-
 }
-#pragma warning restore IDE1006 // Naming Styles

@@ -5,6 +5,7 @@ using HutongGames.PlayMaker;
 using UnityEngine;
 
 // GNU GPL 3.0
+#pragma warning disable CS1591
 namespace MSCLoader
 {
     public class FsmHook

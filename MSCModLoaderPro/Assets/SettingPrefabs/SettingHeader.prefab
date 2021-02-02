@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FontData:
     m_Font: {fileID: 12800000, guid: ab9cfa1a950b571449afb233e713b282, type: 3}
-    m_FontSize: 15
+    m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
@@ -132,7 +132,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: HEADER
+  m_Text: SETTINGS
 --- !u!114 &11499522
 MonoBehaviour:
   m_ObjectHideFlags: 1

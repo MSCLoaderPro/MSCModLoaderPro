@@ -5,10 +5,9 @@ using System.IO;
 using UnityEngine;
 
 // GNU GPL 3.0
+#pragma warning disable CS1591, IDE1006, CS0618
 namespace AudioLibrary
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
     public enum AudioFormat
     {
         wav,
@@ -130,6 +129,4 @@ namespace AudioLibrary
             base.Dispose(disposing);
         }
     }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-
 }

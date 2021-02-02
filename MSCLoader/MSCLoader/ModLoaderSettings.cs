@@ -88,9 +88,7 @@ namespace MSCLoader
         {
             if (suspendAction) return;
 
-            foreach (ModListElement otherMod in modContainer.modListDictionary.Values)
-                otherMod.ToggleSettingsOff();
-
+            foreach (ModListElement otherMod in modContainer.modListDictionary.Values) otherMod.ToggleSettingsOff();
             gameObject.SetActive(modLoaderSettingsToggle.isOn);
         }
 

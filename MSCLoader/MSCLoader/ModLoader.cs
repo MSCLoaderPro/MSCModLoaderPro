@@ -126,7 +126,7 @@ namespace MSCLoader
             string modString = "";
             for (int i = 0; i < methodNames.Length; i++)
                 modString += $"\n{ModMethods[i].Count} Mod(s) using {methodNames[i]}.{(ModMethods[i].Count > 0 ? "\n  " : "")}{string.Join("\n  ", ModMethods[i].Select(x => x.Name).ToArray())}";
-            ModConsole.Log(modString);
+            Console.WriteLine(modString);
 
             // Load mod settings for each loaded mod. Then call OnMenuLoad
             LoadModsSettings();

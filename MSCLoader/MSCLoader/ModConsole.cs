@@ -11,7 +11,8 @@ namespace MSCLoader
     /// <summary>The handler for the ModConsole</summary>
     public class ModConsole : MonoBehaviour
     {
-        public static ModConsole consoleInstance;
+        public static ModConsole consoleInstance; 
+        /// <summary>Returns if the console is open or not.</summary>
         public static bool IsOpen { get; private set; }
 
         public static ConsoleController controller;
@@ -31,7 +32,7 @@ namespace MSCLoader
 
         ~ModConsole()
         {
-            controller.LogChanged -= LogChanged;
+            controller.LogChanged -= UpdateLog;
         }
 
         void Awake()
@@ -42,7 +43,7 @@ namespace MSCLoader
             UpdateFontSize();
 
             controller = new ConsoleController();
-            controller.LogChanged += LogChanged;
+            controller.LogChanged += UpdateLog;
 
             UpdateLog(controller.log);
         }
@@ -125,10 +126,8 @@ namespace MSCLoader
             inputField.MoveTextEnd(false);
         }
 
-        void LogChanged(string[] newLog) => UpdateLog(newLog);
-
         void UpdateLog(string[] newLog) =>
-            consoleText.text = newLog == null ? string.Empty : string.Join(Environment.NewLine, newLog);
+            consoleText.text = (newLog == null ? "" : string.Join("\n", newLog));
 
         /// <summary>Logs a string to the ModConsole and output_log.txt.</summary>
         /// <param name="text">Message to log.</param>

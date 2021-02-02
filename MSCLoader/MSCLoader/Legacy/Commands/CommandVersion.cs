@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace MSCLoader.Commands
 {
+#pragma warning disable CS1591, IDE1006, CS0618
     public class CommandVersion : ConsoleCommand
     {
         public override string Name => "ver";

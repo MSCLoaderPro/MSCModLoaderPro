@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // GNU GPL 3.0
+#pragma warning disable CS1591
 namespace MSCLoader
 {
     [Obsolete("Old Keybind is obsolete, use SettingKeybind instead")]

@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 
 // GNU GPL 3.0
+#pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
 {
     public static class LoadAssets

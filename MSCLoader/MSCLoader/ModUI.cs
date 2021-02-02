@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS1591, IDE1006
 namespace MSCLoader
 {
-    ///<summary>Contains methods and variables suitable for controlling UI.</summary>
+    /// <summary>Contains methods and variables suitable for controlling UI.</summary>
     public class ModUI
     {
         internal static GameObject canvasGO;
@@ -55,7 +55,6 @@ namespace MSCLoader
 
             return modPrompt;
         }
-
         /// <summary> Creates a prompt with "Yes" and "No" buttons. </summary>
         /// <param name="message">A message that will appear in the prompt.</param>
         /// <param name="title">Title of the prompt.</param>
@@ -74,7 +73,6 @@ namespace MSCLoader
 
             return modPrompt;
         }
-
         /// <summary>Creates a prompt with "Retry" and "Cancel" buttons.</summary>
         /// <param name="message">A message that will appear in the prompt.</param>
         /// <param name="title">Title of the prompt.</param>
@@ -211,7 +209,9 @@ namespace MSCLoader
 
     public class UILoadHandler : MonoBehaviour
     {
-        public GameObject modMenu, modList, modSettings, modMenuButton, modGameButton;
+        public ModContainer modContainer;
+        public ModLoaderSettings modLoaderSettings;
+        public GameObject modMenu, modList, modSettings, modMenuButton;
         public List<GameObject> extra = new List<GameObject>();
 
         public bool lockEnable = false;
@@ -220,9 +220,12 @@ namespace MSCLoader
         {
             modMenu.SetActive(false);
             modList.SetActive(false);
-            modSettings.SetActive(false);
             modMenuButton.SetActive(false);
-            //modGameButton.SetActive(false);
+            modSettings.SetActive(false);
+
+            foreach (ModListElement mod in modContainer.modListDictionary.Values) mod.ToggleSettingsOff();
+            modLoaderSettings.ToggleMenuOff();
+
             for (int i = 0; i < extra.Count; i++)
                 extra[i].SetActive(false);
         }
@@ -327,5 +330,3 @@ namespace MSCLoader
         }
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

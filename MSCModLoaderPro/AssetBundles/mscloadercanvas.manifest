@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2999710711
+CRC: 1359204688
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f3af70ddf26130a262a6706339dd11eb
+    Hash: d974794af2b7bb0b2b8c102bf1bdd0f6
   TypeTreeHash:
     serializedVersion: 2
-    Hash: a9d92565b4cc2932d27653e1cad9d533
+    Hash: bbaf982a979e89f7eef1ad9d71e6cee1
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -72,6 +72,10 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1056752392, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
+  Script: {fileID: -477065389, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
+  Script: {fileID: 1625282417, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
   Script: {fileID: 1374862606, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
   Script: {fileID: -416817758, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
@@ -111,10 +115,6 @@ ClassTypes:
   Script: {fileID: -636989493, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
   Script: {fileID: 12001, guid: 0000000000000000e000000000000000, type: 0}
-- Class: 114
-  Script: {fileID: -477065389, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
-- Class: 114
-  Script: {fileID: 1625282417, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -153,6 +153,7 @@ Assets:
 - Assets/GUISkin/selector point.png
 - Assets/GUISkin/selector.png
 - Assets/GUISkin/ModLoaderSkin.guiskin
+- Assets/SettingPrefabs/DefaultText.prefab
 - Assets/GUISkin/textarea.png
 - Assets/GUISkin/toggle hover.png
 - Assets/GUISkin/toggle hover on.png

@@ -5,10 +5,10 @@ using System.Threading;
 using NAudio.Wave;
 using UnityEngine;
 
+// GNU GPL 3.0
+#pragma warning disable CS1591, IDE1006, CS0618
 namespace AudioLibrary.MP3_Streaming
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
     public partial class MP3Stream : IDisposable
     {
         public enum StreamingPlaybackState
@@ -257,6 +257,4 @@ namespace AudioLibrary.MP3_Streaming
             }
         }
     }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-
 }

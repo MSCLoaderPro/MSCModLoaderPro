@@ -177,6 +177,8 @@ namespace MSCLoader
 
         public ModConfig loadedSettings;
 
+        public GameObject prefabDefaultText, defaultText, resetButton, headerSettings;
+
         public GameObject prefabButton, prefabHeader, prefabKeybind, prefabRadioButtons, prefabSlider, prefabSpacer, prefabText, prefabTextBox, prefabToggle;
 
         public Text nameText;
@@ -211,6 +213,11 @@ namespace MSCLoader
             }
         }
 
+        void OnEnable()
+        {
+            CheckForSettings();
+        }
+
         void OnDisable()
         {
             try { if (loadedSettings != null) SaveSettings(); } catch { }
@@ -242,27 +249,54 @@ namespace MSCLoader
             };
             foreach (ModSetting setting in settings) setting.SaveSetting(modConfig);
 
-            string path = Path.Combine(ModLoader.GetModSettingsFolder(mod, true), $"{mod.ID}.json");
+            string path = $@"{ModLoader.GetModSettingsFolder(mod, true)}\{mod.ID}.json";
             string data = JsonConvert.SerializeObject(modConfig, Formatting.Indented);
             File.WriteAllText(path, data);
         }
 
-        public SettingButton AddButton(string id, string name, string buttonText)
+        void AddSettingToList(ModSetting setting)
+        {
+            settings.Add(setting);
+            setting.transform.SetParent(settingsList, false);
+
+            CheckForSettings();
+        }
+
+        void CheckForSettings()
+        {
+            if (settings.Count == 0 && defaultText == null)
+            {
+                defaultText = Instantiate(prefabDefaultText);
+                defaultText.transform.SetParent(settingsList, false);
+                resetButton.SetActive(false);
+                headerSettings.SetActive(false);
+            }
+            else if (settings.Count > 0)
+            {
+                if (defaultText != null) Destroy(defaultText);
+                resetButton.SetActive(true);
+                headerSettings.SetActive(true);
+            }
+        }
+
+        public SettingButton AddButton(string id, string buttonText, string name = "", UnityAction action = null, bool blockSuspension = false)
         {
             SettingButton button = Instantiate(prefabButton).GetComponent<SettingButton>();
             button.ID = id;
             button.Name = name;
             button.ButtonText = buttonText;
 
-            button.transform.SetParent(settingsList, false);
+            if (action != null)
+                button.AddAction(action, blockSuspension);
+
+            AddSettingToList(button);
 
             return button;
         }
 
-        public SettingButton AddButton(string id, string name, string buttonText, UnityAction action, bool blockSuspension = false)
+        public SettingButton AddButton(string id, string buttonText, UnityAction action, bool blockSuspension = false)
         {
-            SettingButton button = AddButton(id, name, buttonText);
-            button.AddAction(action, blockSuspension);
+            SettingButton button = AddButton(id, buttonText, "", action, blockSuspension);
 
             return button;
         }
@@ -272,7 +306,7 @@ namespace MSCLoader
             SettingHeader header = Instantiate(prefabHeader).GetComponent<SettingHeader>();
             header.Text = text;
 
-            header.transform.SetParent(settingsList, false);
+            AddSettingToList(header);
 
             return header;
         }
@@ -312,8 +346,7 @@ namespace MSCLoader
             keybind.defaultModifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]);
             keybind.KeyText = keybind.AdjustKeyNames();
 
-            settings.Add(keybind);
-            keybind.transform.SetParent(settingsList, false);
+            AddSettingToList(keybind);
 
             ConfigKeybind configKeybind = loadedSettings.Keybinds.FirstOrDefault(x => x.id == id);
             if (configKeybind != null)
@@ -334,8 +367,7 @@ namespace MSCLoader
             radioButtons.Value = value;
             radioButtons.defaultValue = value;
 
-            settings.Add(radioButtons);
-            radioButtons.transform.SetParent(settingsList, false);
+            AddSettingToList(radioButtons);
 
             ConfigNumber configNumber = loadedSettings.Numbers.FirstOrDefault(x => x.id == id);
             if (configNumber != null) radioButtons.Value = (int)configNumber.value;
@@ -358,8 +390,7 @@ namespace MSCLoader
             slider.Value = value;
             slider.defaultValue = value;
 
-            settings.Add(slider);
-            slider.transform.SetParent(settingsList, false);
+            AddSettingToList(slider);
 
             ConfigNumber configNumber = loadedSettings.Numbers.FirstOrDefault(x => x.id == id);
             if (configNumber != null) slider.Value = configNumber.value;
@@ -396,7 +427,7 @@ namespace MSCLoader
             SettingSpacer spacer = Instantiate(prefabSpacer).GetComponent<SettingSpacer>();
             spacer.Height = height;
 
-            spacer.transform.SetParent(settingsList, false);
+            AddSettingToList(spacer);
 
             return spacer;
         }
@@ -406,7 +437,7 @@ namespace MSCLoader
             SettingText settingText = Instantiate(prefabText).GetComponent<SettingText>();
             settingText.Text = text;
 
-            settingText.transform.SetParent(settingsList, false);
+            AddSettingToList(settingText);
 
             return settingText;
         }
@@ -437,8 +468,7 @@ namespace MSCLoader
             textBox.defaultValue = value;
             textBox.Placeholder = placeholder;
 
-            settings.Add(textBox);
-            textBox.transform.SetParent(settingsList, false);
+            AddSettingToList(textBox);
 
             ConfigString configString = loadedSettings.Strings.FirstOrDefault(x => x.id == id);
             if (configString != null) textBox.Value = configString.value;
@@ -463,8 +493,7 @@ namespace MSCLoader
             toggle.Value = value;
             toggle.defaultValue = value;
 
-            settings.Add(toggle);
-            toggle.transform.SetParent(settingsList, false);
+            AddSettingToList(toggle);
 
             ConfigBool configBool = loadedSettings.Booleans.FirstOrDefault(x => x.id == id);
             if (configBool != null) toggle.Value = configBool.value;

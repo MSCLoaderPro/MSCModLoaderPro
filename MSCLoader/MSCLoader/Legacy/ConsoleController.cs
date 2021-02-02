@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 // GNU GPL 3.0
-#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
 {
     public delegate void CommandHandler(string[] args);
@@ -161,4 +161,3 @@ namespace MSCLoader
         public static void Add(ConsoleCommand cmd) => cc.RegisterCommand(cmd.Name.ToLower(), cmd.Run, cmd.Help, cmd.ShowInHelp);
     }
 }
-#pragma warning restore IDE1006 // Naming Styles

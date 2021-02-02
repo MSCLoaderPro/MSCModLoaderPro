@@ -8,11 +8,7 @@ namespace MSCLoader
 	{
         internal bool disabled = false;
         /// <summary> Get the mods disabled state. </summary>
-        public virtual bool isDisabled { get => disabled; internal set
-            {
-                disabled = value;
-                modListElement.SetModEnabled(!value);
-            } }
+        public virtual bool isDisabled { get => disabled; internal set { disabled = value; modListElement.SetModEnabled(!value); } }
 
         /// <summary> The mod's ID, used for identification. Has to be unique! </summary>
         public abstract string ID { get; }
@@ -29,13 +25,15 @@ namespace MSCLoader
         /// <summary> A link from which ModLoader will check for updates. Must be GitHub or NexusMods. Ex.: https://github.com/Athlon007/MOP</summary>
         public virtual string UpdateLink { get; set; } = "";
 
+        internal ModUpdateData ModUpdateData;
+
         /// <summary> The mod list element for the mod. </summary>
         public ModListElement modListElement;
         /// <summary> The settings container for the mod. Used when adding settings. </summary>
         public ModSettings modSettings;
 
         /// <summary> Method for adding settings to the mod. Order of execution: 1 </summary>
-        public virtual void ModSettings() { }
+        public virtual void ModSettings() {  }
         /// <summary> Method called when all mods have had their ModSettings() called. Order of execution: 2 </summary>
         public virtual void ModSettingsLoaded() { }
 
@@ -65,8 +63,6 @@ namespace MSCLoader
 		public virtual void Update() { }
         /// <summary> FixedUpdate method for the game scene. Order of execution: Every fixed time step </summary>
         public virtual void FixedUpdate() { }
-
-        internal ModUpdateData ModUpdateData;
 
         #region Obsolete Methods
         [Obsolete("Deprecated, not needed.")]

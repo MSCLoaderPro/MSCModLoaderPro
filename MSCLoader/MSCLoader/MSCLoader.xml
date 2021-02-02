@@ -4,6 +4,96 @@
         <name>MSCLoader</name>
     </assembly>
     <members>
+        <member name="E:AudioLibrary.MP3_Streaming.ReadFullyStream.StreamTitleChanged">
+            <summary>
+            Is fired, when a new StreamTitle is received
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.ParseMetaInfo(System.Byte[])">
+            <summary>
+            Parses the received Meta Info
+            </summary>
+            <param name="metaInfo"></param>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.OnStreamTitleChanged">
+            <summary>
+            Fires the StreamTitleChanged event
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanRead">
+            <summary>
+            Gets a value that indicates whether the ShoutcastStream supports reading.
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanSeek">
+            <summary>
+            Gets a value that indicates whether the ShoutcastStream supports seeking.
+            This property will always be false.
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanWrite">
+            <summary>
+            Gets a value that indicates whether the ShoutcastStream supports writing.
+            This property will always be false.
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Flush">
+            <summary>
+            Flushes data from the stream.
+            This method is currently not supported
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.Length">
+            <summary>
+            Gets the length of the data available on the Stream.
+            This property is not currently supported and always thows a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.Position">
+            <summary>
+            Gets or sets the current position in the stream.
+            This property is not currently supported and always thows a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads data from the ShoutcastStream.
+            </summary>
+            <param name="buffer">An array of bytes to store the received data from the ShoutcastStream.</param>
+            <param name="offset">The location in the buffer to begin storing the data to.</param>
+            <param name="count">The number of bytes to read from the ShoutcastStream.</param>
+            <returns>The number of bytes read from the ShoutcastStream.</returns>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Close">
+            <summary>
+            Closes the ShoutcastStream.
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Sets the current position of the stream to the given value.
+            This Method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="offset"></param>
+            <param name="origin"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.SetLength(System.Int64)">
+            <summary>
+            Sets the length of the stream.
+            This Method always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes data to the ShoutcastStream.
+            This method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="buffer"></param>
+            <param name="offset"></param>
+            <param name="count"></param>
+        </member>
         <member name="T:MSCLoader.Playlists">
             <summary>
             Parse playlists files
@@ -36,6 +126,220 @@
             </summary>
             <param name="stream">File stream</param>
             <returns>List of paths to files/urls</returns>
+        </member>
+        <member name="T:MSCLoader.ModHelper">
+            <summary> Container for useful helper methods </summary>
+        </member>
+        <member name="M:MSCLoader.ModHelper.GetTransform(System.String,System.String)">
+            <summary>Get a Transform child.</summary>
+            <param name="parentPath">Hierarchy path to a parent Transform.</param>
+            <param name="childPath">Hierarchy path from the parent to the wanted child Transform.</param>
+            <returns>Transform with path.</returns>
+        </member>
+        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Transform,System.String,System.String,System.Single)">
+            <summary>Play a MasterAudio sound from the Transform.</summary>
+            <param name="transform">Transform to play the sound from.</param>
+            <param name="type">Type of sound.</param>
+            <param name="variation">Variation of sound.</param>
+            <param name="volume">(Optional) Sound volume.</param>
+        </member>
+        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Vector3,System.String,System.String,System.Single)">
+            <summary>Play a MasterAudio sound from a Vector3 world position.</summary>
+            <param name="vector3">Vector3 to play the sound from.</param>
+            <param name="type">Type of sound.</param>
+            <param name="variation">Variation of sound.</param>
+            <param name="volume">(Optional) Sound volume.</param>
+        </member>
+        <member name="M:MSCLoader.ModHelper.SelectRandom``1(System.Collections.Generic.IList{``0})">
+            <summary>Select a random element from a List or an Array.</summary>
+            <typeparam name="T">List/Array Element type.</typeparam>
+            <param name="list">List/Array to get a random element from.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MSCLoader.ModHelper.InLayerMask(UnityEngine.LayerMask,System.Int32)">
+            <summary>Check if a specified layer is in the LayerMask.</summary>
+            <param name="layerMask">LayerMask to check.</param>
+            <param name="layer">Layer number to check for.</param>
+            <returns>Whether or not the layer is in the </returns>
+        </member>
+        <member name="M:MSCLoader.ModHelper.InLayerMask(UnityEngine.LayerMask,System.String)">
+            <summary>Check if a specified layer is in the LayerMask.</summary>
+            <param name="layerMask">LayerMask to check.</param>
+            <param name="layer">Layer name to check for.</param>
+            <returns>Whether or not the layer is in the </returns>
+        </member>
+        <member name="M:MSCLoader.ModHelper.SetParent(UnityEngine.Transform,UnityEngine.Transform,UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Vector3,System.String)">
+            <summary>Extension of SetParent, with this you can specify the new position, rotation, scale and name of the transform.</summary>
+            <param name="transform">Transform to change parent of.</param>
+            <param name="parent">New parent Transform.</param>
+            <param name="position">New local position.</param>
+            <param name="rotation">New local rotation (Euler Angles).</param>
+            <param name="scale">New local scale.</param>
+            <param name="name">(Optional) New name.</param>
+        </member>
+        <member name="M:MSCLoader.ModHelper.OpenFolder(System.String)">
+            <summary>Open folder in Explorer or file in its default app.</summary>
+            <param name="path">Path to folder/file.</param>
+        </member>
+        <member name="M:MSCLoader.ModHelper.OpenWebsite(System.String)">
+            <summary>Open Website URL.</summary>
+            <param name="url">Website URL.</param>
+        </member>
+        <member name="T:MSCLoader.PlayMakerHelper">
+            <summary>Container for PlayMaker related helper and extension methods.</summary>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetPlayMakerFSM(UnityEngine.GameObject,System.String)">
+            <summary>Get a PlayMakerFSM by name on the GameObject.</summary>
+            <param name="gameObject">The GameObject to look for the FSM on.</param>
+            <param name="fsmName">Name of the FSM.</param>
+            <returns>PlayMakerFSM of specified name, or null if it can't be found.</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetPlayMakerFSM(UnityEngine.Transform,System.String)">
+            <summary>Get a PlayMakerFSM by name on the Transform's GameObject.</summary>
+            <param name="transform">The Transform to look for the FSM on.</param>
+            <param name="fsmName">Name of the FSM.</param>
+            <returns>PlayMakerFSM of specified name, or null if it can't be found.</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetState(PlayMakerFSM,System.String)">
+            <summary>Get a state on the PlayMakerFSM.</summary>
+            <param name="fsm">PlayMakerFSM to search on.</param>
+            <param name="stateName">Name of the state to look for.</param>
+            <returns>FsmState of specified name.</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetState(PlayMakerFSM,System.Int32)">
+            <summary>Get a state on the PlayMakerFSM.</summary>
+            <param name="fsm">PlayMakerFSM to search on.</param>
+            <param name="stateIndex">Index of the state to look for.</param>
+            <returns>FsmState of specified index.</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetAction``1(HutongGames.PlayMaker.FsmState,System.Int32)">
+            <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
+            <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>
+            <param name="state">State that contains the action</param>
+            <param name="actionIndex">The index of the Actions Array in the FSMState.</param>
+            <returns>FSMStateAction of type T</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetAction``1(PlayMakerFSM,System.String,System.Int32)">
+            <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
+            <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>
+            <param name="fsm">PlayMakerFSM to get the action from.</param>
+            <param name="stateName">Name of the state that contains the action</param>
+            <param name="actionIndex">The index of the Actions Array in the FSMState.</param>
+            <returns>FSMStateAction of type T</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetAction``1(PlayMakerFSM,System.Int32,System.Int32)">
+            <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
+            <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>
+            <param name="fsm">PlayMakerFSM to get the action from.</param>
+            <param name="stateIndex">Index of the state that contains the action</param>
+            <param name="actionIndex">The index of the Actions Array in the FSMState.</param>
+            <returns>FSMStateAction of type T</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.InsertAction(HutongGames.PlayMaker.FsmState,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Insert an action into the state.</summary>
+            <param name="state">State to insert the action to.</param>
+            <param name="actionIndex">The index the action should be inserted to.</param>
+            <param name="action">The action that will be inserted.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.InsertAction(PlayMakerFSM,System.String,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Insert an action into the state.</summary>
+            <param name="fsm">PlayMakerFSM to insert the action to.</param>
+            <param name="stateName">Name of the state to insert the action to.</param>
+            <param name="actionIndex">The index the action should be inserted to.</param>
+            <param name="action">The action that will be inserted.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.InsertAction(PlayMakerFSM,System.Int32,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Insert an action into the state.</summary>
+            <param name="fsm">PlayMakerFSM to insert the action to.</param>
+            <param name="stateIndex">Index of the state to insert the action to.</param>
+            <param name="actionIndex">The index the action should be inserted to.</param>
+            <param name="action">The action that will be inserted.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.AddAction(HutongGames.PlayMaker.FsmState,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Add an action the state.</summary>
+            <param name="state">State to add the action to.</param>
+            <param name="action">The action that will be added.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.AddAction(PlayMakerFSM,System.String,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Add an action the state.</summary>
+            <param name="fsm">PlayMakerFSM to add the action to.</param>
+            <param name="stateName">Name of the state to add the action to</param>
+            <param name="action">The action that will be added.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.AddAction(PlayMakerFSM,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Add an action the state.</summary>
+            <param name="fsm">PlayMakerFSM to add the action to.</param>
+            <param name="stateIndex">Index of the state to add the action to</param>
+            <param name="action">The action that will be added.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.ReplaceAction(HutongGames.PlayMaker.FsmState,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Replaces an action in the specified state.</summary>
+            <param name="state">State to replace the action in.</param>
+            <param name="actionIndex">Index of the action to replace.</param>
+            <param name="action">The replacement action.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.ReplaceAction(PlayMakerFSM,System.String,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Replaces an action in the specified state.</summary>
+            <param name="fsm">PlayMakerFSM to replace the action on.</param>
+            <param name="stateName">Name of the state to replace the action in.</param>
+            <param name="actionIndex">Index of the action to replace.</param>
+            <param name="action">The replacement action.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.ReplaceAction(PlayMakerFSM,System.Int32,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Replaces an action in the specified state.</summary>
+            <param name="fsm">PlayMakerFSM to replace the action on.</param>
+            <param name="stateIndex">Index of the state to replace the action in.</param>
+            <param name="actionIndex">Index of the action to replace.</param>
+            <param name="action">The replacement action.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(HutongGames.PlayMaker.FsmState,System.Int32)">
+            <summary>Removes an action in the specified state.</summary>
+            <param name="state">State to remove the action in.</param>
+            <param name="actionIndex">Index of the action to remove.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(HutongGames.PlayMaker.FsmState,HutongGames.PlayMaker.FsmStateAction)">
+            <summary>Removes an action in the specified state.</summary>
+            <param name="state">State to remove the action in.</param>
+            <param name="action">Action to remove.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(PlayMakerFSM,System.String,System.Int32)">
+            <summary>Removes an action in the specified state.</summary>
+            <param name="fsm">PlayMakerFSM to remove an action on.</param>
+            <param name="stateName">Name of the state to remove the action in.</param>
+            <param name="actionIndex">Index of the action to remove.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(PlayMakerFSM,System.Int32,System.Int32)">
+            <summary>Removes an action in the specified state.</summary>
+            <param name="fsm">PlayMakerFSM to remove an action on.</param>
+            <param name="stateIndex">Index of the state to remove the action in.</param>
+            <param name="actionIndex">Index of the action to remove.</param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetVariable``1(PlayMakerFSM,System.String)">
+            <summary>Get a variable of specified type and name.</summary>
+            <typeparam name="T">Type of variable to get. NamedVariable or sub-class (Standard PlayMaker Variable types)</typeparam>
+            <param name="fsm">PlayMakerFSM that contains the variable.</param>
+            <param name="name">Name of the variable to find.</param>
+            <returns>PlayMaker variable of specified type T</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.GetGlobalVariable``1(System.String)">
+            <summary>Get a global PlayMaker variable of specified type and name.</summary>
+            <typeparam name="T">Type of variable to get. NamedVariable or sub-class (Standard PlayMaker Variable types)</typeparam>
+            <param name="name">Name of the variable to find.</param>
+            <returns>PlayMaker variable of specified type T</returns>
+        </member>
+        <member name="M:MSCLoader.PlayMakerHelper.FindVariable``1(HutongGames.PlayMaker.FsmVariables,System.String)">
+            <summary>Get a variable of specified type and name.</summary>
+            <typeparam name="T">Type of variable to get. NamedVariable or sub-class (Standard PlayMaker Variable types)</typeparam>
+            <param name="variables">Variables to search.</param>
+            <param name="name">Name of the variable to find.</param>
+            <returns>PlayMaker variable of specified type T</returns>
+        </member>
+        <member name="T:MSCLoader.CallAction">
+            <summary>FsmStateAction that executes an Action.</summary>
+        </member>
+        <member name="M:MSCLoader.CallAction.#ctor(System.Action)">
+            <summary>Create a new FsmStateAction that executes provided Action.</summary>
+            <param name="action">Action to call when state executes the FsmStateAction.</param>
         </member>
         <member name="T:MSCLoader.Mod">
             <summary> Main Mod Class, parent class for all mods. </summary>
@@ -114,6 +418,9 @@
         </member>
         <member name="T:MSCLoader.ModConsole">
             <summary>The handler for the ModConsole</summary>
+        </member>
+        <member name="P:MSCLoader.ModConsole.IsOpen">
+            <summary>Returns if the console is open or not.</summary>
         </member>
         <member name="M:MSCLoader.ModConsole.Log(System.String)">
             <summary>Logs a string to the ModConsole and output_log.txt.</summary>
@@ -250,6 +557,41 @@
         <member name="P:MSCLoader.Properties.Resources.mscloadercanvas">
             <summary>
               Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:NAudio.Vorbis.VorbisWaveReader.UpperBitrate">
+            <summary>
+            Gets the encoder's upper bitrate of the current selected Vorbis stream
+            </summary>
+        </member>
+        <member name="P:NAudio.Vorbis.VorbisWaveReader.NominalBitrate">
+            <summary>
+            Gets the encoder's nominal bitrate of the current selected Vorbis stream
+            </summary>
+        </member>
+        <member name="P:NAudio.Vorbis.VorbisWaveReader.LowerBitrate">
+            <summary>
+            Gets the encoder's lower bitrate of the current selected Vorbis stream
+            </summary>
+        </member>
+        <member name="P:NAudio.Vorbis.VorbisWaveReader.Vendor">
+            <summary>
+            Gets the encoder's vendor string for the current selected Vorbis stream
+            </summary>
+        </member>
+        <member name="P:NAudio.Vorbis.VorbisWaveReader.Comments">
+            <summary>
+            Gets the comments in the current selected Vorbis stream
+            </summary>
+        </member>
+        <member name="P:NAudio.Vorbis.VorbisWaveReader.ContainerOverheadBits">
+            <summary>
+            Gets the number of bits read that are related to framing and transport alone
+            </summary>
+        </member>
+        <member name="P:NAudio.Vorbis.VorbisWaveReader.Stats">
+            <summary>
+            Gets stats from each decoder stream available
             </summary>
         </member>
     </members>
