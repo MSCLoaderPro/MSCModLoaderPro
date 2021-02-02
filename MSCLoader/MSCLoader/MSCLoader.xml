@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MSCLoader</name>
+    </assembly>
+    <members>
+        <member name="T:MSCLoader.Playlists">
+            <summary>
+            Parse playlists files
+            </summary>
+        </member>
+        <member name="M:MSCLoader.Playlists.plsPlaylist(System.String)">
+            <summary>
+            Parse *.pls playlist file and return List of paths
+            </summary>
+            <param name="path">Path to *.pls file</param>
+            <returns>List of paths to files/urls</returns>
+        </member>
+        <member name="M:MSCLoader.Playlists.plsPlaylist(System.IO.Stream)">
+            <summary>
+            Parse *.pls playlist file and return List of paths
+            </summary>
+            <param name="stream">File stream</param>
+            <returns>List of paths to files/urls</returns>
+        </member>
+        <member name="M:MSCLoader.Playlists.m3uPlaylist(System.String)">
+            <summary>
+            Parse *.m3u and *.m3u8 playlist files and return List of paths
+            </summary>
+            <param name="path">Path to .m3u or *.m3u8 file</param>
+            <returns>List of paths to files/urls</returns>
+        </member>
+        <member name="M:MSCLoader.Playlists.m3uPlaylist(System.IO.Stream)">
+            <summary>
+            Parse *.m3u and *.m3u8 playlist files and return List of paths
+            </summary>
+            <param name="stream">File stream</param>
+            <returns>List of paths to files/urls</returns>
+        </member>
+        <member name="T:MSCLoader.Mod">
+            <summary> Main Mod Class, parent class for all mods. </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.isDisabled">
+            <summary> Get the mods disabled state. </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.ID">
+            <summary> The mod's ID, used for identification. Has to be unique! </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.Name">
+            <summary> The mod's name, shown in lists etc. </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.Author">
+            <summary> Who made the mod? You, presumably! </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.Version">
+            <summary> Contains the mod version. </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.Description">
+            <summary> A short description of your mod. Displayed in the settings window for the mod, hidden if empty. </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.Icon">
+            <summary> Icon displayed in the mod list, preferably square and not larger than 256x256. </summary>
+        </member>
+        <member name="P:MSCLoader.Mod.UpdateLink">
+            <summary> A link from which ModLoader will check for updates. Must be GitHub or NexusMods. Ex.: https://github.com/Athlon007/MOP</summary>
+        </member>
+        <member name="F:MSCLoader.Mod.modListElement">
+            <summary> The mod list element for the mod. </summary>
+        </member>
+        <member name="F:MSCLoader.Mod.modSettings">
+            <summary> The settings container for the mod. Used when adding settings. </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.ModSettings">
+            <summary> Method for adding settings to the mod. Order of execution: 1 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.ModSettingsLoaded">
+            <summary> Method called when all mods have had their ModSettings() called. Order of execution: 2 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.OnMenuLoad">
+            <summary> Load Method for anything involving the menu scene. Order of execution: 3 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.MenuUpdate">
+            <summary> Update Method for the menu scene. Order of execution: Every frame in menu </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.MenuOnGUI">
+            <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.MenuFixedUpdate">
+            <summary> FixedUpdate Method for the menu scene. Order of execution: Every fixed time step </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.OnNewGame">
+            <summary> Method executed when the player starts a new game, use cases include removing old save files. Order of execution: 4 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.PreLoad">
+            <summary> Method executed one frame after the game scene loads. Order of execution: 5 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.OnLoad">
+            <summary> Method executed just when the game has completely finished loading. Order of execution: 6 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.PostLoad">
+            <summary> Method executed after every mod has executed OnLoad(). Order of execution: 7 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.OnSave">
+            <summary> Method executed when the player saves the game. Order of execution: 8 </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.OnGUI">
+            <summary> OnGUI method for the game scene. Order of execution: Every GUI frame </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.Update">
+            <summary> Update method for the game scene. Order of execution: Every frame </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.FixedUpdate">
+            <summary> FixedUpdate method for the game scene. Order of execution: Every fixed time step </summary>
+        </member>
+        <member name="T:MSCLoader.ModConsole">
+            <summary>The handler for the ModConsole</summary>
+        </member>
+        <member name="M:MSCLoader.ModConsole.Log(System.String)">
+            <summary>Logs a string to the ModConsole and output_log.txt.</summary>
+            <param name="text">Message to log.</param>
+        </member>
+        <member name="M:MSCLoader.ModConsole.Log(System.Object)">
+            <summary>Logs anything to the ModConsole and output_log.txt.</summary>
+            <param name="obj">object to log.</param>
+        </member>
+        <member name="M:MSCLoader.ModConsole.Log(System.Collections.IList,System.Boolean)">
+            <summary>Logs a list (and optionally its elements) to the ModConsole and output_log.txt</summary>
+            <param name="list">List to print.</param>
+            <param name="printAllElements">(Optional) Should it log all elements of the list/array or should it only log the list/array itself. (default: true)</param>
+        </member>
+        <member name="M:MSCLoader.ModConsole.LogError(System.String)">
+            <summary>Logs a string as an error to the ModConsole and output_log.txt. (Depending on user settings, this might auto-open the console)</summary>
+            <param name="text">Message to error log.</param>
+        </member>
+        <member name="M:MSCLoader.ModConsole.LogWarning(System.String)">
+            <summary>Logs a string as a warning to the ModConsole and output_log.txt. (Depending on user settings, this might auto-open the console)</summary>
+            <param name="text">Message to warning log.</param>
+        </member>
+        <member name="T:MSCLoader.CurrentScene">
+            <summary> Enumeration of the game's scenes.</summary>
+        </member>
+        <member name="T:MSCLoader.ModLoader">
+            <summary></summary>
+        </member>
+        <member name="F:MSCLoader.ModLoader.Version">
+            <summary> Current Mod Loader Version. </summary>
+        </member>
+        <member name="P:MSCLoader.ModLoader.LoadedMods">
+            <summary> List of Loaded Mods. </summary>
+        </member>
+        <member name="F:MSCLoader.ModLoader.ModMethods">
+            <summary> List of used Mod Class methods. </summary>
+        </member>
+        <member name="F:MSCLoader.ModLoader.modSceneLoadHandler">
+            <summary>Load handler for the UI. Add your GameObject to the extra list if you want your UI to be disabled when the game loads a scene.</summary>
+        </member>
+        <member name="P:MSCLoader.ModLoader.CurrentScene">
+            <summary> Get the current game scene. </summary>
+        </member>
+        <member name="M:MSCLoader.ModLoader.GetModSettingsFolder(MSCLoader.Mod,System.Boolean)">
+            <summary>Get the settings folder path for a specific mod.</summary>
+            <param name="mod">The mod you want to get the settings folder path for.</param>
+            <param name="create">(Optional) Should the folder be created if it doesn't exist? </param>
+        </member>
+        <member name="M:MSCLoader.ModLoader.GetModAssetsFolder(MSCLoader.Mod)">
+            <summary>Get the asset folder for a specific mod.</summary>
+        </member>
+        <member name="M:MSCLoader.ModLoader.IsModPresent(System.String)">
+            <summary>Check if the specified mod ID is loaded and isn't disabled.</summary>
+            <param name="ModID">ID of the mod.</param>
+        </member>
+        <member name="T:MSCLoader.ModUI">
+            <summary>Contains methods and variables suitable for controlling UI.</summary>
+        </member>
+        <member name="M:MSCLoader.ModUI.GetCanvas">
+            <summary>Get the mod loader canvas GameObject.</summary>
+            <returns>Returns the mod loader canvas GameObject.</returns>
+        </member>
+        <member name="F:MSCLoader.ModUI.MSCYellow">
+            <summary>Yellow Color that MSC uses.</summary>
+        </member>
+        <member name="F:MSCLoader.ModUI.MSCRed">
+            <summary>Wine Red Color that MSC uses.</summary>
+        </member>
+        <member name="F:MSCLoader.ModUI.MSCRose">
+            <summary>Rose Color that MSC uses.</summary>
+        </member>
+        <member name="F:MSCLoader.ModUI.ModDisabledRed">
+            <summary>Red Color for disabled mods.</summary>
+        </member>
+        <member name="M:MSCLoader.ModUI.CreatePrompt(System.String,System.String,UnityEngine.Events.UnityAction)">
+            <summary> Creates a prompt with "OK" button. </summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button. Can be</returns>
+        </member>
+        <member name="M:MSCLoader.ModUI.CreateYesNoPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
+            <summary> Creates a prompt with "Yes" and "No" buttons. </summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onYes">Action that will happen after player clicks Yes button.</param>
+            <param name="onNo">(Optional) Action that will happen after player clicks No button.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
+        <member name="M:MSCLoader.ModUI.CreateRetryCancelPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
+            <summary>Creates a prompt with "Retry" and "Cancel" buttons.</summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onRetry">Action that will happen after player clicks Retry button.</param>
+            <param name="onCancel">(Optional) Action that will happen after player clicks Cancel button.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
+        <member name="M:MSCLoader.ModUI.CreateCustomPrompt(System.String,System.String)">
+            <summary>
+            Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
+            Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
+            </summary>
+            <param name="message"></param>
+            <param name="title"></param>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
+        <member name="M:MSCLoader.ModUpdater.LookForUpdates">
+            <summary> Starts looking for the update of the specific mod. </summary>
+        </member>
+        <member name="M:MSCLoader.ModUpdater.CheckForModUpdates">
+            <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
+        </member>
+        <member name="T:MSCLoader.ModUpdateData">
+            <summary> Stores the info about mod update found. </summary>
+        </member>
+        <member name="T:MSCLoader.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MSCLoader.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MSCLoader.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MSCLoader.Properties.Resources.mscloadercanvas">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+    </members>
+</doc>

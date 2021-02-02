@@ -5,6 +5,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Linq;
 
+#pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
 {
     public static class MSCLoader
@@ -187,8 +188,9 @@ namespace MSCLoader
                 // Because of a delay this method can't be used in the main menu, 
                 // that's done by adding an OnEnable to the load screen object instead 
                 if (Application.loadedLevel > 1)
-                    ModLoader.modLoaderInstance.modSceneLoadHandler.SceneLoad();
+                    ModLoader.modLoaderInstance.modSceneLoadHandler.Disable();
             }
         }
     }
 }
+#pragma warning restore CS0618, IDE1006, CS1591

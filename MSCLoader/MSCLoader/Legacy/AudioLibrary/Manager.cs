@@ -140,7 +140,7 @@ namespace AudioLibrary
             catch (Exception ex)
             {
                 //SetAudioClipLoadState(audioClip, AudioDataLoadState.Failed);
-                MSCLoader.ModConsole.Error(string.Concat(new object[]
+                MSCLoader.ModConsole.LogError(string.Concat(new object[]
                 {
                     unityAudioClipName,
                     " - Failed:",

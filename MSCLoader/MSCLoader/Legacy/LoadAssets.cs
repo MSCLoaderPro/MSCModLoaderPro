@@ -54,7 +54,7 @@ namespace MSCLoader
             string bundle = Path.Combine(ModLoader.GetModAssetsFolder(mod), bundleName);
             if(File.Exists(bundle))
             {
-                try { ModConsole.Print(string.Format("Loading Asset: {0}...", bundleName)); } catch { } 
+                try { ModConsole.Log(string.Format("Loading Asset: {0}...", bundleName)); } catch { } 
                 return AssetBundle.CreateFromMemoryImmediate(File.ReadAllBytes(bundle));
             }
             else throw new FileNotFoundException(string.Format("<b>LoadBundle() Error:</b> File not found: <b>{0}</b>{1}", bundleName, Environment.NewLine), bundleName);
@@ -89,7 +89,7 @@ namespace MSCLoader
             }
             catch (Exception ex)
             {
-                ModConsole.Error(string.Format("<b>LoadTexture() Error:</b>{0}Error: Could not load DDS texture", Environment.NewLine,ex.Message));
+                ModConsole.LogError(string.Format("<b>LoadTexture() Error:</b>{0}Error: Could not load DDS texture", Environment.NewLine,ex.Message));
                 System.Console.WriteLine(ex);
                 return new Texture2D(8, 8);
             }

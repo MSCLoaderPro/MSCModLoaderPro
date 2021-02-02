@@ -7,6 +7,7 @@ using System.Net;
 using System.Diagnostics;
 using UnityEngine;
 
+#pragma warning disable CS1591
 namespace MSCLoader
 {
     // Copyright (C) Konrad Figura 2021
@@ -18,13 +19,11 @@ namespace MSCLoader
         public bool IsBusy => isBusy;
 
         readonly string UpdaterPath = $"{Application.dataPath}/Managed/CoolUpdater.exe";
-        
+
         int downloadTime;
         const int TimeoutTime = 30; // in seconds.
 
-        /// <summary>
-        /// Starts looking for the update of the specific mod.
-        /// </summary>
+        /// <summary> Starts looking for the update of the specific mod. </summary>
         public void LookForUpdates()
         {
             if (IsBusy)
@@ -36,9 +35,7 @@ namespace MSCLoader
             StartCoroutine(CheckForModUpdates());
         }
 
-        /// <summary>
-        /// Goes through all mods and checks if an update on GitHub or Nexus is available for them.
-        /// </summary>
+        /// <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
         IEnumerator CheckForModUpdates()
         {
             isBusy = true;
@@ -88,7 +85,7 @@ namespace MSCLoader
                     downloadTime++;
                     if (downloadTime > TimeoutTime)
                     {
-                        ModConsole.Error($"Mod Update Check for {mod.Name} timed-out.");
+                        ModConsole.LogError($"Mod Update Check for {mod.Name} timed-out.");
                         continue;
                     }
 
@@ -134,7 +131,7 @@ namespace MSCLoader
         {
             // Messy af, but reliably compares version numbers of the currently installed mod,
             // and the version that is available on the server.
-            
+
             // The best thing is it won't show an outdated mod info, 
             // if the local mod version is newer than the publicly available one.
 
@@ -194,9 +191,7 @@ namespace MSCLoader
         }
     }
 
-    /// <summary>
-    /// Stores the info about mod update found.
-    /// </summary>
+    /// <summary> Stores the info about mod update found. </summary>
     internal struct ModUpdateData
     {
         public string ZipUrl;

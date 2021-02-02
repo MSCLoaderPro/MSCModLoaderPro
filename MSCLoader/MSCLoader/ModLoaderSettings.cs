@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
+#pragma warning disable CS1591
 namespace MSCLoader
 {
     public class ToggleSettingMenu : MonoBehaviour
@@ -89,6 +92,27 @@ namespace MSCLoader
                 otherMod.ToggleSettingsOff();
 
             gameObject.SetActive(modLoaderSettingsToggle.isOn);
+        }
+
+        public void OpenModLoaderSite()
+        {
+            ModUI.CreateYesNoPrompt("THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.", "OPEN MOD LOADER WEBSITE?", () => ModHelper.OpenWebsite(ModLoader.modLoaderURL));
+        }
+        public void OpenModsFolder()
+        {
+            ModUI.CreateYesNoPrompt("THIS WILL THE MODS FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN MODS FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\Mods"));
+        }
+        public void OpenGameFolder()
+        {
+            ModUI.CreateYesNoPrompt("THIS WILL THE GAME FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN GAME FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}"));
+        }
+        public void OpenSaveFolder()
+        {
+            ModUI.CreateYesNoPrompt("THIS WILL THE SAVE FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN SAVE FOLDER?", () => ModHelper.OpenFolder(Application.persistentDataPath));
+        }
+        public void OpenOutputLog()
+        {
+            ModUI.CreateYesNoPrompt("THIS WILL THE OUTPUT LOG IN YOUR DEFAULT TEXT EDITOR AND MINIMIZE THE GAME.", "OPEN OUTPUT LOG?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
         }
     }
 

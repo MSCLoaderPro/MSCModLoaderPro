@@ -23,7 +23,7 @@ namespace MSCLoader
             }
             catch (Exception e)
             {
-                ModConsole.Error(e.Message);
+                ModConsole.LogError(e.Message);
                 System.Console.WriteLine(e);
                 audioSource.clip = null;
             }

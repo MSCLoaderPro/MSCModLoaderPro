@@ -43,13 +43,13 @@ namespace MSCLoader
 
                 modListElement.SetModIcon(iconTexture);
             }
-            else if (!string.IsNullOrEmpty(mod.IconName))
-            {
-                Texture2D iconTexture = new Texture2D(1, 1);
-                iconTexture.LoadImage(GetIcon(mod, mod.IconName));
-
-                modListElement.SetModIcon(iconTexture);
-            }
+            //else if (!string.IsNullOrEmpty(mod.IconName))
+            //{
+            //    Texture2D iconTexture = new Texture2D(1, 1);
+            //    iconTexture.LoadImage(GetIcon(mod, mod.IconName));
+            //
+            //    modListElement.SetModIcon(iconTexture);
+            //}
 
             modListElement.transform.SetParent(modList, false);
             modListDictionary.Add(mod, modListElement);
@@ -95,7 +95,7 @@ namespace MSCLoader
 
             string resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x => x.Contains(name));
 
-            ModConsole.Print(resourceName);
+            ModConsole.Log(resourceName);
 
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
@@ -157,6 +157,8 @@ namespace MSCLoader
 
             nameText.color = modToggle.isOn ? ModUI.MSCYellow : ModUI.ModDisabledRed;
             modContainer.UpdateModCountText();
+
+            ModConsole.Log($"<b>{mod.ID}:</b> {(mod.isDisabled ? "<color=red>DISABLED</color>" : "<color=green>ENABLED</color>")}");
         }
 
         public void SetModEnabled(bool enabled)

@@ -94,7 +94,7 @@ namespace MSCLoader
                 SettingToggle toggle = mod.modSettings.AddToggle(setting.ID, setting.Name, (bool)setting.Value, (value) => { setting.Value = value; });
                 if (setting.DoAction != null) toggle.AddAction((value) => setting.DoAction());
             }
-            else ModConsole.Error($"[<b>{mod.ID}</b>] AddCheckBox: Non-bool value.");
+            else ModConsole.LogError($"[<b>{mod.ID}</b>] AddCheckBox: Non-bool value.");
         }
 
         [Obsolete("Old Settings is obsolete")]
@@ -113,7 +113,7 @@ namespace MSCLoader
                 SettingToggle toggle = mod.modSettings.AddToggle(setting.ID, setting.Name, (bool)setting.Value, (value) => { setting.Value = value; });
                 if (setting.DoAction != null) toggle.AddAction((value) => setting.DoAction());
             }
-            else ModConsole.Error($"[<b>{mod.ID}</b>] AddCheckBox: Non-bool value.");
+            else ModConsole.LogError($"[<b>{mod.ID}</b>] AddCheckBox: Non-bool value.");
         }
 
         [Obsolete("Old Settings is obsolete")]
@@ -143,7 +143,7 @@ namespace MSCLoader
 
                 mod.modSettings.AddButton(setting.ID, description, setting.Name, () => setting.DoAction.Invoke());
             }
-            else ModConsole.Error($"[<b>{mod.ID}</b>] AddButton: Action cannot be null.");
+            else ModConsole.LogError($"[<b>{mod.ID}</b>] AddButton: Action cannot be null.");
         }
 
         [Obsolete("Old Settings is obsolete")]
@@ -174,11 +174,11 @@ namespace MSCLoader
                     slider.textValues = textValues;
                     setting.Vals[3] = textValues;
                     if (textValues.Length <= (maxValue - minValue))
-                        ModConsole.Error($"[<b>{mod.ID}</b>] AddSlider: array of textValues is smaller than slider range (min to max).");
+                        ModConsole.LogError($"[<b>{mod.ID}</b>] AddSlider: array of textValues is smaller than slider range (min to max).");
                 }
                 modSettings.Add(setting);
             }
-            else ModConsole.Error($"[<b>{mod.ID}</b>] AddSlider: only int allowed here");
+            else ModConsole.LogError($"[<b>{mod.ID}</b>] AddSlider: only int allowed here");
         }
 
         [Obsolete("Old Settings is obsolete")]
@@ -200,7 +200,7 @@ namespace MSCLoader
                 setting.Vals[3] = null;
                 modSettings.Add(setting);
             }
-            else ModConsole.Error($"[<b>{mod.ID}</b>] AddSlider: only float allowed here");
+            else ModConsole.LogError($"[<b>{mod.ID}</b>] AddSlider: only float allowed here");
         }
 
         [Obsolete("Old Settings is obsolete")]
@@ -280,7 +280,7 @@ namespace MSCLoader
             }
             else
             {
-                ModConsole.Error($"[<b>{mod.ID}</b>] AddResetButton: provide at least one setting to reset.");
+                ModConsole.LogError($"[<b>{mod.ID}</b>] AddResetButton: provide at least one setting to reset.");
             }
         }
     }

@@ -4,47 +4,43 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable IDE1006 // Naming Styles
 namespace MSCLoader
 {
+    ///<summary>Contains methods and variables suitable for controlling UI.</summary>
     public class ModUI
     {
         internal static GameObject canvasGO;
 
+        ///<summary>Get the mod loader canvas GameObject.</summary>
+        ///<returns>Returns the mod loader canvas GameObject.</returns>
         public static GameObject GetCanvas() => canvasGO;
 
-        public static GameObject prompt;
+        internal static GameObject prompt;
 
+        /// <summary>Yellow Color that MSC uses.</summary>
         public static Color32 MSCYellow = new Color32(255, 255, 0, 255);
+        /// <summary>Wine Red Color that MSC uses.</summary>
         public static Color32 MSCRed = new Color32(101, 34, 18, 255);
+        /// <summary>Rose Color that MSC uses.</summary>
         public static Color32 MSCRose = new Color32(199, 152, 129, 255);
+        /// <summary>Red Color for disabled mods.</summary>
         public static Color32 ModDisabledRed = new Color32(215, 0, 0, 255);
-
-        [Obsolete("Please use CreatePrompt() instead.")]
-        public static void ShowMessage(string message, string title = "Message") => CreatePrompt(message, title);
-
-        [Obsolete("Please use CreateYesNoPrompt() instead.")]
-        public static void ShowYesNoMessage(string message, System.Action ifYes) => ShowYesNoMessage(message, "Message", ifYes);
-
-        [Obsolete("Please use CreateYesNoPrompt() instead.")]
-        public static void ShowYesNoMessage(string message, string title, System.Action ifYes) => CreateYesNoPrompt(message, title, () => { ifYes(); });
-
-        [Obsolete()]
-        public static GameObject messageBox { get => prompt; set => prompt = value; }
 
         // This one creates a dummy button and returns ModPrompt. Not meant to be accessed publicly.
         private static ModPrompt NewPrompt()
         {
-            GameObject newPrompt = GameObject.Instantiate(prompt);
-            newPrompt.transform.SetParent(GetCanvas().transform);
-            newPrompt.transform.localPosition = Vector3.zero;
+            Transform newPrompt = Object.Instantiate(prompt).transform;
+            newPrompt.SetParent(GetCanvas().transform);
+            newPrompt.localPosition = Vector3.zero;
 
             return newPrompt.GetComponent<ModPrompt>();
         }
 
-        /// <summary>
-        /// Creates a prompt with "OK" button.
-        /// </summary>
+        /// <summary> Creates a prompt with "OK" button. </summary>
         /// <param name="message">A message that will appear in the prompt.</param>
         /// <param name="title">Title of the prompt.</param>
         /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
@@ -60,9 +56,7 @@ namespace MSCLoader
             return modPrompt;
         }
 
-        /// <summary>
-        /// Creates a prompt with "Yes" and "No" buttons.
-        /// </summary>
+        /// <summary> Creates a prompt with "Yes" and "No" buttons. </summary>
         /// <param name="message">A message that will appear in the prompt.</param>
         /// <param name="title">Title of the prompt.</param>
         /// <param name="onYes">Action that will happen after player clicks Yes button.</param>
@@ -74,16 +68,14 @@ namespace MSCLoader
             ModPrompt modPrompt = NewPrompt();
             modPrompt.Text = message;
             modPrompt.Title = title;
-            modPrompt.AddButton("Yes", onYes);
-            modPrompt.AddButton("No", onNo);
+            modPrompt.AddButton("YES", onYes);
+            modPrompt.AddButton("NO", onNo);
             modPrompt.OnCloseAction = onPromptClose;
 
             return modPrompt;
         }
 
-        /// <summary>
-        /// Creates a prompt with "Retry" and "Cancel" buttons.<br></br
-        /// </summary>
+        /// <summary>Creates a prompt with "Retry" and "Cancel" buttons.</summary>
         /// <param name="message">A message that will appear in the prompt.</param>
         /// <param name="title">Title of the prompt.</param>
         /// <param name="onRetry">Action that will happen after player clicks Retry button.</param>
@@ -93,8 +85,8 @@ namespace MSCLoader
         public static ModPrompt CreateRetryCancelPrompt(string message, string title, UnityAction onRetry, UnityAction onCancel = null, UnityAction onPromptClose = null)
         {
             ModPrompt modPrompt = NewPrompt();
-            modPrompt.AddButton("Retry", onRetry);
-            modPrompt.AddButton("Cancel", onCancel);
+            modPrompt.AddButton("RETRY", onRetry);
+            modPrompt.AddButton("CANCEL", onCancel);
             modPrompt.OnCloseAction = onPromptClose;
 
             return modPrompt;
@@ -116,6 +108,18 @@ namespace MSCLoader
 
             return NewPrompt();
         }
+
+        [Obsolete("Please use CreatePrompt() instead.")]
+        public static void ShowMessage(string message, string title = "Message") => CreatePrompt(message, title);
+
+        [Obsolete("Please use CreateYesNoPrompt() instead.")]
+        public static void ShowYesNoMessage(string message, Action ifYes) => ShowYesNoMessage(message, "Message", ifYes);
+
+        [Obsolete("Please use CreateYesNoPrompt() instead.")]
+        public static void ShowYesNoMessage(string message, string title, Action ifYes) => CreateYesNoPrompt(message, title, () => { ifYes(); });
+
+        [Obsolete()]
+        public static GameObject messageBox { get => prompt; set => prompt = value; }
     }
 
     public class SwitchToggleGraphic : MonoBehaviour
@@ -207,14 +211,29 @@ namespace MSCLoader
 
     public class UILoadHandler : MonoBehaviour
     {
-        public GameObject modMenu;
+        public GameObject modMenu, modList, modSettings, modMenuButton, modGameButton;
         public List<GameObject> extra = new List<GameObject>();
 
-        public void SceneLoad()
+        public bool lockEnable = false;
+
+        public void Disable()
         {
             modMenu.SetActive(false);
+            modList.SetActive(false);
+            modSettings.SetActive(false);
+            modMenuButton.SetActive(false);
+            //modGameButton.SetActive(false);
             for (int i = 0; i < extra.Count; i++)
                 extra[i].SetActive(false);
+        }
+
+        public void EnableModMenu()
+        {
+            if (!lockEnable)
+            {
+                modMenu.SetActive(true);
+                modMenuButton.SetActive(true);
+            }
         }
     }
 
@@ -223,7 +242,8 @@ namespace MSCLoader
         public UILoadHandler loadHandler;
         void OnEnable()
         {
-            loadHandler.SceneLoad();
+            loadHandler.lockEnable = true;
+            loadHandler.Disable();
         }
     }
 
@@ -291,4 +311,21 @@ namespace MSCLoader
             }
         }
     }
+
+    public class UIMenuNewGameHandler : MonoBehaviour
+    {
+        public UILoadHandler loadHandler;
+        void OnEnable()
+        {
+            loadHandler.Disable();
+        }
+
+        void OnDisable()
+        {
+            loadHandler.EnableModMenu();
+            loadHandler.lockEnable = false;
+        }
+    }
 }
+#pragma warning restore IDE1006 // Naming Styles
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

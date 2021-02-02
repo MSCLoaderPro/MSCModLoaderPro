@@ -10,16 +10,16 @@ namespace MSCLoader.Commands
 
         public override void Run(string[] args)
         {
-            ModConsole.Print(string.Format("Unity: <b>{0}</b>", Application.unityVersion));
+            ModConsole.Log(string.Format("Unity: <b>{0}</b>", Application.unityVersion));
             try
             {
-                ModConsole.Print(string.Format("MSC buildID: <b>{0}</b>", Steamworks.SteamApps.GetAppBuildId())); //Get steam buildID
+                ModConsole.Log(string.Format("MSC buildID: <b>{0}</b>", Steamworks.SteamApps.GetAppBuildId())); //Get steam buildID
             }
             catch (Exception e)
             {
-                ModConsole.Print(string.Format("<color=red>Failed to get build ID:</color> <b>{0}</b>", e.Message)); //Show steamworks error
+                ModConsole.Log(string.Format("<color=red>Failed to get build ID:</color> <b>{0}</b>", e.Message)); //Show steamworks error
             }
-            ModConsole.Print(string.Format("MSCLoader: <b>{0}</b>", ModLoader.Version));
+            ModConsole.Log(string.Format("MSCLoader: <b>{0}</b>", ModLoader.Version));
         }
     }
 }

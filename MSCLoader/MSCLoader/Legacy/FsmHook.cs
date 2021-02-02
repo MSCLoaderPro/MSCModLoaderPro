@@ -29,7 +29,7 @@ namespace MSCLoader
                 actions.Insert(0, new FsmHookAction { hook = hook });
                 state.Actions = actions.ToArray();
             }
-            else ModConsole.Error(string.Format("Cannot find state <b>{0}</b> in GameObject <b>{1}</b>", stateName, gameObject.name));
+            else ModConsole.LogError(string.Format("Cannot find state <b>{0}</b> in GameObject <b>{1}</b>", stateName, gameObject.name));
         }
 
         private static FsmState GetStateFromGameObject(GameObject obj, string stateName)

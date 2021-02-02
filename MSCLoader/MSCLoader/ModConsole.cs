@@ -5,9 +5,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS1591, IDE1006
 namespace MSCLoader
 {
+    /// <summary>The handler for the ModConsole</summary>
     public class ModConsole : MonoBehaviour
     {
         public static ModConsole consoleInstance;
@@ -23,7 +24,7 @@ namespace MSCLoader
         public Text buttonText;
 
         bool wasFocused;
-        int commands, pos;
+        int commandHistoryIndex;
 
         public SettingKeybind toggleKey;
         public SettingSlider fontSizeSlider;
@@ -50,46 +51,12 @@ namespace MSCLoader
         {
             if (settings.openConsoleKey.GetKeyDown()) ToggleConsole(!console.activeSelf);
 
-            if (console.activeSelf)
+            if (console.activeInHierarchy)
             {
                 if (Input.GetKeyDown(KeyCode.Return)) SubmitCommand();
 
-                if (inputField.isFocused)
-                {
-                    if (!wasFocused)
-                    {
-                        wasFocused = true;
-                        commands = controller.commandHistory.Count;
-                        pos = commands;
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.UpArrow))
-                    {
-                        if (commands != 0)
-                        {
-                            if (pos != 0) pos--;
-                            inputField.text = controller.commandHistory[pos];
-                            inputField.MoveTextEnd(false);
-                        }
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.DownArrow))
-                    {
-                        if (commands != 0)
-                        {
-                            pos++;
-                            if (pos != commands)
-                            {
-                                inputField.text = controller.commandHistory[pos];
-                                inputField.MoveTextEnd(false);
-                            }
-                            else pos--;
-
-                        }
-                    }
-                }
-                else
-                    wasFocused = false;
+                if (inputField.isFocused) CommandHistory();
+                else wasFocused = false;
             }
         }
 
@@ -123,42 +90,118 @@ namespace MSCLoader
             consoleInstance.buttonText.text = consoleInstance.console.activeSelf ? "CLOSE" : "OPEN";
         }
 
+        void CommandHistory()
+        {
+            if (!wasFocused)
+            {
+                wasFocused = true;
+                commandHistoryIndex = controller.commandHistory.Count;
+            }
+
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (controller.commandHistory.Count > 0)
+                {
+                    if (commandHistoryIndex > 0) commandHistoryIndex--;
+                    SetCommandText();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (controller.commandHistory.Count > 0)
+                {
+                    commandHistoryIndex++;
+                    if (commandHistoryIndex < controller.commandHistory.Count) SetCommandText();
+                    else commandHistoryIndex--;
+
+                }
+            }
+        }
+
+        void SetCommandText()
+        {
+            inputField.text = controller.commandHistory[commandHistoryIndex];
+            inputField.MoveTextEnd(false);
+        }
+
         void LogChanged(string[] newLog) => UpdateLog(newLog);
 
         void UpdateLog(string[] newLog) =>
             consoleText.text = newLog == null ? string.Empty : string.Join(Environment.NewLine, newLog);
 
-        public static void Print(string str)
+        /// <summary>Logs a string to the ModConsole and output_log.txt.</summary>
+        /// <param name="text">Message to log.</param>
+        public static void Log(string text)
         {
-            controller.AppendLogLine(str);
-            System.Console.WriteLine($"MSCLoader: {Regex.Replace(str, "<.*?>", "")}");
+            // Add it to the log.
+            controller.AppendLogLine(text);
+            // Also write it to the output_log.txt (using Console.WriteLine instead of Debug.Log to avoid a stacktrace)
+            Console.WriteLine($"MODLOADER: {OutputString(text)}");
         }
 
-        public static void Print(object obj)
+        /// <summary>Logs anything to the ModConsole and output_log.txt.</summary>
+        /// <param name="obj">object to log.</param>
+        public static void Log(object obj)
         {
+            // Add it to the log.
             controller.AppendLogLine(obj.ToString());
-            System.Console.WriteLine($"MSCLoader: {obj}");
+            // Also write it to the output_log.txt (using Console.WriteLine instead of Debug.Log to avoid a stacktrace)
+            Console.WriteLine($"MODLOADER: {obj}");
         }
 
-        public static void Print(IList list)
+        /// <summary>Logs a list (and optionally its elements) to the ModConsole and output_log.txt</summary>
+        /// <param name="list">List to print.</param>
+        /// <param name="printAllElements">(Optional) Should it log all elements of the list/array or should it only log the list/array itself. (default: true)</param>
+        public static void Log(IList list, bool printAllElements = true)
         {
-            for (int i = 0; i < list.Count; i++)
-                Print(list[i]);
+            // Check if it should print the elements or the list itself.
+            if (printAllElements)
+            {
+                Log(list);
+                for (int i = 0; i < list.Count; i++) Log(list[i]);
+            }
+            else Log(list);
         }
 
-        public static void Error(string str = "")
+        /// <summary>Logs a string as an error to the ModConsole and output_log.txt. (Depending on user settings, this might auto-open the console)</summary>
+        /// <param name="text">Message to error log.</param>
+        public static void LogError(string text)
         {
+            // Check if Console Auto open is set to open for Errors.
             if (consoleInstance.settings.ConsoleAutoOpen == 1 || consoleInstance.settings.ConsoleAutoOpen == 3) ToggleConsole(true);
-            controller.AppendLogLine($"<color=red><b>Error:</b> {str}</color>");
-            System.Console.WriteLine($"MSCLoader: Error {Regex.Replace(str, "<.*?>", "")}");
+
+            // Add it to the log.
+            controller.AppendLogLine($"<color=red><b>Error:</b> {text}</color>");
+            // Also write it to the output_log.txt (using Console.WriteLine instead of Debug.Log to avoid a stacktrace)
+            Console.WriteLine($"MODLOADER ERROR: {OutputString(text)}");
         }
 
-        public static void Warning(string str)
+        /// <summary>Logs a string as a warning to the ModConsole and output_log.txt. (Depending on user settings, this might auto-open the console)</summary>
+        /// <param name="text">Message to warning log.</param>
+        public static void LogWarning(string text)
         {
-            if (consoleInstance.settings.ConsoleAutoOpen > 1) ToggleConsole(true);
-            controller.AppendLogLine(string.Format("<color=yellow><b>Warning: </b>{0}</color>", str));
-            System.Console.WriteLine($"MSCLoader: Warning {Regex.Replace(str, "<.*?>", "")}");
+            // Check if Console Auto open is set to open for Warnings.
+            if (consoleInstance.settings.ConsoleAutoOpen >= 2) ToggleConsole(true);
+
+            // Add it to the log.
+            controller.AppendLogLine($"<color=yellow><b>Warning:</b> {text}</color>");
+            // Also write it to the output_log.txt (using Console.WriteLine instead of Debug.Log to avoid a stacktrace)
+            Console.WriteLine($"MODLOADER WARNING: {OutputString(text)}");
         }
+
+        static string OutputString(string text) => Regex.Replace(text, "<.*?>", "");
+
+        #region Obsolete Methods
+        [Obsolete("Deprecated, use Log() instead.")]
+        public static void Print(string text) => Log(text);
+        [Obsolete("Deprecated, use Log() instead.")]
+        public static void Print(object obj) => Log(obj);
+        [Obsolete("Deprecated, use LogError() instead.")]
+        public static void Error(string text = "") => LogError(text);
+        [Obsolete("Deprecated, use LogWarning() instead.")]
+        public static void Warning(string text) => LogWarning(text);
+        #endregion
     }
 
     public class ModConsoleResizer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
@@ -223,4 +266,3 @@ namespace MSCLoader
         }
     }
 }
-#pragma warning restore IDE1006 // Naming Styles

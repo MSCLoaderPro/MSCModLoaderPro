@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace MSCLoader
 {
-    public class ModUnloader : MonoBehaviour
+    internal class ModUnloader : MonoBehaviour
     {
         internal bool reset;
 
-        public static Queue<string> consoleText;
-        public static bool consoleOpen = false;
+        internal static Queue<string> consoleText;
+        internal static bool consoleOpen = false;
 
         internal void Reset()
         {
@@ -17,6 +17,7 @@ namespace MSCLoader
             {
                 reset = true;
 
+                // Make sure the console text is persistent
                 consoleText = ModConsole.controller.scrollback;
                 consoleOpen = ModConsole.consoleInstance.console.activeSelf;
             }
@@ -26,11 +27,13 @@ namespace MSCLoader
         {
             if(reset && !Application.isLoadingLevel)
             {
+                // Remove everything related to the mod loader.
                 foreach (GameObject o in Resources.FindObjectsOfTypeAll<GameObject>().Where(o => o.transform.parent == null && o.name.Contains("MSCLoader")))
                     DestroyImmediate(o);
 
                 ModLoader.unloading = false;
 
+                // And then add it all back again.
                 ModLoader.Init();
 
                 reset = false;

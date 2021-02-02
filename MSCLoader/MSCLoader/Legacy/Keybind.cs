@@ -22,10 +22,10 @@ namespace MSCLoader
 
         [Obsolete("Old Keybind is obsolete, use modSettings.AddKeybind() instead.")]
         public static void Add(Mod mod, Keybind key)
-		{
-			key.Mod = mod;
-			Keybinds.Add(key);
-			DefaultKeybinds.Add(new Keybind(key.ID, key.Name, key.Key, key.Modifier) { Mod = mod });
+        {
+            key.Mod = mod;
+            Keybinds.Add(key);
+            DefaultKeybinds.Add(new Keybind(key.ID, key.Name, key.Key, key.Modifier) { Mod = mod });
 
             if (key.noModifier)
                 key.keybind = mod.modSettings.AddKeybind(key.ID, key.Name, key.Key);
@@ -58,13 +58,12 @@ namespace MSCLoader
 
         [Obsolete("Old Keybind is obsolete, use modSettings.AddKeybind() instead.")]
         public Keybind(string id, string name, KeyCode key, KeyCode modifier)
-		{
-			ID = id;
-			Name = name;
-			Key = key;
-			Modifier = modifier;
+        {
+            ID = id;
+            Name = name;
+            Key = key;
+            Modifier = modifier;
             noModifier = false;
-
         }
 
         [Obsolete("Old Keybind is obsolete")]
