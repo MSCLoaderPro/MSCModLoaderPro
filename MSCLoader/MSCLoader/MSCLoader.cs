@@ -54,7 +54,6 @@ namespace MSCLoader
 
         static void ExtraTweaks()
         {
-            long offset = 0L;
             byte[] data = {
                0x41, 0x6d, 0x69, 0x73, 0x74, 0x65, 0x63, 0x68, 0x0d, 0x00, 0x00, 0x00, 0x4d,
                0x79, 0x20, 0x53, 0x75, 0x6d, 0x6d, 0x65, 0x72, 0x20, 0x43, 0x61, 0x72
@@ -62,7 +61,7 @@ namespace MSCLoader
             try
             {
                 settings = new LoaderSettings();
-                offset = FindBytes(@"mysummercar_Data\mainData", data);
+                long offset = FindBytes(@"mysummercar_Data\mainData", data);
 
                 using (FileStream stream = new FileStream(@"mysummercar_Data\mainData", FileMode.Open, FileAccess.ReadWrite))
                 {
@@ -122,8 +121,7 @@ namespace MSCLoader
 
             public bool EnableModLoader;
             public bool UseOutputLog;
-
-            ModINI settingINI;
+            readonly ModINI settingINI;
 
             public LoaderSettings()
             {

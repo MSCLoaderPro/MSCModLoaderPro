@@ -83,6 +83,8 @@ namespace MSCLoader
         public static ModPrompt CreateRetryCancelPrompt(string message, string title, UnityAction onRetry, UnityAction onCancel = null, UnityAction onPromptClose = null)
         {
             ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
             modPrompt.AddButton("RETRY", onRetry);
             modPrompt.AddButton("CANCEL", onCancel);
             modPrompt.OnCloseAction = onPromptClose;

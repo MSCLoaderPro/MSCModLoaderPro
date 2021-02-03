@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSCLoader", "MSCLoader\MSCLoader.csproj", "{3323FE4A-D360-4692-9309-F20B57BBB745}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoolUpdater", "CoolUpdater\CoolUpdater.csproj", "{33A8CD0A-0E51-4819-8AB5-39F702166D4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoolUpdater", "CoolUpdater\CoolUpdater.csproj", "{33A8CD0A-0E51-4819-8AB5-39F702166D4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B2F67DAA-1C0E-4F45-9F88-C890F4C02ED9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

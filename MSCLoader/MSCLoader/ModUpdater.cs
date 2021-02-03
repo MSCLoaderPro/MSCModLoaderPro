@@ -6,6 +6,7 @@ using System.Text;
 using System.Net;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UI;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -15,10 +16,14 @@ namespace MSCLoader
     // You cannot use it any other project.
     public class ModUpdater : MonoBehaviour
     {
+        public GameObject headerProgressBar;
+        public Slider sliderProgressBar;
+        public Text textProgressBar;
+
         bool isBusy;
         public bool IsBusy => isBusy;
 
-        readonly string UpdaterPath = $"{Application.dataPath}/Managed/CoolUpdater.exe";
+        readonly string UpdaterPath = $"ModUpdater/CoolUpdater.exe";
 
         int downloadTime;
         const int TimeoutTime = 30; // in seconds.
@@ -32,18 +37,25 @@ namespace MSCLoader
                 return;
             }
 
-            StartCoroutine(CheckForModUpdates());
+            StartCoroutine(CheckForModUpdates(ModLoader.LoadedMods.Where(x => !string.IsNullOrEmpty(x.UpdateLink)).ToList()));
         }
 
         /// <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
-        IEnumerator CheckForModUpdates()
+        IEnumerator CheckForModUpdates(List<Mod> mods)
         {
+            if (mods.Count == 0) yield break;
+
             isBusy = true;
 
-            foreach (Mod mod in ModLoader.LoadedMods)
-            {
-                if (string.IsNullOrEmpty(mod.UpdateLink)) continue;
+            // Enable the progress bar.
+            int i = 0;
+            sliderProgressBar.value = i;
+            headerProgressBar.SetActive(true);
+            sliderProgressBar.maxValue = mods.Count();
+            StartCoroutine(UpdateSliderText());
 
+            foreach (Mod mod in mods)
+            {
                 string url = mod.UpdateLink;
                 // Formatting the link.
                 if (url.Contains("github.com"))
@@ -122,9 +134,30 @@ namespace MSCLoader
                 {
                     // TODO: There is newer version of mod available. Indicate that in mod settings and enable download button for it.
                 }
+
+                i++;
+                sliderProgressBar.value = i;
             }
 
             isBusy = false;
+        }
+
+        IEnumerator UpdateSliderText()
+        {
+            WaitForSeconds wait = new WaitForSeconds(0.25f);
+            while (isBusy)
+            {
+                textProgressBar.text = "CHECKING FOR UPDATES";
+                yield return wait;
+                textProgressBar.text = ".CHECKING FOR UPDATES.";
+                yield return wait;
+                textProgressBar.text = "..CHECKING FOR UPDATES..";
+                yield return wait;
+                textProgressBar.text = "...CHECKING FOR UPDATES...";
+                yield return wait;
+            }
+            yield return new WaitForSeconds(5f);
+            headerProgressBar.SetActive(false);
         }
 
         bool IsNewerVersionAvailable(string currentVersion, string serverVersion)

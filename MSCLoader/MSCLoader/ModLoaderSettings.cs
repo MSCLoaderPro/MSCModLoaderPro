@@ -8,11 +8,6 @@ using UnityEngine.UI;
 #pragma warning disable CS1591
 namespace MSCLoader
 {
-    public class ToggleSettingMenu : MonoBehaviour
-    {
-        public GameObject settingMenu;
-    }
-
     public class ModLoaderSettings : MonoBehaviour
     {
         public ModContainer modContainer;
@@ -50,7 +45,7 @@ namespace MSCLoader
             StartCoroutine(SaveToINI());
         }
 
-        WaitForSeconds saveWait = new WaitForSeconds(0.1f);
+        readonly WaitForSeconds saveWait = new WaitForSeconds(0.1f);
         IEnumerator SaveToINI()
         {
             yield return saveWait;
@@ -114,13 +109,20 @@ namespace MSCLoader
         }
     }
 
+    public class ToggleSettingMenu : MonoBehaviour
+    {
+        public GameObject settingMenu;
+    }
+    
     public class StartDisable : MonoBehaviour
     {
-        public GameObject modSettings;
+        public GameObject[] objectToDisable;
 
         void Awake()
         {
-            modSettings.SetActive(false);
+            for (int i = 0; i < objectToDisable.Length; i++)
+                objectToDisable[i].SetActive(false);
+
             gameObject.SetActive(false);
         }
     }

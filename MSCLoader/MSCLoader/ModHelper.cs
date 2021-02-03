@@ -15,7 +15,7 @@ namespace MSCLoader
         /// <summary>Get a Transform child.</summary>
         /// <param name="parentPath">Hierarchy path to a parent Transform.</param>
         /// <param name="childPath">Hierarchy path from the parent to the wanted child Transform.</param>
-        /// <returns>Transform with path.</returns>
+        /// <returns>Transform with specified path.</returns>
         public static Transform GetTransform(string parentPath, string childPath) =>
             GameObject.Find(parentPath).transform.Find(childPath);
         /// <summary>Play a MasterAudio sound from the Transform.</summary>
@@ -137,7 +137,7 @@ namespace MSCLoader
         public static T GetAction<T>(this FsmState state, int actionIndex) where T : FsmStateAction
         {
             if (state.Actions[actionIndex] is T) return state.Actions[actionIndex] as T;
-            else throw new Exception($"GetAction<T>: Action of specified type {typeof(T).ToString()} can't be found on index {actionIndex} in state {state.Name} on FSM {state.Fsm.Name} on GameObject {state.Fsm.OwnerName}");
+            else throw new Exception($"GetAction<T>: Action of specified type {typeof(T)} can't be found on index {actionIndex} in state {state.Name} on FSM {state.Fsm.Name} on GameObject {state.Fsm.OwnerName}");
         }
         /// <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
         /// <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>
@@ -274,15 +274,15 @@ namespace MSCLoader
         {
             switch (typeof(T))
             {
-                case Type type when typeof(T) == typeof(FsmFloat): return variables.FindFsmFloat(name) as T;
-                case Type type when typeof(T) == typeof(FsmInt): return variables.FindFsmInt(name) as T;
-                case Type type when typeof(T) == typeof(FsmBool): return variables.FindFsmBool(name) as T;
-                case Type type when typeof(T) == typeof(FsmString): return variables.FindFsmString(name) as T;
-                case Type type when typeof(T) == typeof(FsmVector2): return variables.FindFsmVector2(name) as T;
-                case Type type when typeof(T) == typeof(FsmVector3): return variables.FindFsmVector3(name) as T;
-                case Type type when typeof(T) == typeof(FsmGameObject): return variables.FindFsmGameObject(name) as T;
-                case Type type when typeof(T) == typeof(FsmMaterial): return variables.FindFsmMaterial(name) as T;
-                case Type type when typeof(T) == typeof(FsmObject): return variables.FindFsmObject(name) as T;
+                case Type _ when typeof(T) == typeof(FsmFloat): return variables.FindFsmFloat(name) as T;
+                case Type _ when typeof(T) == typeof(FsmInt): return variables.FindFsmInt(name) as T;
+                case Type _ when typeof(T) == typeof(FsmBool): return variables.FindFsmBool(name) as T;
+                case Type _ when typeof(T) == typeof(FsmString): return variables.FindFsmString(name) as T;
+                case Type _ when typeof(T) == typeof(FsmVector2): return variables.FindFsmVector2(name) as T;
+                case Type _ when typeof(T) == typeof(FsmVector3): return variables.FindFsmVector3(name) as T;
+                case Type _ when typeof(T) == typeof(FsmGameObject): return variables.FindFsmGameObject(name) as T;
+                case Type _ when typeof(T) == typeof(FsmMaterial): return variables.FindFsmMaterial(name) as T;
+                case Type _ when typeof(T) == typeof(FsmObject): return variables.FindFsmObject(name) as T;
                 default: return null;
             }
         }

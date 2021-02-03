@@ -49,7 +49,7 @@ namespace MSCLoader
 
         /// <summary>Get the settings folder path for a specific mod.</summary>
         /// <param name="mod">The mod you want to get the settings folder path for.</param>
-        /// <param name="create">(Optional) Should the folder be created if it doesn't exist? </param>
+        /// <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
         internal static string GetModSettingsFolder(Mod mod, bool create = true)
         {
             string path = Path.Combine(SettingsFolder, mod.ID);
@@ -136,7 +136,7 @@ namespace MSCLoader
             modContainer.UpdateModCountText();
         }
 
-        void OnLevelWasLoaded(int level)
+        void OnLevelWasLoaded()
         {
             switch (Application.loadedLevelName)
             {

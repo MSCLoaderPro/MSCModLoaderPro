@@ -134,7 +134,7 @@
             <summary>Get a Transform child.</summary>
             <param name="parentPath">Hierarchy path to a parent Transform.</param>
             <param name="childPath">Hierarchy path from the parent to the wanted child Transform.</param>
-            <returns>Transform with path.</returns>
+            <returns>Transform with specified path.</returns>
         </member>
         <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Transform,System.String,System.String,System.Single)">
             <summary>Play a MasterAudio sound from the Transform.</summary>
@@ -467,7 +467,7 @@
         <member name="M:MSCLoader.ModLoader.GetModSettingsFolder(MSCLoader.Mod,System.Boolean)">
             <summary>Get the settings folder path for a specific mod.</summary>
             <param name="mod">The mod you want to get the settings folder path for.</param>
-            <param name="create">(Optional) Should the folder be created if it doesn't exist? </param>
+            <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
         </member>
         <member name="M:MSCLoader.ModLoader.GetModAssetsFolder(MSCLoader.Mod)">
             <summary>Get the asset folder for a specific mod.</summary>
@@ -532,7 +532,7 @@
         <member name="M:MSCLoader.ModUpdater.LookForUpdates">
             <summary> Starts looking for the update of the specific mod. </summary>
         </member>
-        <member name="M:MSCLoader.ModUpdater.CheckForModUpdates">
+        <member name="M:MSCLoader.ModUpdater.CheckForModUpdates(System.Collections.Generic.List{MSCLoader.Mod})">
             <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
         </member>
         <member name="T:MSCLoader.ModUpdateData">

@@ -8,7 +8,7 @@ namespace MSCLoader
 {
     public class ModINI
     {
-        string Path;
+        readonly string Path;
 
         [DllImport("kernel32", CharSet = CharSet.Unicode)]
         static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
