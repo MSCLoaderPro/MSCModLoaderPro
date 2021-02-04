@@ -4,12 +4,15 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 using System.Linq;
+using System.ComponentModel;
 
 #pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
 {
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class MSCLoader
     {
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static void Main(string[] args)
         {
             ExtraTweaks();
@@ -25,7 +28,7 @@ namespace MSCLoader
             }
         }
 
-        private static HarmonyInstance ModLoaderInstance;
+        static HarmonyInstance ModLoaderInstance;
         static void InjectModLoader()
         {
             try
@@ -105,8 +108,8 @@ namespace MSCLoader
             return i;
         }
 
-        public static LoaderSettings settings;
-        public class LoaderSettings
+        internal static LoaderSettings settings;
+        internal class LoaderSettings
         {
             public bool SkipGameLauncher;
             public bool SkipSplashScreen;

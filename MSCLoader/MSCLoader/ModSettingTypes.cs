@@ -12,57 +12,6 @@ using Outline = unityUI.UnityEngine.UI.Outline;
 
 namespace MSCLoader
 {
-    public class ModConfig
-    {
-        public bool Disabled;
-        public List<ConfigKeybind> Keybinds;
-        public List<ConfigNumber> Numbers;
-        public List<ConfigBool> Booleans;
-        public List<ConfigString> Strings;
-    }
-    public class ConfigKeybind
-    {
-        public string id;
-        public KeyCode keybind;
-        public KeyCode[] modifiers;
-        public ConfigKeybind(string ID, KeyCode key, KeyCode[] modifier)
-        {
-            id = ID;
-            keybind = key;
-            modifiers = modifier;
-        }
-    }
-    public class ConfigNumber
-    {
-        public string id;
-        public float value;
-        public ConfigNumber(string ID, float number)
-        {
-            id = ID;
-            value = number;
-        }
-    }
-    public class ConfigBool
-    {
-        public string id;
-        public bool value;
-        public ConfigBool(string ID, bool boolean)
-        {
-            id = ID;
-            value = boolean;
-        }
-    }
-    public class ConfigString
-    {
-        public string id;
-        public string value;
-        public ConfigString(string ID, string text)
-        {
-            id = ID;
-            value = text;
-        }
-    }
-
     public class ModSetting : MonoBehaviour { public virtual void SaveSetting(ModConfig modConfig) { } }
 
     public class SettingButton : ModSetting
@@ -223,7 +172,7 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
-            modConfig.Keybinds.Add(new ConfigKeybind(ID, keybind, modifiers));
+            modConfig.Keybinds.Add(new ModConfigKeybind(ID, keybind, modifiers));
         }
     }
 
@@ -301,7 +250,7 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
-            modConfig.Numbers.Add(new ConfigNumber(ID, Value));
+            modConfig.Numbers.Add(new ModConfigNumber(ID, Value));
         }
 
         [Serializable]
@@ -394,7 +343,7 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
-            modConfig.Numbers.Add(new ConfigNumber(ID, Value));
+            modConfig.Numbers.Add(new ModConfigNumber(ID, Value));
         }
     }
 
@@ -432,6 +381,8 @@ namespace MSCLoader
         public string Name { get => nameText.text; set => nameText.text = value; }
         public string Value { get => inputField.text; set => inputField.text = value; }
         public string Placeholder { get => inputPlaceholderText.text; set => inputPlaceholderText.text = value; }
+
+        public InputField.CharacterValidation InputType { get => inputField.characterValidation; set => inputField.characterValidation = value; }
         public InputField.OnChangeEvent OnValueChange { get => inputField.onValueChange; }
         public InputField.SubmitEvent OnEndEdit { get => inputField.onEndEdit; }
 
@@ -462,7 +413,7 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
-            modConfig.Strings.Add(new ConfigString(ID, Value));
+            modConfig.Strings.Add(new ModConfigString(ID, Value));
         }
     }
 
@@ -497,7 +448,7 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
-            modConfig.Booleans.Add(new ConfigBool(ID, Value));
+            modConfig.Booleans.Add(new ModConfigBool(ID, Value));
         }
     }
 }

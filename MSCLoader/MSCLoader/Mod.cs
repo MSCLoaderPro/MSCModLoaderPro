@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 #pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
@@ -6,25 +7,24 @@ namespace MSCLoader
     /// <summary> Main Mod Class, parent class for all mods. </summary>
     public abstract class Mod
 	{
-        internal bool disabled = false;
-        /// <summary> Get the mods disabled state. </summary>
-        public virtual bool isDisabled { get => disabled; internal set { disabled = value; modListElement.SetModEnabled(!value); } }
-
-        /// <summary> The mod's ID, used for identification. Has to be unique! </summary>
+        /// <summary>Determines whether or not the mod is enabled.</summary>
+        public virtual bool Enabled { get => enabled; internal set { enabled = value; modListElement.SetModEnabled(value); } }
+        /// <summary>The mod's ID, used for identification. Has to be unique!</summary>
         public abstract string ID { get; }
-        /// <summary> The mod's name, shown in lists etc. </summary>
+        /// <summary>The mod's name, shown in lists etc.</summary>
         public virtual string Name => ID;
-        /// <summary> Who made the mod? You, presumably! </summary>
+        /// <summary>Who made the mod? You, presumably!</summary>
         public abstract string Author { get; }
-        /// <summary> Contains the mod version. </summary>
+        /// <summary>Contains the mod version.</summary>
         public abstract string Version { get; }
-        /// <summary> A short description of your mod. Displayed in the settings window for the mod, hidden if empty. </summary>
+        /// <summary>A short description of your mod. Displayed in the settings window for the mod, hidden if empty.</summary>
         public virtual string Description { get; } = "";
-        /// <summary> Icon displayed in the mod list, preferably square and not larger than 256x256. </summary>
+        /// <summary>Icon displayed in the mod list, preferably square and not larger than 256x256.</summary>
         public virtual byte[] Icon { get; set; } = null;
-        /// <summary> A link from which ModLoader will check for updates. Must be GitHub or NexusMods. Ex.: https://github.com/Athlon007/MOP</summary>
+        /// <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP</summary>
         public virtual string UpdateLink { get; set; } = "";
 
+        internal bool enabled = true;
         internal ModUpdateData ModUpdateData;
 
         /// <summary> The mod list element for the mod. </summary>
@@ -33,12 +33,12 @@ namespace MSCLoader
         public ModSettings modSettings;
 
         /// <summary> Method for adding settings to the mod. Order of execution: 1 </summary>
-        public virtual void ModSettings() {  }
+        public virtual void ModSettings() { }
         /// <summary> Method called when all mods have had their ModSettings() called. Order of execution: 2 </summary>
         public virtual void ModSettingsLoaded() { }
 
         /// <summary> Load Method for anything involving the menu scene. Order of execution: 3 </summary>
-        public virtual void OnMenuLoad() { }
+        public virtual void MenuOnLoad() { OnMenuLoad(); }
         /// <summary> Update Method for the menu scene. Order of execution: Every frame in menu </summary>
         public virtual void MenuUpdate() { }
         /// <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
@@ -64,15 +64,27 @@ namespace MSCLoader
         /// <summary> FixedUpdate method for the game scene. Order of execution: Every fixed time step </summary>
         public virtual void FixedUpdate() { }
 
-        #region Obsolete Methods
+        #region Obsolete Methods        
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, not needed.")]
         public virtual bool UseAssetsFolder => false;
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, not needed.")]
         public virtual bool LoadInMenu => false;
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, not needed.")]
         public virtual bool SecondPass => false;
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, use PostLoad() instead.")]
         public virtual void SecondPassOnLoad() { }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("Deprecated, use MenuOnLoad() instead.")]
+        public virtual void OnMenuLoad() { }
+
+        internal bool disabled = false;
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("Deprecated, use Enabled instead.")]
+        public virtual bool isDisabled { get => !enabled; internal set { enabled = !value; modListElement.SetModEnabled(!value); } }
 
         bool update = false;
         internal virtual bool hasUpdate { get => update;  set => update = value; }

@@ -51,7 +51,7 @@ namespace MSCLoader
         {
             string path = Path.Combine(Application.persistentDataPath, string.Format("{0}_{1}", mod.ID, fileName));
 
-            return File.Exists(path) ? JsonConvert.DeserializeObject<T>(File.ReadAllText(path)) : default(T);
+            return File.Exists(path) ? JsonConvert.DeserializeObject<T>(File.ReadAllText(path)) : default;
         }
     }
 }

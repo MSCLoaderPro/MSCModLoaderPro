@@ -127,6 +127,24 @@
             <param name="stream">File stream</param>
             <returns>List of paths to files/urls</returns>
         </member>
+        <member name="T:MSCLoader.ModConfig">
+            <summary>Holder class for easy saving of settings to a file.</summary>
+        </member>
+        <member name="F:MSCLoader.ModConfig.Enabled">
+            <summary>Whether or not the mod is enabled.</summary>
+        </member>
+        <member name="F:MSCLoader.ModConfig.Keybinds">
+            <summary>Saved keybinds</summary>
+        </member>
+        <member name="F:MSCLoader.ModConfig.Numbers">
+            <summary>Saved numbers</summary>
+        </member>
+        <member name="F:MSCLoader.ModConfig.Booleans">
+            <summary>Saved booleans</summary>
+        </member>
+        <member name="F:MSCLoader.ModConfig.Strings">
+            <summary>Saved strings</summary>
+        </member>
         <member name="T:MSCLoader.ModHelper">
             <summary> Container for useful helper methods </summary>
         </member>
@@ -341,32 +359,105 @@
             <summary>Create a new FsmStateAction that executes provided Action.</summary>
             <param name="action">Action to call when state executes the FsmStateAction.</param>
         </member>
+        <member name="T:MSCLoader.PlayMakerProxyUtility">
+            <summary>Helper Methods to work with PlayMakerArrayListProxy and PlayMakerHashTableProxy components.<br></br><br></br>Courtesy of BrennFuchS.</summary>
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToProxy``1(``0,System.Object,System.Boolean)">
+            <summary>
+            add a variable to a specified PMproxy.
+            the variable type has to match the selected PMproxys preFillType!
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="PMproxy"></param>
+            <param name="ItemToAdd"></param>
+            <param name="ClearBeforeAdding"></param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToProxy(UnityEngine.GameObject,System.String,System.Object,System.Boolean)">
+            <summary>
+            add a variable to one of the PMproxy's in the GameObject.
+            the variable type has to match the selected PMproxys preFillType!
+            </summary>
+            <param name="PMproxysParent"></param>
+            <param name="wantedProxyReferenceName"></param>
+            <param name="ItemToAdd"></param>
+            <param name="ClearBeforeAdding"></param>       
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToProxy``1(``0,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+            <summary>
+            add a list of variables to a specified PMproxy.
+            the variable types have to match the selected PMproxy's preFillType!
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="PMproxy"></param>
+            <param name="ItemsToAdd"></param>
+            <param name="ClearBeforeAdding"></param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToProxy(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+            <summary>
+            add variables to one of the PMproxys in the GameObject.
+            the variable types have to match the selected PMproxy's preFillType!
+            </summary>
+            <param name="PMproxysParent"></param>
+            <param name="wantedProxyReferenceName"></param>
+            <param name="ItemsToAdd"></param>
+            <param name="ClearBeforeAdding"></param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToPrefill``1(``0,System.Object)">
+            <summary>
+            add a variable to a specified PMproxy.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="PMproxy"></param>
+            <param name="ItemToAdd"></param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToPrefill(UnityEngine.GameObject,System.String,System.Object)">
+            <summary>
+            add a variable to one of the PMproxy's in the GameObject.
+            </summary>
+            <param name="PMproxysParent"></param>
+            <param name="wantedProxyReferenceName"></param>
+            <param name="ItemToAdd"></param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToPrefill``1(``0,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            add a list of variables to a specified PMproxy.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="PMproxy"></param>
+            <param name="ItemsToAdd"></param>
+        </member>
+        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToPrefill(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>add a list of variables to one of the PMproxy's in the GameObject.</summary>
+            <param name="PMproxysParent"></param>
+            <param name="wantedProxyReferenceName"></param>
+            <param name="ItemsToAdd"></param>
+        </member>
         <member name="T:MSCLoader.Mod">
             <summary> Main Mod Class, parent class for all mods. </summary>
         </member>
-        <member name="P:MSCLoader.Mod.isDisabled">
-            <summary> Get the mods disabled state. </summary>
+        <member name="P:MSCLoader.Mod.Enabled">
+            <summary>Determines whether or not the mod is enabled.</summary>
         </member>
         <member name="P:MSCLoader.Mod.ID">
-            <summary> The mod's ID, used for identification. Has to be unique! </summary>
+            <summary>The mod's ID, used for identification. Has to be unique!</summary>
         </member>
         <member name="P:MSCLoader.Mod.Name">
-            <summary> The mod's name, shown in lists etc. </summary>
+            <summary>The mod's name, shown in lists etc.</summary>
         </member>
         <member name="P:MSCLoader.Mod.Author">
-            <summary> Who made the mod? You, presumably! </summary>
+            <summary>Who made the mod? You, presumably!</summary>
         </member>
         <member name="P:MSCLoader.Mod.Version">
-            <summary> Contains the mod version. </summary>
+            <summary>Contains the mod version.</summary>
         </member>
         <member name="P:MSCLoader.Mod.Description">
-            <summary> A short description of your mod. Displayed in the settings window for the mod, hidden if empty. </summary>
+            <summary>A short description of your mod. Displayed in the settings window for the mod, hidden if empty.</summary>
         </member>
         <member name="P:MSCLoader.Mod.Icon">
-            <summary> Icon displayed in the mod list, preferably square and not larger than 256x256. </summary>
+            <summary>Icon displayed in the mod list, preferably square and not larger than 256x256.</summary>
         </member>
         <member name="P:MSCLoader.Mod.UpdateLink">
-            <summary> A link from which ModLoader will check for updates. Must be GitHub or NexusMods. Ex.: https://github.com/Athlon007/MOP</summary>
+            <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP</summary>
         </member>
         <member name="F:MSCLoader.Mod.modListElement">
             <summary> The mod list element for the mod. </summary>
@@ -380,7 +471,7 @@
         <member name="M:MSCLoader.Mod.ModSettingsLoaded">
             <summary> Method called when all mods have had their ModSettings() called. Order of execution: 2 </summary>
         </member>
-        <member name="M:MSCLoader.Mod.OnMenuLoad">
+        <member name="M:MSCLoader.Mod.MenuOnLoad">
             <summary> Load Method for anything involving the menu scene. Order of execution: 3 </summary>
         </member>
         <member name="M:MSCLoader.Mod.MenuUpdate">
@@ -474,7 +565,420 @@
         </member>
         <member name="M:MSCLoader.ModLoader.IsModPresent(System.String)">
             <summary>Check if the specified mod ID is loaded and isn't disabled.</summary>
-            <param name="ModID">ID of the mod.</param>
+            <param name="modID">ID of the mod.</param>
+        </member>
+        <member name="T:MSCLoader.ModPrompt">
+            <summary>ModPrompt Component for a prompt window.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.titleHeader">
+            <summary>Title header GameObject.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.titleText">
+            <summary>Title UI Text.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.titleShadow">
+            <summary>Title UI Text Shadow.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.textHeader">
+            <summary>Message header GameObject.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.textText">
+            <summary>Message UI Text.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.textShadow">
+            <summary>Message UI Text Shadow.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.buttonParent">
+            <summary>Button parent Transform.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.buttonPrefab">
+            <summary>Button Prefab GameObject.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.buttons">
+            <summary>Button list for all added ModPromptButtons.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.destroyOnDisable">
+            <summary>Should the ModPrompt be destroyed after being disabled?</summary>
+        </member>
+        <member name="F:MSCLoader.ModPrompt.OnCloseAction">
+            <summary>UnityAction that executes when the ModPrompt closes.</summary>
+        </member>
+        <member name="P:MSCLoader.ModPrompt.Title">
+            <summary>Title for the ModPrompt.</summary>
+        </member>
+        <member name="P:MSCLoader.ModPrompt.Text">
+            <summary>Text for the ModPrompt.</summary>
+        </member>
+        <member name="M:MSCLoader.ModPrompt.AddButton(System.String,UnityEngine.Events.UnityAction)">
+            <summary>Adds a button to the mod prompt with the specified text and action when clicked.</summary>
+            <param name="buttonText">Text displayed on the button.</param>
+            <param name="action">UnityAction to be executed when the button is clicked.</param>
+            <returns>The added ModPromptButton</returns>
+        </member>
+        <member name="M:MSCLoader.ModPrompt.Show">
+            <summary>Show the ModPrompt</summary>
+        </member>
+        <member name="T:MSCLoader.ModPromptButton">
+            <summary>ModPromptButton Component for buttons added the prompts.</summary>
+        </member>
+        <member name="F:MSCLoader.ModPromptButton.prompt">
+            <summary>Parent ModPrompt</summary>
+        </member>
+        <member name="F:MSCLoader.ModPromptButton.button">
+            <summary>UI Button Component</summary>
+        </member>
+        <member name="F:MSCLoader.ModPromptButton.buttonText">
+            <summary>Button UI Text</summary>
+        </member>
+        <member name="F:MSCLoader.ModPromptButton.buttonShadow">
+            <summary>Button UI Text Shadow</summary>
+        </member>
+        <member name="P:MSCLoader.ModPromptButton.Text">
+            <summary>Text displayed on the button.</summary>
+        </member>
+        <member name="P:MSCLoader.ModPromptButton.OnClick">
+            <summary>Eventholder for the button click</summary>
+        </member>
+        <member name="M:MSCLoader.ModPromptButton.ClickDisable">
+            <summary>When the button is clicked, disable the prompt.</summary>
+        </member>
+        <member name="T:MSCLoader.ModContainer">
+            <summary>Handler for all the mod windows.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.modLoader">
+            <summary>ModLoader class instance.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.settingsDictionary">
+            <summary>Dictionary containing all mods' ModSettings Components.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.modListDictionary">
+            <summary>Dictionary containing all mods' ModListElement Components.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.modCountText">
+            <summary>UI Text for the mod counter.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.modLoaderSettings">
+            <summary>Container for the mod loader settings.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.modList">
+            <summary>Parent Transform for all mods' list elements.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.modListElementPrefab">
+            <summary>Prefab GameObject for a mod list elements.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.settingsList">
+            <summary>Parent Transform for all mods' setting lists.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.settingsWindowPrefab">
+            <summary>Prefab GameObject for a mod settings window.</summary>
+        </member>
+        <member name="M:MSCLoader.ModContainer.CreateModListElement(MSCLoader.Mod)">
+            <summary>Creates a ModListElement for the specified mod and adds it to the mod list.</summary>
+            <param name="mod">Mod to create the ModListElement for.</param>
+            <returns>Created ModListElement.</returns>
+        </member>
+        <member name="M:MSCLoader.ModContainer.CreateModSettingWindow(MSCLoader.Mod)">
+            <summary>Creates a ModSettings window for the specified mod.</summary>
+            <param name="mod">Mod to create the ModSettings window for.</param>
+            <returns>Created ModSettings.</returns>
+        </member>
+        <member name="M:MSCLoader.ModContainer.UpdateModCountText">
+            <summary>Updates the mod count text to reflect the current number of mods and how many of them are disabled.</summary>
+        </member>
+        <member name="T:MSCLoader.ModListElement">
+            <summary>Control Component for the mod list elements.</summary>
+        </member>
+        <member name="F:MSCLoader.ModListElement.mod">
+            <summary>The mod this ModListElement belongs to.</summary>
+        </member>
+        <member name="F:MSCLoader.ModListElement.modSettings">
+            <summary>The ModSettings this ModListElement is linked to.</summary>
+        </member>
+        <member name="P:MSCLoader.ModListElement.ID">
+            <summary>ID for the ModListElement, gets/sets the name of the GameObject the list is on.</summary>
+        </member>
+        <member name="P:MSCLoader.ModListElement.Name">
+            <summary>Name of the mod, gets/sets the Name UI Text</summary>
+        </member>
+        <member name="P:MSCLoader.ModListElement.Author">
+            <summary>Author of the mod, gets/sets the Author UI Text</summary>
+        </member>
+        <member name="P:MSCLoader.ModListElement.Version">
+            <summary>Version of the mod, gets/sets the Version UI Text</summary>
+        </member>
+        <member name="M:MSCLoader.ModListElement.SetModIcon(UnityEngine.Texture2D)">
+            <summary>Set the mod's icon to the specified texture.</summary>
+            <param name="icon">Texture to use as the icon for the mod.</param>
+        </member>
+        <member name="M:MSCLoader.ModListElement.ToggleSettingsActive">
+            <summary>Opens the mod's settings window while closing all others.</summary>
+        </member>
+        <member name="M:MSCLoader.ModListElement.ToggleSettingsOff">
+            <summary>Close the mod's settings window</summary>
+        </member>
+        <member name="M:MSCLoader.ModListElement.ToggleModEnabled">
+            <summary>Toggle the mod's enabled state.</summary>
+        </member>
+        <member name="M:MSCLoader.ModListElement.SetModEnabled(System.Boolean)">
+            <summary>Set the enabled status of the mod.</summary>
+            <param name="enabled">Enabled/disabled</param>
+        </member>
+        <member name="T:MSCLoader.ModSettings">
+            <summary>Control Component for the mod settings.</summary>
+        </member>
+        <member name="F:MSCLoader.ModSettings.mod">
+            <summary>The mod this ModListElement belongs to.</summary>
+        </member>
+        <member name="F:MSCLoader.ModSettings.settingsList">
+            <summary>Parent Transform for all added settings.</summary>
+        </member>
+        <member name="F:MSCLoader.ModSettings.settings">
+            <summary>List of added settings.</summary>
+        </member>
+        <member name="F:MSCLoader.ModSettings.loadedSettings">
+            <summary>Setting values loaded from file.</summary>
+        </member>
+        <member name="P:MSCLoader.ModSettings.Name">
+            <summary>Get/Set the Name UI Text</summary>
+        </member>
+        <member name="P:MSCLoader.ModSettings.ID">
+            <summary>Get/Set the ID UI Text, also sets the GameObject name to the ID value.</summary>
+        </member>
+        <member name="P:MSCLoader.ModSettings.Description">
+            <summary>Get/Set the description UI Text, if set to an empty string it hides the UI element.</summary>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddButton(System.String,System.String,System.String,UnityEngine.Events.UnityAction,System.Boolean)">
+            <summary>Adds a button to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="buttonText">Text to display on the button.</param>
+            <param name="name">(Optional) Name of the setting, if empty the button will take up the whole space available.</param>
+            <param name="action">(Optional) UnityAction to execute when clicking the button.</param>
+            <param name="blockSuspension">(Optional) Should the provided action be disabled if/when actions are disabled on the setting?</param>
+            <returns>Added SettingButton</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddButton(System.String,System.String,UnityEngine.Events.UnityAction,System.Boolean)">
+            <summary>Adds a button to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="buttonText">Text to display on the button.</param>
+            <param name="action">UnityAction to execute when clicking the button.</param>
+            <param name="blockSuspension">(Optional) Should the provided action be disabled if/when actions are disabled on the setting?</param>
+            <returns>Added SettingButton</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddHeader(System.String)">
+            <summary>Adds a header to the settings list.</summary>
+            <param name="text">Text to display on the header.</param>
+            <returns>Added SettingHeader.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddHeader(System.String,UnityEngine.Color)">
+            <summary>Adds a header to the settings list.</summary>
+            <param name="text">Text to display on the header.</param>
+            <param name="backgroundColor">Color of the background.</param>
+            <returns>Added SettingHeader.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddHeader(System.String,UnityEngine.Color,UnityEngine.Color)">
+            <summary>Adds a header to the settings list.</summary>
+            <param name="text">Text to display on the header.</param>
+            <param name="backgroundColor">Color of the background.</param>
+            <param name="textColor">Color of the text.</param>
+            <returns>Added SettingHeader.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddHeader(System.String,UnityEngine.Color,UnityEngine.Color,UnityEngine.Color)">
+            <summary>Adds a header to the settings list.</summary>
+            <param name="text">Text to display on the header.</param>
+            <param name="backgroundColor">Color of the background.</param>
+            <param name="textColor">Color of the text.</param>
+            <param name="outlineColor">Color of the Outline.</param>
+            <returns>Added SettingHeader.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddKeybind(System.String,System.String,UnityEngine.KeyCode,UnityEngine.KeyCode[])">
+            <summary>Adds a keybind to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="key">Keycode of the main key.</param>
+            <param name="modifiers">Keycodes for the modifiers required to be pressed before the main key.</param>
+            <returns>Added SettingKeybind.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddRadioButtons(System.String,System.String,System.Int32,System.String[])">
+            <summary>Adds radio buttons to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value</param>
+            <param name="options">Array of buttons, by name, available.</param>
+            <returns>Added SettingRadioButtons.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddRadioButtons(System.String,System.String,System.Int32,UnityEngine.Events.UnityAction{System.Int32},System.String[])">
+            <summary>Adds radio buttons to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="action">Action called whenever the value changes. Parameter passes the changed value of the setting.</param>
+            <param name="options">Array of buttons, by name, available.</param>
+            <returns>Added SettingRadioButtons.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddRadioButtons(System.String,System.String,System.Int32,UnityEngine.Events.UnityAction,System.String[])">
+            <summary>Adds radio buttons to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="action">Action called whenever the value changes.</param>
+            <param name="options">Array of buttons, by name, available.</param>
+            <returns>Added SettingRadioButtons.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Single,System.Single,System.Single,System.Int32)">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <param name="roundDigits">(Optional) The amount of decimals to round to, -1 disables rounding.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Single,System.Single,System.Single,System.Int32,UnityEngine.Events.UnityAction{System.Single})">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <param name="roundDigits">(Optional) The amount of decimals to round to, -1 disables rounding.</param>
+            <param name="action">(Optional) Action to call when the slider value is changed.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Single,System.Single,System.Single,System.Int32,UnityEngine.Events.UnityAction)">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <param name="roundDigits">(Optional) The amount of decimals to round to, -1 disables rounding.</param>
+            <param name="action">(Optional) Action to call when the slider value is changed.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Single,System.Single,System.Single,UnityEngine.Events.UnityAction{System.Single})">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <param name="action">(Optional) Action to call when the slider value is changed.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Single,System.Single,System.Single,UnityEngine.Events.UnityAction)">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <param name="action">(Optional) Action to call when the slider value is changed.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Int32,System.Int32,System.Int32,UnityEngine.Events.UnityAction{System.Single})">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <param name="action">(Optional) Action to call when the slider value is changed.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSlider(System.String,System.String,System.Int32,System.Int32,System.Int32,UnityEngine.Events.UnityAction)">
+            <summary>Adds a slider to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="minValue">Minimum value of the slider.</param>
+            <param name="maxValue">Maximum value of the slider.</param>
+            <param name="action">(Optional) Action to call when the slider value is changed.</param>
+            <returns>Added SettingSlider.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddSpacer(System.Single)">
+            <summary>Adds an empty space of configurable height to the settings list.</summary>
+            <param name="height">Height of the spacer.</param>
+            <returns>Added SettingSpacer.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddText(System.String)">
+            <summary>Adds a non-interactable text to the settings list.</summary>
+            <param name="text">Text to display.</param>
+            <returns>Added SettingText.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddText(System.String,UnityEngine.Color)">
+            <summary>Adds a non-interactable text to the settings list.</summary>
+            <param name="text">Text to display.</param>
+            <param name="backgroundColor">Color of the text background.</param>
+            <returns>Added SettingText.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddText(System.String,UnityEngine.Color,UnityEngine.Color)">
+            <summary>Adds a non-interactable text to the settings list.</summary>
+            <param name="text">Text to display.</param>
+            <param name="backgroundColor">Color of the text background.</param>
+            <param name="outlineColor">Color of the text background's outline.</param>
+            <returns>Added SettingText.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddTextBox(System.String,System.String,System.String,System.String,UnityEngine.UI.InputField.CharacterValidation)">
+            <summary>Adds a text box to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="placeholder">(Optional) Text to add as a placeholder.</param>
+            <param name="inputType">(Optional) The input type the text box should have, eg. integers, alphanumeric, names etc.</param>
+            <returns>Added SettingTextBox.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddTextBox(System.String,System.String,System.String,UnityEngine.Events.UnityAction{System.String},System.String,UnityEngine.UI.InputField.CharacterValidation)">
+            <summary>Adds a text box to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="action">Action to be called whenever the text input changes.</param>
+            <param name="placeholder">(Optional) Text to add as a placeholder.</param>
+            <param name="inputType">(Optional) The input type the text box should have, eg. integers, alphanumeric, names etc.</param>
+            <returns>Added SettingTextBox.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddTextBox(System.String,System.String,System.String,UnityEngine.Events.UnityAction,System.String,UnityEngine.UI.InputField.CharacterValidation)">
+            <summary>Adds a text box to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="action">Action to be called whenever the text input changes.</param>
+            <param name="placeholder">(Optional) Text to add as a placeholder.</param>
+            <param name="inputType">(Optional) The input type the text box should have, eg. integers, alphanumeric, names etc.</param>
+            <returns>Added SettingTextBox.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddToggle(System.String,System.String,System.Boolean)">
+            <summary>Adds a toggle to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <returns>Added SettingToggle.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddToggle(System.String,System.String,System.Boolean,UnityEngine.Events.UnityAction{System.Boolean})">
+            <summary>Adds a toggle to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="action">Action called whenever the value changes.</param>
+            <returns>Added SettingToggle.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddToggle(System.String,System.String,System.Boolean,UnityEngine.Events.UnityAction)">
+            <summary>Adds a toggle to the settings list.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="name">Name of the setting</param>
+            <param name="value">Default value of the setting.</param>
+            <param name="action">Action called whenever the value changes.</param>
+            <returns>Added SettingToggle.</returns>
         </member>
         <member name="T:MSCLoader.ModUI">
             <summary>Contains methods and variables suitable for controlling UI.</summary>
@@ -532,7 +1036,7 @@
         <member name="M:MSCLoader.ModUpdater.LookForUpdates">
             <summary> Starts looking for the update of the specific mod. </summary>
         </member>
-        <member name="M:MSCLoader.ModUpdater.CheckForModUpdates(System.Collections.Generic.List{MSCLoader.Mod})">
+        <member name="M:MSCLoader.ModUpdater.CheckForModUpdates(System.Collections.Generic.IEnumerable{MSCLoader.Mod})">
             <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
         </member>
         <member name="T:MSCLoader.ModUpdateData">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -38,6 +39,9 @@ namespace MSCLoader
         void Awake()
         {
             consoleInstance = this;
+
+            console.SetActive(false);
+
             buttonText.text = console.activeSelf ? "CLOSE" : "OPEN";
 
             UpdateFontSize();
@@ -46,6 +50,7 @@ namespace MSCLoader
             controller.LogChanged += UpdateLog;
 
             UpdateLog(controller.log);
+
         }
 
         void Update()
@@ -192,12 +197,16 @@ namespace MSCLoader
         static string OutputString(string text) => Regex.Replace(text, "<.*?>", "");
 
         #region Obsolete Methods
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, use Log() instead.")]
         public static void Print(string text) => Log(text);
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, use Log() instead.")]
         public static void Print(object obj) => Log(obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, use LogError() instead.")]
         public static void Error(string text = "") => LogError(text);
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, use LogWarning() instead.")]
         public static void Warning(string text) => LogWarning(text);
         #endregion

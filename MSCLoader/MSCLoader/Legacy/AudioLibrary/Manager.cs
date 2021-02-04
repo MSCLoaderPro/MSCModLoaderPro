@@ -6,7 +6,7 @@ using System.Threading;
 using UnityEngine;
 
 // GNU GPL 3.0
-#pragma warning disable CS1591, IDE1006, CS0618
+#pragma warning disable CS1591, IDE1006, CS0618, IDE0059
 namespace AudioLibrary
 {
     public class Manager : MonoBehaviour

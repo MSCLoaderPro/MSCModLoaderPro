@@ -72,8 +72,7 @@ namespace AudioLibrary.MP3_Streaming
             {
                 using (Stream responseStream = resp.GetResponseStream())
                 {
-                    ReadFullyStream readFullyStream = new ReadFullyStream(responseStream);
-                    readFullyStream.MetaInt = metaInt;
+                    ReadFullyStream readFullyStream = new ReadFullyStream(responseStream) { MetaInt = metaInt };
                     do
                     {
                         if (IsBufferNearlyFull)

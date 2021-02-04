@@ -7,6 +7,7 @@ using System.Net;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
+using System.ComponentModel;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -37,13 +38,13 @@ namespace MSCLoader
                 return;
             }
 
-            StartCoroutine(CheckForModUpdates(ModLoader.LoadedMods.Where(x => !string.IsNullOrEmpty(x.UpdateLink)).ToList()));
+            StartCoroutine(CheckForModUpdates(ModLoader.LoadedMods.Where(x => !string.IsNullOrEmpty(x.UpdateLink))));
         }
 
         /// <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
-        IEnumerator CheckForModUpdates(List<Mod> mods)
+        IEnumerator CheckForModUpdates(IEnumerable<Mod> mods)
         {
-            if (mods.Count == 0) yield break;
+            if (mods.Count() == 0) yield break;
 
             isBusy = true;
 

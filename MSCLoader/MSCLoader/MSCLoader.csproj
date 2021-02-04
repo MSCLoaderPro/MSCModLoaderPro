@@ -99,6 +99,7 @@
     <Compile Include="Legacy\AudioLibrary\Playlists.cs" />
     <Compile Include="Legacy\Commands\CommandVersion.cs" />
     <Compile Include="Legacy\OBJLoader.cs" />
+    <Compile Include="ModConfig.cs" />
     <Compile Include="ModHelper.cs" />
     <Compile Include="ModINI.cs" />
     <Compile Include="Legacy\ConsoleController.cs" />
