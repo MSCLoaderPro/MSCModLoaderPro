@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+#pragma warning disable CS1591
 namespace MSCLoader
 {
     /// <summary>Holder class for easy saving of settings to a file.</summary>

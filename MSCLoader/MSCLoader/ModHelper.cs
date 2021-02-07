@@ -14,6 +14,19 @@ namespace MSCLoader
     /// <summary> Container for useful helper methods </summary>
     public static class ModHelper
     {
+        /// <summary>Make the provided GameObject interactable as a object you can pick up ingame.</summary>
+        /// <param name="gameObject">GameObject to make pickable</param>
+        /// <param name="includeTag">Should the tag also be changed? The tag is what makes the player able to interact with the object, whereas the layer only make its name show up as a subtitle.</param>
+        public static void MakePickable(this GameObject gameObject, bool includeTag = true)
+        {
+            if (includeTag) gameObject.tag = "PART";
+            gameObject.layer = LayerMask.NameToLayer("Parts");
+        }
+        /// <summary>Make the provided Transform interactable as a object you can pick up ingame.</summary>
+        /// <param name="transform">Transform to make pickable</param>
+        /// <param name="includeTag">Should the tag also be changed? The tag is what makes the player able to interact with the object, whereas the layer only make its name show up as a subtitle.</param>
+        public static void MakePickable(this Transform transform, bool includeTag = true) =>
+            transform.gameObject.MakePickable(includeTag);
         /// <summary>Get a Transform child.</summary>
         /// <param name="parentPath">Hierarchy path to a parent Transform.</param>
         /// <param name="childPath">Hierarchy path from the parent to the wanted child Transform.</param>

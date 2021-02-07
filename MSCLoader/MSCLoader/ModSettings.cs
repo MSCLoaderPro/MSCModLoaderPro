@@ -376,8 +376,8 @@ namespace MSCLoader
         /// <summary>Adds a keybind to the settings list.</summary>
         /// <param name="id">ID of the setting.</param>
         /// <param name="name">Name of the setting</param>
-        /// <param name="key">Keycode of the main key.</param>
-        /// <param name="modifiers">Keycodes for the modifiers required to be pressed before the main key.</param>
+        /// <param name="key">Default keycode of the main key.</param>
+        /// <param name="modifiers">Keycodes for the default modifiers required to be pressed along with the main key.</param>
         /// <returns>Added SettingKeybind.</returns>
         public SettingKeybind AddKeybind(string id, string name, KeyCode key, params KeyCode[] modifiers)
         {
@@ -388,7 +388,7 @@ namespace MSCLoader
             keybind.modifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]);
             keybind.defaultKeybind = key;
             keybind.defaultModifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]);
-            keybind.KeyText = keybind.AdjustKeyNames();
+            keybind.keyText.text = keybind.AdjustKeyNames();
 
             AddSettingToList(keybind);
 

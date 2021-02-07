@@ -15,6 +15,7 @@ namespace MSCLoader
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static void Main(string[] args)
         {
+            Console.WriteLine("STARTING MOD LOADER PRO!");
             ExtraTweaks();
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyWatcher;
         }
@@ -24,20 +25,23 @@ namespace MSCLoader
             if (args.LoadedAssembly.GetName().Name == "System")
             {
                 AppDomain.CurrentDomain.AssemblyLoad -= AssemblyWatcher;
-                InjectModLoader();
+                StartModLoader();
             }
         }
 
         static HarmonyInstance ModLoaderInstance;
-        static void InjectModLoader()
+        static void StartModLoader()
         {
             try
             {
                 //HarmonyInstance.DEBUG = true;
+                Console.WriteLine("MODLOADER: PATCHING METHODS!");
                 ModLoaderInstance = HarmonyInstance.Create("MSCModLoaderPro");
                 if (settings.EnableModLoader)
                 {
-                    ModLoaderInstance.PatchAll(Assembly.GetExecutingAssembly());
+                    HarmonyInstance.Create("MSCModLoaderProInit").Patch(typeof(PlayMakerArrayListProxy).GetMethod("Awake"), new HarmonyMethod(typeof(InjectModLoaderInit).GetMethod("Prefix")));
+                    HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
+                    ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.LoadLevel).GetMethod("OnEnter"), new HarmonyMethod(typeof(InjectLoadSceneFix).GetMethod("Prefix")));
                 }
                 else if (settings.SkipSplashScreen)
                 {
@@ -46,7 +50,7 @@ namespace MSCLoader
             }
             catch (Exception ex)
             {
-                using (TextWriter textWriter = File.CreateText("MSCLoaderCrash.txt"))
+                using (TextWriter textWriter = File.CreateText("ModLoaderCrash.txt"))
                 {
                     textWriter.WriteLine(ex.ToString());
                     textWriter.WriteLine(ex.Message);
@@ -63,18 +67,19 @@ namespace MSCLoader
             };
             try
             {
+                Console.WriteLine("MODLOADER: WRITING TWEAKS");
+
                 settings = new LoaderSettings();
                 long offset = FindBytes(@"mysummercar_Data\mainData", data);
 
                 using (FileStream stream = new FileStream(@"mysummercar_Data\mainData", FileMode.Open, FileAccess.ReadWrite))
                 {
+                    stream.Position = offset + 96L;
+                    if (!settings.SkipGameLauncher) stream.WriteByte(0x01);
+                    else stream.WriteByte(0x00);
 
                     stream.Position = offset + 115L;
                     if (settings.UseOutputLog) stream.WriteByte(0x01);
-                    else stream.WriteByte(0x00);
-
-                    stream.Position = offset + 96L;
-                    if (!settings.SkipGameLauncher) stream.WriteByte(0x01);
                     else stream.WriteByte(0x00);
 
                     stream.Close();
@@ -82,7 +87,7 @@ namespace MSCLoader
             }
             catch (Exception ex)
             {
-                using (TextWriter textWriter = File.CreateText("MSCLoaderCrash.txt"))
+                using (TextWriter textWriter = File.CreateText("ModLoaderCrash.txt"))
                 {
                     textWriter.WriteLine(ex.ToString());
                     textWriter.WriteLine(ex.Message);
@@ -161,22 +166,26 @@ namespace MSCLoader
         }
 
         [HarmonyPatch(typeof(PlayMakerArrayListProxy), "Awake")]
-        class InjectMSCLoader
+        class InjectModLoaderInit
         {
-            static void Prefix() => ModLoader.Init();
+            public static void Prefix()
+            {
+                System.Console.WriteLine("MODLOADER: INITIALIZING");
+                ModLoader.Init();
+                ModLoaderInstance.UnpatchAll("MSCModLoaderProInit");
+            }
         }
 
         [HarmonyPatch(typeof(PlayMakerFSM), "Awake")]
         class InjectSplashSkip
         {
-            static bool hasSkipped = false;
-
-            static void Prefix()
+            public static void Prefix()
             {
-                if (!hasSkipped && settings.SkipSplashScreen && Application.loadedLevel == 0)
+                if (settings.SkipSplashScreen && Application.loadedLevel == 0)
                 {
-                    hasSkipped = true;
+                    System.Console.WriteLine("MODLOADER: SKIP SPLASH");
                     Application.LoadLevel(1);
+                    ModLoaderInstance.UnpatchAll("MSCModLoaderProSplash");
                 }
             }
         }

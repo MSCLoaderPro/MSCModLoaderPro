@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -10,10 +11,18 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Outline = unityUI.UnityEngine.UI.Outline;
 
+#pragma warning disable CS1591
 namespace MSCLoader
 {
-    public class ModSetting : MonoBehaviour { public virtual void SaveSetting(ModConfig modConfig) { } }
-
+    /// <summary>Parent class for settings.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public class ModSetting : MonoBehaviour 
+    { 
+        /// <summary>Method to save settings into the provided ModConfig.</summary>
+        /// <param name="modConfig">ModConfig to save settings to.</param>
+        public virtual void SaveSetting(ModConfig modConfig) { } 
+    }
+    /// <summary>Main Component for the Button setting type.</summary>
     public class SettingButton : ModSetting
     {
         public Text nameText;
@@ -24,7 +33,9 @@ namespace MSCLoader
         public Text buttonText;
         public Shadow buttonTextShadow;
 
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Setting name, displayed in the settings window. An empty string disables the label.</summary>
         public string Name
         {
             get => nameText.text; set
@@ -33,10 +44,15 @@ namespace MSCLoader
                 nameText.gameObject.SetActive(!string.IsNullOrEmpty(value));
             }
         }
+        /// <summary>Text on the button itself.</summary>
         public string ButtonText { get => buttonText.text; set => buttonText.text = value; }
+        /// <summary>UI Button's OnClick Eventhandler.</summary>
         public Button.ButtonClickedEvent OnClick { get => button.onClick; set => button.onClick = value; }
-
+        /// <summary>Suspends the action calling if true.</summary>
         public bool suspendOnClickActions = false;
+        /// <summary>Adds an action that's called whenever the button is clicked.</summary>
+        /// <param name="action">Action to call.</param>
+        /// <param name="ignoreSuspendActions">(Optional) Should the action always be called regardless of other settings? (Not recommended for regular use)</param>
         public void AddAction(UnityAction action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
@@ -45,23 +61,25 @@ namespace MSCLoader
                 button.onClick.AddListener(action);
         }
     }
-
+    /// <summary>Main Component for the Header setting type.</summary>
     public class SettingHeader : ModSetting
     {
-        public ModSettings modSettings;
-
         public LayoutElement layoutElement;
         public Image background;
         public Outline outline;
+
         public Text text;
         public Shadow textShadow;
-
+        /// <summary>The height of the header.</summary>
         public float Height { get => layoutElement.preferredHeight; set => layoutElement.preferredHeight = value; }
+        /// <summary>The background color for the header.</summary>
         public Color BackgroundColor { get => background.color; set => background.color = value; }
+        /// <summary>The Outline color for the header.</summary>
         public Color OutlineColor { get => outline.effectColor; set => outline.effectColor = value; }
+        /// <summary>Text displayed on the header.</summary>
         public string Text { get => text.text; set => text.text = value; }
     }
-
+    /// <summary>Main Component for the Keybind setting type.</summary>
     public class SettingKeybind : ModSetting
     {
         public Text nameText;
@@ -71,20 +89,27 @@ namespace MSCLoader
         public Button keyButton;
         public Image backgroundImage;
 
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Setting name, displayed in the settings window.</summary>
         public string Name { get => nameText.text; set => nameText.text = value; }
-        public string KeyText { get => keyText.text; set => keyText.text = value; }
 
+        /// <summary>Event that triggers just after the player have started the keybinding process before pressing any keys.</summary>
+        public KeybindPreBind PreBind = new KeybindPreBind();
+        /// <summary>Event that triggers just after the player have assigned a new binding.</summary>
+        public KeybindPostBind PostBind = new KeybindPostBind();
+
+        /// <summary>Current main key.</summary>
         public KeyCode keybind;
+        /// <summary>Current main modifiers.</summary>
         public KeyCode[] modifiers;
 
+        /// <summary>Default key.</summary>
         public KeyCode defaultKeybind;
+        /// <summary>Default modifiers.</summary>
         public KeyCode[] defaultModifiers;
 
-        [HideInInspector]
-        public Action bindPrefix, bindPostfix;
-
-        public void Start()
+        void Start()
         {
             keyText.text = AdjustKeyNames();
         }
@@ -96,7 +121,7 @@ namespace MSCLoader
 
         IEnumerator BindKey()
         {
-            if (bindPrefix != null) bindPrefix.Invoke();
+            PreBind.Invoke();
 
             List<KeyCode> keyCodes = new List<KeyCode>();
 
@@ -132,7 +157,7 @@ namespace MSCLoader
 
             keyText.text = AdjustKeyNames();
 
-            if (bindPostfix != null) bindPostfix.Invoke();
+            PostBind.Invoke();
         }
 
         public string AdjustKeyNames()
@@ -155,38 +180,48 @@ namespace MSCLoader
 
             return stringBuilder.ToString().ToUpper();
         }
-
+        /// <summary>Get if the keybind is pressed down (including modifiers).</summary>
         public bool GetKey() => GetModifiers() && Input.GetKey(keybind);
+        /// <summary>Get if the keybind is down (including modifiers).</summary>
         public bool GetKeyDown() => GetModifiers() && Input.GetKeyDown(keybind);
+        /// <summary>Get if the keybind is up after being down (including modifiers).</summary>
         public bool GetKeyUp() => (Input.GetKeyUp(keybind) && modifiers.All(x => Input.GetKeyUp(x) || Input.GetKey(x))) ||
             (Input.GetKey(keybind) && modifiers.Any(x => Input.GetKeyUp(x)) && modifiers.All(x => Input.GetKeyUp(x) || Input.GetKey(x)));
 
+        /// <summary>Get if the modifiers alone are pressed down.</summary>
         public bool GetModifiers() => modifiers.All(x => Input.GetKey(x));
 
+        /// <summary>Reset the setting to default values.</summary>
         public void ResetToDefaults()
         {
             keybind = defaultKeybind;
             modifiers = defaultModifiers;
-            KeyText = AdjustKeyNames();
+            keyText.text = AdjustKeyNames();
         }
 
         public override void SaveSetting(ModConfig modConfig)
         {
             modConfig.Keybinds.Add(new ModConfigKeybind(ID, keybind, modifiers));
         }
-    }
 
+        [Serializable]
+        public class KeybindPreBind : UnityEvent { }
+        [Serializable]
+        public class KeybindPostBind : UnityEvent { }
+    }
+    /// <summary>Main Component for the Radio Buttons setting type.</summary>
     public class SettingRadioButtons : ModSetting
     {
+        internal int radioValue = -1;
+        internal List<RadioButton> buttons = new List<RadioButton>();
+
         public Text nameText;
         public Shadow nameShadow;
-
-        public int radioValue = -1;
-        public List<RadioButton> buttons = new List<RadioButton>();
-        public RadioButtonsOnValueChanged OnValueChanged = new RadioButtonsOnValueChanged();
-
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Setting name, displayed in the settings window.</summary>
         public string Name { get => nameText.text; set => nameText.text = value; }
+        /// <summary>Current setting value.</summary>
         public int Value
         {
             get => radioValue; set
@@ -200,22 +235,32 @@ namespace MSCLoader
                 }
             }
         }
+        /// <summary>Event that triggers whenever the setting changes value.</summary>
+        public RadioButtonsOnValueChanged OnValueChanged = new RadioButtonsOnValueChanged();
 
+        /// <summary>Default setting value</summary>
         public int defaultValue;
-
+        /// <summary>Set the label text of the button with the specified ID.</summary>
+        /// <param name="id">ID of the button, throws exception if out of bounds.</param>
+        /// <param name="text">Text to display on the label.</param>
         public void SetButtonLabelText(int id, string text)
         {
-            if (id >= buttons.Count || id < 0) throw new Exception("ID, out of bounds.");
+            if (id >= buttons.Count || id < 0) throw new IndexOutOfRangeException($"ID {id}, out of bounds.");
             buttons[id].labelText.text = text;
         }
+        /// <summary>Get the label text of the button with the specified ID.</summary>
+        /// <param name="id">ID of the button, throws exception if out of bounds.</param>
         public string GetButtonLabelText(int id)
         {
-            if (id >= buttons.Count || id < 0) throw new Exception("ID, out of bounds.");
+            if (id >= buttons.Count || id < 0) throw new IndexOutOfRangeException($"ID {id}, out of bounds.");
             return buttons[id].labelText.text;
         }
 
         public GameObject buttonPrefab;
         public RectTransform toggleGroup;
+        /// <summary>Adds a new button to the RadioButtons setting.</summary>
+        /// <param name="labelText">Text to display on the label of the new button.</param>
+        /// <returns>Created RadioButton.</returns>
         public RadioButton AddButton(string labelText)
         {
             GameObject newButton = Instantiate(buttonPrefab);
@@ -233,8 +278,11 @@ namespace MSCLoader
 
             return radioButton;
         }
-
+        /// <summary>Suspends the action calling if true.</summary>
         public bool suspendOnValueChangedActions = false;
+        /// <summary>Adds an action that's called whenever the setting's value changes.</summary>
+        /// <param name="action">Action to call.</param>
+        /// <param name="ignoreSuspendActions">(Optional) Should the action always be called regardless of other settings? (Not recommended for regular use)</param>
         public void AddAction(UnityAction<int> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
@@ -243,6 +291,7 @@ namespace MSCLoader
                 OnValueChanged.AddListener(action);
         }
 
+        /// <summary>Reset the setting to default values.</summary>
         public void ResetToDefaults()
         {
             Value = defaultValue;
@@ -256,10 +305,12 @@ namespace MSCLoader
         [Serializable]
         public class RadioButtonsOnValueChanged : UnityEvent<int> { }
     }
-
+    /// <summary>Component for the buttons in the Radio Buttons setting.</summary>
     public class RadioButton : MonoBehaviour
     {
+        /// <summary>Setting the RadioButton belongs to.</summary>
         public SettingRadioButtons settingRadioButtons;
+        /// <summary>ID of the button.</summary>
         public int radioID = 0;
 
         public Toggle toggle;
@@ -278,7 +329,7 @@ namespace MSCLoader
             }
         }
     }
-
+    /// <summary>Main Component for the Slider setting type.</summary>
     public class SettingSlider : ModSetting
     {
         public Text nameText;
@@ -290,33 +341,41 @@ namespace MSCLoader
         public Slider slider;
         public Image backgroundImage, handleImage;
 
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Setting name, displayed in the settings window.</summary>
         public string Name { get => nameText.text; set => nameText.text = value; }
+        /// <summary>Current setting value.</summary>
         public float Value { get => slider.value; set => slider.value = value; }
+        /// <summary>Current setting value as an integer.</summary>
         public int ValueInt { get => (int)slider.value; set => slider.value = value; }
 
+        /// <summary>Minimum slider value.</summary>
         public float MinValue { get => slider.minValue; set => slider.minValue = value; }
+        /// <summary>Maximum slider value.</summary>
         public float MaxValue { get => slider.maxValue; set => slider.maxValue = value; }
+        /// <summary>Allow only whole numbers?</summary>
         public bool WholeNumbers { get => slider.wholeNumbers; set => slider.wholeNumbers = value; }
+        /// <summary>How many digits to round the value to.</summary>
         public int RoundDigits { get => roundDigits; set => roundDigits = Math.Abs(value) % 16; }
-        public Slider.SliderEvent OnValueChanged { get => slider.onValueChanged; }
-
+        /// <summary>Event that triggers whenever the slider value is changed.</summary>
+        public Slider.SliderEvent OnValueChanged { get => slider.onValueChanged; set => slider.onValueChanged = value; }
+        /// <summary>Prefix and suffix for the value text.</summary>
         public string valuePrefix = "", valueSuffix = "";
+        /// <summary>Text to be displayed instead of the value, determined by index on the array.</summary>
         public string[] textValues = new string[0];
-
-        public bool suspendOnValueChangedActions = false;
-
+        /// <summary>Default setting value.</summary>
         public float defaultValue;
 
-        public void Start() => ChangeValueText();
+        void Start() => ChangeValueText();
         public void ChangeValueText()
         {
-                valueText.text = (textValues.Length > ValueInt) ?
-                    $"{valuePrefix}{textValues[ValueInt]}{valueSuffix}" :
-                    $"{valuePrefix}{Value}{valueSuffix}";
+            valueText.text = (textValues.Length > ValueInt) ?
+                $"{valuePrefix}{textValues[ValueInt]}{valueSuffix}" :
+                $"{valuePrefix}{Value}{valueSuffix}";
         }
 
-        public int roundDigits = -1;
+        internal int roundDigits = -1;
         public void SetRoundValue()
         {
             if (roundDigits >= 0 && !suspendOnValueChangedActions)
@@ -326,12 +385,13 @@ namespace MSCLoader
                 suspendOnValueChangedActions = false;
             }
         }
-
-        public bool suspendOnClickActions = false;
+        /// <summary>Suspend action calling.</summary>
+        public bool suspendOnValueChangedActions = false;
+        /// <summary>Add an action to the event that triggers whenever the slider changes value.</summary>
         public void AddAction(UnityAction<float> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
-                slider.onValueChanged.AddListener((actionValue) => { if (!suspendOnClickActions) action.Invoke(actionValue); });
+                slider.onValueChanged.AddListener((actionValue) => { if (!suspendOnValueChangedActions) action.Invoke(actionValue); });
             else
                 slider.onValueChanged.AddListener(action);
         }
@@ -346,14 +406,14 @@ namespace MSCLoader
             modConfig.Numbers.Add(new ModConfigNumber(ID, Value));
         }
     }
-
+    /// <summary>Main Component for the Spacer setting type.</summary>
     public class SettingSpacer : ModSetting
     {
         public LayoutElement layoutElement;
-
+        /// <summary>The height of the empty space.</summary>
         public float Height { get => layoutElement.preferredHeight; set => layoutElement.preferredHeight = value; }
     }
-
+    /// <summary>Main Component for the Text setting type.</summary>
     public class SettingText : ModSetting
     {
         public Text text;
@@ -361,13 +421,16 @@ namespace MSCLoader
 
         public Image background;
         public Outline outline;
-
+        /// <summary>Text displayed in the box of text.</summary>
         public string Text { get => text.text; set => text.text = value; }
+        /// <summary>Color of the text.</summary>
         public Color TextColor { get => text.color; set => text.color = value; }
+        /// <summary>Background color of the header containing the text.</summary>
         public Color BackgroundColor { get => background.color; set => background.color = value; }
+        /// <summary>Outline color of the header containing the text.</summary>
         public Color OutlineColor { get => outline.effectColor; set => outline.effectColor = value; }
     }
-
+    /// <summary>Main Component for the TextBox setting type.</summary>
     public class SettingTextBox : ModSetting
     {
         public Text nameText;
@@ -377,18 +440,26 @@ namespace MSCLoader
         public Image inputImage;
         public Text inputPlaceholderText;
 
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Setting name, displayed in the settings window.</summary>
         public string Name { get => nameText.text; set => nameText.text = value; }
+        /// <summary>Current setting value.</summary>
         public string Value { get => inputField.text; set => inputField.text = value; }
+        /// <summary>Placeholder example text.</summary>
         public string Placeholder { get => inputPlaceholderText.text; set => inputPlaceholderText.text = value; }
-
+        /// <summary>What type of characters should be allowed?</summary>
         public InputField.CharacterValidation InputType { get => inputField.characterValidation; set => inputField.characterValidation = value; }
-        public InputField.OnChangeEvent OnValueChange { get => inputField.onValueChange; }
+        /// <summary>Event called whenever a character is typed.</summary>
+        public InputField.OnChangeEvent OnValueChange { get => inputField.onValueChange; }        
+        /// <summary>Event called whenever the text box is exited (Pressing Enter, click outside etc.).</summary>
         public InputField.SubmitEvent OnEndEdit { get => inputField.onEndEdit; }
-
+        /// <summary>Default setting value.</summary>
         public string defaultValue;
 
+        /// <summary>Suspend action calling for the OnEndEdit event.</summary>
         public bool suspendOnEndEditActions = false;
+        /// <summary>Add an action to the OnEndEdit event.</summary>
         public void AddOnEndEditAction(UnityAction<string> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
@@ -397,7 +468,9 @@ namespace MSCLoader
                 inputField.onEndEdit.AddListener(action);
         }
 
+        /// <summary>Suspend action calling for the OnValueChange event.</summary>
         public bool suspendOnValueChangeActions = false;
+        /// <summary>Add an action to the OnValueChange event.</summary>
         public void AddOnValueChangeAction(UnityAction<string> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
@@ -416,7 +489,7 @@ namespace MSCLoader
             modConfig.Strings.Add(new ModConfigString(ID, Value));
         }
     }
-
+    /// <summary>Main Component for the Toggle setting type.</summary>
     public class SettingToggle : ModSetting
     {
         public Text nameText;
@@ -425,14 +498,20 @@ namespace MSCLoader
         public Toggle toggle;
         public Image offImage, onImage;
 
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Setting name, displayed in the settings window.</summary>
         public string Name { get => nameText.text; set => nameText.text = value; }
+        /// <summary>Current setting value.</summary>
         public bool Value { get => toggle.isOn; set => toggle.isOn = value; }
+        /// <summary>Event that triggers whenever the toggle is pressed.</summary>
         public Toggle.ToggleEvent OnValueChanged { get => toggle.onValueChanged; }
-
+        /// <summary>Default setting value.</summary>
         public bool defaultValue;
 
+        /// <summary>Suspend action calling.</summary>
         public bool suspendOnValueChangedActions = false;
+        /// <summary>Add an action to the event that triggers whenever the toggle changes value.</summary>
         public void AddAction(UnityAction<bool> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)

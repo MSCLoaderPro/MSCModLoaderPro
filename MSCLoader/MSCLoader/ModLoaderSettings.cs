@@ -31,11 +31,6 @@ namespace MSCLoader
         public float ConsoleWindowHeight { get => consoleWindowHeight.Value; set => consoleWindowHeight.Value = value; }
         public float ConsoleWindowWidth { get => consoleWindowWidth.Value; set => consoleWindowWidth.Value = value; }
 
-        public void SetupKeyAction()
-        {
-            openConsoleKey.bindPostfix = SaveSettings;
-        }
-
         public bool disableSave = false;
         public void SaveSettings()
         {
@@ -106,11 +101,6 @@ namespace MSCLoader
         {
             ModUI.CreateYesNoPrompt("THIS WILL THE OUTPUT LOG IN YOUR DEFAULT TEXT EDITOR AND MINIMIZE THE GAME.", "OPEN OUTPUT LOG?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
         }
-    }
-
-    public class ToggleSettingMenu : MonoBehaviour
-    {
-        public GameObject settingMenu;
     }
     
     public class StartDisable : MonoBehaviour

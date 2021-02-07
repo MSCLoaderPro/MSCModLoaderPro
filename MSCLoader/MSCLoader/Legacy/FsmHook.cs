@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using HutongGames.PlayMaker;
 using UnityEngine;
@@ -8,6 +9,7 @@ using UnityEngine;
 #pragma warning disable CS1591
 namespace MSCLoader
 {
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class FsmHook
     {
         private class FsmHookAction : FsmStateAction
@@ -21,6 +23,7 @@ namespace MSCLoader
             }
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static void FsmInject(GameObject gameObject, string stateName, Action hook)
         {
             FsmState state = GetStateFromGameObject(gameObject, stateName);

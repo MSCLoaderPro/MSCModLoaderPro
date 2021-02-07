@@ -98,6 +98,7 @@
     <Compile Include="Legacy\AudioLibrary\MP3_Streaming\ReadFullyStream.cs" />
     <Compile Include="Legacy\AudioLibrary\Playlists.cs" />
     <Compile Include="Legacy\Commands\CommandVersion.cs" />
+    <Compile Include="ModAssets.cs" />
     <Compile Include="Legacy\OBJLoader.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModHelper.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Legacy\SaveLoad.cs" />
     <Compile Include="Legacy\Settings.cs" />
     <Compile Include="ModSettingTypes.cs" />
+    <Compile Include="ExternalLibrary\FastOBJImporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -143,6 +145,9 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="Resources\mscloadercanvas" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Credits.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -31,13 +31,11 @@ namespace MSCLoader
             }
         }
 
-        const int scrollbackSize = 500;
+        const int scrollbackSize = 250;
 
         public Queue<string> scrollback = new Queue<string>(scrollbackSize);
         public List<string> commandHistory = new List<string>();
         Dictionary<string, CommandRegistration> commands = new Dictionary<string, CommandRegistration>();
-
-        public string[] log { get; set; } //Copy of scrollback as an array for easier use by ConsoleView
 
         public ConsoleController()
         {
@@ -68,8 +66,7 @@ namespace MSCLoader
         void ClearConsole(string[] args)
         {
             scrollback.Clear();
-            log = scrollback.ToArray();
-            LogChanged(log);
+            LogChanged(scrollback.ToArray());
         }
 
         public void AppendLogLine(string line)
@@ -77,8 +74,7 @@ namespace MSCLoader
             if (scrollback.Count >= scrollbackSize) scrollback.Dequeue();
             scrollback.Enqueue(line);
 
-            log = scrollback.ToArray();
-            LogChanged?.Invoke(log);
+            LogChanged?.Invoke(scrollback.ToArray());
         }
 
         public void RunCommandString(string commandString)

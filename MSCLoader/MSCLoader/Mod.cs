@@ -7,6 +7,9 @@ namespace MSCLoader
     /// <summary> Main Mod Class, parent class for all mods. </summary>
     public abstract class Mod
 	{
+        internal bool enabled = true;
+        internal ModUpdateData ModUpdateData;
+
         /// <summary>Determines whether or not the mod is enabled.</summary>
         public virtual bool Enabled { get => enabled; internal set { enabled = value; modListElement.SetModEnabled(value); } }
         /// <summary>The mod's ID, used for identification. Has to be unique!</summary>
@@ -21,11 +24,8 @@ namespace MSCLoader
         public virtual string Description { get; } = "";
         /// <summary>Icon displayed in the mod list, preferably square and not larger than 256x256.</summary>
         public virtual byte[] Icon { get; set; } = null;
-        /// <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP</summary>
+        /// <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP </summary>
         public virtual string UpdateLink { get; set; } = "";
-
-        internal bool enabled = true;
-        internal ModUpdateData ModUpdateData;
 
         /// <summary> The mod list element for the mod. </summary>
         public ModListElement modListElement;

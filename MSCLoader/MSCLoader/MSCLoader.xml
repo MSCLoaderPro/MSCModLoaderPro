@@ -127,6 +127,66 @@
             <param name="stream">File stream</param>
             <returns>List of paths to files/urls</returns>
         </member>
+        <member name="T:MSCLoader.ModAssets">
+            <summary>Holder class for all things related to asset loading.</summary>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadBundle(System.Byte[])">
+            <summary>Loads an AssetBundle from a specified byte Array</summary>
+            <param name="bundleBytes">byte array to load.</param>
+            <returns>Loaded AssetBundle</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadBundle(System.String)">
+            <summary>Loads an AssetBundle from a specified path.</summary>
+            <param name="filePath">File path to bundle.</param>
+            <returns>Loaded AssetBundle</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadBundle(MSCLoader.Mod,System.String)">
+            <summary>Loads an AssetBundle from the mod's Asset folder by name</summary>
+            <param name="mod">Mod to load the AssetBundle from.</param>
+            <param name="bundleName">File name of the bundle.</param>
+            <returns>Loaded AssetBundle</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadTexture(System.String,System.Boolean)">
+            <summary>Loads a Texture2D at the specified path, supported types: .jpg, .png, .dds, .tga</summary>
+            <param name="path">Path to file.</param>
+            <param name="normalMap">(Optional) Should it be converted into a normal map?</param>
+            <returns>Loaded Texture2D</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.ConvertToNormalMap(UnityEngine.Texture2D,System.Boolean)">
+            <summary>Convert a texture to a normal map.</summary>
+            <param name="texture">Texture2D to convert</param>
+            <param name="mipMaps">Generate mipmaps?</param>
+            <returns>Converted Texture2D</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadTexturePNG(System.String,System.Boolean)">
+            <summary>Loads a PNG image as a Texture2D.</summary>
+            <param name="filePath">Path to image file.</param>
+            <param name="normalMap">Is it a normal map?</param>
+            <returns>Loaded Texture2D.</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadTextureJPG(System.String,System.Boolean)">
+            <summary>Loads a JPG image as a Texture2D.</summary>
+            <param name="filePath">Path to image file.</param>
+            <param name="normalMap">Is it a normal map?</param>
+            <returns>Loaded Texture2D.</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadTextureDDS(System.String,System.Boolean)">
+            <summary>Loads a DDS image as a Texture2D.</summary>
+            <param name="filePath">Path to image file.</param>
+            <param name="normalMap">Is it a normal map?</param>
+            <returns>Loaded Texture2D.</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadTextureTGA(System.String,System.Boolean)">
+            <summary>Loads a TGA image as a Texture2D.</summary>
+            <param name="filePath">Path to image file.</param>
+            <param name="normalMap">Is it a normal map?</param>
+            <returns>Loaded Texture2D.</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.LoadMeshOBJ(System.String)">
+            <summary>Loads an OBJ model file as a Mesh.</summary>
+            <param name="filePath">Path to model file.</param>
+            <returns>Loaded Mesh.</returns>
+        </member>
         <member name="T:MSCLoader.ModConfig">
             <summary>Holder class for easy saving of settings to a file.</summary>
         </member>
@@ -147,6 +207,16 @@
         </member>
         <member name="T:MSCLoader.ModHelper">
             <summary> Container for useful helper methods </summary>
+        </member>
+        <member name="M:MSCLoader.ModHelper.MakePickable(UnityEngine.GameObject,System.Boolean)">
+            <summary>Make the provided GameObject interactable as a object you can pick up ingame.</summary>
+            <param name="gameObject">GameObject to make pickable</param>
+            <param name="includeTag">Should the tag also be changed? The tag is what makes the player able to interact with the object, whereas the layer only make its name show up as a subtitle.</param>
+        </member>
+        <member name="M:MSCLoader.ModHelper.MakePickable(UnityEngine.Transform,System.Boolean)">
+            <summary>Make the provided Transform interactable as a object you can pick up ingame.</summary>
+            <param name="transform">Transform to make pickable</param>
+            <param name="includeTag">Should the tag also be changed? The tag is what makes the player able to interact with the object, whereas the layer only make its name show up as a subtitle.</param>
         </member>
         <member name="M:MSCLoader.ModHelper.GetTransform(System.String,System.String)">
             <summary>Get a Transform child.</summary>
@@ -457,7 +527,7 @@
             <summary>Icon displayed in the mod list, preferably square and not larger than 256x256.</summary>
         </member>
         <member name="P:MSCLoader.Mod.UpdateLink">
-            <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP</summary>
+            <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP </summary>
         </member>
         <member name="F:MSCLoader.Mod.modListElement">
             <summary> The mod list element for the mod. </summary>
@@ -794,8 +864,8 @@
             <summary>Adds a keybind to the settings list.</summary>
             <param name="id">ID of the setting.</param>
             <param name="name">Name of the setting</param>
-            <param name="key">Keycode of the main key.</param>
-            <param name="modifiers">Keycodes for the modifiers required to be pressed before the main key.</param>
+            <param name="key">Default keycode of the main key.</param>
+            <param name="modifiers">Keycodes for the default modifiers required to be pressed along with the main key.</param>
             <returns>Added SettingKeybind.</returns>
         </member>
         <member name="M:MSCLoader.ModSettings.AddRadioButtons(System.String,System.String,System.Int32,System.String[])">
@@ -1062,6 +1132,277 @@
             <summary>
               Looks up a localized resource of type System.Byte[].
             </summary>
+        </member>
+        <member name="T:MSCLoader.ModSetting">
+            <summary>Parent class for settings.</summary>
+        </member>
+        <member name="M:MSCLoader.ModSetting.SaveSetting(MSCLoader.ModConfig)">
+            <summary>Method to save settings into the provided ModConfig.</summary>
+            <param name="modConfig">ModConfig to save settings to.</param>
+        </member>
+        <member name="T:MSCLoader.SettingButton">
+            <summary>Main Component for the Button setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingButton.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingButton.Name">
+            <summary>Setting name, displayed in the settings window. An empty string disables the label.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingButton.ButtonText">
+            <summary>Text on the button itself.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingButton.OnClick">
+            <summary>UI Button's OnClick Eventhandler.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingButton.suspendOnClickActions">
+            <summary>Suspends the action calling if true.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingButton.AddAction(UnityEngine.Events.UnityAction,System.Boolean)">
+            <summary>Adds an action that's called whenever the button is clicked.</summary>
+            <param name="action">Action to call.</param>
+            <param name="ignoreSuspendActions">(Optional) Should the action always be called regardless of other settings? (Not recommended for regular use)</param>
+        </member>
+        <member name="T:MSCLoader.SettingHeader">
+            <summary>Main Component for the Header setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingHeader.Height">
+            <summary>The height of the header.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingHeader.BackgroundColor">
+            <summary>The background color for the header.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingHeader.OutlineColor">
+            <summary>The Outline color for the header.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingHeader.Text">
+            <summary>Text displayed on the header.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingKeybind">
+            <summary>Main Component for the Keybind setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingKeybind.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingKeybind.Name">
+            <summary>Setting name, displayed in the settings window.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingKeybind.PreBind">
+            <summary>Event that triggers just after the player have started the keybinding process before pressing any keys.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingKeybind.PostBind">
+            <summary>Event that triggers just after the player have assigned a new binding.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingKeybind.keybind">
+            <summary>Current main key.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingKeybind.modifiers">
+            <summary>Current main modifiers.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingKeybind.defaultKeybind">
+            <summary>Default key.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingKeybind.defaultModifiers">
+            <summary>Default modifiers.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingKeybind.GetKey">
+            <summary>Get if the keybind is pressed down (including modifiers).</summary>
+        </member>
+        <member name="M:MSCLoader.SettingKeybind.GetKeyDown">
+            <summary>Get if the keybind is down (including modifiers).</summary>
+        </member>
+        <member name="M:MSCLoader.SettingKeybind.GetKeyUp">
+            <summary>Get if the keybind is up after being down (including modifiers).</summary>
+        </member>
+        <member name="M:MSCLoader.SettingKeybind.GetModifiers">
+            <summary>Get if the modifiers alone are pressed down.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingKeybind.ResetToDefaults">
+            <summary>Reset the setting to default values.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingRadioButtons">
+            <summary>Main Component for the Radio Buttons setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingRadioButtons.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingRadioButtons.Name">
+            <summary>Setting name, displayed in the settings window.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingRadioButtons.Value">
+            <summary>Current setting value.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingRadioButtons.OnValueChanged">
+            <summary>Event that triggers whenever the setting changes value.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingRadioButtons.defaultValue">
+            <summary>Default setting value</summary>
+        </member>
+        <member name="M:MSCLoader.SettingRadioButtons.SetButtonLabelText(System.Int32,System.String)">
+            <summary>Set the label text of the button with the specified ID.</summary>
+            <param name="id">ID of the button, throws exception if out of bounds.</param>
+            <param name="text">Text to display on the label.</param>
+        </member>
+        <member name="M:MSCLoader.SettingRadioButtons.GetButtonLabelText(System.Int32)">
+            <summary>Get the label text of the button with the specified ID.</summary>
+            <param name="id">ID of the button, throws exception if out of bounds.</param>
+        </member>
+        <member name="M:MSCLoader.SettingRadioButtons.AddButton(System.String)">
+            <summary>Adds a new button to the RadioButtons setting.</summary>
+            <param name="labelText">Text to display on the label of the new button.</param>
+            <returns>Created RadioButton.</returns>
+        </member>
+        <member name="F:MSCLoader.SettingRadioButtons.suspendOnValueChangedActions">
+            <summary>Suspends the action calling if true.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingRadioButtons.AddAction(UnityEngine.Events.UnityAction{System.Int32},System.Boolean)">
+            <summary>Adds an action that's called whenever the setting's value changes.</summary>
+            <param name="action">Action to call.</param>
+            <param name="ignoreSuspendActions">(Optional) Should the action always be called regardless of other settings? (Not recommended for regular use)</param>
+        </member>
+        <member name="M:MSCLoader.SettingRadioButtons.ResetToDefaults">
+            <summary>Reset the setting to default values.</summary>
+        </member>
+        <member name="T:MSCLoader.RadioButton">
+            <summary>Component for the buttons in the Radio Buttons setting.</summary>
+        </member>
+        <member name="F:MSCLoader.RadioButton.settingRadioButtons">
+            <summary>Setting the RadioButton belongs to.</summary>
+        </member>
+        <member name="F:MSCLoader.RadioButton.radioID">
+            <summary>ID of the button.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingSlider">
+            <summary>Main Component for the Slider setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.Name">
+            <summary>Setting name, displayed in the settings window.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.Value">
+            <summary>Current setting value.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.ValueInt">
+            <summary>Current setting value as an integer.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.MinValue">
+            <summary>Minimum slider value.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.MaxValue">
+            <summary>Maximum slider value.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.WholeNumbers">
+            <summary>Allow only whole numbers?</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.RoundDigits">
+            <summary>How many digits to round the value to.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSlider.OnValueChanged">
+            <summary>Event that triggers whenever the slider value is changed.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingSlider.valuePrefix">
+            <summary>Prefix and suffix for the value text.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingSlider.valueSuffix">
+            <summary>Prefix and suffix for the value text.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingSlider.textValues">
+            <summary>Text to be displayed instead of the value, determined by index on the array.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingSlider.defaultValue">
+            <summary>Default setting value.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingSlider.suspendOnValueChangedActions">
+            <summary>Suspend action calling.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingSlider.AddAction(UnityEngine.Events.UnityAction{System.Single},System.Boolean)">
+            <summary>Add an action to the event that triggers whenever the slider changes value.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingSpacer">
+            <summary>Main Component for the Spacer setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingSpacer.Height">
+            <summary>The height of the empty space.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingText">
+            <summary>Main Component for the Text setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingText.Text">
+            <summary>Text displayed in the box of text.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingText.TextColor">
+            <summary>Color of the text.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingText.BackgroundColor">
+            <summary>Background color of the header containing the text.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingText.OutlineColor">
+            <summary>Outline color of the header containing the text.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingTextBox">
+            <summary>Main Component for the TextBox setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.Name">
+            <summary>Setting name, displayed in the settings window.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.Value">
+            <summary>Current setting value.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.Placeholder">
+            <summary>Placeholder example text.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.InputType">
+            <summary>What type of characters should be allowed?</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.OnValueChange">
+            <summary>Event called whenever a character is typed.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.OnEndEdit">
+            <summary>Event called whenever the text box is exited (Pressing Enter, click outside etc.).</summary>
+        </member>
+        <member name="F:MSCLoader.SettingTextBox.defaultValue">
+            <summary>Default setting value.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingTextBox.suspendOnEndEditActions">
+            <summary>Suspend action calling for the OnEndEdit event.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingTextBox.AddOnEndEditAction(UnityEngine.Events.UnityAction{System.String},System.Boolean)">
+            <summary>Add an action to the OnEndEdit event.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingTextBox.suspendOnValueChangeActions">
+            <summary>Suspend action calling for the OnValueChange event.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingTextBox.AddOnValueChangeAction(UnityEngine.Events.UnityAction{System.String},System.Boolean)">
+            <summary>Add an action to the OnValueChange event.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingToggle">
+            <summary>Main Component for the Toggle setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingToggle.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingToggle.Name">
+            <summary>Setting name, displayed in the settings window.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingToggle.Value">
+            <summary>Current setting value.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingToggle.OnValueChanged">
+            <summary>Event that triggers whenever the toggle is pressed.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingToggle.defaultValue">
+            <summary>Default setting value.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingToggle.suspendOnValueChangedActions">
+            <summary>Suspend action calling.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingToggle.AddAction(UnityEngine.Events.UnityAction{System.Boolean},System.Boolean)">
+            <summary>Add an action to the event that triggers whenever the toggle changes value.</summary>
         </member>
         <member name="P:NAudio.Vorbis.VorbisWaveReader.UpperBitrate">
             <summary>

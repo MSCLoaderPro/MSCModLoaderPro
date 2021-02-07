@@ -3,7 +3,7 @@ using NAudio.Wave;
 using NVorbis;
 using System.IO;
 
-// GNU GPL 3.0
+// Microsoft Public License (Ms-PL)
 #pragma warning disable CS1591, IDE1006, CS0618
 namespace NAudio.Vorbis
 {

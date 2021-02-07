@@ -48,7 +48,7 @@ namespace MSCLoader
         /// <summary>Get the settings folder path for a specific mod.</summary>
         /// <param name="mod">The mod you want to get the settings folder path for.</param>
         /// <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
-        internal static string GetModSettingsFolder(Mod mod, bool create = true)
+        public static string GetModSettingsFolder(Mod mod, bool create = true)
         {
             string path = Path.Combine(SettingsFolder, mod.ID);
 
@@ -117,14 +117,15 @@ namespace MSCLoader
             LoadReferences();
             InitializeMods();
             SetupModList();
+            
+            ModConsole.Log($"<b>{LoadedMods.Count}</b> MOD{(LoadedMods.Count != 1 ? "S" : "")} FOUND!");
 
-            ModConsole.Log($"<b>{LoadedMods.Count}</b> MOD(S) FOUND!");
 
             // Log usage of methods to output_log.txt
-            string[] methodNames = { "OnGUI", "Update", "FixedUpdate", "PostLoad", "OnSave", "OnNewGame", "PreLoad", "OnMenuLoad", "OnLoad" };
+            string[] methodNames = { "OnGUI", "Update", "FixedUpdate", "PostLoad", "OnSave", "OnNewGame", "PreLoad", "OnMenuLoad", "MenuOnGUI", "MenuUpdate", "MenuFixedUpdate", "OnLoad" };
             string modString = "";
             for (int i = 0; i < methodNames.Length; i++)
-                modString += $"\n{ModMethods[i].Count} Mod(s) using {methodNames[i]}.{(ModMethods[i].Count > 0 ? "\n  " : "")}{string.Join("\n  ", ModMethods[i].Select(x => x.Name).ToArray())}";
+                modString += $"\n{ModMethods[i].Count} Mod{(ModMethods[i].Count != 1 ? "s" : "")} using {methodNames[i]}.{(ModMethods[i].Count > 0 ? "\n  " : "")}{string.Join("\n  ", ModMethods[i].Select(x => x.ID).ToArray())}";
             Console.WriteLine(modString);
 
             // Load mod settings for each loaded mod. Then call OnMenuLoad
@@ -177,7 +178,7 @@ namespace MSCLoader
                     mainMenuReturn = true;
 
                     // Make sure the UI reacts accordingly to the game's default menus.
-                    SetupModMenuHandler();
+                    ModUI.canvasGO.transform.Find("ModMenuUIHandler").GetComponent<UIModMenuHandler>().Setup();
 
                     // Lastly start the mod loading.
                     StartCoroutine(LoadMods());
@@ -250,7 +251,7 @@ namespace MSCLoader
 
             modLoaderSettings.OpenConsoleKeyKeybind = MSCLoader.settings.OpenConsoleKey[0];
             modLoaderSettings.OpenConsoleKeyModifiers = MSCLoader.settings.OpenConsoleKey.Skip(1).ToArray();
-            modLoaderSettings.openConsoleKey.bindPostfix = modLoaderSettings.SaveSettings;
+            modLoaderSettings.openConsoleKey.PostBind.AddListener(modLoaderSettings.SaveSettings);
 
             modLoaderSettings.ConsoleFontSize = MSCLoader.settings.ConsoleFontSize;
             modLoaderSettings.ConsoleAutoOpen = MSCLoader.settings.ConsoleAutoOpen;
@@ -275,24 +276,24 @@ namespace MSCLoader
                 try
                 {
                     Assembly modAssembly = Assembly.LoadFrom(file);
-                    bool isMod = false;
 
                     AssemblyName[] list = modAssembly.GetReferencedAssemblies();
+
+                    // Check if the dll is referencing either the registry or Steamworks by string.
                     string fileString = File.ReadAllText(file);
-                    if (fileString.Contains("RegistryKey") || fileString.Contains("Steamworks")) throw new FileLoadException();
+                    if (fileString.Contains("RegistryKey") || fileString.Contains("Steamworks")) throw new FileLoadException("Using forbidden key phrases.");
 
                     Type modType = modAssembly.GetTypes().FirstOrDefault(type => typeof(Mod).IsAssignableFrom(type));
                     if (modType != null)
                     {
-                        if (list.Any(assembly => assembly.Name == "Assembly-CSharp-firstpass") && (File.ReadAllText(file).Contains("Steamworks") || File.ReadAllText(file).Contains("GetSteamID")))
-                            throw new Exception("Targeting forbidden reference");
+                        // Check if the dll is referencing Steamworks.
+                        if (list.Any(assembly => assembly.Name == "Assembly-CSharp-firstpass") && (fileString.Contains("Steamworks") || fileString.Contains("GetSteamID")))
+                            throw new Exception("Targeting forbidden reference.");
 
                         string msVer = "";
                         AssemblyName mscLoader = list.FirstOrDefault(assembly => assembly.Name == "MSCLoader");
                         if (mscLoader != null)
                             msVer = $"{string.Join(".", mscLoader.Version.ToString().Split('.').Take(3).ToArray())}";
-
-                        isMod = true;
 
                         Mod mod = (Mod)Activator.CreateInstance(modType);
                         // Check if mod already exists
@@ -322,11 +323,6 @@ namespace MSCLoader
                         }
                         else
                             ModConsole.LogError($"<color=orange><b>Mod with ID: <color=red>{mod.ID}</color> already loaded:</color></b>");
-                    }
-
-                    if (!isMod)
-                    {
-                        ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded as a mod. Contact the mod author and ask for help.");
                     }
                 }
                 catch (Exception e)
@@ -413,16 +409,11 @@ namespace MSCLoader
             if (ModMethods[10].Count > 0) menuMethods.AddComponent<ModMenuFixedUpdateCall>().modLoader = this;
         }
 
-        void SetupModMenuHandler()
-        {
-            ModUI.canvasGO.transform.Find("ModMenuUIHandler").GetComponent<UIModMenuHandler>().Setup();
-        }
-
         IEnumerator LoadMods()
         {
             modUILoadScreen.SetActive(true);
 
-            ModConsole.Log("<color=#FFFF00>Loading mods...</color><color=#505050ff>\n");
+            ModConsole.Log("<color=green>Loading mods...</color><color=#787878>\n");
 
             if (newGameStarted && ModMethods[5].Count > 0)
             {
@@ -495,7 +486,7 @@ namespace MSCLoader
 
             if (ModMethods[4].Count > 0) FsmHook.FsmInject(GameObject.Find("ITEMS"), "Save game", ModOnSave);
 
-            ModConsole.Log("</color>");
+            ModConsole.controller.AppendLogLine("</color>");
 
             modUILoadScreen.SetActive(false);
         }
@@ -505,7 +496,7 @@ namespace MSCLoader
             StackFrame frame = new StackTrace(e, true).GetFrame(0);
 
             ModConsole.LogError($"<b>{mod.ID}</b>! <b>Details:</b>\n{e.Message} in <b>{frame.GetMethod()}</b>.");
-            ModConsole.LogError(e.ToString());
+            //ModConsole.LogError(e.ToString());
             System.Console.WriteLine(e);
         }
 
@@ -513,13 +504,13 @@ namespace MSCLoader
         {
             timer.Reset();
             timer.Start();
-            ModConsole.Log($"\n<color=yellow>{message}()..</color>");
+            ModConsole.Log($"\n<color=green>{message}()..</color>");
         }
 
         void MethodTimerStop(string message)
         {
             timer.Stop();
-            ModConsole.Log($"<color=yellow>{message}() Done! ({timer.ElapsedMilliseconds}ms)</color>");
+            ModConsole.Log($"<color=green>{message}() Done! ({timer.ElapsedMilliseconds}ms)</color>");
         }
 
         // Below Methods handle the various recurring methods in the mod class.
@@ -581,21 +572,20 @@ namespace MSCLoader
 
         internal void ModOnSave()
         {
-            timer.Reset();
-            timer.Start();
-            ModConsole.Log("<color=yellow>OnSave()..</color>");
+            MethodTimerStart("OnSave");
+
             for (int i = 0; i < ModMethods[4].Count; i++)
             {
-                try { if (ModMethods[4][i].Enabled) ModMethods[4][i].PostLoad(); }
+                try { if (ModMethods[4][i].Enabled) ModMethods[4][i].OnSave(); }
                 catch (Exception e) { LogError(e, ModMethods[4][i]); }
             }
-            timer.Stop();
-            ModConsole.Log($"<color=yellow>OnSave() Done! ({timer.ElapsedMilliseconds}ms)</color>");
+
+            MethodTimerStop("OnSave");
         }
 
         // LEGACY
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Obsolete, does not do anything.")]
+        [Obsolete("Does not do anything.")]
         public static bool CheckSteam() => true;
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal static string steamID = "NOYOUDONT";
@@ -603,6 +593,7 @@ namespace MSCLoader
         [Obsolete("Deprecated, use ModLoaderVersion instead.")]
         public static readonly string MSCLoader_Ver = Version;
         [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("Deprecated, doesn't do anything.")]
         public static bool LogAllErrors = false;
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool CheckIfExperimental()

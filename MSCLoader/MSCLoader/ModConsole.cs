@@ -39,9 +39,7 @@ namespace MSCLoader
         void Awake()
         {
             consoleInstance = this;
-
             console.SetActive(false);
-
             buttonText.text = console.activeSelf ? "CLOSE" : "OPEN";
 
             UpdateFontSize();
@@ -49,8 +47,7 @@ namespace MSCLoader
             controller = new ConsoleController();
             controller.LogChanged += UpdateLog;
 
-            UpdateLog(controller.log);
-
+            UpdateLog(controller.scrollback.ToArray());
         }
 
         void Update()
@@ -66,7 +63,6 @@ namespace MSCLoader
             }
         }
 
-        // Event that should be called by anything wanting to submit the current input to the console.
         public void SubmitCommand()
         {
             if (inputField.text.Length > 0)
