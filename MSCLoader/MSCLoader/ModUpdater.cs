@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Net;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
-using System.ComponentModel;
+using System.IO;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -24,18 +21,27 @@ namespace MSCLoader
         bool isBusy;
         public bool IsBusy => isBusy;
 
-        readonly string UpdaterPath = $"ModUpdater/CoolUpdater.exe";
+        string UpdaterDirectory => Path.Combine(Directory.GetCurrentDirectory(), "ModUpdater");
+        string UpdaterPath => Path.Combine(UpdaterDirectory, "CoolUpdater.exe");
+        string DownloadsDirectory => Path.Combine(UpdaterDirectory, "Downloads");
 
         int downloadTime;
-        const int TimeoutTime = 30; // in seconds.
+        const int TimeoutTime = 10; // in seconds.
+        const int TimeoutTimeDownload = 20; // in seconds.
 
+        #region Looking for updates
         /// <summary> Starts looking for the update of the specific mod. </summary>
         public void LookForUpdates()
         {
             if (IsBusy)
             {
-                ModUI.CreatePrompt("Mod loader is busy looking for updates.", "Mod Loader Update");
+                ModUI.CreatePrompt("Mod loader is busy looking for updates.", "Mod Updater");
                 return;
+            }
+
+            if (!File.Exists(UpdaterPath))
+            {
+                throw new MissingComponentException("Updater component does not exist!");
             }
 
             StartCoroutine(CheckForModUpdates(ModLoader.LoadedMods.Where(x => !string.IsNullOrEmpty(x.UpdateLink))));
@@ -57,6 +63,7 @@ namespace MSCLoader
 
             foreach (Mod mod in mods)
             {
+                ModConsole.Log($"\nLooking for update of {mod.Name}");
                 string url = mod.UpdateLink;
                 // Formatting the link.
                 if (url.Contains("github.com"))
@@ -65,7 +72,7 @@ namespace MSCLoader
                     if (!url.Contains("api."))
                     {
                         url = url.Replace("https://", "").Replace("www.", "").Replace("github.com/", "");
-                        url = "https://api.github.com/repos" + url;
+                        url = "https://api.github.com/repos/" + url;
                     }
 
                     if (!url.EndsWith("/releases/latest"))
@@ -81,30 +88,49 @@ namespace MSCLoader
                 {
                     // TODO
                 }
+                ModConsole.Log($"URL: {url}");
+                
+                ModConsole.Log($"Starting checking for update process...");
+                Process p = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = UpdaterPath,
+                        Arguments = "get-metafile " + url,
+                        WorkingDirectory = UpdaterDirectory,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
+                };
 
-                Process p = new Process();
-                p.StartInfo.FileName = UpdaterPath;
-                p.StartInfo.Arguments = "get-metafile " + url;
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.Start();
+                lastDataOut = "";
+                p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
 
                 string output = "";
                 downloadTime = 0;
-                while (!p.HasExited)
+                
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+                while (!p.HasExited)   
                 {
-                    yield return null;
-
                     downloadTime++;
                     if (downloadTime > TimeoutTime)
                     {
-                        ModConsole.LogError($"Mod Update Check for {mod.Name} timed-out.");
-                        continue;
+                        ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
+                        break;
                     }
 
-                    output = p.StandardOutput.ReadToEnd();
+                    yield return new WaitForSeconds(1);
                 }
+
                 p.Close();
+                ModConsole.Log($"Mod Updater: {mod.ID} - pulling metadata succeeded!");
+
+                output = lastDataOut;
 
                 // Reading the metadata file info that we want.
                 mod.ModUpdateData = new ModUpdateData();
@@ -120,7 +146,8 @@ namespace MSCLoader
                         }
                         else if (s.Contains("\"browser_download_url\""))
                         {
-                            mod.ModUpdateData.ZipUrl = s.Split(':')[1].Replace("\"", "").Replace("}", "").Replace("]", "");
+                            string[] separated = s.Split(':');
+                            mod.ModUpdateData.ZipUrl = (separated[1] + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
                         }
 
                         // Breaking out of the loop, if we found all that we've been looking for.
@@ -133,14 +160,34 @@ namespace MSCLoader
 
                 if (IsNewerVersionAvailable(mod.Version, mod.ModUpdateData.LatestVersion))
                 {
-                    // TODO: There is newer version of mod available. Indicate that in mod settings and enable download button for it.
+                    mod.ModUpdateData.UpdateStatus = UpdateStatus.Available;
+                    ModConsole.Log($"<color=green>Mod Updater: {mod.ID} has an update available!</color>");
                 }
+                else
+                {
+                    mod.ModUpdateData.UpdateStatus = UpdateStatus.NotAvailable;
+                    ModConsole.Log($"<color=green>Mod Updater: {mod.ID} is up-to-date!</color>");
+                }
+
+                ModConsole.Log($"Mod Updater: {mod.ID} Available version: {mod.ModUpdateData.LatestVersion} ");
+                ModConsole.Log($"Mod Updater: {mod.ID} Your version:      {mod.Version} ");
 
                 i++;
                 sliderProgressBar.value = i;
             }
 
             isBusy = false;
+        }
+
+        private void ErrorHandler(object sender, DataReceivedEventArgs e)
+        {
+            ModConsole.Log(e.Data);
+        }
+
+        static string lastDataOut;
+        static void OutputHandler(object sendingProcess, DataReceivedEventArgs e)
+        {
+            lastDataOut += e.Data + "\n";
         }
 
         IEnumerator UpdateSliderText()
@@ -208,27 +255,115 @@ namespace MSCLoader
 
             return isOutdated;
         }
+        #endregion
+        #region Downloading the updates
+        List<Mod> updateCheckQueue = new List<Mod>();
+        int currentModInQueue;
 
         public void DownloadModUpdate(Mod mod)
         {
-            StartCoroutine(DownloadModUpdateRoutine(mod));
+            if (!File.Exists(UpdaterPath))
+            {
+                throw new MissingComponentException("Updater component does not exist!");
+            }
+
+            if (!updateCheckQueue.Contains(mod))
+            {
+                updateCheckQueue.Add(mod);
+                sliderProgressBar.maxValue = updateCheckQueue.Count();
+            }
+
+            if (isBusy)
+            {
+                return;
+            }
+
+            if (currentDownloadRoutine != null)
+            {
+                return;
+            }
+            currentDownloadRoutine = DownloadModUpdateRoutine();
+            StartCoroutine(currentDownloadRoutine);
         }
 
-        IEnumerator DownloadModUpdateRoutine(Mod mod)
+        private IEnumerator currentDownloadRoutine;
+        IEnumerator DownloadModUpdateRoutine()
         {
             isBusy = true;
 
-            // TODO
-            yield return null;
+            int i = 0;
+            sliderProgressBar.value = i;
+            headerProgressBar.SetActive(true);
+            StartCoroutine(UpdateSliderText());
 
+            for (; currentModInQueue < updateCheckQueue.Count() - 1; currentModInQueue++)
+            {
+                Mod mod = updateCheckQueue[currentModInQueue];
+                ModConsole.Log($"\nMod Updater: Downloading mod update of {mod.ID}...");
+
+                if (!Directory.Exists(DownloadsDirectory))
+                {
+                    Directory.CreateDirectory(DownloadsDirectory);
+                }
+
+                string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.zip");
+                Process p = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = UpdaterPath,
+                        Arguments = $"get-file {mod.ModUpdateData.ZipUrl} {downloadToPath}",
+                        WorkingDirectory = UpdaterDirectory,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
+                };
+                p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
+
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+                downloadTime = 0;
+                while (!p.HasExited)
+                {
+                    downloadTime++;
+                    if (downloadTime > TimeoutTimeDownload)
+                    {
+                        ModConsole.LogError($"Mod Update Check for {mod.ID} timed-out.");
+                        break;
+                    }
+
+                    yield return new WaitForSeconds(1);
+                }
+
+                if (File.Exists(downloadToPath))
+                {
+                    ModConsole.Log($"Mod Updater: Update downloading for {mod.ID} completed!");
+                }
+                else
+                {
+                    ModConsole.Log($"<color=red>Mod Updater: Update downloading for {mod.ID} failed.</color");
+                }
+                i++;
+                sliderProgressBar.value = i;
+            }
+
+            currentDownloadRoutine = null;
             isBusy = false;
         }
+        #endregion
     }
+
+    enum UpdateStatus { NotChecked, NotAvailable, Available, Downloaded }
 
     /// <summary> Stores the info about mod update found. </summary>
     internal struct ModUpdateData
     {
         public string ZipUrl;
         public string LatestVersion;
+        public UpdateStatus UpdateStatus;
     }
 }

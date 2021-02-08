@@ -25,7 +25,7 @@ namespace MSCLoader
         /// <summary>Icon displayed in the mod list, preferably square and not larger than 256x256.</summary>
         public virtual byte[] Icon { get; set; } = null;
         /// <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP </summary>
-        public virtual string UpdateLink { get; set; } = "";
+        public virtual string UpdateLink { get; } = "";
 
         /// <summary> The mod list element for the mod. </summary>
         public ModListElement modListElement;

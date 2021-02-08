@@ -9,7 +9,6 @@ namespace CoolUpdater
     {
         static void Main(string[] args)
         {
-            Console.Clear();
             if (args.Length == 0)
             {
                 Console.WriteLine("Copyright(C) Konrad \"Athlon\" Figura 2021\n\n" +
@@ -72,7 +71,6 @@ namespace CoolUpdater
 
         private static void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            Console.Clear();
             Console.WriteLine(e.Result.Replace(",", ",\n"));
             Environment.Exit(1);
         }
@@ -102,7 +100,6 @@ namespace CoolUpdater
 
         private static void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            Console.Clear();
             Console.WriteLine(e.ProgressPercentage + "%");
         }
 
