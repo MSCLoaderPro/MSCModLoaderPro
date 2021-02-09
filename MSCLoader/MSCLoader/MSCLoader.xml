@@ -712,6 +712,22 @@
         <member name="M:MSCLoader.ModPromptButton.ClickDisable">
             <summary>When the button is clicked, disable the prompt.</summary>
         </member>
+        <member name="M:MSCLoader.ModSave.Save``1(System.String,``0)">
+            <summary>Saves a class (T) into an XML file of the specified name.</summary>
+            <typeparam name="T">Class to save</typeparam>
+            <param name="fileName">Name of the save file. (excluding extension)</param>
+            <param name="value">Class to save.</param>
+        </member>
+        <member name="M:MSCLoader.ModSave.Load``1(System.String)">
+            <summary>Loads a save file with the specified name.</summary>
+            <typeparam name="T">Class to load.</typeparam>
+            <param name="fileName">Name of the save file. (excluding extension)</param>
+            <returns>Loaded save class (T).</returns>
+        </member>
+        <member name="M:MSCLoader.ModSave.Delete(System.String)">
+            <summary>Deletes a save file of the specified name.</summary>
+            <param name="fileName">Name of the save file. (excluding extension)</param>
+        </member>
         <member name="T:MSCLoader.ModContainer">
             <summary>Handler for all the mod windows.</summary>
         </member>
@@ -741,6 +757,9 @@
         </member>
         <member name="F:MSCLoader.ModContainer.settingsWindowPrefab">
             <summary>Prefab GameObject for a mod settings window.</summary>
+        </member>
+        <member name="F:MSCLoader.ModContainer.modUpdater">
+            <summary>Component responsible for updating.</summary>
         </member>
         <member name="M:MSCLoader.ModContainer.CreateModListElement(MSCLoader.Mod)">
             <summary>Creates a ModListElement for the specified mod and adds it to the mod list.</summary>

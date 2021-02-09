@@ -89,7 +89,7 @@ namespace MSCLoader
                     // TODO
                 }
                 ModConsole.Log($"URL: {url}");
-                
+
                 ModConsole.Log($"Starting checking for update process...");
                 Process p = new Process
                 {
@@ -111,11 +111,11 @@ namespace MSCLoader
 
                 string output = "";
                 downloadTime = 0;
-                
+
                 p.Start();
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
-                while (!p.HasExited)   
+                while (!p.HasExited)
                 {
                     downloadTime++;
                     if (downloadTime > TimeoutTime)
@@ -162,11 +162,13 @@ namespace MSCLoader
                 {
                     mod.ModUpdateData.UpdateStatus = UpdateStatus.Available;
                     ModConsole.Log($"<color=green>Mod Updater: {mod.ID} has an update available!</color>");
+                    mod.modListElement.ToggleUpdateButton(true);
                 }
                 else
                 {
                     mod.ModUpdateData.UpdateStatus = UpdateStatus.NotAvailable;
                     ModConsole.Log($"<color=green>Mod Updater: {mod.ID} is up-to-date!</color>");
+                    mod.modListElement.ToggleUpdateButton(false);
                 }
 
                 ModConsole.Log($"Mod Updater: {mod.ID} Available version: {mod.ModUpdateData.LatestVersion} ");

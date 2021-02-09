@@ -3462,7 +3462,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 22483546}
   m_Direction: 2
   m_Value: 1
-  m_Size: .881188154
+  m_Size: .881188095
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3936,6 +3936,7 @@ MonoBehaviour:
   modListElementPrefab: {fileID: 143468, guid: 950a9702e31744b4dae9c4aa0e628400, type: 2}
   settingsList: {fileID: 22470820}
   settingsWindowPrefab: {fileID: 170570, guid: ec48fa00420259747bf43524590088b3, type: 2}
+  modUpdater: {fileID: 11415996}
 --- !u!114 &11415514
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5312,7 +5313,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 22439984}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: .999999881
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7403,7 +7404,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 22436560}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: .999999821
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

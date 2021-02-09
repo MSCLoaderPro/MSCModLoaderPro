@@ -59,6 +59,9 @@
       <HintPath>..\References\NAudio.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NAudio.Flac">
+      <HintPath>..\References\NAudio.Flac.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
@@ -113,6 +116,7 @@
     <Compile Include="ModConsole.cs" />
     <Compile Include="ModLoader.cs" />
     <Compile Include="ModPrompt.cs" />
+    <Compile Include="ModSave.cs" />
     <Compile Include="ModSettings.cs" />
     <Compile Include="ModLoaderSettings.cs" />
     <Compile Include="ModUI.cs" />
@@ -147,7 +151,7 @@
     <None Include="Resources\mscloadercanvas" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Credits.txt" />
+    <EmbeddedResource Include="Resources\Credits.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

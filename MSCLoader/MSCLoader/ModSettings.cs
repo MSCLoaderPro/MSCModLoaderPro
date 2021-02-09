@@ -35,6 +35,8 @@ namespace MSCLoader
         public Transform settingsList;
         /// <summary>Prefab GameObject for a mod settings window.</summary>
         public GameObject settingsWindowPrefab;
+        /// <summary>Component responsible for updating.</summary>
+        public ModUpdater modUpdater;
 
         void OnApplicationQuit()
         {
@@ -140,6 +142,8 @@ namespace MSCLoader
         public Toggle modToggle, modSettingsToggle;
         public Text nameText, authorText, versionText;
         public RawImage iconImage;
+        public GameObject updateButton;
+
         /// <summary>ID for the ModListElement, gets/sets the name of the GameObject the list is on.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Name of the mod, gets/sets the Name UI Text</summary>
@@ -192,6 +196,18 @@ namespace MSCLoader
         public void SetModEnabled(bool enabled)
         {
             modToggle.isOn = enabled;
+        }
+
+        public void ToggleUpdateButton(bool enabled)
+        {
+            updateButton.SetActive(enabled);
+        }
+
+        public void DownloadUpdate()
+        {
+            ToggleUpdateButton(false);
+            if (mod.ModUpdateData.UpdateStatus == UpdateStatus.Available)
+                modContainer.modUpdater.DownloadModUpdate(mod);
         }
     }
 

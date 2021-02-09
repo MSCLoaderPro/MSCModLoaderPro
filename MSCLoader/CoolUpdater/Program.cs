@@ -74,7 +74,7 @@ namespace CoolUpdater
             Console.WriteLine(e.Result.Replace(",", ",\n"));
             Environment.Exit(1);
         }
-        
+
         private static void DownloadFile(string url, string savepath)
         {
             Thread t = new Thread(() =>

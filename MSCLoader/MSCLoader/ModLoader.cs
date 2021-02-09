@@ -120,7 +120,6 @@ namespace MSCLoader
             
             ModConsole.Log($"<b>{LoadedMods.Count}</b> MOD{(LoadedMods.Count != 1 ? "S" : "")} FOUND!");
 
-
             // Log usage of methods to output_log.txt
             string[] methodNames = { "OnGUI", "Update", "FixedUpdate", "PostLoad", "OnSave", "OnNewGame", "PreLoad", "OnMenuLoad", "MenuOnGUI", "MenuUpdate", "MenuFixedUpdate", "OnLoad" };
             string modString = "";
