@@ -122,7 +122,9 @@ namespace MSCLoader
             public bool SkipGameLauncher;
             public bool SkipSplashScreen;
             public bool UseVsyncInMenu;
+            
             public bool CheckUpdateAutomatically;
+            public bool AskBeforeUpdateDownload = true;
 
             public KeyCode[] OpenConsoleKey;
             public int ConsoleFontSize;
@@ -141,7 +143,9 @@ namespace MSCLoader
                 SkipGameLauncher = settingINI.Read<bool>("SkipGameLauncher", "General");
                 SkipSplashScreen = settingINI.Read<bool>("SkipSplashScreen", "General");
                 UseVsyncInMenu = settingINI.Read<bool>("UseVsyncInMenu", "General");
-                CheckUpdateAutomatically = settingINI.Read<bool>("CheckUpdateAutomatically", "General");
+
+                CheckUpdateAutomatically = settingINI.Read<bool>("CheckUpdateAutomatically", "Mod Updates");
+                AskBeforeUpdateDownload = settingINI.Read<bool>("AskBeforeUpdateDownload", "Mod Updates");
 
                 OpenConsoleKey = settingINI.Read<string>("OpenConsoleKey", "Console").Split(';').Select(x => (KeyCode)Enum.Parse(typeof(KeyCode), x, true)).ToArray();
                 ConsoleFontSize = settingINI.Read<int>("ConsoleFontSize", "Console");
@@ -158,7 +162,9 @@ namespace MSCLoader
                 settingINI.Write("SkipGameLauncher", "General", SkipGameLauncher);
                 settingINI.Write("SkipSplashScreen", "General", SkipSplashScreen);
                 settingINI.Write("UseVsyncInMenu", "General", UseVsyncInMenu);
-                settingINI.Write("CheckUpdateAutomatically", "General", CheckUpdateAutomatically);
+                
+                settingINI.Write("CheckUpdateAutomatically", "Mod Updates", CheckUpdateAutomatically);
+                settingINI.Write("AskBeforeUpdateDownload", "Mod Updates", AskBeforeUpdateDownload);
 
                 settingINI.Write("OpenConsoleKey", "Console", string.Join(";", Array.ConvertAll(OpenConsoleKey, x => x.ToString())));
                 settingINI.Write("ConsoleFontSize", "Console", ConsoleFontSize);

@@ -2,11 +2,20 @@
 using System.Threading;
 using System.Net;
 using System.ComponentModel;
+using System.IO;
+using Ionic.Zip;
+using System.Diagnostics;
+using System.Text;
 
 namespace CoolUpdater
 {
     class Program
     {
+        static bool restartGame;
+
+        const string Downloads = "Downloads";
+        const string Temp = "Temp";
+
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -46,9 +55,19 @@ namespace CoolUpdater
                     DownloadFile(args[1], args[2]);
                     break;
                 case "update-all":
+                    if (args.Length > 1 && args[1] == "restart")
+                    {
+                        restartGame = true;
+                    }
+
                     UpdateAll();
                     break;
                 case "update-modloader":
+                    if (args.Length > 1 && args[1] == "restart")
+                    {
+                        restartGame = true;
+                    }
+
                     UpdateModLoader();
                     break;
             }
@@ -110,7 +129,57 @@ namespace CoolUpdater
 
         private static void UpdateAll()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Mod Loader Pro Auto-Update Tool Initialized!\n");
+
+            Process[] mscProcess = Process.GetProcessesByName("mysummercar");
+            if (mscProcess.Length > 0)
+            {
+                foreach (Process process in mscProcess)
+                {
+                    Console.WriteLine("Waiting for My Summer Car to exit...\n");
+                    process.WaitForExit();
+                }
+            }
+
+            if (!Directory.Exists(Downloads))
+            {
+                throw new DirectoryNotFoundException("Downloads folder doesn't exist!");
+            }
+
+            string modsFolder = @"..\Mods";
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            DirectoryInfo di = new DirectoryInfo(Downloads);
+            FileInfo[] files = di.GetFiles("*.zip");
+            for (int i = 0; i < files.Length; i++)
+            {
+                FileInfo file = files[i];
+                try
+                {
+                    Console.WriteLine($"({i}/{files.Length}) Unpacking {file.Name}...");
+                    using (ZipFile zip = ZipFile.Read(file.FullName))
+                    {
+                        zip.ExtractAll(modsFolder, ExtractExistingFileAction.OverwriteSilently);
+                    }
+                    Console.WriteLine($"{file.Name} unpacking completed!\n");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"\n===============================================\nThere was an error while extracting {file.Name} :(\n\n" + ex.ToString() + "\n\n");
+                }
+            }
+
+            // Cleanup after install.
+            Directory.Delete(Downloads, true);
+            
+            Console.WriteLine($"All mods have been updated, have a nice day :)");
+            if (restartGame)
+            {
+                Console.WriteLine($"Restarting game now using Steam");
+                Process.Start("steam://rungameid/516750");
+            }
+
+            Environment.Exit(0);
         }
     }
 }

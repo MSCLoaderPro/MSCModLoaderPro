@@ -96,14 +96,10 @@ namespace MSCLoader
         /// Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
         /// Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="title"></param>
         /// <returns>Returns a ModPrompt component of the button.</returns>
-        public static ModPrompt CreateCustomPrompt(string message = null, string title = null)
+        public static ModPrompt CreateCustomPrompt()
         {
             ModPrompt modPrompt = NewPrompt();
-            modPrompt.Text = message;
-            modPrompt.Title = title;
             modPrompt.gameObject.SetActive(false); // Custom prompts have to be showed manually using ModPrompt.Show().
 
             return NewPrompt();

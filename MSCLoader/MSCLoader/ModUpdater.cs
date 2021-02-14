@@ -29,6 +29,24 @@ namespace MSCLoader
         const int TimeoutTime = 10; // in seconds.
         const int TimeoutTimeDownload = 20; // in seconds.
 
+        IEnumerator UpdateSliderText(string message)
+        {
+            WaitForSeconds wait = new WaitForSeconds(0.25f);
+            while (isBusy)
+            {
+                textProgressBar.text = message;
+                yield return wait;
+                textProgressBar.text = $".{message}.";
+                yield return wait;
+                textProgressBar.text = $"..{message}..";
+                yield return wait;
+                textProgressBar.text = $"...{message}...";
+                yield return wait;
+            }
+            yield return new WaitForSeconds(5f);
+            headerProgressBar.SetActive(false);
+        }
+
         #region Looking for updates
         /// <summary> Starts looking for the update of the specific mod. </summary>
         public void LookForUpdates()
@@ -59,7 +77,7 @@ namespace MSCLoader
             sliderProgressBar.value = i;
             headerProgressBar.SetActive(true);
             sliderProgressBar.maxValue = mods.Count();
-            StartCoroutine(UpdateSliderText());
+            StartCoroutine(UpdateSliderText("CHECKING FOR UPDATES"));
 
             foreach (Mod mod in mods)
             {
@@ -147,7 +165,7 @@ namespace MSCLoader
                         else if (s.Contains("\"browser_download_url\""))
                         {
                             string[] separated = s.Split(':');
-                            mod.ModUpdateData.ZipUrl = (separated[1] + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
+                            mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
                         }
 
                         // Breaking out of the loop, if we found all that we've been looking for.
@@ -171,8 +189,8 @@ namespace MSCLoader
                     mod.modListElement.ToggleUpdateButton(false);
                 }
 
-                ModConsole.Log($"Mod Updater: {mod.ID} Available version: {mod.ModUpdateData.LatestVersion} ");
-                ModConsole.Log($"Mod Updater: {mod.ID} Your version:      {mod.Version} ");
+                ModConsole.Log($"Mod Updater: {mod.ID} Latest version: {mod.ModUpdateData.LatestVersion}");
+                ModConsole.Log($"Mod Updater: {mod.ID} Your version:   {mod.Version}");
 
                 i++;
                 sliderProgressBar.value = i;
@@ -190,24 +208,6 @@ namespace MSCLoader
         static void OutputHandler(object sendingProcess, DataReceivedEventArgs e)
         {
             lastDataOut += e.Data + "\n";
-        }
-
-        IEnumerator UpdateSliderText()
-        {
-            WaitForSeconds wait = new WaitForSeconds(0.25f);
-            while (isBusy)
-            {
-                textProgressBar.text = "CHECKING FOR UPDATES";
-                yield return wait;
-                textProgressBar.text = ".CHECKING FOR UPDATES.";
-                yield return wait;
-                textProgressBar.text = "..CHECKING FOR UPDATES..";
-                yield return wait;
-                textProgressBar.text = "...CHECKING FOR UPDATES...";
-                yield return wait;
-            }
-            yield return new WaitForSeconds(5f);
-            headerProgressBar.SetActive(false);
         }
 
         bool IsNewerVersionAvailable(string currentVersion, string serverVersion)
@@ -259,22 +259,62 @@ namespace MSCLoader
         }
         #endregion
         #region Downloading the updates
-        List<Mod> updateCheckQueue = new List<Mod>();
+        List<Mod> updateDownloadQueue = new List<Mod>();
         int currentModInQueue;
 
         public void DownloadModUpdate(Mod mod)
         {
             if (!File.Exists(UpdaterPath))
             {
-                throw new MissingComponentException("Updater component does not exist!");
+                throw new MissingComponentException("Updater component is missing!");
             }
 
-            if (!updateCheckQueue.Contains(mod))
+            if (!MSCLoader.settings.AskBeforeUpdateDownload)
             {
-                updateCheckQueue.Add(mod);
-                sliderProgressBar.maxValue = updateCheckQueue.Count();
+                AddModToDownloadQueue(mod);
+                return;
             }
 
+            ModPrompt prompt = ModUI.CreateCustomPrompt();
+            prompt.Text = $"Are you sure you want to download upate for mod:\n\n<color=yellow>\"{mod.Name}\"</color>\n\n" +
+                          $"Your version is {mod.Version} and the newest version is {mod.ModUpdateData.LatestVersion}.";
+            prompt.Title = "Mod Updater";
+            prompt.AddButton("Yes", () => AddModToDownloadQueue(mod));
+            prompt.AddButton("Yes, and don't ask again", () => { MSCLoader.settings.AskBeforeUpdateDownload = false; AddModToDownloadQueue(mod); });
+            prompt.AddButton("No", null);
+            //prompt.Show();
+        }
+
+        void AddModToDownloadQueue(Mod mod)
+        {
+            if (!updateDownloadQueue.Contains(mod))
+            {
+                updateDownloadQueue.Add(mod);
+                sliderProgressBar.maxValue = updateDownloadQueue.Count();
+            }
+
+            StartDownload();
+        }
+
+        /// <summary>
+        /// Populates the queue list with all mods with the UpdateStatus.Available state.
+        /// </summary>
+        public void UpdateAll()
+        {
+            Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
+            foreach (Mod mod in mods)
+            {
+                if (!updateDownloadQueue.Contains(mod))
+                {
+                    updateDownloadQueue.Add(mod);
+                }
+            }
+
+            StartDownload();
+        }
+
+        void StartDownload()
+        {
             if (isBusy)
             {
                 return;
@@ -296,11 +336,11 @@ namespace MSCLoader
             int i = 0;
             sliderProgressBar.value = i;
             headerProgressBar.SetActive(true);
-            StartCoroutine(UpdateSliderText());
+            StartCoroutine(UpdateSliderText("DOWNLOADING UPDATES"));
 
-            for (; currentModInQueue < updateCheckQueue.Count() - 1; currentModInQueue++)
+            for (; currentModInQueue < updateDownloadQueue.Count(); currentModInQueue++)
             {
-                Mod mod = updateCheckQueue[currentModInQueue];
+                Mod mod = updateDownloadQueue[currentModInQueue];
                 ModConsole.Log($"\nMod Updater: Downloading mod update of {mod.ID}...");
 
                 if (!Directory.Exists(DownloadsDirectory))
@@ -309,12 +349,14 @@ namespace MSCLoader
                 }
 
                 string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.zip");
+                string args = $"get-file \"{mod.ModUpdateData.ZipUrl}\" \"{downloadToPath}\"";
+                ModConsole.Log(args);
                 Process p = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = UpdaterPath,
-                        Arguments = $"get-file {mod.ModUpdateData.ZipUrl} {downloadToPath}",
+                        Arguments = args,
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
@@ -344,10 +386,11 @@ namespace MSCLoader
                 if (File.Exists(downloadToPath))
                 {
                     ModConsole.Log($"Mod Updater: Update downloading for {mod.ID} completed!");
+                    mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
                 }
                 else
                 {
-                    ModConsole.Log($"<color=red>Mod Updater: Update downloading for {mod.ID} failed.</color");
+                    ModConsole.Log($"<color=red>Mod Updater: Update downloading for {mod.ID} failed.</color>");
                 }
                 i++;
                 sliderProgressBar.value = i;
@@ -355,6 +398,37 @@ namespace MSCLoader
 
             currentDownloadRoutine = null;
             isBusy = false;
+
+            // Asking user if he wants to update now or later.
+            int downloadedUpdates = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Downloaded).Count();
+            if (downloadedUpdates > 0)
+            {
+                ModUI.CreateYesNoPrompt($"There {(downloadedUpdates > 1 ? "are" : "is")} <color=yellow>{downloadedUpdates}</color> mod update{(downloadedUpdates > 1 ? "s" : "")} ready to be installed. " +
+                                        $"Would you like to install them now?", "Mod Updater", () => { restartGame = true; Application.Quit(); }, null, () => { waitForInstall = true; });
+            }
+        }
+        #endregion
+        #region Waiting for install
+        bool waitForInstall;
+        bool restartGame;
+        // Unity function: https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnApplicationQuit.html
+        void OnApplicationQuit()
+        {
+            if (waitForInstall)
+            {
+                Process p = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = UpdaterPath,
+                        Arguments = "update-all" + (restartGame ? " restart" : ""),
+                        WorkingDirectory = UpdaterDirectory,
+                        UseShellExecute = true
+                    }
+                };
+
+                p.Start();
+            }
         }
         #endregion
     }

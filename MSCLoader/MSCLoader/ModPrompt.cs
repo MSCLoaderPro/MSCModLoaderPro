@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -76,18 +77,21 @@ namespace MSCLoader
             if (destroyOnDisable) Destroy(gameObject);
         }
 
-        /// <summary>Show the ModPrompt</summary>
-        public void Show()
+        void OnEnable()
         {
             // We are checking if the custom prompt has buttons.
             // If it doesn't, we're adding a dummy "OK" button.
             // This is to prevent modders from creating prompts that can't be closed.
+            StartCoroutine(IsAnyButtonPresent());
+        }
+
+        IEnumerator IsAnyButtonPresent()
+        {
+            yield return null;
             if (buttons.Count == 0)
             {
                 AddButton("OK", null);
             }
-
-            gameObject.SetActive(true);
         }
     }
     /// <summary>ModPromptButton Component for buttons added the prompts.</summary>
