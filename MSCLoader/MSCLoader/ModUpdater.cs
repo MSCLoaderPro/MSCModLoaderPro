@@ -34,11 +34,13 @@ namespace MSCLoader
 
         void Start()
         {
+            /*
             if (MSCLoader.settings.CheckUpdateAutomatically && !autoUpdateChecked)
             {
                 LookForUpdates();
                 autoUpdateChecked = true;
             }
+            */
         }
 
         IEnumerator UpdateSliderText(string message)
