@@ -17,6 +17,7 @@ namespace MSCLoader
         public GameObject headerProgressBar;
         public Slider sliderProgressBar;
         public Text textProgressBar;
+        const int MaxDots = 3;
 
         bool isBusy;
         public bool IsBusy => isBusy;
@@ -29,18 +30,30 @@ namespace MSCLoader
         const int TimeoutTime = 10; // in seconds.
         const int TimeoutTimeDownload = 20; // in seconds.
 
+        bool autoUpdateChecked;
+
+        void Start()
+        {
+            if (MSCLoader.settings.CheckUpdateAutomatically && !autoUpdateChecked)
+            {
+                LookForUpdates();
+                autoUpdateChecked = true;
+            }
+        }
+
         IEnumerator UpdateSliderText(string message)
         {
             WaitForSeconds wait = new WaitForSeconds(0.25f);
+            int numberOfDots = 1;
             while (isBusy)
             {
-                textProgressBar.text = message;
-                yield return wait;
-                textProgressBar.text = $".{message}.";
-                yield return wait;
-                textProgressBar.text = $"..{message}..";
-                yield return wait;
-                textProgressBar.text = $"...{message}...";
+                string dots = new string('.', numberOfDots);
+                textProgressBar.text = $"{dots}{message}{dots}";
+                numberOfDots++;
+                if (numberOfDots > MaxDots)
+                {
+                    numberOfDots = 1;
+                }
                 yield return wait;
             }
             yield return new WaitForSeconds(5f);
