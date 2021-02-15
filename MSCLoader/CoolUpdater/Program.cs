@@ -11,6 +11,8 @@ namespace CoolUpdater
 {
     class Program
     {
+        const string Version = "0.1";
+
         static bool restartGame;
 
         const string Downloads = "Downloads";
@@ -39,7 +41,12 @@ namespace CoolUpdater
                         throw new UriFormatException("Downloader only supports Nexusmods or GitHub links.");
                     }
 
-                    DownloadMetafile(args[1]);
+                    if (args[1].Contains("nexusmods.com") && args.Length < 2)
+                    {
+                        throw new ArgumentException("Missing user token!");
+                    }
+
+                    DownloadMetafile(args[1], args[2]);
                     break;
                 case "get-file":
                     if (!args[1].Contains("github.com") && !args[1].Contains("nexusmods.com"))
@@ -73,18 +80,46 @@ namespace CoolUpdater
             }
         }
 
-        static void DownloadMetafile(string url)
+        static string GetSystemVersion()
         {
-            Thread t = new Thread(() => {
-                using (WebClient client = new WebClient())
-                {
-                    client.Headers.Add("User-Agent: Other");
-                    client.DownloadStringCompleted += Client_DownloadStringCompleted;
-                    client.DownloadStringAsync(new Uri(url));
-                }
-            });
+            return Environment.OSVersion.VersionString;
+        }
 
-            t.Start();
+        static void DownloadMetafile(string url, string token = "")
+        {
+            if (url.Contains("nexusmods.com"))
+            {
+                Thread t = new Thread(() =>
+                {
+                    using (WebClient client = new WebClient())
+                    {
+                        client.Headers.Add($"User-Agent: MSCLoaderPro/{Version} ({GetSystemVersion()})");
+                        client.Headers.Add($"apikey: {token}");
+                        client.DownloadStringCompleted += Client_DownloadStringCompleted;
+                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/games/mysummercar/mods/146.json")); //MAIN INFO
+                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/games/mysummercar/mods/146/files.json")); //FILES
+                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/games/mysummercar/mods/1232/files/146/download_link.json")); // Download link for newest version
+                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/users/validate.json")); // User Info
+                        client.DownloadStringAsync(new Uri(url));
+                    }
+                });
+
+                t.Start();
+            }
+            else
+            {
+                Thread t = new Thread(() =>
+                {
+                    using (WebClient client = new WebClient())
+                    {
+                        client.Headers.Add("User-Agent: Other");
+                        client.DownloadStringCompleted += Client_DownloadStringCompleted;
+                        client.DownloadStringAsync(new Uri(url));
+                    }
+                });
+
+                t.Start();
+            }
             Console.ReadKey();
         }
 

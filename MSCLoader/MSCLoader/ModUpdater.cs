@@ -25,12 +25,12 @@ namespace MSCLoader
         string UpdaterDirectory => Path.Combine(Directory.GetCurrentDirectory(), "ModUpdater");
         string UpdaterPath => Path.Combine(UpdaterDirectory, "CoolUpdater.exe");
         string DownloadsDirectory => Path.Combine(UpdaterDirectory, "Downloads");
-
-        int downloadTime;
         const int TimeoutTime = 10; // in seconds.
         const int TimeoutTimeDownload = 20; // in seconds.
 
         bool autoUpdateChecked;
+
+        bool nexusIsPremium;
 
         void Start()
         {
@@ -116,79 +116,88 @@ namespace MSCLoader
                     {
                         url += "releases/latest";
                     }
+
+                    ModConsole.Log($"URL: {url}");
+
+                    ModConsole.Log($"Starting checking for update process...");
+                    Process p = GetMetaFile(url);
+                    string output = "";
+                    int downloadTime = 0;
+                    while (!p.HasExited)
+                    {
+                        downloadTime++;
+                        if (downloadTime > TimeoutTime)
+                        {
+                            ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
+                            break;
+                        }
+
+                        yield return new WaitForSeconds(1);
+                    }
+
+                    p.Close();
+                    ModConsole.Log($"Mod Updater: {mod.ID} - pulling metadata succeeded!");
+
+                    output = lastDataOut;
+
+                    // Reading the metadata file info that we want.
+                    mod.ModUpdateData = new ModUpdateData();
+                    if (url.Contains("github.com"))
+                    {
+                        string[] outputArray = output.Split(',');
+                        foreach (string s in outputArray)
+                        {
+                            // Finding tag of the latest release, this servers as latest version number.
+                            if (s.Contains("\"tag_name\""))
+                            {
+                                mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
+                            }
+                            else if (s.Contains("\"browser_download_url\""))
+                            {
+                                string[] separated = s.Split(':');
+                                mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
+                            }
+
+                            // Breaking out of the loop, if we found all that we've been looking for.
+                            if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion))
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
                 else if (url.Contains("nexusmods.com"))
                 {
-                    // TODO
-                }
-                ModConsole.Log($"URL: {url}");
+                    //SAMPLE: https://www.nexusmods.com/mysummercar/mods/146
+                    // First we need mod ID.
+                    string token = File.ReadAllText(Path.Combine(UpdaterDirectory, "TemporaryKey.txt")); // TODO; add getting a key. Right now we are reading from TemporaryKey.txt file.
+                    string modID = url.Split('/').Last();
+                    string userInfo = "https://api.nexusmods.com/v1/users/validate.json";
+                    string mainModInfo = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}.json";
 
-                ModConsole.Log($"Starting checking for update process...");
-                Process p = new Process
-                {
-                    StartInfo = new ProcessStartInfo
+                    // we are checking if user has a premium account.
+                    Process userDataProcess = GetMetaFile(userInfo);
+                    int downloadTime = 0;
+                    while (!userDataProcess.HasExited)
                     {
-                        FileName = UpdaterPath,
-                        Arguments = "get-metafile " + url,
-                        WorkingDirectory = UpdaterDirectory,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-                lastDataOut = "";
-                p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
-                p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
-
-                string output = "";
-                downloadTime = 0;
-
-                p.Start();
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-                while (!p.HasExited)
-                {
-                    downloadTime++;
-                    if (downloadTime > TimeoutTime)
-                    {
-                        ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
-                        break;
-                    }
-
-                    yield return new WaitForSeconds(1);
-                }
-
-                p.Close();
-                ModConsole.Log($"Mod Updater: {mod.ID} - pulling metadata succeeded!");
-
-                output = lastDataOut;
-
-                // Reading the metadata file info that we want.
-                mod.ModUpdateData = new ModUpdateData();
-                if (url.Contains("github.com"))
-                {
-                    string[] outputArray = output.Split(',');
-                    foreach (string s in outputArray)
-                    {
-                        // Finding tag of the latest release, this servers as latest version number.
-                        if (s.Contains("\"tag_name\""))
+                        downloadTime++;
+                        if (downloadTime > TimeoutTime)
                         {
-                            mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
-                        }
-                        else if (s.Contains("\"browser_download_url\""))
-                        {
-                            string[] separated = s.Split(':');
-                            mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
-                        }
-
-                        // Breaking out of the loop, if we found all that we've been looking for.
-                        if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion))
-                        {
+                            ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
                             break;
                         }
+                        yield return new WaitForSeconds(1);
                     }
+                    string[] output = lastDataOut.Split(',');
+                    foreach (string s in output)
+                    {
+                        if (s.Contains("is_premium?"))
+                        {
+                            nexusIsPremium = s.Contains("true");
+                        }
+                    }
+
+                    // TODO: Finish this mess :)
                 }
 
                 if (IsNewerVersionAvailable(mod.Version, mod.ModUpdateData.LatestVersion))
@@ -212,6 +221,32 @@ namespace MSCLoader
             }
 
             isBusy = false;
+        }
+
+        Process GetMetaFile(string url)
+        {
+            Process p = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = UpdaterPath,
+                    Arguments = "get-metafile " + url,
+                    WorkingDirectory = UpdaterDirectory,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
+
+            lastDataOut = "";
+            p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+            p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
+
+            p.Start();
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+            return p;
         }
 
         private void ErrorHandler(object sender, DataReceivedEventArgs e)
@@ -385,7 +420,7 @@ namespace MSCLoader
                 p.Start();
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
-                downloadTime = 0;
+                int downloadTime = 0;
                 while (!p.HasExited)
                 {
                     downloadTime++;
