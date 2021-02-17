@@ -92,6 +92,13 @@ namespace MSCLoader
             return modPrompt;
         }
 
+        /// <summary>Creates a prompt with "Continue" and "Abort" buttons</summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onContinue">Action that will happen after player clicks Continue button.</param>
+        /// <param name="onAbort">(Optional) Action that will happen after player clicks Abort button.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
         public static ModPrompt CreateContinueAbortPrompt(string message, string title, UnityAction onContinue, UnityAction onAbort = null, UnityAction onPromptClose = null)
         {
             ModPrompt modPrompt = NewPrompt();
