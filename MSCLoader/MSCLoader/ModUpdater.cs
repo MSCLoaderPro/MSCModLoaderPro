@@ -144,6 +144,11 @@ namespace MSCLoader
                     mod.ModUpdateData = new ModUpdateData();
                     if (url.Contains("github.com"))
                     {
+                        if (output.Contains("\"message\": \"Not Found\""))
+                        {
+                            ModConsole.LogError($"Mod Updater: Mod {mod.ID}'s GitHub repository returned \"Not found\" status.");
+                            continue;
+                        }
                         string[] outputArray = output.Split(',');
                         foreach (string s in outputArray)
                         {
@@ -152,7 +157,7 @@ namespace MSCLoader
                             {
                                 mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
                             }
-                            else if (s.Contains("\"browser_download_url\""))
+                            else if (s.Contains("\"browser_download_url\"") && s.Contains(".zip"))
                             {
                                 string[] separated = s.Split(':');
                                 mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
