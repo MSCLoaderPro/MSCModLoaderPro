@@ -92,6 +92,18 @@ namespace MSCLoader
             return modPrompt;
         }
 
+        public static ModPrompt CreateContinueAbortPrompt(string message, string title, UnityAction onContinue, UnityAction onAbort = null, UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.AddButton("CONTINUE", onContinue);
+            modPrompt.AddButton("ABORT", onAbort);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+
         /// <summary>
         /// Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
         /// Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
