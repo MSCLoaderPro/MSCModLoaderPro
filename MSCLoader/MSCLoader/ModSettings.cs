@@ -536,7 +536,7 @@ namespace MSCLoader
         /// <param name="action">(Optional) Action to call when the slider value is changed.</param>
         /// <returns>Added SettingSlider.</returns>
         public SettingSlider AddSlider(string id, string name, float value, float minValue, float maxValue, UnityAction<float> action = null) => 
-            AddSlider(id, name, value, maxValue, minValue, 2, action);
+            AddSlider(id, name, value, minValue, maxValue, 2, action);
         /// <summary>Adds a slider to the settings list.</summary>
         /// <param name="id">ID of the setting.</param>
         /// <param name="name">Name of the setting</param>
@@ -546,7 +546,7 @@ namespace MSCLoader
         /// <param name="action">(Optional) Action to call when the slider value is changed.</param>
         /// <returns>Added SettingSlider.</returns>
         public SettingSlider AddSlider(string id, string name, float value, float minValue, float maxValue, UnityAction action = null) => 
-            AddSlider(id, name, value, maxValue, minValue, 2, action);
+            AddSlider(id, name, value, minValue, maxValue, 2, action);
         /// <summary>Adds a slider to the settings list.</summary>
         /// <param name="id">ID of the setting.</param>
         /// <param name="name">Name of the setting</param>
@@ -556,7 +556,7 @@ namespace MSCLoader
         /// <returns>Added SettingSlider.</returns>
         public SettingSlider AddSlider(string id, string name, int value, int minValue, int maxValue)
         {
-            SettingSlider slider = AddSlider(id, name, value, maxValue, minValue, -1);
+            SettingSlider slider = AddSlider(id, name, value, minValue, maxValue, -1);
             slider.WholeNumbers = true;
 
             return slider;
@@ -571,7 +571,7 @@ namespace MSCLoader
         /// <returns>Added SettingSlider.</returns>
         public SettingSlider AddSlider(string id, string name, int value, int minValue, int maxValue, UnityAction<float> action)
         {
-            SettingSlider slider = AddSlider(id, name, value, maxValue, minValue);
+            SettingSlider slider = AddSlider(id, name, value, minValue, maxValue);
             if (action != null) slider.AddAction(action);
 
             return slider;
@@ -586,7 +586,7 @@ namespace MSCLoader
         /// <returns>Added SettingSlider.</returns>
         public SettingSlider AddSlider(string id, string name, int value, int minValue, int maxValue, UnityAction action)
         {
-            SettingSlider slider = AddSlider(id, name, value, maxValue, minValue);
+            SettingSlider slider = AddSlider(id, name, value, minValue, maxValue);
             if (action != null) slider.AddAction((x) => action());
 
             return slider;
