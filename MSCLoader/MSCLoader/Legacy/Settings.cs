@@ -177,7 +177,7 @@ namespace MSCLoader
                 setting.Vals[4] = buttonTextColor;
                 modSettings.Add(setting);
 
-                mod.modSettings.AddButton(setting.ID, description, setting.Name, () => setting.DoAction.Invoke());
+                mod.modSettings.AddButton(setting.ID, setting.Name, description, () => setting.DoAction.Invoke());
             }
             else ModConsole.LogError($"[<b>{mod.ID}</b>] AddButton: Action cannot be null.");
         }
