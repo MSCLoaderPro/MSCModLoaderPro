@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Linq;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 #pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
@@ -30,7 +31,7 @@ namespace MSCLoader
             }
         }
 
-        static HarmonyInstance ModLoaderInstance;
+        internal static HarmonyInstance ModLoaderInstance;
         static void StartModLoader()
         {
             try
@@ -44,7 +45,6 @@ namespace MSCLoader
                     HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
                     
                     ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.LoadLevel).GetMethod("OnEnter"), new HarmonyMethod(typeof(InjectLoadSceneFix).GetMethod("Prefix")));
-                    ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent).GetMethod("DoMousePickEvent", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectUIClickFix).GetMethod("Prefix")));
                 }
                 else if (settings.SkipSplashScreen)
                 {
@@ -55,8 +55,7 @@ namespace MSCLoader
             {
                 using (TextWriter textWriter = File.CreateText("ModLoaderCrash.txt"))
                 {
-                    textWriter.WriteLine(ex.ToString());
-                    textWriter.WriteLine(ex.Message);
+                    textWriter.WriteLine($"{ex}\n{ex.Message}");
                     textWriter.Flush();
                 }
             }
@@ -122,9 +121,10 @@ namespace MSCLoader
             public bool SkipGameLauncher;
             public bool SkipSplashScreen;
             public bool UseVsyncInMenu;
-            
-            public bool CheckUpdateAutomatically;
-            public bool AskBeforeUpdateDownload = true;
+
+            public int UpdateMode;
+            public string LastUpdateCheck;
+            public int UpdateInterval;
 
             public KeyCode[] OpenConsoleKey;
             public int ConsoleFontSize;
@@ -144,8 +144,9 @@ namespace MSCLoader
                 SkipSplashScreen = settingINI.Read<bool>("SkipSplashScreen", "General");
                 UseVsyncInMenu = settingINI.Read<bool>("UseVsyncInMenu", "General");
 
-                CheckUpdateAutomatically = settingINI.Read<bool>("CheckUpdateAutomatically", "Mod Updates");
-                AskBeforeUpdateDownload = settingINI.Read<bool>("AskBeforeUpdateDownload", "Mod Updates");
+                UpdateMode = settingINI.Read<int>("UpdateMode", "Updates");
+                LastUpdateCheck = settingINI.Read<string>("LastUpdateCheck", "Updates");
+                UpdateInterval = settingINI.Read<int>("UpdateInterval", "Updates");
 
                 OpenConsoleKey = settingINI.Read<string>("OpenConsoleKey", "Console").Split(';').Select(x => (KeyCode)Enum.Parse(typeof(KeyCode), x, true)).ToArray();
                 ConsoleFontSize = settingINI.Read<int>("ConsoleFontSize", "Console");
@@ -157,20 +158,71 @@ namespace MSCLoader
                 UseOutputLog = settingINI.Read<bool>("UseOutputLog", "Hidden");
             }
 
-            public void SaveSettings()
+            public void SaveSettings(ModLoaderSettings modLoaderSettings)
             {
+                settings.SkipGameLauncher = modLoaderSettings.SkipGameLauncher;
+                settings.SkipSplashScreen = modLoaderSettings.SkipSplashScreen;
+                settings.UseVsyncInMenu = modLoaderSettings.UseVsyncInMenu;
+
+                settings.UpdateMode = modLoaderSettings.UpdateMode;
+                settings.LastUpdateCheck = modLoaderSettings.LastUpdateCheck;
+                settings.UpdateInterval = modLoaderSettings.UpdateInterval;
+
+                List<KeyCode> keycodeList = new List<KeyCode>() { modLoaderSettings.OpenConsoleKeyKeybind };
+                keycodeList.AddRange(modLoaderSettings.OpenConsoleKeyModifiers);
+                settings.OpenConsoleKey = keycodeList.ToArray();
+                settings.ConsoleFontSize = (int)modLoaderSettings.ConsoleFontSize;
+                settings.ConsoleAutoOpen = modLoaderSettings.ConsoleAutoOpen;
+                settings.ConsoleWindowHeight = (int)modLoaderSettings.ConsoleWindowHeight;
+                settings.ConsoleWindowWidth = (int)modLoaderSettings.ConsoleWindowWidth;
+
                 settingINI.Write("SkipGameLauncher", "General", SkipGameLauncher);
                 settingINI.Write("SkipSplashScreen", "General", SkipSplashScreen);
                 settingINI.Write("UseVsyncInMenu", "General", UseVsyncInMenu);
-                
-                settingINI.Write("CheckUpdateAutomatically", "Mod Updates", CheckUpdateAutomatically);
-                settingINI.Write("AskBeforeUpdateDownload", "Mod Updates", AskBeforeUpdateDownload);
+
+                settingINI.Write("UpdateMode", "Updates", UpdateMode);
+                settingINI.Write("LastUpdateCheck", "Updates", LastUpdateCheck);
+                settingINI.Write("UpdateInterval", "Updates", UpdateInterval);
 
                 settingINI.Write("OpenConsoleKey", "Console", string.Join(";", Array.ConvertAll(OpenConsoleKey, x => x.ToString())));
                 settingINI.Write("ConsoleFontSize", "Console", ConsoleFontSize);
                 settingINI.Write("ConsoleAutoOpen", "Console", ConsoleAutoOpen);
                 settingINI.Write("ConsoleWindowHeight", "Console", ConsoleWindowHeight);
                 settingINI.Write("ConsoleWindowWidth", "Console", ConsoleWindowWidth);
+            }
+
+            public void ApplySettings(ModLoaderSettings modLoaderSettings)
+            {
+                // Disable saving to the INI while the settings are loaded.
+                modLoaderSettings.disableSave = true;
+
+                // Apply the various settings.
+                modLoaderSettings.Version = ModLoader.Version;
+                modLoaderSettings.SkipGameLauncher = settings.SkipGameLauncher;
+                modLoaderSettings.SkipSplashScreen = settings.SkipSplashScreen;
+
+                modLoaderSettings.UseVsyncInMenu = settings.UseVsyncInMenu;
+                modLoaderSettings.useVsyncInMenu.OnValueChanged.AddListener((value) =>
+                {
+                    if (!ModLoader.modLoaderInstance.vSyncEnabled && ModLoader.CurrentScene == CurrentScene.MainMenu)
+                        QualitySettings.vSyncCount = modLoaderSettings.UseVsyncInMenu ? 1 : 0;
+                });
+
+                modLoaderSettings.UpdateMode = settings.UpdateMode;
+                modLoaderSettings.ParseUpdateCheckTime(settings.LastUpdateCheck);
+                modLoaderSettings.UpdateInterval = settings.UpdateInterval;
+
+                modLoaderSettings.OpenConsoleKeyKeybind = settings.OpenConsoleKey[0];
+                modLoaderSettings.OpenConsoleKeyModifiers = settings.OpenConsoleKey.Skip(1).ToArray();
+                modLoaderSettings.openConsoleKey.PostBind.AddListener(modLoaderSettings.SaveSettings);
+
+                modLoaderSettings.ConsoleFontSize = settings.ConsoleFontSize;
+                modLoaderSettings.ConsoleAutoOpen = settings.ConsoleAutoOpen;
+                modLoaderSettings.ConsoleWindowHeight = settings.ConsoleWindowHeight;
+                modLoaderSettings.ConsoleWindowWidth = settings.ConsoleWindowWidth;
+
+                // Enable saving again if any of the values are changed.
+                modLoaderSettings.disableSave = false;
             }
         }
 
@@ -180,7 +232,8 @@ namespace MSCLoader
             public static void Prefix()
             {
                 System.Console.WriteLine("MODLOADER: INITIALIZING");
-                ModLoader.Init();
+                ModLoader.Init(); 
+                ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent).GetMethod("DoMousePickEvent", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectUIClickFix).GetMethod("Prefix")));
                 ModLoaderInstance.UnpatchAll("MSCModLoaderProInit");
             }
         }
@@ -195,6 +248,7 @@ namespace MSCLoader
                     System.Console.WriteLine("MODLOADER: SKIP SPLASH");
                     Application.LoadLevel(1);
                     ModLoaderInstance.UnpatchAll("MSCModLoaderProSplash");
+
                 }
             }
         }

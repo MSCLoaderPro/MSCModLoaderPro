@@ -178,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 11446434}
   nameShadow: {fileID: 11419810}
+  group: {fileID: 11436646}
   radioValue: 0
   buttons: []
   defaultValue: 0

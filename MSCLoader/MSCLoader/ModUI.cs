@@ -91,7 +91,6 @@ namespace MSCLoader
 
             return modPrompt;
         }
-
         /// <summary>Creates a prompt with "Continue" and "Abort" buttons</summary>
         /// <param name="message">A message that will appear in the prompt.</param>
         /// <param name="title">Title of the prompt.</param>
@@ -228,7 +227,7 @@ namespace MSCLoader
     {
         public ModContainer modContainer;
         public ModLoaderSettings modLoaderSettings;
-        public GameObject modMenu, modList, modSettings, modMenuButton;
+        public GameObject modMenu, modList, modSettings, modMenuButton, menuLabel;
         public List<GameObject> extra = new List<GameObject>();
 
         public bool lockEnable = false;
@@ -263,6 +262,7 @@ namespace MSCLoader
         void OnEnable()
         {
             loadHandler.lockEnable = true;
+            loadHandler.menuLabel.SetActive(false);
             loadHandler.Disable();
         }
     }
@@ -339,7 +339,6 @@ namespace MSCLoader
         {
             loadHandler.Disable();
         }
-
         void OnDisable()
         {
             loadHandler.EnableModMenu();

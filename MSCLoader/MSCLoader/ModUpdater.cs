@@ -17,6 +17,8 @@ namespace MSCLoader
         public GameObject headerProgressBar;
         public Slider sliderProgressBar;
         public Text textProgressBar;
+        public Text menuLabelUpdateText;
+
         const int MaxDots = 3;
 
         bool isBusy;
@@ -35,6 +37,8 @@ namespace MSCLoader
         void Start()
         {
             /*
+             * Use ModLoader.modLoaderSettings instead of the MSCLoader.settings, that will make sure you have the latest and 
+             * that the UI updates correctly with the new settings if changed. :)
             if (MSCLoader.settings.CheckUpdateAutomatically && !autoUpdateChecked)
             {
                 LookForUpdates();
@@ -51,6 +55,7 @@ namespace MSCLoader
             {
                 string dots = new string('.', numberOfDots);
                 textProgressBar.text = $"{dots}{message}{dots}";
+                menuLabelUpdateText.text = $"{message}{dots}";
                 numberOfDots++;
                 if (numberOfDots > MaxDots)
                 {
@@ -86,6 +91,8 @@ namespace MSCLoader
             if (mods.Count() == 0) yield break;
 
             isBusy = true;
+
+            ModLoader.modLoaderSettings.RefreshUpdateCheckTime();
 
             // Enable the progress bar.
             int i = 0;
@@ -324,20 +331,23 @@ namespace MSCLoader
                 throw new MissingComponentException("Updater component is missing!");
             }
 
-            if (!MSCLoader.settings.AskBeforeUpdateDownload)
+            if (ModLoader.modLoaderSettings.UpdateMode == 2)
             {
                 AddModToDownloadQueue(mod);
                 return;
             }
 
-            ModPrompt prompt = ModUI.CreateCustomPrompt();
-            prompt.Text = $"Are you sure you want to download upate for mod:\n\n<color=yellow>\"{mod.Name}\"</color>\n\n" +
-                          $"Your version is {mod.Version} and the newest version is {mod.ModUpdateData.LatestVersion}.";
-            prompt.Title = "Mod Updater";
-            prompt.AddButton("Yes", () => AddModToDownloadQueue(mod));
-            prompt.AddButton("Yes, and don't ask again", () => { MSCLoader.settings.AskBeforeUpdateDownload = false; AddModToDownloadQueue(mod); });
-            prompt.AddButton("No", null);
-            //prompt.Show();
+            if (ModLoader.modLoaderSettings.UpdateMode == 1)
+            {
+                ModPrompt prompt = ModUI.CreateCustomPrompt();
+                prompt.Text = $"Are you sure you want to download upate for mod:\n\n<color=yellow>\"{mod.Name}\"</color>\n\n" +
+                              $"Your version is {mod.Version} and the newest version is {mod.ModUpdateData.LatestVersion}.";
+                prompt.Title = "Mod Updater";
+                prompt.AddButton("Yes", () => AddModToDownloadQueue(mod));
+                prompt.AddButton("Yes, and don't ask again", () => { ModLoader.modLoaderSettings.UpdateMode = 2; AddModToDownloadQueue(mod); });
+                prompt.AddButton("No", null);
+                //prompt.Show();
+            }
         }
 
         void AddModToDownloadQueue(Mod mod)

@@ -189,6 +189,9 @@ namespace MSCLoader
             nameText.color = modToggle.isOn ? ModUI.MSCYellow : ModUI.ModDisabledRed;
             modContainer.UpdateModCountText();
 
+            if (mod.Enabled) ModLoader.AddToMethodLists(mod);
+            else ModLoader.RemoveFromMethodLists(mod);
+
             ModConsole.Log($"<b>{mod.ID}:</b> {(mod.Enabled ? "<color=green>ENABLED</color>" : "<color=red>DISABLED</color>")}");
         }
         /// <summary>Set the enabled status of the mod.</summary>
@@ -480,8 +483,8 @@ namespace MSCLoader
             SettingSlider slider = Instantiate(prefabSlider).GetComponent<SettingSlider>();
             slider.ID = id;
             slider.Name = name;
-            slider.MaxValue = maxValue;
             slider.MinValue = minValue;
+            slider.MaxValue = maxValue;
             slider.Value = value;
             slider.defaultValue = value;
 
@@ -492,6 +495,8 @@ namespace MSCLoader
 
             ModConfigNumber configNumber = loadedSettings.Numbers.FirstOrDefault(x => x.id == id);
             if (configNumber != null) slider.Value = configNumber.value;
+
+            slider.ChangeValueText();
 
             return slider;
         }

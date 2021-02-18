@@ -544,14 +544,14 @@
         <member name="M:MSCLoader.Mod.MenuOnLoad">
             <summary> Load Method for anything involving the menu scene. Order of execution: 3 </summary>
         </member>
-        <member name="M:MSCLoader.Mod.MenuUpdate">
+        <member name="M:MSCLoader.Mod.MenuOnGUI">
             <summary> Update Method for the menu scene. Order of execution: Every frame in menu </summary>
         </member>
-        <member name="M:MSCLoader.Mod.MenuOnGUI">
-            <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
+        <member name="M:MSCLoader.Mod.MenuUpdate">
+            <summary> FixedUpdate Method for the menu scene. Order of execution: Every fixed time step </summary>
         </member>
         <member name="M:MSCLoader.Mod.MenuFixedUpdate">
-            <summary> FixedUpdate Method for the menu scene. Order of execution: Every fixed time step </summary>
+            <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
         </member>
         <member name="M:MSCLoader.Mod.OnNewGame">
             <summary> Method executed when the player starts a new game, use cases include removing old save files. Order of execution: 4 </summary>
@@ -630,8 +630,10 @@
             <param name="mod">The mod you want to get the settings folder path for.</param>
             <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
         </member>
-        <member name="M:MSCLoader.ModLoader.GetModAssetsFolder(MSCLoader.Mod)">
+        <member name="M:MSCLoader.ModLoader.GetModAssetsFolder(MSCLoader.Mod,System.Boolean)">
             <summary>Get the asset folder for a specific mod.</summary>
+            <param name="mod">The mod you want to get the assets folder path for.</param>
+            <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
         </member>
         <member name="M:MSCLoader.ModLoader.IsModPresent(System.String)">
             <summary>Check if the specified mod ID is loaded and isn't disabled.</summary>
@@ -685,7 +687,7 @@
             <param name="action">UnityAction to be executed when the button is clicked.</param>
             <returns>The added ModPromptButton</returns>
         </member>
-        <member name="M:MSCLoader.ModPrompt.Show">
+        <member name="M:MSCLoader.ModPrompt.OnEnable">
             <summary>Show the ModPrompt</summary>
         </member>
         <member name="T:MSCLoader.ModPromptButton">
@@ -1113,13 +1115,20 @@
             <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
             <returns>Returns a ModPrompt component of the button.</returns>
         </member>
-        <member name="M:MSCLoader.ModUI.CreateCustomPrompt(System.String,System.String)">
+        <member name="M:MSCLoader.ModUI.CreateContinueAbortPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
+            <summary>Creates a prompt with "Continue" and "Abort" buttons</summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onContinue">Action that will happen after player clicks Continue button.</param>
+            <param name="onAbort">(Optional) Action that will happen after player clicks Abort button.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
+        <member name="M:MSCLoader.ModUI.CreateCustomPrompt">
             <summary>
             Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
             Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
             </summary>
-            <param name="message"></param>
-            <param name="title"></param>
             <returns>Returns a ModPrompt component of the button.</returns>
         </member>
         <member name="M:MSCLoader.ModUpdater.LookForUpdates">
@@ -1127,6 +1136,11 @@
         </member>
         <member name="M:MSCLoader.ModUpdater.CheckForModUpdates(System.Collections.Generic.IEnumerable{MSCLoader.Mod})">
             <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
+        </member>
+        <member name="M:MSCLoader.ModUpdater.UpdateAll">
+            <summary>
+            Populates the queue list with all mods with the UpdateStatus.Available state.
+            </summary>
         </member>
         <member name="T:MSCLoader.ModUpdateData">
             <summary> Stores the info about mod update found. </summary>

@@ -40,10 +40,10 @@ namespace MSCLoader
         /// <summary> Load Method for anything involving the menu scene. Order of execution: 3 </summary>
         public virtual void MenuOnLoad() { OnMenuLoad(); }
         /// <summary> Update Method for the menu scene. Order of execution: Every frame in menu </summary>
-        public virtual void MenuUpdate() { }
-        /// <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
         public virtual void MenuOnGUI() { }
         /// <summary> FixedUpdate Method for the menu scene. Order of execution: Every fixed time step </summary>
+        public virtual void MenuUpdate() { }
+        /// <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
         public virtual void MenuFixedUpdate() { }
 
         /// <summary> Method executed when the player starts a new game, use cases include removing old save files. Order of execution: 4 </summary>

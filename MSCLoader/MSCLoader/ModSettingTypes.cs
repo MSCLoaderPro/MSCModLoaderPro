@@ -217,6 +217,7 @@ namespace MSCLoader
 
         public Text nameText;
         public Shadow nameShadow;
+        public ToggleGroup group;
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Setting name, displayed in the settings window.</summary>
@@ -270,6 +271,7 @@ namespace MSCLoader
             radioButton.radioID = buttons.Count;
             radioButton.name = $"Radio{radioButton.radioID}";
             radioButton.labelText.text = labelText;
+            radioButton.toggle.group = group;
             buttons.Add(radioButton);
 
             radioButton.suspendSetValue = true;
@@ -367,7 +369,6 @@ namespace MSCLoader
         /// <summary>Default setting value.</summary>
         public float defaultValue;
 
-        void Start() => ChangeValueText();
         public void ChangeValueText()
         {
             valueText.text = (textValues.Length > ValueInt) ?

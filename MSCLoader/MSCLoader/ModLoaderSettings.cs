@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -13,23 +14,42 @@ namespace MSCLoader
         public Toggle modLoaderSettingsToggle;
 
         public Text version;
-        public SettingToggle skipGameLauncher, skipSplashScreen, useVsyncInMenu, checkUpdatesAutomatically;
+        public Text menuLabelText;
+
+        public SettingToggle skipGameLauncher, skipSplashScreen, useVsyncInMenu;
+
+        public SettingRadioButtons updateMode;
+        public SettingText lastUpdateCheck;
+        public SettingRadioButtons updateInterval;
+
         public SettingKeybind openConsoleKey;
         public SettingSlider consoleFontSize;
         public SettingRadioButtons consoleAutoOpen;
         public SettingSlider consoleWindowHeight, consoleWindowWidth;
 
-        public string Version { get => version.text.Remove(0, 9); set => version.text = $"VERSION: {value}"; }
+        public string Version { get => version.text.Remove(0, 9); set
+            {
+                version.text = $"VERSION: {value}";
+                menuLabelText.text = $"MOD LOADER PRO v{value}";
+            }
+        }
         public bool SkipGameLauncher { get => skipGameLauncher.Value; set => skipGameLauncher.Value = value; }
         public bool SkipSplashScreen { get => skipSplashScreen.Value; set => skipSplashScreen.Value = value; }
         public bool UseVsyncInMenu { get => useVsyncInMenu.Value; set => useVsyncInMenu.Value = value; }
-        public bool CheckUpdatesAutomatically { get => checkUpdatesAutomatically.Value; set => checkUpdatesAutomatically.Value = value; }
+
+        public int UpdateMode { get => updateMode.Value; set => updateMode.Value = value; }
+        public string LastUpdateCheck { get => lastUpdateCheckDate.ToString("u"); set => lastUpdateCheck.Text = $"LAST CHECKED FOR UPDATES: <color=yellow>{value}</color>"; }
+        public int UpdateInterval { get => updateInterval.Value; set => updateInterval.Value = value; }
+
         public KeyCode OpenConsoleKeyKeybind { get => openConsoleKey.keybind; set => openConsoleKey.keybind = value; }
         public KeyCode[] OpenConsoleKeyModifiers { get => openConsoleKey.modifiers; set => openConsoleKey.modifiers = value; }
         public float ConsoleFontSize { get => consoleFontSize.Value; set => consoleFontSize.Value = value; }
         public int ConsoleAutoOpen { get => consoleAutoOpen.Value; set => consoleAutoOpen.Value = value; }
         public float ConsoleWindowHeight { get => consoleWindowHeight.Value; set => consoleWindowHeight.Value = value; }
         public float ConsoleWindowWidth { get => consoleWindowWidth.Value; set => consoleWindowWidth.Value = value; }
+
+        public DateTime lastUpdateCheckDate;
+
 
         public bool disableSave = false;
         public void SaveSettings()
@@ -48,20 +68,7 @@ namespace MSCLoader
 
         public void SaveINISettings()
         {
-            MSCLoader.settings.SkipGameLauncher = SkipGameLauncher;
-            MSCLoader.settings.SkipSplashScreen = SkipSplashScreen;
-            MSCLoader.settings.UseVsyncInMenu = UseVsyncInMenu;
-            MSCLoader.settings.CheckUpdateAutomatically = CheckUpdatesAutomatically;
-
-            List<KeyCode> keycodeList = new List<KeyCode>() { OpenConsoleKeyKeybind };
-            keycodeList.AddRange(OpenConsoleKeyModifiers);
-            MSCLoader.settings.OpenConsoleKey = keycodeList.ToArray();
-            MSCLoader.settings.ConsoleFontSize = (int)ConsoleFontSize;
-            MSCLoader.settings.ConsoleAutoOpen = ConsoleAutoOpen;
-            MSCLoader.settings.ConsoleWindowHeight = (int)ConsoleWindowHeight;
-            MSCLoader.settings.ConsoleWindowWidth = (int)ConsoleWindowWidth;
-
-            MSCLoader.settings.SaveSettings();
+            MSCLoader.settings.SaveSettings(this);
         }
 
         bool suspendAction = false;
@@ -100,6 +107,18 @@ namespace MSCLoader
         public void OpenOutputLog()
         {
             ModUI.CreateYesNoPrompt("THIS WILL THE OUTPUT LOG IN YOUR DEFAULT TEXT EDITOR AND MINIMIZE THE GAME.", "OPEN OUTPUT LOG?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
+        }
+
+        public void RefreshUpdateCheckTime()
+        {
+            lastUpdateCheckDate = DateTime.Now;
+            LastUpdateCheck = $"{lastUpdateCheckDate:u}".TrimEnd('Z');
+        }
+
+        public void ParseUpdateCheckTime(string date)
+        {
+            try { lastUpdateCheckDate = DateTime.Parse(date); } catch { lastUpdateCheckDate = DateTime.Now; }
+            LastUpdateCheck = $"{lastUpdateCheckDate:u}".TrimEnd('Z');
         }
     }
     

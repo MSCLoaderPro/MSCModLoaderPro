@@ -206,7 +206,7 @@ namespace CoolUpdater
 
             // Cleanup after install.
             Directory.Delete(Downloads, true);
-            
+
             Console.WriteLine($"All mods have been updated, have a nice day :)");
             if (restartGame)
             {

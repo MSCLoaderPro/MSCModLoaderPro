@@ -77,6 +77,7 @@ namespace MSCLoader
             if (destroyOnDisable) Destroy(gameObject);
         }
 
+        /// <summary>Show the ModPrompt</summary>
         void OnEnable()
         {
             // We are checking if the custom prompt has buttons.
