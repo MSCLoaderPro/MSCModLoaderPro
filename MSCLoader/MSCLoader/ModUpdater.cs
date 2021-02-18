@@ -36,15 +36,15 @@ namespace MSCLoader
 
         void Start()
         {
-            /*
-             * Use ModLoader.modLoaderSettings instead of the MSCLoader.settings, that will make sure you have the latest and 
-             * that the UI updates correctly with the new settings if changed. :)
-            if (MSCLoader.settings.CheckUpdateAutomatically && !autoUpdateChecked)
-            {
-                LookForUpdates();
-                autoUpdateChecked = true;
-            }
-            */
+            
+             //* Use ModLoader.modLoaderSettings instead of the MSCLoader.settings, that will make sure you have the latest and 
+             //* that the UI updates correctly with the new settings if changed. :)
+            //if (ModLoader.modLoaderSettings.updateInterval.Value > 0 && !autoUpdateChecked)
+            //{
+            //    LookForUpdates();
+            //    autoUpdateChecked = true;
+            //}
+            
         }
 
         IEnumerator UpdateSliderText(string message)
@@ -485,8 +485,8 @@ namespace MSCLoader
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = UpdaterPath,
-                        Arguments = "update-all" + (restartGame ? " restart" : ""),
+                        FileName = "cmd.exe",
+                        Arguments = $"/C CoolUpdater.exe update-all" + (restartGame ? " restart" : ""),
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = true
                     }

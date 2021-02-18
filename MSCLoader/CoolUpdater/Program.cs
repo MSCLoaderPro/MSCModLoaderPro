@@ -6,6 +6,7 @@ using System.IO;
 using Ionic.Zip;
 using System.Diagnostics;
 using System.Text;
+using System.Linq;
 
 namespace CoolUpdater
 {
@@ -36,17 +37,32 @@ namespace CoolUpdater
                 default:
                     throw new ArgumentException("Invalid argument: " + args[0]);
                 case "get-metafile":
+                    string link, token = "";
+
+                    if (args.Length < 2)
+                    {
+                        throw new ArgumentException("Missing argument");
+                    }
+
                     if (!args[1].Contains("github.com") && !args[1].Contains("nexusmods.com"))
                     {
                         throw new UriFormatException("Downloader only supports Nexusmods or GitHub links.");
                     }
-
-                    if (args[1].Contains("nexusmods.com") && args.Length < 2)
+                    else
                     {
-                        throw new ArgumentException("Missing user token!");
+                        link = args[1];
                     }
 
-                    DownloadMetafile(args[1], args[2]);
+                    if (args[1].Contains("nexusmods.com"))
+                    {
+                        if (args.ElementAtOrDefault(2) == null)
+                        {
+                            throw new ArgumentException("Missing user token!");
+                        }
+                        token = args[2];
+                    }
+
+                    DownloadMetafile(link, token);
                     break;
                 case "get-file":
                     if (!args[1].Contains("github.com") && !args[1].Contains("nexusmods.com"))
@@ -54,7 +70,7 @@ namespace CoolUpdater
                         throw new UriFormatException("Downloader only supports Nexusmods or GitHub links.");
                     }
 
-                    if (string.IsNullOrEmpty(args[2]))
+                    if (args.ElementAtOrDefault(2) == null)
                     {
                         throw new Exception("Save path is null or empty.");
                     }
@@ -162,59 +178,83 @@ namespace CoolUpdater
             throw new NotImplementedException();
         }
 
+        static string GetSeconds(Stopwatch s)
+        {
+            return s.Elapsed.TotalSeconds.ToString() + "s";
+        }
+
         private static void UpdateAll()
         {
-            Console.WriteLine("Mod Loader Pro Auto-Update Tool Initialized!\n");
-
-            Process[] mscProcess = Process.GetProcessesByName("mysummercar");
-            if (mscProcess.Length > 0)
+            try
             {
-                foreach (Process process in mscProcess)
+                var stopwatch = Stopwatch.StartNew();
+                Console.WriteLine($"({GetSeconds(stopwatch)}) Mod Loader Pro Auto-Update Tool Initialized!\n");
+
+                Process[] mscProcess = Process.GetProcessesByName("mysummercar");
+                if (mscProcess.Length > 0)
                 {
-                    Console.WriteLine("Waiting for My Summer Car to exit...\n");
-                    process.WaitForExit();
-                }
-            }
-
-            if (!Directory.Exists(Downloads))
-            {
-                throw new DirectoryNotFoundException("Downloads folder doesn't exist!");
-            }
-
-            string modsFolder = @"..\Mods";
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            DirectoryInfo di = new DirectoryInfo(Downloads);
-            FileInfo[] files = di.GetFiles("*.zip");
-            for (int i = 0; i < files.Length; i++)
-            {
-                FileInfo file = files[i];
-                try
-                {
-                    Console.WriteLine($"({i}/{files.Length}) Unpacking {file.Name}...");
-                    using (ZipFile zip = ZipFile.Read(file.FullName))
+                    foreach (Process process in mscProcess)
                     {
-                        zip.ExtractAll(modsFolder, ExtractExistingFileAction.OverwriteSilently);
+                        Console.WriteLine($"({GetSeconds(stopwatch)}) Killing processes {process.ProcessName}...");
+                        process.Kill();
                     }
-                    Console.WriteLine($"{file.Name} unpacking completed!\n");
+                    Console.WriteLine($"({GetSeconds(stopwatch)}) All MSC have been killed!\n");
                 }
-                catch (Exception ex)
+
+                if (!Directory.Exists(Downloads))
                 {
-                    Console.WriteLine($"\n===============================================\nThere was an error while extracting {file.Name} :(\n\n" + ex.ToString() + "\n\n");
+                    throw new DirectoryNotFoundException("Downloads folder doesn't exist!");
                 }
+
+                // A small workaround for "not accessible files".
+                Console.WriteLine($"({GetSeconds(stopwatch)}) Loading update procedure...\n");
+                Thread.Sleep(1000);
+
+                string modsFolder = @"..\Mods";
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                DirectoryInfo di = new DirectoryInfo(Downloads);
+                FileInfo[] files = di.GetFiles("*.zip");
+                for (int i = 0; i < files.Length; i++)
+                {
+                    FileInfo file = files[i];
+                    try
+                    {
+                        Console.WriteLine($"({GetSeconds(stopwatch)}) ({i}/{files.Length}) Unpacking {file.Name}...");
+                        using (ZipFile zip = ZipFile.Read(file.FullName))
+                        {
+                            zip.ExtractAll(modsFolder, ExtractExistingFileAction.OverwriteSilently);
+                        }
+                        Console.WriteLine($"({GetSeconds(stopwatch)}) {file.Name} unpacking completed!\n");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"\n===============================================\nThere was an error while extracting {file.Name} :(\n\n" + ex.ToString() + "\n\n");
+                    }
+                }
+
+                // Cleanup after install.
+                Directory.Delete(Downloads, true);
+
+                Console.WriteLine($"({GetSeconds(stopwatch)}) All mods have been updated, have a nice day :)");
+                if (restartGame)
+                {
+                    Console.WriteLine($"Restarting game now using Steam");
+                    Process cmd = new Process();
+                    cmd.StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = "/C start \"\" \"steam://rungameid/516750\""
+                    };
+                    cmd.Start();
+                }
+                Environment.Exit(0);
             }
-
-            // Cleanup after install.
-            Directory.Delete(Downloads, true);
-
-            Console.WriteLine($"All mods have been updated, have a nice day :)");
-            if (restartGame)
+            catch (Exception ex)
             {
-                Console.WriteLine($"Restarting game now using Steam");
-                Process.Start("steam://rungameid/516750");
+                Console.WriteLine(ex.ToString());
+                Console.ReadKey();
             }
-
-            Environment.Exit(0);
         }
     }
 }
