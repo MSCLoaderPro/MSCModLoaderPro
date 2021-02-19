@@ -5,6 +5,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -36,15 +37,39 @@ namespace MSCLoader
 
         void Start()
         {
-            
-             //* Use ModLoader.modLoaderSettings instead of the MSCLoader.settings, that will make sure you have the latest and 
-             //* that the UI updates correctly with the new settings if changed. :)
-            //if (ModLoader.modLoaderSettings.updateInterval.Value > 0 && !autoUpdateChecked)
-            //{
-            //    LookForUpdates();
-            //    autoUpdateChecked = true;
-            //}
-            
+            if (ShouldCheckForUpdates())
+            {
+                autoUpdateChecked = true;
+                LookForUpdates();
+            }   
+        }
+
+        bool ShouldCheckForUpdates()
+        {
+            if (autoUpdateChecked)
+            {
+                return false;
+            }
+
+            DateTime now = DateTime.Now;
+            DateTime lastCheck = ModLoader.modLoaderSettings.lastUpdateCheckDate;
+
+            switch (ModLoader.modLoaderSettings.updateInterval.Value)
+            {
+                default:
+                    return false;
+                case 0: // Every launch
+                    return true;
+                case 1: // Daily
+                    return now > lastCheck.AddDays(1);
+                case 2: // Weekly
+                    return now >= lastCheck.AddDays(7);
+            }
+        }
+
+        void Update()
+        {
+            ModConsole.Log(ModLoader.modLoaderSettings.lastUpdateCheckDate);
         }
 
         IEnumerator UpdateSliderText(string message)
@@ -156,7 +181,7 @@ namespace MSCLoader
                             ModConsole.LogError($"Mod Updater: Mod {mod.ID}'s GitHub repository returned \"Not found\" status.");
                             continue;
                         }
-                        string[] outputArray = output.Split(',');
+                        string[] outputArray = ReadMetadataToArray();
                         foreach (string s in outputArray)
                         {
                             // Finding tag of the latest release, this servers as latest version number.
@@ -195,21 +220,81 @@ namespace MSCLoader
                         downloadTime++;
                         if (downloadTime > TimeoutTime)
                         {
-                            ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
+                            ModConsole.LogError($"Mod Updater: Getting metadata of User timed-out.");
                             break;
                         }
                         yield return new WaitForSeconds(1);
                     }
-                    string[] output = lastDataOut.Split(',');
+                    string[] output = ReadMetadataToArray();
                     foreach (string s in output)
                     {
+                        // TODO: Check if user exists
                         if (s.Contains("is_premium?"))
                         {
                             nexusIsPremium = s.Contains("true");
                         }
                     }
 
-                    // TODO: Finish this mess :)
+                    // Now we are getting version info.
+                    Process modInfoProcess = GetMetaFile(mainModInfo);
+                    downloadTime = 0;
+                    while (!modInfoProcess.HasExited)
+                    {
+                        downloadTime++;
+                        if (downloadTime > TimeoutTime)
+                        {
+                            ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
+                            break;
+                        }
+                        yield return new WaitForSeconds(1);
+                    }
+                    output = ReadMetadataToArray();
+                    foreach (string s in output)
+                    {
+                        if (s.Contains("version"))
+                        {
+                            mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
+                            break;
+                        }
+                    }
+
+                    // Retrieve latest file version.
+                    if (nexusIsPremium)
+                    {
+                        string modFiles = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}/files.json?category=main";
+                        Process modFilesProcess = GetMetaFile(modFiles);
+                        downloadTime = 0;
+                        while (!modFilesProcess.HasExited)
+                        {
+                            downloadTime++;
+                            if (downloadTime > TimeoutTime)
+                            {
+                                ModConsole.LogError($"Mod Updater: Getting list of files of {mod.ID} timed-out.");
+                                break;
+                            }
+                            yield return new WaitForSeconds(1);
+                        }
+                        output = ReadMetadataToArray();
+                        string lastFileID = "";
+                        foreach (string s in output)
+                        {
+                            if (s.Contains("file_id"))
+                            {
+                                lastFileID = s.Split(':')[1].Trim();
+                            }
+
+                            // We got the file_id of latest version. We can break out of the loop!
+                            if (s.Contains("version") && s.Contains(mod.ModUpdateData.LatestVersion))
+                            {
+                                break;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(lastFileID))
+                        {
+                            // TODO: Add URL pulling.
+                        }
+                    }
                 }
 
                 if (IsNewerVersionAvailable(mod.Version, mod.ModUpdateData.LatestVersion))
@@ -272,6 +357,11 @@ namespace MSCLoader
             lastDataOut += e.Data + "\n";
         }
 
+        string[] ReadMetadataToArray()
+        {
+            return string.IsNullOrEmpty(lastDataOut) ? new string[] { "" } : lastDataOut.Split(',');
+        }
+
         bool IsNewerVersionAvailable(string currentVersion, string serverVersion)
         {
             // Messy af, but reliably compares version numbers of the currently installed mod,
@@ -331,6 +421,20 @@ namespace MSCLoader
                 throw new MissingComponentException("Updater component is missing!");
             }
 
+            if (mod.UpdateLink.Contains("nexusmods.com"))
+            {
+                if (!nexusIsPremium)
+                {
+                    ModUI.CreateYesNoPrompt($"Mod <color=yellow>{mod.Name}</color> uses NexusMods for update downloads. " +
+                                            $"Unfortunately, due to NexusMods policy, only Premium users can use auto update feature.\n\n" +
+                                            $"Your version is {mod.Version} and the newest version is {mod.ModUpdateData.LatestVersion}.\n\n" +
+                                            $"Would you like to open mod page to download the update manually?\n" +
+                                            $"WARNING: This will open your default web browser."
+                                            , "Mod Updater", () => OpenModDownloadPage(mod));
+                    return;
+                }
+            }
+
             if (ModLoader.modLoaderSettings.UpdateMode == 2)
             {
                 AddModToDownloadQueue(mod);
@@ -346,7 +450,6 @@ namespace MSCLoader
                 prompt.AddButton("Yes", () => AddModToDownloadQueue(mod));
                 prompt.AddButton("Yes, and don't ask again", () => { ModLoader.modLoaderSettings.UpdateMode = 2; AddModToDownloadQueue(mod); });
                 prompt.AddButton("No", null);
-                //prompt.Show();
             }
         }
 
@@ -472,6 +575,11 @@ namespace MSCLoader
                                         $"Would you like to install them now?", "Mod Updater", () => { restartGame = true; Application.Quit(); }, null, () => { waitForInstall = true; });
             }
         }
+
+        void OpenModDownloadPage(Mod mod)
+        {
+            Process.Start(mod.UpdateLink);
+        }
         #endregion
         #region Waiting for install
         bool waitForInstall;
@@ -486,7 +594,7 @@ namespace MSCLoader
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/C CoolUpdater.exe update-all" + (restartGame ? " restart" : ""),
+                        Arguments = $"/C CoolUpdater.exe update-all {(restartGame ? " restart" : "")}",
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = true
                     }
