@@ -498,6 +498,9 @@ MonoBehaviour:
   prefabTextBox: {fileID: 134798, guid: 83defc9ec63c00e40816d302b1aad4d5, type: 2}
   prefabToggle: {fileID: 109494, guid: 6b966a799a914fb4da544369872bf574, type: 2}
   prefabSpacer: {fileID: 198202, guid: 51849d0039a356048abac92e23a7ff3b, type: 2}
+  prefabBoolean: {fileID: 120596, guid: 7c2d05a1814b78742ac7de35e5a6ff2e, type: 2}
+  prefabNumber: {fileID: 176802, guid: 9b085de749cad5b4e9b7b12137f26fe1, type: 2}
+  prefabString: {fileID: 159966, guid: c0565eb683ca5a741bececb5db691d46, type: 2}
   nameText: {fileID: 11402648}
   idText: {fileID: 11415178}
   descriptionHeader: {fileID: 112114}
@@ -586,8 +589,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11499758}
   m_HandleRect: {fileID: 22499420}
   m_Direction: 2
-  m_Value: 0
-  m_Size: .99999994
+  m_Value: 1
+  m_Size: .999999881
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

@@ -41,7 +41,7 @@ namespace MSCLoader
             {
                 autoUpdateChecked = true;
                 LookForUpdates();
-            }   
+            }
         }
 
         bool ShouldCheckForUpdates()
@@ -72,10 +72,10 @@ namespace MSCLoader
             ModConsole.Log(ModLoader.modLoaderSettings.lastUpdateCheckDate);
         }
 
-        IEnumerator UpdateSliderText(string message)
+        IEnumerator UpdateSliderText(string message, string finishedMessage)
         {
             WaitForSeconds wait = new WaitForSeconds(0.25f);
-            int numberOfDots = 1;
+            int numberOfDots = 0;
             while (isBusy)
             {
                 string dots = new string('.', numberOfDots);
@@ -84,10 +84,12 @@ namespace MSCLoader
                 numberOfDots++;
                 if (numberOfDots > MaxDots)
                 {
-                    numberOfDots = 1;
+                    numberOfDots = 0;
                 }
                 yield return wait;
             }
+            textProgressBar.text = finishedMessage;
+            menuLabelUpdateText.text = finishedMessage;
             yield return new WaitForSeconds(5f);
             headerProgressBar.SetActive(false);
         }
@@ -98,7 +100,7 @@ namespace MSCLoader
         {
             if (IsBusy)
             {
-                ModUI.CreatePrompt("Mod loader is busy looking for updates.", "Mod Updater");
+                ModUI.CreatePrompt("MOD LOADER IS BUSY LOOKING FOR UPDATES.", "MOD UPDATER");
                 return;
             }
 
@@ -124,7 +126,7 @@ namespace MSCLoader
             sliderProgressBar.value = i;
             headerProgressBar.SetActive(true);
             sliderProgressBar.maxValue = mods.Count();
-            StartCoroutine(UpdateSliderText("CHECKING FOR UPDATES"));
+            StartCoroutine(UpdateSliderText("CHECKING FOR UPDATES", "UPDATE CHECK COMPLETE!"));
 
             foreach (Mod mod in mods)
             {
@@ -425,12 +427,12 @@ namespace MSCLoader
             {
                 if (!nexusIsPremium)
                 {
-                    ModUI.CreateYesNoPrompt($"Mod <color=yellow>{mod.Name}</color> uses NexusMods for update downloads. " +
-                                            $"Unfortunately, due to NexusMods policy, only Premium users can use auto update feature.\n\n" +
-                                            $"Your version is {mod.Version} and the newest version is {mod.ModUpdateData.LatestVersion}.\n\n" +
-                                            $"Would you like to open mod page to download the update manually?\n" +
-                                            $"WARNING: This will open your default web browser."
-                                            , "Mod Updater", () => OpenModDownloadPage(mod));
+                    ModUI.CreateYesNoPrompt($"MOD <color=yellow>{mod.Name}</color> USES NEXUSMODS FOR UPDATE DOWNLOADS. " +
+                                            $"UNFORTUNATELY, DUE TO NEXUSMODS POLICY, ONLY PREMIUM USERS CAN USE AUTO UPDATE FEATURE.\n\n" +
+                                            $"YOUR VERSION IS {mod.Version} AND THE NEWEST VERSION IS {mod.ModUpdateData.LatestVersion}.\n\n" +
+                                            $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n" +
+                                            $"WARNING: THIS WILL OPEN YOUR DEFAULT WEB BROWSER."
+                                            , "MOD UPDATER", () => OpenModDownloadPage(mod));
                     return;
                 }
             }
@@ -444,12 +446,12 @@ namespace MSCLoader
             if (ModLoader.modLoaderSettings.UpdateMode == 1)
             {
                 ModPrompt prompt = ModUI.CreateCustomPrompt();
-                prompt.Text = $"Are you sure you want to download upate for mod:\n\n<color=yellow>\"{mod.Name}\"</color>\n\n" +
-                              $"Your version is {mod.Version} and the newest version is {mod.ModUpdateData.LatestVersion}.";
-                prompt.Title = "Mod Updater";
-                prompt.AddButton("Yes", () => AddModToDownloadQueue(mod));
-                prompt.AddButton("Yes, and don't ask again", () => { ModLoader.modLoaderSettings.UpdateMode = 2; AddModToDownloadQueue(mod); });
-                prompt.AddButton("No", null);
+                prompt.Text = $"ARE YOU SURE YOU WANT TO DOWNLOAD UPATE FOR MOD:\n\n<color=yellow>\"{mod.Name}\"</color>\n\n" +
+                              $"YOUR VERSION IS {mod.Version} AND THE NEWEST VERSION IS {mod.ModUpdateData.LatestVersion}.";
+                prompt.Title = "MOD UPDATER";
+                prompt.AddButton("YES", () => AddModToDownloadQueue(mod));
+                prompt.AddButton("YES, AND DON'T ASK AGAIN", () => { ModLoader.modLoaderSettings.UpdateMode = 2; AddModToDownloadQueue(mod); });
+                prompt.AddButton("NO", null);
             }
         }
 
@@ -504,7 +506,7 @@ namespace MSCLoader
             int i = 0;
             sliderProgressBar.value = i;
             headerProgressBar.SetActive(true);
-            StartCoroutine(UpdateSliderText("DOWNLOADING UPDATES"));
+            StartCoroutine(UpdateSliderText("DOWNLOADING UPDATES", "DOWNLOADS COMPLETE!"));
 
             for (; currentModInQueue < updateDownloadQueue.Count(); currentModInQueue++)
             {
@@ -571,8 +573,8 @@ namespace MSCLoader
             int downloadedUpdates = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Downloaded).Count();
             if (downloadedUpdates > 0)
             {
-                ModUI.CreateYesNoPrompt($"There {(downloadedUpdates > 1 ? "are" : "is")} <color=yellow>{downloadedUpdates}</color> mod update{(downloadedUpdates > 1 ? "s" : "")} ready to be installed. " +
-                                        $"Would you like to install them now?", "Mod Updater", () => { restartGame = true; Application.Quit(); }, null, () => { waitForInstall = true; });
+                ModUI.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
+                                        $"WOULD YOU LIKE TO INSTALL THEM NOW?", "MOD UPDATER", () => { restartGame = true; Application.Quit(); }, null, () => { waitForInstall = true; });
             }
         }
 

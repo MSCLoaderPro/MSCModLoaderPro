@@ -1071,6 +1071,30 @@
             <param name="action">Action called whenever the value changes.</param>
             <returns>Added SettingToggle.</returns>
         </member>
+        <member name="M:MSCLoader.ModSettings.AddBoolean(System.String,System.Boolean)">
+            <summary>Adds a hidden Boolean setting.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="value">Default value of the setting.</param>
+            <returns>Added SettingBoolean</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddNumber(System.String,System.Single)">
+            <summary>Adds a hidden Number setting.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="value">Default value of the setting.</param>
+            <returns>Added SettingNumber</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddNumber(System.String,System.Int32)">
+            <summary>Adds a hidden Number setting.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="value">Default value of the setting.</param>
+            <returns>Added SettingNumber</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddString(System.String,System.String)">
+            <summary>Adds a hidden String setting.</summary>
+            <param name="id">ID of the setting.</param>
+            <param name="value">Default value of the setting.</param>
+            <returns>Added SettingNumber</returns>
+        </member>
         <member name="T:MSCLoader.ModUI">
             <summary>Contains methods and variables suitable for controlling UI.</summary>
         </member>
@@ -1436,6 +1460,33 @@
         </member>
         <member name="M:MSCLoader.SettingToggle.AddAction(UnityEngine.Events.UnityAction{System.Boolean},System.Boolean)">
             <summary>Add an action to the event that triggers whenever the toggle changes value.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingBoolean">
+            <summary>Main Component for the Boolean setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingBoolean.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingBoolean.Value">
+            <summary>Current setting value.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingNumber">
+            <summary>Main Component for the Number setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingNumber.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingNumber.Value">
+            <summary>Current setting value.</summary>
+        </member>
+        <member name="T:MSCLoader.SettingString">
+            <summary>Main Component for the String setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingString.ID">
+            <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        </member>
+        <member name="F:MSCLoader.SettingString.Value">
+            <summary>Current setting value.</summary>
         </member>
         <member name="P:NAudio.Vorbis.VorbisWaveReader.UpperBitrate">
             <summary>

@@ -21,23 +21,22 @@ namespace MSCLoader
             Path = new FileInfo($"{iniPath}.ini").FullName.ToString();
         }
 
-        public T Read<T>(string key, string Section) where T : IConvertible => (T)Convert.ChangeType(Read(key, Section), typeof(T));
         public string Read(string Key, string Section)
         {
             var RetVal = new StringBuilder(255);
             GetPrivateProfileString(Section, Key, "", RetVal, 255, Path);
             return RetVal.ToString();
         }
-
+        public T Read<T>(string key, string section) where T : IConvertible => (T) Convert.ChangeType(Read(key, section), typeof(T));
+        public T Read<T>(string key, string section, T defaultValue) where T : IConvertible 
+        {
+            if (!KeyExists(key, section)) Write(key, section, defaultValue);
+            return Read<T>(key, section);
+        }
         public void Write(string key, string section, object value) => Write(key, section, value.ToString());
-        public void Write(string key, string section, string value)
-        {
-            WritePrivateProfileString(section, key, value, Path);
-        }
-
-        public bool KeyExists(string Key, string Section)
-        {
-            return Read(Key, Section).Length > 0;
-        }
+        public void Write(string key, string section, string value) => WritePrivateProfileString(section, key, value, Path);
+        public bool KeyExists(string key, string section) => Read(key, section).Length > 0;
+        public void DeleteKey(string key, string section) => Write(key, section, null);
+        public void DeleteSection(string section) => Write(null, section, null);
     }
 }

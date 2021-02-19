@@ -38,9 +38,6 @@
     <Reference Include="cInput">
       <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\cInput.dll</HintPath>
     </Reference>
-    <Reference Include="MSCLoader">
-      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\MSCLoader.dll</HintPath>
-    </Reference>
     <Reference Include="PlayMaker">
       <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
     </Reference>
@@ -61,6 +58,12 @@
     <Compile Include="MSCCar\DragRace.cs" />
     <Compile Include="Shopping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MSCLoader\MSCLoader.csproj">
+      <Project>{3323fe4a-d360-4692-9309-f20b57bbb745}</Project>
+      <Name>MSCLoader</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

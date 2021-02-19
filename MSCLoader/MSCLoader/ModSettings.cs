@@ -110,6 +110,12 @@ namespace MSCLoader
             if (disabledMods > 0) modCountText.text += $", {disabledMods} DISABLED.";
         }
 
+        internal void DisableModToggle()
+        {
+            foreach (ModListElement mod in modListDictionary.Values)
+                mod.modToggle.interactable = false;
+        }
+
         // NOT WORKING BECAUSE OF UNITY SYSTEM.DRAWING
         //public byte[] GetIcon(Mod mod, string name)
         //{
@@ -230,7 +236,8 @@ namespace MSCLoader
         public ModConfig loadedSettings;
 
         public GameObject prefabDefaultText, defaultText, resetButton, headerSettings;
-        public GameObject prefabButton, prefabHeader, prefabKeybind, prefabRadioButtons, prefabSlider, prefabSpacer, prefabText, prefabTextBox, prefabToggle;
+        public GameObject prefabButton, prefabHeader, prefabKeybind, prefabRadioButtons, prefabSlider, 
+            prefabSpacer, prefabText, prefabTextBox, prefabToggle, prefabBoolean, prefabNumber, prefabString;
 
         public GameObject descriptionHeader;
         public Text nameText, idText, descriptionText;
@@ -302,14 +309,14 @@ namespace MSCLoader
 
         void CheckForSettings()
         {
-            if (settings.Count == 0 && defaultText == null)
+            if ((settings.Count == 0 || settings.All(x => x is SettingBoolean || x is SettingNumber || x is SettingString)) && defaultText == null)
             {
                 defaultText = Instantiate(prefabDefaultText);
                 defaultText.transform.SetParent(settingsList, false);
                 resetButton.SetActive(false);
                 headerSettings.SetActive(false);
             }
-            else if (settings.Count > 0)
+            else if (settings.Count > 0 && !settings.All(x => x is SettingBoolean || x is SettingNumber || x is SettingString))
             {
                 if (defaultText != null) Destroy(defaultText);
                 resetButton.SetActive(true);
@@ -744,6 +751,62 @@ namespace MSCLoader
             toggle.OnValueChanged.AddListener((x) => action());
 
             return toggle;
+        }
+        /// <summary>Adds a hidden Boolean setting.</summary>
+        /// <param name="id">ID of the setting.</param>
+        /// <param name="value">Default value of the setting.</param>
+        /// <returns>Added SettingBoolean</returns>
+        public SettingBoolean AddBoolean(string id, bool value)
+        {
+            SettingBoolean boolean = Instantiate(prefabBoolean).GetComponent<SettingBoolean>();
+            boolean.ID = id;
+            boolean.Value = value;
+
+            AddSettingToList(boolean);
+
+            return boolean;
+        }
+        /// <summary>Adds a hidden Number setting.</summary>
+        /// <param name="id">ID of the setting.</param>
+        /// <param name="value">Default value of the setting.</param>
+        /// <returns>Added SettingNumber</returns>
+        public SettingNumber AddNumber(string id, float value)
+        {
+            SettingNumber number = Instantiate(prefabNumber).GetComponent<SettingNumber>();
+            number.ID = id;
+            number.Value = value;
+
+            AddSettingToList(number);
+
+            return number;
+        }
+        /// <summary>Adds a hidden Number setting.</summary>
+        /// <param name="id">ID of the setting.</param>
+        /// <param name="value">Default value of the setting.</param>
+        /// <returns>Added SettingNumber</returns>
+        public SettingNumber AddNumber(string id, int value)
+        {
+            SettingNumber number = Instantiate(prefabNumber).GetComponent<SettingNumber>();
+            number.ID = id;
+            number.ValueInt = value;
+
+            AddSettingToList(number);
+
+            return number;
+        }
+        /// <summary>Adds a hidden String setting.</summary>
+        /// <param name="id">ID of the setting.</param>
+        /// <param name="value">Default value of the setting.</param>
+        /// <returns>Added SettingNumber</returns>
+        public SettingString AddString(string id, string value)
+        {
+            SettingString text = Instantiate(prefabString).GetComponent<SettingString>();
+            text.ID = id;
+            text.Value = value;
+
+            AddSettingToList(text);
+
+            return text;
         }
     }
 }

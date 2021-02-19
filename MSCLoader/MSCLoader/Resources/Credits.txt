@@ -42,12 +42,18 @@ MSCLoader FindBytes()
 John Wein
 https://social.msdn.microsoft.com/Forums/vstudio/en-US/ffbbf0ab-2fed-4e70-9f9b-a0b58861ca55/how-to-find-a-hex-string-in-a-file?forum=csharpgeneral
 
-UI Click Fix
+UI CLICK FIX
 MSCLoader InjectUIClickFix
 haruna9x
 http://answers.unity.com/answers/1410943/view.html
 Shrandis
 http://answers.unity.com/answers/320484/view.html
+
+GET ONLINE DATE
+CC BY-SA 3.0 (minor changes to returned result).
+ModEarlyAccess GetDate()
+cerberus
+https://stackoverflow.com/a/44095036
 
 EXTERNAL LIBRARIES:
 

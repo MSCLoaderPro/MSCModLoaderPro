@@ -531,4 +531,46 @@ namespace MSCLoader
             modConfig.Booleans.Add(new ModConfigBool(ID, Value));
         }
     }
+
+    // Dummy Settings
+    /// <summary>Main Component for the Boolean setting type.</summary>
+    public class SettingBoolean : ModSetting
+    {
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Current setting value.</summary>
+        public bool Value;
+
+        public override void SaveSetting(ModConfig modConfig)
+        {
+            modConfig.Booleans.Add(new ModConfigBool(ID, Value));
+        }
+    }
+    /// <summary>Main Component for the Number setting type.</summary>
+    public class SettingNumber : ModSetting
+    {
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Current setting value.</summary>
+        public float Value;
+        public int ValueInt { get => (int)Value; set => Value = value; }
+
+        public override void SaveSetting(ModConfig modConfig)
+        {
+            modConfig.Numbers.Add(new ModConfigNumber(ID, Value));
+        }
+    }
+    /// <summary>Main Component for the String setting type.</summary>
+    public class SettingString : ModSetting
+    {
+        /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
+        public string ID { get => gameObject.name; set => gameObject.name = value; }
+        /// <summary>Current setting value.</summary>
+        public string Value;
+
+        public override void SaveSetting(ModConfig modConfig)
+        {
+            modConfig.Strings.Add(new ModConfigString(ID, Value));
+        }
+    }
 }

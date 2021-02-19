@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3381039850
+CRC: 2397297512
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c08a645a6983537e8a4526f0dd285e56
+    Hash: b23a0011ec9b95015ab4a53195bfaf14
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 1dd1dda43361af9d959d77b087900aae
+    Hash: b6505c0cc1ffb45123fd2fcfed5028af
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -117,6 +117,12 @@ ClassTypes:
   Script: {fileID: -636989493, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 114
   Script: {fileID: 12001, guid: 0000000000000000e000000000000000, type: 0}
+- Class: 114
+  Script: {fileID: 742577759, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
+  Script: {fileID: -878677828, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+- Class: 114
+  Script: {fileID: -211710531, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -133,34 +139,36 @@ Assets:
 - Assets/SettingPrefabs/SettingText.prefab
 - Assets/SettingPrefabs/SettingsWindow.prefab
 - Assets/SettingPrefabs/SettingSpacer.prefab
-- Assets/GUISkin/toggle hover2 on.png
-- Assets/GUISkin/button hover.png
+- Assets/SettingPrefabs/SettingBoolean.prefab
 - Assets/SettingPrefabs/ModPrompt.prefab
 - Assets/SettingPrefabs/ModListElement.prefab
 - Assets/SettingPrefabs/SettingKeybind.prefab
 - Assets/SettingPrefabs/ModPromptButton.prefab
 - Assets/MSCLoaderCanvas.prefab
 - Assets/SettingPrefabs/SettingButton.prefab
-- Assets/GUISkin/toggle active.png
+- Assets/GUISkin/SkinToggleOn.psd
 - Assets/SettingPrefabs/SettingRadioButtons.prefab
-- Assets/GUISkin/selectorV.png
-- Assets/GUISkin/button active.png
 - Assets/SettingPrefabs/SettingRadioButton.prefab
-- Assets/GUISkin/window.png
+- Assets/GUISkin/SkinToggle.psd
+- Assets/SettingPrefabs/SettingString.prefab
 - Assets/SettingPrefabs/SettingSlider.prefab
-- Assets/GUISkin/Background.png
-- Assets/GUISkin/window on.png
+- Assets/Fonts/Hack-Regular.ttf
+- Assets/SettingPrefabs/SettingNumber.prefab
+- Assets/GUISkin/SkinSliderVertical.psd
+- Assets/GUISkin/SkinBox.psd
+- Assets/GUISkin/SkinSliderThumb.psd
 - Assets/SettingPrefabs/SettingToggle.prefab
 - Assets/SettingPrefabs/SettingHeader.prefab
-- Assets/GUISkin/selector point.png
-- Assets/GUISkin/selector.png
+- Assets/GUISkin/SkinButtonHover.psd
+- Assets/Fonts/FugazOne-Regular.ttf
 - Assets/GUISkin/ModLoaderSkin.guiskin
+- Assets/GUISkin/SkinWindow.psd
+- Assets/GUISkin/SkinTextField.psd
 - Assets/SettingPrefabs/DefaultText.prefab
-- Assets/GUISkin/textarea.png
-- Assets/GUISkin/toggle hover.png
-- Assets/GUISkin/toggle hover on.png
+- Assets/GUISkin/SkinButton.psd
+- Assets/GUISkin/SkinWindowOn.psd
+- Assets/GUISkin/SkinSliderHorizontal.psd
+- Assets/GUISkin/SkinToggleHover.psd
+- Assets/GUISkin/SkinToggleHoverOn.psd
 - Assets/SettingPrefabs/SettingTextBox.prefab
-- Assets/GUISkin/toggle active hover.png
-- Assets/GUISkin/box.png
-- Assets/GUISkin/button up.png
 Dependencies: []

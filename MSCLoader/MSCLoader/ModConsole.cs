@@ -40,7 +40,7 @@ namespace MSCLoader
         {
             consoleInstance = this;
             console.SetActive(false);
-            buttonText.text = console.activeSelf ? "CLOSE" : "OPEN";
+            buttonText.text = console.activeSelf ? "CLOSE CONSOLE" : "OPEN CONSOLE";
 
             UpdateFontSize();
 
@@ -89,7 +89,7 @@ namespace MSCLoader
         {
             consoleInstance.console.SetActive(enable);
             consoleInstance.inputField.text = string.Empty;
-            consoleInstance.buttonText.text = consoleInstance.console.activeSelf ? "CLOSE" : "OPEN";
+            consoleInstance.buttonText.text = consoleInstance.console.activeSelf ? "CLOSE CONSOLE" : "OPEN CONSOLE";
         }
 
         void CommandHistory()
@@ -169,12 +169,13 @@ namespace MSCLoader
         public static void LogError(string text)
         {
             // Check if Console Auto open is set to open for Errors.
-            if (consoleInstance.settings.ConsoleAutoOpen == 1 || consoleInstance.settings.ConsoleAutoOpen == 3) ToggleConsole(true);
+            if (consoleInstance.settings.ConsoleAutoOpen == 1 || consoleInstance.settings.ConsoleAutoOpen == 3) 
+                ToggleConsole(true);
 
             // Add it to the log.
             controller.AppendLogLine($"<color=red><b>Error:</b> {text}</color>");
             // Also write it to the output_log.txt (using Console.WriteLine instead of Debug.Log to avoid a stacktrace)
-            Console.WriteLine($"MODLOADER ERROR: {OutputString(text)}");
+            Debug.LogError($"MODLOADER ERROR: {OutputString(text)}");
         }
 
         /// <summary>Logs a string as a warning to the ModConsole and output_log.txt. (Depending on user settings, this might auto-open the console)</summary>

@@ -36,6 +36,7 @@ namespace MSCLoader
         internal static ModContainer modContainer;
 
         internal static string modLoaderURL = "https://www.youtube.com/watch?v=DLzxrzFCyOs";
+        public static DateTime Date { get; internal set; }
 
         Stopwatch timer;
         static bool loaderInitialized = false;
@@ -49,23 +50,18 @@ namespace MSCLoader
         /// <summary>Get the settings folder path for a specific mod.</summary>
         /// <param name="mod">The mod you want to get the settings folder path for.</param>
         /// <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
-        public static string GetModSettingsFolder(Mod mod, bool create = true)
-        {
-            string path = Path.Combine(SettingsFolder, mod.ID);
-
-            if (!Directory.Exists(path) && create) Directory.CreateDirectory(path);
-
-            return path;
-        }
+        public static string GetModSettingsFolder(Mod mod, bool create = true) => 
+            GetModFolder(mod, SettingsFolder, create);
         /// <summary>Get the asset folder for a specific mod.</summary>
         /// <param name="mod">The mod you want to get the assets folder path for.</param>
         /// <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
-        public static string GetModAssetsFolder(Mod mod, bool create = true)
+        public static string GetModAssetsFolder(Mod mod, bool create = true) => 
+            GetModFolder(mod, AssetsFolder, create);
+
+        static string GetModFolder(Mod mod, string baseFolder, bool create)
         {
-            string path = Path.Combine(AssetsFolder, mod.ID);
-
+            string path = Path.Combine(baseFolder, mod.ID);
             if (!Directory.Exists(path) && create) Directory.CreateDirectory(path);
-
             return path;
         }
         /// <summary>Check if the specified mod ID is loaded and isn't disabled.</summary>
@@ -90,12 +86,15 @@ namespace MSCLoader
 
         void Awake()
         {
-            // Create the stopwatch for method execution time.
-            timer = new Stopwatch();
-
             // Prevent the menu music from being heard a split second when the loader is initializing.
             if (GameObject.Find("Music") && Application.loadedLevelName == "MainMenu")
                 GameObject.Find("Music").GetComponent<AudioSource>().Stop();
+
+            // Get todays date from the internet or local system time
+            Date = ModEarlyAccess.GetDate();
+
+            // Create the stopwatch for method execution time.
+            timer = new Stopwatch();
 
             // Create the ModUnloader.
             CreateUnloader();
@@ -120,7 +119,7 @@ namespace MSCLoader
                 new List<Mod>(), // 10 - FixedUpdate
                 new List<Mod>(), // 11 - OnSave
             };
-            ModConsole.Log($"MOD LOADER PRO <b>{Version}</b> READY!\n");
+            ModConsole.Log($"MOD LOADER PRO <b>{Version}</b> READY!");
 
             // Load the mods, their references and set up mod list and mod settings windows for each of them.
             LoadReferences();
@@ -185,7 +184,7 @@ namespace MSCLoader
                     mainMenuReturn = true;
 
                     // Make sure the UI reacts accordingly to the game's default menus.
-                    ModUI.canvasGO.transform.Find("ModMenuUIHandler").GetComponent<UIModMenuHandler>().Setup();
+                    ModUI.canvas.transform.Find("ModMenuUIHandler").GetComponent<UIModMenuHandler>().Setup();
 
                     // Lastly start the mod loading.
                     StartCoroutine(LoadMods());
@@ -211,18 +210,18 @@ namespace MSCLoader
             // Load the embedded bundle, create and assign the canvas.
             AssetBundle bundle = AssetBundle.CreateFromMemoryImmediate(Properties.Resources.mscloadercanvas);
             GameObject loadedObject = bundle.LoadAsset<GameObject>("MSCLoaderCanvas.prefab");
-            ModUI.canvasGO = Instantiate(loadedObject);
-            ModUI.canvasGO.name = "MSCLoader Canvas";
+            ModUI.canvas = Instantiate(loadedObject);
+            ModUI.canvas.name = "MSCLoader Canvas";
             Destroy(loadedObject);
-            DontDestroyOnLoad(ModUI.canvasGO);
+            DontDestroyOnLoad(ModUI.canvas);
 
             // Load the prefab for prompts.
             ModUI.prompt = bundle.LoadAsset<GameObject>("ModPrompt.prefab");
 
             // Assign the loading screen for easy access.
-            modUILoadScreen = ModUI.canvasGO.transform.Find("ModLoaderUI/ModLoadScreen").gameObject;
+            modUILoadScreen = ModUI.canvas.transform.Find("ModLoaderUI/ModLoadScreen").gameObject;
             // Handle the disabling of the UI when a scene is loaded. Does not apply for the menu to game loading.
-            modSceneLoadHandler = ModUI.canvasGO.GetComponent<UILoadHandler>();
+            modSceneLoadHandler = ModUI.canvas.GetComponent<UILoadHandler>();
             // Handle disabling the UI when loading the game from the menu.
             GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
             allGameObjects.FirstOrDefault(x => !x.activeSelf && x.transform.parent == null && x.name == "Loading").AddComponent<UIMainMenuLoad>().loadHandler = modSceneLoadHandler;
@@ -237,7 +236,7 @@ namespace MSCLoader
         void LoadModLoaderSettings()
         {
             // Get the Settings Component sloppily.
-            modLoaderSettings = ModUI.canvasGO.GetComponentsInChildren<ModLoaderSettings>(true)[0];
+            modLoaderSettings = ModUI.canvas.GetComponentsInChildren<ModLoaderSettings>(true)[0];
             MSCLoader.settings.ApplySettings(modLoaderSettings);
         }
         
@@ -250,7 +249,7 @@ namespace MSCLoader
 
         void InitializeMods()
         {
-            foreach (string file in Directory.GetFiles(ModsFolder).Where(file => file.EndsWith(".dll")))
+            foreach (string file in Directory.GetFiles(ModsFolder, "*.dll"))
             {
                 try
                 {
@@ -268,19 +267,11 @@ namespace MSCLoader
 
                     foreach (Type modType in modAssembly.GetTypes().Where(type => typeof(Mod).IsAssignableFrom(type)))
                     {
-                        string msVer = "";
-                        AssemblyName mscLoader = list.FirstOrDefault(assembly => assembly.Name == "MSCLoader");
-                        if (mscLoader != null)
-                            msVer = $"{string.Join(".", mscLoader.Version.ToString().Split('.').Take(3).ToArray())}";
-
                         Mod mod = (Mod)Activator.CreateInstance(modType);
 
                         if (!LoadedMods.Contains(mod)) // Check if mod already exists and show an error if so.
                         {
-                            mod.compiledVersion = msVer;
-                            mod.fileName = file;
                             LoadedMods.Add(mod);
-
                             AddToMethodLists(mod);
                         }
                         else
@@ -291,7 +282,7 @@ namespace MSCLoader
                 {
                     ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded as a mod. Contact the mod author and ask for help.");
                     ModConsole.LogError(e.ToString());
-                    System.Console.WriteLine(e);
+                    Console.WriteLine(e);
                 }
             }
         }
@@ -327,7 +318,7 @@ namespace MSCLoader
 
         void SetupModList()
         {
-            modContainer = ModUI.canvasGO.GetComponentInChildren<ModContainer>();
+            modContainer = ModUI.canvas.GetComponentInChildren<ModContainer>();
             for (int i = 0; i < LoadedMods.Count; i++)
             {
                 Mod mod = LoadedMods[i];
@@ -362,11 +353,11 @@ namespace MSCLoader
             foreach (Mod mod in LoadedMods)
             {
                 try { mod.ModSettingsLoaded(); }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    ModConsole.LogError($"Settings error for mod <b>{mod.ID}</b>.\n{e.Message}");
-                    ModConsole.LogError(e.ToString());
-                    Console.WriteLine(e);
+                    ModConsole.LogError($"Settings error for mod <b>{mod.ID}</b>.\n{exception.Message}");
+                    ModConsole.LogError(exception.ToString());
+                    Console.WriteLine(exception);
                 }
             }
 
@@ -382,7 +373,7 @@ namespace MSCLoader
                 for (int i = 0; i < ModMethods[1].Count; i++)
                 {
                     try { ModMethods[1][i].MenuOnLoad(); }
-                    catch (Exception e) { LogError(e, ModMethods[1][i]); }
+                    catch (Exception exception) { LogError(exception, ModMethods[1][i]); }
                 }
                 MethodTimerStop("MenuOnLoad");
             }
@@ -398,19 +389,21 @@ namespace MSCLoader
         {
             modUILoadScreen.SetActive(true);
 
-            ModConsole.Log("<color=green>Loading mods...</color><color=#787878>\n");
+            // Should disable the ability to toggle mod to avoid unwanted effects.
+            modContainer.DisableModToggle();
+
+            ModConsole.Log("<color=green>Loading mods...</color>\n");
 
             if (newGameStarted && ModMethods[0].Count > 0)
             {
+                newGameStarted = false;
                 MethodTimerStart("OnNewGame");
 
                 for (int i = 0; i < ModMethods[0].Count; i++)
                 {
                     try { ModMethods[0][i].OnNewGame(); }
-                    catch (Exception e) { LogError(e, ModMethods[0][i]); }
+                    catch (Exception exception) { LogError(exception, ModMethods[0][i]); }
                 }
-
-                newGameStarted = false;
 
                 MethodTimerStop("OnNewGame");
 
@@ -424,7 +417,7 @@ namespace MSCLoader
                 for (int i = 0; i < ModMethods[5].Count; i++)
                 {
                     try { ModMethods[5][i].PreLoad(); }
-                    catch (Exception e) { LogError(e, ModMethods[5][i]); }
+                    catch (Exception exception) { LogError(exception, ModMethods[5][i]); }
                 }
 
                 MethodTimerStop("PreLoad");
@@ -443,7 +436,7 @@ namespace MSCLoader
                 for (int i = 0; i < ModMethods[6].Count; i++)
                 {
                     try { ModMethods[6][i].OnLoad(); }
-                    catch (Exception e) { LogError(e, ModMethods[6][i]); }
+                    catch (Exception exception) { LogError(exception, ModMethods[6][i]); }
                 }
 
                 MethodTimerStop("OnLoad");
@@ -458,7 +451,7 @@ namespace MSCLoader
                 for (int i = 0; i < ModMethods[7].Count; i++)
                 {
                     try { ModMethods[7][i].PostLoad(); }
-                    catch (Exception e) { LogError(e, ModMethods[7][i]); }
+                    catch (Exception exception) { LogError(exception, ModMethods[7][i]); }
                 }
 
                 MethodTimerStop("PostLoad");
@@ -471,31 +464,29 @@ namespace MSCLoader
 
             FsmHook.FsmInject(GameObject.Find("ITEMS"), "Save game", ModOnSave);
 
-            ModConsole.controller.AppendLogLine("</color>");
-
             modUILoadScreen.SetActive(false);
         }
 
-        void LogError(Exception e, Mod mod)
+        void LogError(Exception exception, Mod mod)
         {
-            StackFrame frame = new StackTrace(e, true).GetFrame(0);
+            StackFrame frame = new StackTrace(exception, true).GetFrame(0);
 
-            ModConsole.LogError($"<b>{mod.ID}</b>! <b>Details:</b>\n{e.Message} in <b>{frame.GetMethod()}</b>.");
+            ModConsole.LogError($"<b>{mod.ID}</b>! <b>Details:</b>\n{exception.Message} in <b>{frame.GetMethod()}</b>.");
             //ModConsole.LogError(e.ToString());
-            System.Console.WriteLine(e);
+            UnityEngine.Debug.LogError(exception);
         }
 
         void MethodTimerStart(string message)
         {
+            ModConsole.Log($"\n<color=green>{message}()..</color><color=#787878>");
             timer.Reset();
             timer.Start();
-            ModConsole.Log($"\n<color=green>{message}()..</color>");
         }
 
         void MethodTimerStop(string message)
         {
             timer.Stop();
-            ModConsole.Log($"<color=green>{message}() Done! ({timer.ElapsedMilliseconds}ms)</color>");
+            ModConsole.Log($"</color><color=green>{message}() Done! ({timer.ElapsedMilliseconds}ms)</color>");
         }
 
         // Below Methods handle the various recurring methods in the mod class.
@@ -505,7 +496,7 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[2].Count; i++)
             {
                 try { ModMethods[2][i].MenuOnGUI(); }
-                catch (Exception e) { Console.WriteLine(e); }
+                catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
@@ -514,7 +505,7 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[3].Count; i++)
             {
                 try { ModMethods[3][i].MenuUpdate(); }
-                catch (Exception e) { Console.WriteLine(e); }
+                catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
@@ -523,7 +514,7 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[4].Count; i++)
             {
                 try { ModMethods[4][i].MenuFixedUpdate(); }
-                catch (Exception e) { Console.WriteLine(e); }
+                catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
@@ -533,7 +524,7 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[8].Count; i++)
             {
                 try { ModMethods[8][i].OnGUI(); }
-                catch (Exception e) { Console.WriteLine(e); }
+                catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
@@ -542,7 +533,7 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[9].Count; i++)
             {
                 try { ModMethods[9][i].Update(); }
-                catch (Exception e) { Console.WriteLine(e); }
+                catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
@@ -551,7 +542,7 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[10].Count; i++)
             {
                 try { ModMethods[10][i].FixedUpdate(); }
-                catch (Exception e) { Console.WriteLine(e); }
+                catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
@@ -562,7 +553,7 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[11].Count; i++)
             {
                 try { ModMethods[11][i].OnSave(); }
-                catch (Exception e) { LogError(e, ModMethods[11][i]); }
+                catch (Exception exception) { LogError(exception, ModMethods[11][i]); }
             }
 
             MethodTimerStop("OnSave");
@@ -598,6 +589,8 @@ namespace MSCLoader
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Deprecated, use ModLoader.CurrentScene instead.")]
         public static CurrentScene GetCurrentScene() => CurrentScene;
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static string GetModAssetsFolder(Mod mod) => GetModAssetsFolder(mod, true);
     }
 
     class ModMenuOnGUICall : MonoBehaviour

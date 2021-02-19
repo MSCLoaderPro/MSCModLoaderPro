@@ -15,9 +15,10 @@ namespace MSCLoader
     public static class MSCLoader
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Main(string[] args)
+        public static void Main()
         {
             Console.WriteLine("STARTING MOD LOADER PRO!");
+            settings = new LoaderSettings();
             ExtraTweaks();
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyWatcher;
         }
@@ -51,11 +52,11 @@ namespace MSCLoader
                     HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 using (TextWriter textWriter = File.CreateText("ModLoaderCrash.txt"))
                 {
-                    textWriter.WriteLine($"{ex}\n{ex.Message}");
+                    textWriter.WriteLine($"{exception}\n{exception.Message}");
                     textWriter.Flush();
                 }
             }
@@ -70,8 +71,6 @@ namespace MSCLoader
             try
             {
                 Console.WriteLine("MODLOADER: WRITING TWEAKS");
-
-                settings = new LoaderSettings();
                 long offset = FindBytes(@"mysummercar_Data\mainData", data);
 
                 using (FileStream stream = new FileStream(@"mysummercar_Data\mainData", FileMode.Open, FileAccess.ReadWrite))
@@ -87,12 +86,11 @@ namespace MSCLoader
                     stream.Close();
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 using (TextWriter textWriter = File.CreateText("ModLoaderCrash.txt"))
                 {
-                    textWriter.WriteLine(ex.ToString());
-                    textWriter.WriteLine(ex.Message);
+                    textWriter.WriteLine($"{exception}\n{exception.Message}");
                     textWriter.Flush();
                 }
             }
@@ -118,64 +116,71 @@ namespace MSCLoader
         internal static LoaderSettings settings;
         internal class LoaderSettings
         {
-            public bool SkipGameLauncher;
-            public bool SkipSplashScreen;
-            public bool UseVsyncInMenu;
-
-            public int UpdateMode;
-            public string LastUpdateCheck;
-            public int UpdateInterval;
-
-            public KeyCode[] OpenConsoleKey;
-            public int ConsoleFontSize;
-            public int ConsoleAutoOpen;
-            public int ConsoleWindowHeight;
-            public int ConsoleWindowWidth;
-
-            public bool EnableModLoader;
-            public bool UseOutputLog;
             readonly ModINI settingINI;
+
+            public bool SkipGameLauncher = false;
+            public bool SkipSplashScreen = false;
+            public bool UseVsyncInMenu = true;
+
+            public int UpdateMode = 2;
+            public string LastUpdateCheck = "2000-01-01 00:00:00Z";
+            public int UpdateInterval = 1;
+
+            public KeyCode[] OpenConsoleKey = { KeyCode.BackQuote };
+            public int ConsoleFontSize = 12;
+            public int ConsoleAutoOpen = 3;
+            public int ConsoleWindowHeight = 175;
+            public int ConsoleWindowWidth = 250;
+
+            public bool EnableModLoader = true;
+            public bool UseOutputLog = true;
 
             public LoaderSettings()
             {
                 settingINI = new ModINI("ModLoaderSettings");
 
-                SkipGameLauncher = settingINI.Read<bool>("SkipGameLauncher", "General");
-                SkipSplashScreen = settingINI.Read<bool>("SkipSplashScreen", "General");
-                UseVsyncInMenu = settingINI.Read<bool>("UseVsyncInMenu", "General");
+                if (!File.Exists("ModLoaderSettings.ini")) WriteValues();
 
-                UpdateMode = settingINI.Read<int>("UpdateMode", "Updates");
-                LastUpdateCheck = settingINI.Read<string>("LastUpdateCheck", "Updates");
-                UpdateInterval = settingINI.Read<int>("UpdateInterval", "Updates");
+                SkipGameLauncher = settingINI.Read("SkipGameLauncher", "General", SkipGameLauncher);
+                SkipSplashScreen = settingINI.Read("SkipSplashScreen", "General", SkipSplashScreen);
+                UseVsyncInMenu = settingINI.Read("UseVsyncInMenu", "General", UseVsyncInMenu);
 
-                OpenConsoleKey = settingINI.Read<string>("OpenConsoleKey", "Console").Split(';').Select(x => (KeyCode)Enum.Parse(typeof(KeyCode), x, true)).ToArray();
-                ConsoleFontSize = settingINI.Read<int>("ConsoleFontSize", "Console");
-                ConsoleAutoOpen = settingINI.Read<int>("ConsoleAutoOpen", "Console");
-                ConsoleWindowHeight = settingINI.Read<int>("ConsoleWindowHeight", "Console");
-                ConsoleWindowWidth = settingINI.Read<int>("ConsoleWindowWidth", "Console");
+                UpdateMode = settingINI.Read("UpdateMode", "Updates", UpdateMode);
+                LastUpdateCheck = settingINI.Read("LastUpdateCheck", "Updates", LastUpdateCheck);
+                UpdateInterval = settingINI.Read("UpdateInterval", "Updates", UpdateInterval);
 
-                EnableModLoader = settingINI.Read<bool>("EnableModLoader", "Hidden");
-                UseOutputLog = settingINI.Read<bool>("UseOutputLog", "Hidden");
+                OpenConsoleKey = settingINI.Read("OpenConsoleKey", "Console", OpenConsoleKey[0].ToString()).Split(';').Select(x => (KeyCode)Enum.Parse(typeof(KeyCode), x, true)).ToArray();
+                ConsoleFontSize = settingINI.Read("ConsoleFontSize", "Console", ConsoleFontSize);
+                ConsoleAutoOpen = settingINI.Read("ConsoleAutoOpen", "Console", ConsoleAutoOpen);
+                ConsoleWindowHeight = settingINI.Read("ConsoleWindowHeight", "Console", ConsoleWindowHeight);
+                ConsoleWindowWidth = settingINI.Read("ConsoleWindowWidth", "Console", ConsoleWindowWidth);
+
+                EnableModLoader = settingINI.Read("EnableModLoader", "Hidden", EnableModLoader);
+                UseOutputLog = settingINI.Read("UseOutputLog", "Hidden", UseOutputLog);
             }
 
             public void SaveSettings(ModLoaderSettings modLoaderSettings)
             {
-                settings.SkipGameLauncher = modLoaderSettings.SkipGameLauncher;
-                settings.SkipSplashScreen = modLoaderSettings.SkipSplashScreen;
-                settings.UseVsyncInMenu = modLoaderSettings.UseVsyncInMenu;
+                SkipGameLauncher = modLoaderSettings.SkipGameLauncher;
+                SkipSplashScreen = modLoaderSettings.SkipSplashScreen;
+                UseVsyncInMenu = modLoaderSettings.UseVsyncInMenu;
 
-                settings.UpdateMode = modLoaderSettings.UpdateMode;
-                settings.LastUpdateCheck = modLoaderSettings.LastUpdateCheck;
-                settings.UpdateInterval = modLoaderSettings.UpdateInterval;
+                UpdateMode = modLoaderSettings.UpdateMode;
+                LastUpdateCheck = modLoaderSettings.LastUpdateCheck;
+                UpdateInterval = modLoaderSettings.UpdateInterval;
 
                 List<KeyCode> keycodeList = new List<KeyCode>() { modLoaderSettings.OpenConsoleKeyKeybind };
                 keycodeList.AddRange(modLoaderSettings.OpenConsoleKeyModifiers);
-                settings.OpenConsoleKey = keycodeList.ToArray();
-                settings.ConsoleFontSize = (int)modLoaderSettings.ConsoleFontSize;
-                settings.ConsoleAutoOpen = modLoaderSettings.ConsoleAutoOpen;
-                settings.ConsoleWindowHeight = (int)modLoaderSettings.ConsoleWindowHeight;
-                settings.ConsoleWindowWidth = (int)modLoaderSettings.ConsoleWindowWidth;
+                OpenConsoleKey = keycodeList.ToArray();
+                ConsoleFontSize = (int)modLoaderSettings.ConsoleFontSize;
+                ConsoleAutoOpen = modLoaderSettings.ConsoleAutoOpen;
+                ConsoleWindowHeight = (int)modLoaderSettings.ConsoleWindowHeight;
+                ConsoleWindowWidth = (int)modLoaderSettings.ConsoleWindowWidth;
 
+                WriteValues();
+            }
+            void WriteValues()
+            {
                 settingINI.Write("SkipGameLauncher", "General", SkipGameLauncher);
                 settingINI.Write("SkipSplashScreen", "General", SkipSplashScreen);
                 settingINI.Write("UseVsyncInMenu", "General", UseVsyncInMenu);
@@ -189,6 +194,9 @@ namespace MSCLoader
                 settingINI.Write("ConsoleAutoOpen", "Console", ConsoleAutoOpen);
                 settingINI.Write("ConsoleWindowHeight", "Console", ConsoleWindowHeight);
                 settingINI.Write("ConsoleWindowWidth", "Console", ConsoleWindowWidth);
+
+                settingINI.Write("EnableModLoader", "Hidden", EnableModLoader);
+                settingINI.Write("UseOutputLog", "Hidden", UseOutputLog);
             }
 
             public void ApplySettings(ModLoaderSettings modLoaderSettings)

@@ -13,11 +13,11 @@ namespace MSCLoader
     /// <summary>Contains methods and variables suitable for controlling UI.</summary>
     public class ModUI
     {
-        internal static GameObject canvasGO;
+        internal static GameObject canvas;
 
         ///<summary>Get the mod loader canvas GameObject.</summary>
         ///<returns>Returns the mod loader canvas GameObject.</returns>
-        public static GameObject GetCanvas() => canvasGO;
+        public static GameObject GetCanvas() => canvas;
 
         internal static GameObject prompt;
 
@@ -45,7 +45,7 @@ namespace MSCLoader
         /// <param name="title">Title of the prompt.</param>
         /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
         /// <returns>Returns a ModPrompt component of the button. Can be</returns>
-        public static ModPrompt CreatePrompt(string message, string title = "Message", UnityAction onPromptClose = null)
+        public static ModPrompt CreatePrompt(string message, string title = "MESSAGE", UnityAction onPromptClose = null)
         {
             ModPrompt modPrompt = NewPrompt();
             modPrompt.Text = message;
@@ -124,10 +124,10 @@ namespace MSCLoader
         }
 
         [Obsolete("Please use CreatePrompt() instead.")]
-        public static void ShowMessage(string message, string title = "Message") => CreatePrompt(message, title);
+        public static void ShowMessage(string message, string title = "MESSAGE") => CreatePrompt(message, title);
 
         [Obsolete("Please use CreateYesNoPrompt() instead.")]
-        public static void ShowYesNoMessage(string message, Action ifYes) => ShowYesNoMessage(message, "Message", ifYes);
+        public static void ShowYesNoMessage(string message, Action ifYes) => ShowYesNoMessage(message, "MESSAGE", ifYes);
 
         [Obsolete("Please use CreateYesNoPrompt() instead.")]
         public static void ShowYesNoMessage(string message, string title, Action ifYes) => CreateYesNoPrompt(message, title, () => { ifYes(); });

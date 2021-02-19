@@ -63,7 +63,7 @@ namespace MSCLoader
             ModPromptButton button = Instantiate(buttonPrefab).GetComponent<ModPromptButton>();
             button.prompt = this;
             button.Text = buttonText;
-            button.OnClick.AddListener(action);
+            button.OnClick.AddListener(() => { action?.Invoke(); });
 
             button.transform.SetParent(buttonParent, false);
             buttons.Add(button);
