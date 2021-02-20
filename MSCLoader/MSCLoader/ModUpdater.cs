@@ -15,6 +15,7 @@ namespace MSCLoader
     // You cannot use it any other project.
     public class ModUpdater : MonoBehaviour
     {
+        public GameObject headerUpdateAllButton;
         public GameObject headerProgressBar;
         public Slider sliderProgressBar;
         public Text textProgressBar;
@@ -319,6 +320,10 @@ namespace MSCLoader
                 sliderProgressBar.value = i;
             }
 
+            // SHOW THE UPDATE ALL BUTTON THEN UPDATE THE MOD COUNT LABEL TO REFLECT HOW MANY MODS HAVE UPDATES AVAILABLE!
+            headerUpdateAllButton.SetActive(mods.Any(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available));
+            ModLoader.modContainer.UpdateModCountText();
+
             isBusy = false;
         }
 
@@ -432,7 +437,7 @@ namespace MSCLoader
                                             $"YOUR VERSION IS {mod.Version} AND THE NEWEST VERSION IS {mod.ModUpdateData.LatestVersion}.\n\n" +
                                             $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n" +
                                             $"WARNING: THIS WILL OPEN YOUR DEFAULT WEB BROWSER."
-                                            , "MOD UPDATER", () => OpenModDownloadPage(mod));
+                                            , "MOD UPDATER", () => ModHelper.OpenWebsite(mod.UpdateLink));
                     return;
                 }
             }
@@ -443,14 +448,14 @@ namespace MSCLoader
                 return;
             }
 
-            if (ModLoader.modLoaderSettings.UpdateMode == 1)
+            if (ModLoader.modLoaderSettings.AskBeforeDownload)
             {
                 ModPrompt prompt = ModUI.CreateCustomPrompt();
                 prompt.Text = $"ARE YOU SURE YOU WANT TO DOWNLOAD UPATE FOR MOD:\n\n<color=yellow>\"{mod.Name}\"</color>\n\n" +
                               $"YOUR VERSION IS {mod.Version} AND THE NEWEST VERSION IS {mod.ModUpdateData.LatestVersion}.";
                 prompt.Title = "MOD UPDATER";
                 prompt.AddButton("YES", () => AddModToDownloadQueue(mod));
-                prompt.AddButton("YES, AND DON'T ASK AGAIN", () => { ModLoader.modLoaderSettings.UpdateMode = 2; AddModToDownloadQueue(mod); });
+                prompt.AddButton("YES, AND DON'T ASK AGAIN", () => { ModLoader.modLoaderSettings.AskBeforeDownload = false; AddModToDownloadQueue(mod); });
                 prompt.AddButton("NO", null);
             }
         }
@@ -471,6 +476,7 @@ namespace MSCLoader
         /// </summary>
         public void UpdateAll()
         {
+            headerUpdateAllButton.SetActive(false);
             Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
             foreach (Mod mod in mods)
             {
@@ -576,11 +582,6 @@ namespace MSCLoader
                 ModUI.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
                                         $"WOULD YOU LIKE TO INSTALL THEM NOW?", "MOD UPDATER", () => { restartGame = true; Application.Quit(); }, null, () => { waitForInstall = true; });
             }
-        }
-
-        void OpenModDownloadPage(Mod mod)
-        {
-            Process.Start(mod.UpdateLink);
         }
         #endregion
         #region Waiting for install

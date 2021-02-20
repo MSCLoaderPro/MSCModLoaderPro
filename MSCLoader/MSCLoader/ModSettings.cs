@@ -102,12 +102,16 @@ namespace MSCLoader
 
             return modSettings;
         }
-        /// <summary>Updates the mod count text to reflect the current number of mods and how many of them are disabled.</summary>
+        /// <summary>Updates the mod count text to reflect the current number of mods and how many of them are disabled or has an update available.</summary>
         public void UpdateModCountText()
         {
             modCountText.text = $"{ModLoader.LoadedMods.Count} MODS";
+
             int disabledMods = ModLoader.LoadedMods.Count(mod => !mod.Enabled);
-            if (disabledMods > 0) modCountText.text += $", {disabledMods} DISABLED.";
+            if (disabledMods > 0) modCountText.text += $", {disabledMods} DISABLED";
+
+            int updatesAvailable = ModLoader.LoadedMods.Count(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
+            if (updatesAvailable > 0) modCountText.text += $", <color=yellow>{updatesAvailable} UPDATE{(updatesAvailable > 1 ? "S" : "")} AVAILABLE</color>";
         }
 
         internal void DisableModToggle()

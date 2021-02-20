@@ -345,4 +345,17 @@ namespace MSCLoader
             loadHandler.lockEnable = false;
         }
     }
+
+    public class StartDisable : MonoBehaviour
+    {
+        public GameObject[] objectToDisable;
+
+        void Awake()
+        {
+            for (int i = 0; i < objectToDisable.Length; i++)
+                objectToDisable[i].SetActive(false);
+
+            gameObject.SetActive(false);
+        }
+    }
 }

@@ -774,7 +774,7 @@
             <returns>Created ModSettings.</returns>
         </member>
         <member name="M:MSCLoader.ModContainer.UpdateModCountText">
-            <summary>Updates the mod count text to reflect the current number of mods and how many of them are disabled.</summary>
+            <summary>Updates the mod count text to reflect the current number of mods and how many of them are disabled or has an update available.</summary>
         </member>
         <member name="T:MSCLoader.ModListElement">
             <summary>Control Component for the mod list elements.</summary>
