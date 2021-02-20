@@ -39,8 +39,6 @@ namespace MSCLoader
         void Awake()
         {
             consoleInstance = this;
-            console.SetActive(false);
-            buttonText.text = console.activeSelf ? "CLOSE CONSOLE" : "OPEN CONSOLE";
 
             UpdateFontSize();
 
@@ -48,6 +46,12 @@ namespace MSCLoader
             controller.LogChanged += UpdateLog;
 
             UpdateLog(controller.scrollback.ToArray());
+        }
+        
+        void Start()
+        {
+            console.SetActive(false);
+            buttonText.text = "CLOSE CONSOLE";
         }
 
         void Update()

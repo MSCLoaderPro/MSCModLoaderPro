@@ -422,6 +422,10 @@
             <param name="name">Name of the variable to find.</param>
             <returns>PlayMaker variable of specified type T</returns>
         </member>
+        <member name="M:MSCLoader.PlayMakerHelper.Initialize(PlayMakerFSM)">
+            <summary>Initialize a PlayMakerFSM to enable editing states.</summary>
+            <param name="fsm">PlayMakerFSM to initialize.</param>
+        </member>
         <member name="T:MSCLoader.CallAction">
             <summary>FsmStateAction that executes an Action.</summary>
         </member>

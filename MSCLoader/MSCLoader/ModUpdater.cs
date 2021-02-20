@@ -70,7 +70,7 @@ namespace MSCLoader
 
         void Update()
         {
-            ModConsole.Log(ModLoader.modLoaderSettings.lastUpdateCheckDate);
+            //ModConsole.Log(ModLoader.modLoaderSettings.lastUpdateCheckDate);
         }
 
         IEnumerator UpdateSliderText(string message, string finishedMessage)

@@ -187,6 +187,7 @@ GameObject:
   - 114: {fileID: 11408968}
   - 114: {fileID: 11403782}
   - 114: {fileID: 11405240}
+  - 114: {fileID: 11403362}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -265,6 +266,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &11403362
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 153134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -194319565, guid: 23f5af49907aae6418bf6f7654a6d772, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  element: {fileID: 22457210}
+  hoverScale: {x: .899999976, y: .899999976, z: .899999976}
+  normalScale: {x: 1, y: 1, z: 1}
 --- !u!114 &11403782
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -329,8 +344,8 @@ MonoBehaviour:
   m_Script: {fileID: 1573420865, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
-  m_EffectDistance: {x: 3, y: -3}
+  m_EffectColor: {r: 0, g: 0, b: 0, a: .90196079}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
 --- !u!114 &11405642
 MonoBehaviour:
@@ -358,7 +373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 0, a: .960784316}
+  m_Color: {r: .396078467, g: .13333334, b: .0705882385, a: .90196079}
   m_Sprite: {fileID: 21300000, guid: 210db946ae8351d468404d1a626f70a7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -392,7 +407,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: CLICK THE ICON TO DOWNLOAD UPDATE
+  m_Text: CLICK THE ICON TO DOWNLOAD
 --- !u!114 &11437674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1148,9 +1163,9 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.5, y: -2.5}
-  m_SizeDelta: {x: -5, y: -5}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -4, y: -4}
+  m_Pivot: {x: .5, y: .5}
 --- !u!224 &22471334
 RectTransform:
   m_ObjectHideFlags: 1

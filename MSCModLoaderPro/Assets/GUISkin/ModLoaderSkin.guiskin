@@ -1254,6 +1254,6 @@ MonoBehaviour:
   m_Settings:
     m_DoubleClickSelectsWord: 1
     m_TripleClickSelectsLine: 1
-    m_CursorColor: {r: 1, g: 1, b: 1, a: 1}
+    m_CursorColor: {r: .227941155, g: .227941155, b: .227941155, a: 1}
     m_CursorFlashSpeed: -1
     m_SelectionColor: {r: 1, g: .384039074, b: 0, a: .699999988}

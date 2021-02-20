@@ -301,6 +301,10 @@ namespace MSCLoader
                 default: return null;
             }
         }
+        /// <summary>Initialize a PlayMakerFSM to enable editing states.</summary>
+        /// <param name="fsm">PlayMakerFSM to initialize.</param>
+        public static void Initialize(this PlayMakerFSM fsm) => 
+            fsm.Fsm.InitData();
     }
     /// <summary>FsmStateAction that executes an Action.</summary>
     public class CallAction : FsmStateAction

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HutongGames.PlayMaker;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -462,7 +463,7 @@ namespace MSCLoader
             methods.AddComponent<ModUpdateCall>().modLoader = this;
             methods.AddComponent<ModFixedUpdateCall>().modLoader = this;
 
-            FsmHook.FsmInject(GameObject.Find("ITEMS"), "Save game", ModOnSave);
+            GameObject.Find("ITEMS").GetPlayMakerFSM("SaveItems").InsertAction("Save game", 0, new ModOnSave() { modLoader = this });
 
             modUILoadScreen.SetActive(false);
         }
@@ -627,5 +628,15 @@ namespace MSCLoader
     {
         public ModLoader modLoader;
         void FixedUpdate() => modLoader.ModFixedUpdate();
+    }
+
+    class ModOnSave : FsmStateAction
+    {
+        public ModLoader modLoader;
+        public override void OnEnter()
+        {
+            modLoader.ModOnSave();
+            Finish();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -136,6 +137,7 @@ namespace MSCLoader
         public static GameObject messageBox { get => prompt; set => prompt = value; }
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class SwitchToggleGraphic : MonoBehaviour
     {
         public Toggle toggle;
@@ -147,7 +149,7 @@ namespace MSCLoader
             background.enabled = !toggle.isOn;
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class ResizeOnHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public RectTransform element;
@@ -170,7 +172,7 @@ namespace MSCLoader
             if (element) element.localScale = normalScale;
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class ToggleActive : MonoBehaviour
     {
         public RectTransform[] rectTransforms;
@@ -181,7 +183,7 @@ namespace MSCLoader
                 rectTransforms[i].gameObject.SetActive(!rectTransforms[i].gameObject.activeSelf);
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class ModMenuDetection : MonoBehaviour
     {
         public RectTransform[] rectTransforms;
@@ -192,7 +194,7 @@ namespace MSCLoader
                 rectTransforms[i].gameObject.SetActive(false);
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class TextBoxHider : MonoBehaviour
     {
         public GameObject textObject;
@@ -203,7 +205,7 @@ namespace MSCLoader
             textObject.SetActive(!string.IsNullOrEmpty(text.text));
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class UIPositioning : MonoBehaviour
     {
         public RectTransform rectTransform;
@@ -222,7 +224,7 @@ namespace MSCLoader
             }
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class UILoadHandler : MonoBehaviour
     {
         public ModContainer modContainer;
@@ -255,7 +257,7 @@ namespace MSCLoader
             }
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class UIMainMenuLoad : MonoBehaviour
     {
         public UILoadHandler loadHandler;
@@ -266,7 +268,7 @@ namespace MSCLoader
             loadHandler.Disable();
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class UIModMenuHandler : MonoBehaviour
     {
         public GameObject modMenu, modList, modSettings, menuButton, gameButton;
@@ -314,7 +316,7 @@ namespace MSCLoader
             modSettings.SetActive(false);
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class UISubMenuHandler : MonoBehaviour
     {
         public bool modMenu = false;
@@ -331,7 +333,7 @@ namespace MSCLoader
             }
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class UIMenuNewGameHandler : MonoBehaviour
     {
         public UILoadHandler loadHandler;
@@ -345,7 +347,7 @@ namespace MSCLoader
             loadHandler.lockEnable = false;
         }
     }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class StartDisable : MonoBehaviour
     {
         public GameObject[] objectToDisable;
