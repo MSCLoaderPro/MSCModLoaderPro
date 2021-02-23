@@ -2,11 +2,8 @@
 using System.Threading;
 using System.Net;
 using System.ComponentModel;
-using System.IO;
-using Ionic.Zip;
-using System.Diagnostics;
-using System.Text;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace CoolUpdater
 {
@@ -14,11 +11,10 @@ namespace CoolUpdater
     {
         const string Version = "0.1";
 
-        static bool restartGame;
+        public const string Downloads = "Downloads";
+        public const string Temp = "Temp";
 
-        const string Downloads = "Downloads";
-        const string Temp = "Temp";
-
+        [STAThread]
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -26,7 +22,7 @@ namespace CoolUpdater
                 Console.WriteLine("Copyright(C) Konrad \"Athlon\" Figura 2021\n\n" +
                                   "This program is a part of MSC Mod Loader Pro.\n" +
                                   "You cannot distribute, modify or use this software outside of Mod Loader Pro,\n" +
-                                  "unless you received an agreement from the copyright holder.\n\n" +
+                                  "unless you've received an agreement from the copyright holder.\n\n" +
                                   "Press any key to exit.");
                 Console.ReadKey();
                 Environment.Exit(0);
@@ -78,19 +74,10 @@ namespace CoolUpdater
                     DownloadFile(args[1], args[2]);
                     break;
                 case "update-all":
-                    if (args.Length > 1 && args[1] == "restart")
-                    {
-                        restartGame = true;
-                    }
-
-                    UpdateAll();
+                    UpdateView view = new UpdateView();
+                    Application.Run(view);
                     break;
                 case "update-modloader":
-                    if (args.Length > 1 && args[1] == "restart")
-                    {
-                        restartGame = true;
-                    }
-
                     UpdateModLoader();
                     break;
             }
@@ -176,85 +163,6 @@ namespace CoolUpdater
         private static void UpdateModLoader()
         {
             throw new NotImplementedException();
-        }
-
-        static string GetSeconds(Stopwatch s)
-        {
-            return s.Elapsed.TotalSeconds.ToString() + "s";
-        }
-
-        private static void UpdateAll()
-        {
-            try
-            {
-                var stopwatch = Stopwatch.StartNew();
-                Console.WriteLine($"({GetSeconds(stopwatch)}) Mod Loader Pro Auto-Update Tool Initialized!\n");
-
-                Process[] mscProcess = Process.GetProcessesByName("mysummercar");
-                if (mscProcess.Length > 0)
-                {
-                    foreach (Process process in mscProcess)
-                    {
-                        Console.WriteLine($"({GetSeconds(stopwatch)}) Killing processes {process.ProcessName}...");
-                        process.Kill();
-                    }
-                    Console.WriteLine($"({GetSeconds(stopwatch)}) All MSC have been killed!\n");
-                }
-
-                if (!Directory.Exists(Downloads))
-                {
-                    throw new DirectoryNotFoundException("Downloads folder doesn't exist!");
-                }
-
-                // A small workaround for "not accessible files".
-                Console.WriteLine($"({GetSeconds(stopwatch)}) Loading update procedure...\n");
-                Thread.Sleep(1000);
-
-                string modsFolder = @"..\Mods";
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-                DirectoryInfo di = new DirectoryInfo(Downloads);
-                FileInfo[] files = di.GetFiles("*.zip");
-                for (int i = 0; i < files.Length; i++)
-                {
-                    FileInfo file = files[i];
-                    try
-                    {
-                        Console.WriteLine($"({GetSeconds(stopwatch)}) ({i}/{files.Length}) Unpacking {file.Name}...");
-                        using (ZipFile zip = ZipFile.Read(file.FullName))
-                        {
-                            zip.ExtractAll(modsFolder, ExtractExistingFileAction.OverwriteSilently);
-                        }
-                        Console.WriteLine($"({GetSeconds(stopwatch)}) {file.Name} unpacking completed!\n");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"\n===============================================\nThere was an error while extracting {file.Name} :(\n\n" + ex.ToString() + "\n\n");
-                    }
-                }
-
-                // Cleanup after install.
-                Directory.Delete(Downloads, true);
-
-                Console.WriteLine($"({GetSeconds(stopwatch)}) All mods have been updated, have a nice day :)");
-                if (restartGame)
-                {
-                    Console.WriteLine($"Restarting game now using Steam");
-                    Process cmd = new Process();
-                    cmd.StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = "/C start \"\" \"steam://rungameid/516750\""
-                    };
-                    cmd.Start();
-                }
-                Environment.Exit(0);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                Console.ReadKey();
-            }
-        }
+        }       
     }
 }

@@ -15,6 +15,9 @@ namespace MSCLoader
     // You cannot use it any other project.
     public class ModUpdater : MonoBehaviour
     {
+        static ModUpdater instance;
+        public static ModUpdater Instance => instance;
+
         public GameObject headerUpdateAllButton;
         public GameObject headerProgressBar;
         public Slider sliderProgressBar;
@@ -26,7 +29,7 @@ namespace MSCLoader
         bool isBusy;
         public bool IsBusy => isBusy;
 
-        string UpdaterDirectory => Path.Combine(Directory.GetCurrentDirectory(), "ModUpdater");
+        internal string UpdaterDirectory => Path.Combine(Directory.GetCurrentDirectory(), "ModUpdater");
         string UpdaterPath => Path.Combine(UpdaterDirectory, "CoolUpdater.exe");
         string DownloadsDirectory => Path.Combine(UpdaterDirectory, "Downloads");
         const int TimeoutTime = 10; // in seconds.
@@ -36,8 +39,42 @@ namespace MSCLoader
 
         bool nexusIsPremium;
 
+        ModUpdaterDatabase modUpdaterDatabase;
+
+        public ModUpdater()
+        {
+            instance = this;
+        }
+
         void Start()
         {
+            modUpdaterDatabase = new ModUpdaterDatabase();
+
+            // Populate list from the database.
+            if (modUpdaterDatabase.GetAll().Count > 0)
+            {
+                foreach (var f in modUpdaterDatabase.GetAll())
+                {
+                    Mod mod = ModLoader.LoadedMods.FirstOrDefault(m => m.ID == f.Key);
+                    if (mod != null)
+                    {
+                        mod.ModUpdateData = f.Value;
+
+                        if (IsNewerVersionAvailable(mod.Version, mod.ModUpdateData.LatestVersion))
+                        {
+                            mod.ModUpdateData.UpdateStatus = UpdateStatus.Available;
+                            mod.modListElement.ToggleUpdateButton(true);
+                            headerUpdateAllButton.SetActive(true);
+                            ModLoader.modContainer.UpdateModCountText();
+                        }
+                        else
+                        {
+                            mod.ModUpdateData.UpdateStatus = UpdateStatus.NotChecked;
+                        }
+                    }
+                }
+            }
+
             if (ShouldCheckForUpdates())
             {
                 autoUpdateChecked = true;
@@ -65,12 +102,9 @@ namespace MSCLoader
                     return now > lastCheck.AddDays(1);
                 case 2: // Weekly
                     return now >= lastCheck.AddDays(7);
+                case 3: // Never
+                    return false;
             }
-        }
-
-        void Update()
-        {
-            //ModConsole.Log(ModLoader.modLoaderSettings.lastUpdateCheckDate);
         }
 
         IEnumerator UpdateSliderText(string message, string finishedMessage)
@@ -175,35 +209,43 @@ namespace MSCLoader
 
                     output = lastDataOut;
 
-                    // Reading the metadata file info that we want.
                     mod.ModUpdateData = new ModUpdateData();
-                    if (url.Contains("github.com"))
-                    {
-                        if (output.Contains("\"message\": \"Not Found\""))
-                        {
-                            ModConsole.LogError($"Mod Updater: Mod {mod.ID}'s GitHub repository returned \"Not found\" status.");
-                            continue;
-                        }
-                        string[] outputArray = ReadMetadataToArray();
-                        foreach (string s in outputArray)
-                        {
-                            // Finding tag of the latest release, this servers as latest version number.
-                            if (s.Contains("\"tag_name\""))
-                            {
-                                mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
-                            }
-                            else if (s.Contains("\"browser_download_url\"") && s.Contains(".zip"))
-                            {
-                                string[] separated = s.Split(':');
-                                mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
-                            }
 
-                            // Breaking out of the loop, if we found all that we've been looking for.
-                            if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion))
+                    // Reading the metadata file info that we want.
+                    try
+                    {
+                        if (url.Contains("github.com"))
+                        {
+                            if (output.Contains("\"message\": \"Not Found\""))
                             {
-                                break;
+                                ModConsole.LogError($"Mod Updater: Mod {mod.ID}'s GitHub repository returned \"Not found\" status.");
+                                continue;
+                            }
+                            string[] outputArray = ReadMetadataToArray();
+                            foreach (string s in outputArray)
+                            {
+                                // Finding tag of the latest release, this servers as latest version number.
+                                if (s.Contains("\"tag_name\""))
+                                {
+                                    mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
+                                }
+                                else if (s.Contains("\"browser_download_url\"") && s.Contains(".zip"))
+                                {
+                                    string[] separated = s.Split(':');
+                                    mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
+                                }
+
+                                // Breaking out of the loop, if we found all that we've been looking for.
+                                if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion))
+                                {
+                                    break;
+                                }
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        ModConsole.LogError($"An error has occured while reading the metadata of {mod.Name}:\n\n{ex.ToString()}");
                     }
                 }
                 else if (url.Contains("nexusmods.com"))
@@ -324,6 +366,26 @@ namespace MSCLoader
             headerUpdateAllButton.SetActive(mods.Any(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available));
             ModLoader.modContainer.UpdateModCountText();
 
+            IEnumerable<Mod> modsWithUpdates = mods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
+            switch (ModLoader.modLoaderSettings.UpdateMode)
+            {
+                case 1: // Notify only
+                    string modNames = "";
+                    foreach (var mod in modsWithUpdates)
+                        modNames += $"{mod.Name}, ";
+                    modNames = modNames.Remove(modNames.Length - 2, 1);
+                    ModPrompt prompt = ModUI.CreateCustomPrompt();
+                    prompt.Text = $"MOD UPDATE IS AVAILABLE FOR THE FOLLOWING MODS:\n\n<color=yellow>{modNames}</color>\n\n" +
+                                  $"YOU CAN USE \"UPDATE ALL MODS\" BUTTON TO QUICKLY UPDATE THEM.";
+                    prompt.Title = "MOD UPDATER";
+                    prompt.AddButton("UPDATE ALL MODS", () => UpdateAll());
+                    prompt.AddButton("CLOSE", null);
+                    break;
+                case 2: // Download
+                    UpdateAll();
+                    break;
+            }
+
             isBusy = false;
         }
 
@@ -442,12 +504,6 @@ namespace MSCLoader
                 }
             }
 
-            if (ModLoader.modLoaderSettings.UpdateMode == 2)
-            {
-                AddModToDownloadQueue(mod);
-                return;
-            }
-
             if (ModLoader.modLoaderSettings.AskBeforeDownload)
             {
                 ModPrompt prompt = ModUI.CreateCustomPrompt();
@@ -457,6 +513,10 @@ namespace MSCLoader
                 prompt.AddButton("YES", () => AddModToDownloadQueue(mod));
                 prompt.AddButton("YES, AND DON'T ASK AGAIN", () => { ModLoader.modLoaderSettings.AskBeforeDownload = false; AddModToDownloadQueue(mod); });
                 prompt.AddButton("NO", null);
+            }
+            else
+            {
+                AddModToDownloadQueue(mod);
             }
         }
 
@@ -580,16 +640,19 @@ namespace MSCLoader
             if (downloadedUpdates > 0)
             {
                 ModUI.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
-                                        $"WOULD YOU LIKE TO INSTALL THEM NOW?", "MOD UPDATER", () => { restartGame = true; Application.Quit(); }, null, () => { waitForInstall = true; });
+                                        $"WOULD YOU LIKE TO INSTALL THEM NOW?\n\n" +
+                                        $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>", 
+                                        "MOD UPDATER", () => { Application.Quit(); }, null, () => { waitForInstall = true; });
             }
         }
         #endregion
         #region Waiting for install
         bool waitForInstall;
-        bool restartGame;
         // Unity function: https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnApplicationQuit.html
         void OnApplicationQuit()
         {
+            modUpdaterDatabase.Save();
+
             if (waitForInstall)
             {
                 Process p = new Process
@@ -597,7 +660,7 @@ namespace MSCLoader
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/C CoolUpdater.exe update-all {(restartGame ? " restart" : "")}",
+                        Arguments = $"/C \"\" CoolUpdater.exe update-all",
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = true
                     }
@@ -617,5 +680,71 @@ namespace MSCLoader
         public string ZipUrl;
         public string LatestVersion;
         public UpdateStatus UpdateStatus;
+    }
+
+    internal class ModUpdaterDatabase
+    {
+        // Because of some weird conflict between Newtonsoft.Json.Linq and System.Linq conflict,
+        // we are forced to use a custom database solution.
+
+        string DatabaseFile = Path.Combine(ModUpdater.Instance.UpdaterDirectory, "Updater.txt");
+
+        Dictionary<string, ModUpdateData> modUpdateData;
+
+        public ModUpdaterDatabase()
+        {
+            if (!File.Exists(DatabaseFile))
+            {
+                File.Create(DatabaseFile);
+            }
+
+            modUpdateData = new Dictionary<string, ModUpdateData>();
+
+            string[] fileContent = File.ReadAllLines(DatabaseFile);
+            foreach (var s in fileContent)
+            {
+                if (string.IsNullOrEmpty(s))
+                {
+                    continue;
+                }
+
+                string id, url, latest = "";
+                string[] spliitted = s.Split(',');
+                id = spliitted[0];
+                url = spliitted[1];
+                latest = spliitted[2];
+
+                ModUpdateData data = new ModUpdateData();
+                data.ZipUrl = url;
+                data.LatestVersion = latest;
+
+                modUpdateData.Add(id, data);
+            }
+        }
+
+        internal ModUpdateData Get(Mod mod)
+        {
+            return modUpdateData.FirstOrDefault(m => m.Key == mod.ID).Value;
+        }
+
+        internal void Save()
+        {
+            IEnumerable<Mod> mods = ModLoader.LoadedMods.Where(m => m.ModUpdateData.UpdateStatus == UpdateStatus.Available);
+            string output = "";
+            foreach (Mod mod in mods)
+            {
+                output += $"{mod.ID},{mod.ModUpdateData.ZipUrl},{mod.ModUpdateData.LatestVersion}\n";
+            }
+
+            if (File.Exists(DatabaseFile))
+                File.Delete(DatabaseFile);
+
+            File.WriteAllText(DatabaseFile, output);
+        }
+
+        internal Dictionary<string, ModUpdateData> GetAll()
+        {
+            return modUpdateData;
+        }
     }
 }
