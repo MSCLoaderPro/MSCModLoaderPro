@@ -14,6 +14,10 @@ namespace CoolUpdater
         public const string Downloads = "Downloads";
         public const string Temp = "Temp";
 
+        const string NexusHeader = "User-Agent: MSCLoaderPro/{0} ({1})";
+        const string GitHubHeader = "User-Agent: Other";
+        const string ApiKeyFormat = "apikey: {0}";
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -90,46 +94,30 @@ namespace CoolUpdater
 
         static void DownloadMetafile(string url, string token = "")
         {
-            if (url.Contains("nexusmods.com"))
-            {
-                Thread t = new Thread(() =>
-                {
-                    using (WebClient client = new WebClient())
-                    {
-                        client.Headers.Add($"User-Agent: MSCLoaderPro/{Version} ({GetSystemVersion()})");
-                        client.Headers.Add($"apikey: {token}");
-                        client.DownloadStringCompleted += Client_DownloadStringCompleted;
-                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/games/mysummercar/mods/146.json")); //MAIN INFO
-                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/games/mysummercar/mods/146/files.json")); //FILES
-                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/games/mysummercar/mods/1232/files/146/download_link.json")); // Download link for newest version
-                        //client.DownloadStringAsync(new Uri("https://api.nexusmods.com/v1/users/validate.json")); // User Info
-                        client.DownloadStringAsync(new Uri(url));
-                    }
-                });
+            bool nexus = url.Contains("nexusmods.com");
 
-                t.Start();
-            }
-            else
+            Thread t = new Thread(() =>
             {
-                Thread t = new Thread(() =>
+                using (WebClient client = new WebClient())
                 {
-                    using (WebClient client = new WebClient())
+                    client.Headers.Add(nexus ? string.Format(NexusHeader, Version, GetSystemVersion()) : GitHubHeader);
+                    if (nexus)
                     {
-                        client.Headers.Add("User-Agent: Other");
-                        client.DownloadStringCompleted += Client_DownloadStringCompleted;
-                        client.DownloadStringAsync(new Uri(url));
+                        client.Headers.Add(string.Format(ApiKeyFormat, token));
                     }
-                });
+                    client.DownloadStringCompleted += Client_DownloadStringCompleted;
+                    client.DownloadStringAsync(new Uri(url));
 
-                t.Start();
-            }
+                }
+            });
+            t.Start();
             Console.ReadKey();
         }
 
         private static void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            Console.WriteLine(e.Result.Replace(",", ",\n"));
-            Environment.Exit(1);
+            Console.WriteLine(e.Result.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],"));
+            Environment.Exit(0);
         }
 
         private static void DownloadFile(string url, string savepath)
@@ -152,7 +140,7 @@ namespace CoolUpdater
 
         private static void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            Environment.Exit(1);
+            Environment.Exit(0);
         }
 
         private static void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
