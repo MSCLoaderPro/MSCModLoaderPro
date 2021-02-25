@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MSCLoader
 {
-    class ModSave
+    public class ModSave
     {
         /// <summary>Saves a class (T) into an XML file of the specified name.</summary>
         /// <typeparam name="T">Class to save</typeparam>
@@ -34,7 +34,7 @@ namespace MSCLoader
             catch (System.Exception ex)
             {
                 Debug.LogError(ex);
-                ModConsole.LogError(fileName + ": " + ex.ToString());
+                ModConsole.LogError($"{fileName}: {ex}");
             }
         }
         /// <summary>Loads a save file with the specified name.</summary>
@@ -58,7 +58,7 @@ namespace MSCLoader
             catch (System.Exception ex)
             {
                 Debug.LogError(ex);
-                ModConsole.LogError(fileName + ": " + ex.ToString());
+                ModConsole.LogError($"{fileName}: {ex}");
                 return new T();
             }
         }

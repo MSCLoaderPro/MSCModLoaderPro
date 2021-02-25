@@ -123,7 +123,7 @@ namespace MSCLoader
             {
                 System.Console.WriteLine("MODLOADER: INITIALIZING");
                 ModLoader.Init(); 
-                ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent).GetMethod("DoMousePickEvent", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectUIClickFix).GetMethod("Prefix")));
+                ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent).GetMethod("DoRaycast", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectUIClickFix).GetMethod("Prefix")));
                 ModLoaderInstance.UnpatchAll("MSCModLoaderProInit");
             }
         }
@@ -142,13 +142,28 @@ namespace MSCLoader
                 }
             }
         }
+        
+        [HarmonyPatch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent), "DoRaycast")]
+        class InjectUIClickFix
+        {
+            public static bool Prefix(ref bool __result)
+            {
+                if (GUIUtility.hotControl != 0 || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
+                {
+                    __result = false;
+                    return false;
+                }
+                return true;
+            }
+        }
 
-        [HarmonyPatch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent), "DoMousePickEvent")]
+        // OLD, BAD METHOD OF CLICK THROUGH FIX
+        /*[HarmonyPatch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent), "DoMousePickEvent")]
         class InjectUIClickFix
         {
             public static bool Prefix() => 
                 (GUIUtility.hotControl == 0 && EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject());
-        }
+        }*/
 
         [HarmonyPatch(typeof(HutongGames.PlayMaker.Actions.LoadLevel), "OnEnter")]
         class InjectLoadSceneFix

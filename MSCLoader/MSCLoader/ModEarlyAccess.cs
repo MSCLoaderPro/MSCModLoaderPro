@@ -4,6 +4,7 @@ using System.Net;
 
 namespace MSCLoader
 {
+    /// <summary>Class containing useful features pertaining to Early Access for mods.</summary>
     public class ModEarlyAccess
     {
         public static void CheckDateAndDisable(Mod mod, string startDate, string endDate, string disableMessage = "", bool onlineTimeOnly = false)

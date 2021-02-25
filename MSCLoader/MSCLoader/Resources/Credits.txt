@@ -30,13 +30,6 @@ ModINI
 Danny Beckett (and dxiv)
 https://stackoverflow.com/a/14906422
 
-LEGACY CODE AND OLD MOD LOADERS
-GNU General Public License v3.0
-dsonbill
-https://github.com/dsonbill/MSCModLoader
-piotrulos
-https://github.com/piotrulos/MSCModLoader
-
 FIND BYTES
 MSCLoader FindBytes()
 John Wein
@@ -54,6 +47,13 @@ CC BY-SA 3.0 (minor changes to returned result).
 ModEarlyAccess GetDate()
 cerberus
 https://stackoverflow.com/a/44095036
+
+LEGACY CODE AND OLD MOD LOADERS
+GNU General Public License v3.0
+dsonbill
+https://github.com/dsonbill/MSCModLoader
+piotrulos
+https://github.com/piotrulos/MSCModLoader
 
 EXTERNAL LIBRARIES:
 

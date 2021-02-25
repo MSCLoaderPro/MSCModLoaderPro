@@ -26,7 +26,7 @@ namespace MSCLoader
         /// <summary> List of Loaded Mods. </summary>
         public static List<Mod> LoadedMods { get; internal set; }
         /// <summary> List of used Mod Class methods. </summary>
-        public static List<List<Mod>> ModMethods;
+        public static List<Mod>[] modMethods;
         static string[] methodNames = { "OnNewGame", "OnMenuLoad", "MenuOnGUI", "MenuUpdate", "MenuFixedUpdate", "PreLoad", "OnLoad", "PostLoad", "OnGUI", "Update", "FixedUpdate", "OnSave" };
         /// <summary>Load handler for the UI. Add your GameObject to the extra list if you want your UI to be disabled when the game loads a scene.</summary>
         public UILoadHandler modSceneLoadHandler;
@@ -106,7 +106,7 @@ namespace MSCLoader
 
             // Prepare the mod lists.
             LoadedMods = new List<Mod>();
-            ModMethods = new List<List<Mod>>() {
+            modMethods = new List<Mod>[] {
                 new List<Mod>(), // 0 - OnNewGame
                 new List<Mod>(), // 1 - MenuOnLoad
                 new List<Mod>(), // 2 - MenuOnGUI
@@ -132,7 +132,7 @@ namespace MSCLoader
             // Log usage of methods to output_log.txt
             string modString = "";
             for (int i = 0; i < methodNames.Length; i++)
-                modString += $"\n{ModMethods[i].Count} Mod{(ModMethods[i].Count != 1 ? "s" : "")} using {methodNames[i]}.{(ModMethods[i].Count > 0 ? "\n  " : "")}{string.Join("\n  ", ModMethods[i].Select(x => x.ID).ToArray())}";
+                modString += $"\n{modMethods[i].Count} Mod{(modMethods[i].Count != 1 ? "s" : "")} using {methodNames[i]}.{(modMethods[i].Count > 0 ? "\n  " : "")}{string.Join("\n  ", modMethods[i].Select(x => x.ID).ToArray())}";
             Console.WriteLine(modString);
 
             // Load mod settings for each loaded mod. Then call OnMenuLoad
@@ -291,23 +291,23 @@ namespace MSCLoader
         internal static void RemoveFromMethodLists(Mod mod)
         {
             // Start at 1 to make sure OnNewGame is always called regardless of the mod's enabled status.
-            for (int i = 1; i < ModMethods.Count; i++)
-                ModMethods[i].RemoveAll(x => x == mod);
+            for (int i = 1; i < modMethods.Length; i++)
+                modMethods[i].RemoveAll(x => x == mod);
         }
 
         internal static void AddToMethodLists(Mod mod)
         {
-            for (int i = 0; i <= 11; i++)
+            for (int i = 0; i < modMethods.Length; i++)
             {
-                if (!ModMethods[i].Contains(mod) && CheckEmptyMethod(mod, methodNames[i]))
-                    ModMethods[i].Add(mod);
+                if (!modMethods[i].Contains(mod) && CheckEmptyMethod(mod, methodNames[i]))
+                    modMethods[i].Add(mod);
             }
 
             // Legacy methods
-            if (!ModMethods[7].Contains(mod) && CheckEmptyMethod(mod, "SecondPassOnLoad")) 
-                ModMethods[7].Add(mod);
-            if (!ModMethods[1].Contains(mod) && CheckEmptyMethod(mod, "OnMenuLoad")) 
-                ModMethods[1].Add(mod);
+            if (!modMethods[7].Contains(mod) && CheckEmptyMethod(mod, "SecondPassOnLoad")) 
+                modMethods[7].Add(mod);
+            if (!modMethods[1].Contains(mod) && CheckEmptyMethod(mod, "OnMenuLoad")) 
+                modMethods[1].Add(mod);
         }
 
         static bool CheckEmptyMethod(Mod mod, string methodName)
@@ -367,14 +367,14 @@ namespace MSCLoader
 
         void CallOnMenuLoad()
         {
-            if (ModMethods[1].Count > 0)
+            if (modMethods[1].Count > 0)
             {
                 MethodTimerStart("MenuOnLoad");
 
-                for (int i = 0; i < ModMethods[1].Count; i++)
+                for (int i = 0; i < modMethods[1].Count; i++)
                 {
-                    try { ModMethods[1][i].MenuOnLoad(); }
-                    catch (Exception exception) { LogError(exception, ModMethods[1][i]); }
+                    try { modMethods[1][i].MenuOnLoad(); }
+                    catch (Exception exception) { LogError(exception, modMethods[1][i]); }
                 }
                 MethodTimerStop("MenuOnLoad");
             }
@@ -395,15 +395,15 @@ namespace MSCLoader
 
             ModConsole.Log("<color=green>Loading mods...</color>\n");
 
-            if (newGameStarted && ModMethods[0].Count > 0)
+            if (newGameStarted && modMethods[0].Count > 0)
             {
                 newGameStarted = false;
                 MethodTimerStart("OnNewGame");
 
-                for (int i = 0; i < ModMethods[0].Count; i++)
+                for (int i = 0; i < modMethods[0].Count; i++)
                 {
-                    try { ModMethods[0][i].OnNewGame(); }
-                    catch (Exception exception) { LogError(exception, ModMethods[0][i]); }
+                    try { modMethods[0][i].OnNewGame(); }
+                    catch (Exception exception) { LogError(exception, modMethods[0][i]); }
                 }
 
                 MethodTimerStop("OnNewGame");
@@ -411,14 +411,14 @@ namespace MSCLoader
                 yield return null;
             }
 
-            if (ModMethods[5].Count > 0)
+            if (modMethods[5].Count > 0)
             {
                 MethodTimerStart("PreLoad");
 
-                for (int i = 0; i < ModMethods[5].Count; i++)
+                for (int i = 0; i < modMethods[5].Count; i++)
                 {
-                    try { ModMethods[5][i].PreLoad(); }
-                    catch (Exception exception) { LogError(exception, ModMethods[5][i]); }
+                    try { modMethods[5][i].PreLoad(); }
+                    catch (Exception exception) { LogError(exception, modMethods[5][i]); }
                 }
 
                 MethodTimerStop("PreLoad");
@@ -428,31 +428,31 @@ namespace MSCLoader
 
             while (GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera") == null) yield return null;
 
-            if (ModMethods[6].Count > 0)
+            if (modMethods[6].Count > 0)
             {
                 yield return null;
 
                 MethodTimerStart("OnLoad");
 
-                for (int i = 0; i < ModMethods[6].Count; i++)
+                for (int i = 0; i < modMethods[6].Count; i++)
                 {
-                    try { ModMethods[6][i].OnLoad(); }
-                    catch (Exception exception) { LogError(exception, ModMethods[6][i]); }
+                    try { modMethods[6][i].OnLoad(); }
+                    catch (Exception exception) { LogError(exception, modMethods[6][i]); }
                 }
 
                 MethodTimerStop("OnLoad");
             }
 
-            if (ModMethods[7].Count > 0)
+            if (modMethods[7].Count > 0)
             {
                 yield return null;
 
                 MethodTimerStart("PostLoad");
 
-                for (int i = 0; i < ModMethods[7].Count; i++)
+                for (int i = 0; i < modMethods[7].Count; i++)
                 {
-                    try { ModMethods[7][i].PostLoad(); }
-                    catch (Exception exception) { LogError(exception, ModMethods[7][i]); }
+                    try { modMethods[7][i].PostLoad(); }
+                    catch (Exception exception) { LogError(exception, modMethods[7][i]); }
                 }
 
                 MethodTimerStop("PostLoad");
@@ -494,27 +494,27 @@ namespace MSCLoader
         internal void ModMenuOnGUI()
         {
             GUI.skin = modLoaderSkin;
-            for (int i = 0; i < ModMethods[2].Count; i++)
+            for (int i = 0; i < modMethods[2].Count; i++)
             {
-                try { ModMethods[2][i].MenuOnGUI(); }
+                try { modMethods[2][i].MenuOnGUI(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
         internal void ModMenuUpdate()
         {
-            for (int i = 0; i < ModMethods[3].Count; i++)
+            for (int i = 0; i < modMethods[3].Count; i++)
             {
-                try { ModMethods[3][i].MenuUpdate(); }
+                try { modMethods[3][i].MenuUpdate(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
         internal void ModMenuFixedUpdate()
         {
-            for (int i = 0; i < ModMethods[4].Count; i++)
+            for (int i = 0; i < modMethods[4].Count; i++)
             {
-                try { ModMethods[4][i].MenuFixedUpdate(); }
+                try { modMethods[4][i].MenuFixedUpdate(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
@@ -522,27 +522,27 @@ namespace MSCLoader
         internal void ModOnGUI()
         {
             GUI.skin = modLoaderSkin;
-            for (int i = 0; i < ModMethods[8].Count; i++)
+            for (int i = 0; i < modMethods[8].Count; i++)
             {
-                try { ModMethods[8][i].OnGUI(); }
+                try { modMethods[8][i].OnGUI(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
         internal void ModUpdate()
         {
-            for (int i = 0; i < ModMethods[9].Count; i++)
+            for (int i = 0; i < modMethods[9].Count; i++)
             {
-                try { ModMethods[9][i].Update(); }
+                try { modMethods[9][i].Update(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
 
         internal void ModFixedUpdate()
         {
-            for (int i = 0; i < ModMethods[10].Count; i++)
+            for (int i = 0; i < modMethods[10].Count; i++)
             {
-                try { ModMethods[10][i].FixedUpdate(); }
+                try { modMethods[10][i].FixedUpdate(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
@@ -551,10 +551,10 @@ namespace MSCLoader
         {
             MethodTimerStart("OnSave");
 
-            for (int i = 0; i < ModMethods[11].Count; i++)
+            for (int i = 0; i < modMethods[11].Count; i++)
             {
-                try { ModMethods[11][i].OnSave(); }
-                catch (Exception exception) { LogError(exception, ModMethods[11][i]); }
+                try { modMethods[11][i].OnSave(); }
+                catch (Exception exception) { LogError(exception, modMethods[11][i]); }
             }
 
             MethodTimerStop("OnSave");

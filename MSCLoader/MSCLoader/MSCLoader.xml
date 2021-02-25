@@ -205,6 +205,9 @@
         <member name="F:MSCLoader.ModConfig.Strings">
             <summary>Saved strings</summary>
         </member>
+        <member name="T:MSCLoader.ModEarlyAccess">
+            <summary>Class containing useful features pertaining to Early Access for mods.</summary>
+        </member>
         <member name="T:MSCLoader.ModHelper">
             <summary> Container for useful helper methods </summary>
         </member>
@@ -224,14 +227,20 @@
             <param name="childPath">Hierarchy path from the parent to the wanted child Transform.</param>
             <returns>Transform with specified path.</returns>
         </member>
-        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Transform,System.String,System.String,System.Single)">
+        <member name="M:MSCLoader.ModHelper.GetGameObject(System.String,System.String)">
+            <summary>Get a GameObject child.</summary>
+            <param name="parentPath">Hierarchy path to a parent GameObject.</param>
+            <param name="childPath">Hierarchy path from the parent to the wanted child GameObject.</param>
+            <returns>GameObject with specified path.</returns>
+        </member>
+        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Transform,System.String,System.String,System.Single,System.Single)">
             <summary>Play a MasterAudio sound from the Transform.</summary>
             <param name="transform">Transform to play the sound from.</param>
             <param name="type">Type of sound.</param>
             <param name="variation">Variation of sound.</param>
             <param name="volume">(Optional) Sound volume.</param>
         </member>
-        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Vector3,System.String,System.String,System.Single)">
+        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Vector3,System.String,System.String,System.Single,System.Single)">
             <summary>Play a MasterAudio sound from a Vector3 world position.</summary>
             <param name="vector3">Vector3 to play the sound from.</param>
             <param name="type">Type of sound.</param>
@@ -433,10 +442,10 @@
             <summary>Create a new FsmStateAction that executes provided Action.</summary>
             <param name="action">Action to call when state executes the FsmStateAction.</param>
         </member>
-        <member name="T:MSCLoader.PlayMakerProxyUtility">
+        <member name="T:MSCLoader.PlayMakerProxyHelper">
             <summary>Helper Methods to work with PlayMakerArrayListProxy and PlayMakerHashTableProxy components.<br></br><br></br>Courtesy of BrennFuchS.</summary>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToProxy``1(``0,System.Object,System.Boolean)">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToProxy``1(``0,System.Object,System.Boolean)">
             <summary>
             add a variable to a specified PMproxy.
             the variable type has to match the selected PMproxys preFillType!
@@ -446,7 +455,7 @@
             <param name="ItemToAdd"></param>
             <param name="ClearBeforeAdding"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToProxy(UnityEngine.GameObject,System.String,System.Object,System.Boolean)">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToProxy(UnityEngine.GameObject,System.String,System.Object,System.Boolean)">
             <summary>
             add a variable to one of the PMproxy's in the GameObject.
             the variable type has to match the selected PMproxys preFillType!
@@ -456,7 +465,7 @@
             <param name="ItemToAdd"></param>
             <param name="ClearBeforeAdding"></param>       
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToProxy``1(``0,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToProxy``1(``0,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
             <summary>
             add a list of variables to a specified PMproxy.
             the variable types have to match the selected PMproxy's preFillType!
@@ -466,7 +475,7 @@
             <param name="ItemsToAdd"></param>
             <param name="ClearBeforeAdding"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToProxy(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToProxy(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
             <summary>
             add variables to one of the PMproxys in the GameObject.
             the variable types have to match the selected PMproxy's preFillType!
@@ -476,7 +485,7 @@
             <param name="ItemsToAdd"></param>
             <param name="ClearBeforeAdding"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToPrefill``1(``0,System.Object)">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToPrefill``1(``0,System.Object)">
             <summary>
             add a variable to a specified PMproxy.
             </summary>
@@ -484,7 +493,7 @@
             <param name="PMproxy"></param>
             <param name="ItemToAdd"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddToPrefill(UnityEngine.GameObject,System.String,System.Object)">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToPrefill(UnityEngine.GameObject,System.String,System.Object)">
             <summary>
             add a variable to one of the PMproxy's in the GameObject.
             </summary>
@@ -492,7 +501,7 @@
             <param name="wantedProxyReferenceName"></param>
             <param name="ItemToAdd"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToPrefill``1(``0,System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToPrefill``1(``0,System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
             add a list of variables to a specified PMproxy.
             </summary>
@@ -500,7 +509,7 @@
             <param name="PMproxy"></param>
             <param name="ItemsToAdd"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyUtility.AddRangeToPrefill(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToPrefill(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object})">
             <summary>add a list of variables to one of the PMproxy's in the GameObject.</summary>
             <param name="PMproxysParent"></param>
             <param name="wantedProxyReferenceName"></param>
@@ -620,7 +629,7 @@
         <member name="P:MSCLoader.ModLoader.LoadedMods">
             <summary> List of Loaded Mods. </summary>
         </member>
-        <member name="F:MSCLoader.ModLoader.ModMethods">
+        <member name="F:MSCLoader.ModLoader.modMethods">
             <summary> List of used Mod Class methods. </summary>
         </member>
         <member name="F:MSCLoader.ModLoader.modSceneLoadHandler">

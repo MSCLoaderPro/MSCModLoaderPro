@@ -212,8 +212,8 @@ namespace MSCLoader
     /// <summary>Main Component for the Radio Buttons setting type.</summary>
     public class SettingRadioButtons : ModSetting
     {
-        internal int radioValue = -1;
-        internal List<RadioButton> buttons = new List<RadioButton>();
+        internal int radioValue;
+        public List<RadioButton> buttons = new List<RadioButton>();
 
         public Text nameText;
         public Shadow nameShadow;
@@ -241,6 +241,7 @@ namespace MSCLoader
 
         /// <summary>Default setting value</summary>
         public int defaultValue;
+
         /// <summary>Set the label text of the button with the specified ID.</summary>
         /// <param name="id">ID of the button, throws exception if out of bounds.</param>
         /// <param name="text">Text to display on the label.</param>

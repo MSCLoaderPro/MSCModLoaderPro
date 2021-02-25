@@ -32,21 +32,27 @@ namespace MSCLoader
         /// <param name="childPath">Hierarchy path from the parent to the wanted child Transform.</param>
         /// <returns>Transform with specified path.</returns>
         public static Transform GetTransform(string parentPath, string childPath) =>
-            GameObject.Find(parentPath).transform.Find(childPath);
+            GameObject.Find(parentPath)?.transform.Find(childPath);
+        /// <summary>Get a GameObject child.</summary>
+        /// <param name="parentPath">Hierarchy path to a parent GameObject.</param>
+        /// <param name="childPath">Hierarchy path from the parent to the wanted child GameObject.</param>
+        /// <returns>GameObject with specified path.</returns>
+        public static GameObject GetGameObject(string parentPath, string childPath) =>
+            GameObject.Find(parentPath)?.transform.Find(childPath).gameObject;
         /// <summary>Play a MasterAudio sound from the Transform.</summary>
         /// <param name="transform">Transform to play the sound from.</param>
         /// <param name="type">Type of sound.</param>
         /// <param name="variation">Variation of sound.</param>
         /// <param name="volume">(Optional) Sound volume.</param>
-        public static void PlaySound3D(this Transform transform, string type, string variation, float volume = 1f) =>
-            MasterAudio.PlaySound3DAndForget(type, transform, variationName: variation, volumePercentage: volume);
+        public static void PlaySound3D(this Transform transform, string type, string variation, float volume = 1f, float pitch = 1f) =>
+            MasterAudio.PlaySound3DAndForget(type, transform, variationName: variation, volumePercentage: volume, pitch: pitch);
         /// <summary>Play a MasterAudio sound from a Vector3 world position.</summary>
         /// <param name="vector3">Vector3 to play the sound from.</param>
         /// <param name="type">Type of sound.</param>
         /// <param name="variation">Variation of sound.</param>
         /// <param name="volume">(Optional) Sound volume.</param>
-        public static void PlaySound3D(this Vector3 vector3, string type, string variation, float volume = 1f) =>
-            MasterAudio.PlaySound3DAtVector3AndForget(type, vector3, variationName: variation, volumePercentage: volume);
+        public static void PlaySound3D(this Vector3 vector3, string type, string variation, float volume = 1f, float pitch = 1f) =>
+            MasterAudio.PlaySound3DAtVector3AndForget(type, vector3, variationName: variation, volumePercentage: volume, pitch: pitch);
         /// <summary>Select a random element from a List or an Array.</summary>
         /// <typeparam name="T">List/Array Element type.</typeparam>
         /// <param name="list">List/Array to get a random element from.</param>
@@ -100,6 +106,8 @@ namespace MSCLoader
             Application.OpenURL(url);
             System.Console.WriteLine($"MODLOADER: Opening website in external web browser: {url}");
         }
+
+        public static bool IsWithinRange(this int value, int minValue, int maxValue) => (value > minValue && value < maxValue);
     }
     /// <summary>Container for PlayMaker related helper and extension methods.</summary>
     public static class PlayMakerHelper
@@ -295,8 +303,12 @@ namespace MSCLoader
                 case Type _ when typeof(T) == typeof(FsmString): return variables.FindFsmString(name) as T;
                 case Type _ when typeof(T) == typeof(FsmVector2): return variables.FindFsmVector2(name) as T;
                 case Type _ when typeof(T) == typeof(FsmVector3): return variables.FindFsmVector3(name) as T;
+                case Type _ when typeof(T) == typeof(FsmRect): return variables.FindFsmRect(name) as T;
+                case Type _ when typeof(T) == typeof(FsmQuaternion): return variables.FindFsmQuaternion(name) as T;
+                case Type _ when typeof(T) == typeof(FsmColor): return variables.FindFsmColor(name) as T;
                 case Type _ when typeof(T) == typeof(FsmGameObject): return variables.FindFsmGameObject(name) as T;
                 case Type _ when typeof(T) == typeof(FsmMaterial): return variables.FindFsmMaterial(name) as T;
+                case Type _ when typeof(T) == typeof(FsmTexture): return variables.FindFsmTexture(name) as T;
                 case Type _ when typeof(T) == typeof(FsmObject): return variables.FindFsmObject(name) as T;
                 default: return null;
             }
@@ -321,8 +333,82 @@ namespace MSCLoader
         }
     }
     /// <summary>Helper Methods to work with PlayMakerArrayListProxy and PlayMakerHashTableProxy components.<br></br><br></br>Courtesy of BrennFuchS.</summary>
-    public class PlayMakerProxyUtility
+    public static class PlayMakerProxyHelper
     {
+        public static PlayMakerArrayListProxy GetArrayListProxy(this GameObject gameObject, string referenceName)
+        {
+            PlayMakerArrayListProxy[] proxies = gameObject.GetComponents<PlayMakerArrayListProxy>();
+
+            if (proxies == null) return null;
+
+            for (int i = 0; i < proxies.Length; i++)
+                if (proxies[i].referenceName == referenceName) return proxies[i];
+
+            return null;
+        }
+
+        public static PlayMakerArrayListProxy GetArrayListProxy(this Transform transform, string referenceName) =>
+            transform.gameObject.GetArrayListProxy(referenceName); 
+        
+        public static void AddToPrefill(this PlayMakerCollectionProxy proxy, object item)
+        {
+            switch (item)
+            {
+                case AudioClip _AudioClip:
+                    proxy.preFillCount++;
+                    proxy.preFillAudioClipList.Add(_AudioClip);
+                    break;
+                case bool _bool:
+                    proxy.preFillCount++;
+                    proxy.preFillBoolList.Add(_bool);
+                    break;
+                case Color _Color:
+                    proxy.preFillCount++;
+                    proxy.preFillColorList.Add(_Color);
+                    break;
+                case float _float:
+                    proxy.preFillCount++;
+                    proxy.preFillFloatList.Add(_float);
+                    break;
+                case GameObject _GameObject:
+                    proxy.preFillCount++;
+                    proxy.preFillGameObjectList.Add(_GameObject);
+                    break;
+                case int _int:
+                    proxy.preFillCount++;
+                    proxy.preFillIntList.Add(_int);
+                    break;
+                case Material _Material:
+                    proxy.preFillCount++;
+                    proxy.preFillMaterialList.Add(_Material);
+                    break;
+                case Quaternion _Quaternion:
+                    proxy.preFillCount++;
+                    proxy.preFillQuaternionList.Add(_Quaternion);
+                    break;
+                case Rect _Rect:
+                    proxy.preFillCount++;
+                    proxy.preFillRectList.Add(_Rect);
+                    break;
+                case string _string:
+                    proxy.preFillCount++;
+                    proxy.preFillStringList.Add(_string);
+                    break;
+                case Texture2D _Texture2D:
+                    proxy.preFillCount++;
+                    proxy.preFillTextureList.Add(_Texture2D);
+                    break;
+                case Vector2 _Vector2:
+                    proxy.preFillCount++;
+                    proxy.preFillVector2List.Add(_Vector2);
+                    break;
+                case Vector3 _Vector3:
+                    proxy.preFillCount++;
+                    proxy.preFillVector3List.Add(_Vector3);
+                    break;
+            }
+        }
+
         /// <summary>
         /// add a variable to a specified PMproxy.
         /// the variable type has to match the selected PMproxys preFillType!
@@ -601,10 +687,10 @@ namespace MSCLoader
             switch (PMproxy)
             {
                 case PlayMakerArrayListProxy arrayListProxy:
-                    AddValueToPrefill(arrayListProxy, ItemToAdd);
+                    AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemToAdd);
                     break;
                 case PlayMakerHashTableProxy hashTableProxy:
-                    AddValueToPrefill(hashTableProxy, ItemToAdd);
+                    AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemToAdd);
                     break;
             }
         }
@@ -620,10 +706,10 @@ namespace MSCLoader
             switch (wantedProxy)
             {
                 case PlayMakerArrayListProxy arrayListProxy:
-                    AddValueToPrefill(arrayListProxy, ItemToAdd);
+                    AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemToAdd);
                     break;
                 case PlayMakerHashTableProxy hashTableProxy:
-                    AddValueToPrefill(hashTableProxy, ItemToAdd);
+                    AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemToAdd);
                     break;
             }
         }
@@ -638,10 +724,10 @@ namespace MSCLoader
             switch (PMproxy)
             {
                 case PlayMakerArrayListProxy arrayListProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddValueToPrefill(arrayListProxy, ItemsToAdd.ToList()[i]);
+                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemsToAdd.ToList()[i]);
                     break;
                 case PlayMakerHashTableProxy hashTableProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddValueToPrefill(hashTableProxy, ItemsToAdd.ToList()[i]);
+                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemsToAdd.ToList()[i]);
                     break;
             }
         }
@@ -655,71 +741,14 @@ namespace MSCLoader
             switch (wantedProxy)
             {
                 case PlayMakerArrayListProxy arrayListProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddValueToPrefill(arrayListProxy, ItemsToAdd.ToList()[i]);
+                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemsToAdd.ToList()[i]);
                     break;
                 case PlayMakerHashTableProxy hashTableProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddValueToPrefill(hashTableProxy, ItemsToAdd.ToList()[i]);
+                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemsToAdd.ToList()[i]);
                     break;
             }
         }
 
-        static void AddValueToPrefill(PlayMakerCollectionProxy proxy, object item)
-        {
-            switch (item)
-            {
-                case AudioClip _AudioClip:
-                    proxy.preFillAudioClipList.Add(_AudioClip);
-                    proxy.preFillCount++;
-                    break;
-                case bool _bool:
-                    proxy.preFillBoolList.Add(_bool);
-                    proxy.preFillCount++;
-                    break;
-                case Color _Color:
-                    proxy.preFillColorList.Add(_Color);
-                    proxy.preFillCount++;
-                    break;
-                case float _float:
-                    proxy.preFillFloatList.Add(_float);
-                    proxy.preFillCount++;
-                    break;
-                case GameObject _GameObject:
-                    proxy.preFillGameObjectList.Add(_GameObject);
-                    proxy.preFillCount++;
-                    break;
-                case int _int:
-                    proxy.preFillIntList.Add(_int);
-                    proxy.preFillCount++;
-                    break;
-                case Material _Material:
-                    proxy.preFillMaterialList.Add(_Material);
-                    proxy.preFillCount++;
-                    break;
-                case Quaternion _Quaternion:
-                    proxy.preFillQuaternionList.Add(_Quaternion);
-                    proxy.preFillCount++;
-                    break;
-                case Rect _Rect:
-                    proxy.preFillRectList.Add(_Rect);
-                    proxy.preFillCount++;
-                    break;
-                case string _string:
-                    proxy.preFillStringList.Add(_string);
-                    proxy.preFillCount++;
-                    break;
-                case Texture2D _Texture2D:
-                    proxy.preFillTextureList.Add(_Texture2D);
-                    proxy.preFillCount++;
-                    break;
-                case Vector2 _Vector2:
-                    proxy.preFillVector2List.Add(_Vector2);
-                    proxy.preFillCount++;
-                    break;
-                case Vector3 _Vector3:
-                    proxy.preFillVector3List.Add(_Vector3);
-                    proxy.preFillCount++;
-                    break;
-            }
-        }
+        
     }
 }

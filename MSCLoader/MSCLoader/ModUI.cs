@@ -352,7 +352,7 @@ namespace MSCLoader
     {
         public GameObject[] objectToDisable;
 
-        void Awake()
+        void Start()
         {
             for (int i = 0; i < objectToDisable.Length; i++)
                 objectToDisable[i].SetActive(false);

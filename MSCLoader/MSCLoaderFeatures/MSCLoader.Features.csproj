@@ -56,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MSCCar\DragRace.cs" />
+    <Compile Include="PaintSystem.cs" />
+    <Compile Include="PartMagnet\BoltMagnet.cs" />
     <Compile Include="Shopping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
