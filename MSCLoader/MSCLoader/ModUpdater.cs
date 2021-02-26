@@ -38,6 +38,7 @@ namespace MSCLoader
         bool autoUpdateChecked;
 
         bool nexusIsPremium;
+        bool nexusMissingToken;
 
         ModUpdaterDatabase modUpdaterDatabase;
 
@@ -252,13 +253,32 @@ namespace MSCLoader
                 {
                     //SAMPLE: https://www.nexusmods.com/mysummercar/mods/146
                     // First we need mod ID.
+                    if (!File.Exists(Path.Combine(UpdaterDirectory, "TemporaryKey.txt")) && !nexusMissingToken)
+                    {
+                        ModConsole.LogError("Mods that use NexusMods for its updates require user authentication API key. Please provide one first.");
+                        nexusMissingToken = true;
+                    }
+
+                    if (nexusMissingToken)
+                    {
+                        ModConsole.LogError($"Mod {mod.ID} needs NexusMods API key to check for updates :(");
+                        continue;
+                    }
+
                     string token = File.ReadAllText(Path.Combine(UpdaterDirectory, "TemporaryKey.txt")); // TODO; add getting a key. Right now we are reading from TemporaryKey.txt file.
                     string modID = url.Split('/').Last();
                     string userInfo = "https://api.nexusmods.com/v1/users/validate.json";
                     string mainModInfo = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}.json";
 
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        ModConsole.LogError("NexusMods API key is empty.");
+                        nexusMissingToken = true;
+                        continue;
+                    }
+
                     // we are checking if user has a premium account.
-                    Process userDataProcess = GetMetaFile(userInfo);
+                    Process userDataProcess = GetMetaFile(userInfo, token);
                     int downloadTime = 0;
                     while (!userDataProcess.HasExited)
                     {
@@ -281,7 +301,8 @@ namespace MSCLoader
                     }
 
                     // Now we are getting version info.
-                    Process modInfoProcess = GetMetaFile(mainModInfo);
+                    Process modInfoProcess = GetMetaFile(mainModInfo, token);
+                    mod.ModUpdateData = new ModUpdateData();
                     downloadTime = 0;
                     while (!modInfoProcess.HasExited)
                     {
@@ -307,7 +328,7 @@ namespace MSCLoader
                     if (nexusIsPremium)
                     {
                         string modFiles = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}/files.json?category=main";
-                        Process modFilesProcess = GetMetaFile(modFiles);
+                        Process modFilesProcess = GetMetaFile(modFiles, token);
                         downloadTime = 0;
                         while (!modFilesProcess.HasExited)
                         {
@@ -339,6 +360,10 @@ namespace MSCLoader
                         {
                             // TODO: Add URL pulling.
                         }
+                    }
+                    else
+                    {
+                        mod.ModUpdateData.ZipUrl = mod.UpdateLink;
                     }
                 }
 
@@ -389,14 +414,14 @@ namespace MSCLoader
             isBusy = false;
         }
 
-        Process GetMetaFile(string url)
+        Process GetMetaFile(params string[] args)
         {
             Process p = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = UpdaterPath,
-                    Arguments = "get-metafile " + url,
+                    Arguments = "get-metafile " + string.Join(" ", args),
                     WorkingDirectory = UpdaterDirectory,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
@@ -496,9 +521,9 @@ namespace MSCLoader
                 {
                     ModUI.CreateYesNoPrompt($"MOD <color=yellow>{mod.Name}</color> USES NEXUSMODS FOR UPDATE DOWNLOADS. " +
                                             $"UNFORTUNATELY, DUE TO NEXUSMODS POLICY, ONLY PREMIUM USERS CAN USE AUTO UPDATE FEATURE.\n\n" +
-                                            $"YOUR VERSION IS {mod.Version} AND THE NEWEST VERSION IS {mod.ModUpdateData.LatestVersion}.\n\n" +
-                                            $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n" +
-                                            $"WARNING: THIS WILL OPEN YOUR DEFAULT WEB BROWSER."
+                                            $"YOUR VERSION IS <color=yellow>{mod.Version}</color> AND THE NEWEST VERSION IS <color=yellow>{mod.ModUpdateData.LatestVersion}</color>.\n\n" +
+                                            $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n\n" +
+                                            $"<color=red>WARNING: THIS WILL OPEN YOUR DEFAULT WEB BROWSER.</color>"
                                             , "MOD UPDATER", () => ModHelper.OpenWebsite(mod.UpdateLink));
                     return;
                 }
@@ -582,6 +607,15 @@ namespace MSCLoader
                 if (!Directory.Exists(DownloadsDirectory))
                 {
                     Directory.CreateDirectory(DownloadsDirectory);
+                }
+
+                // If a ZipUrl couldn't be obtained, or the link doesn't end with .ZIP file, we open the Mod.UpdateLink website.
+                // We are also assuming that mod has been updated by the user.
+                if (string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) || !mod.ModUpdateData.ZipUrl.EndsWith(".zip"))
+                {
+                    Process.Start(mod.UpdateLink);
+                    mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
+                    continue;
                 }
 
                 string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.zip");
@@ -708,23 +742,25 @@ namespace MSCLoader
                     continue;
                 }
 
-                string id, url, latest = "";
-                string[] spliitted = s.Split(',');
-                id = spliitted[0];
-                url = spliitted[1];
-                latest = spliitted[2];
+                try
+                {
+                    string id, url, latest = "";
+                    string[] spliitted = s.Split(',');
+                    id = spliitted[0];
+                    url = spliitted[1];
+                    latest = spliitted[2];
 
-                ModUpdateData data = new ModUpdateData();
-                data.ZipUrl = url;
-                data.LatestVersion = latest;
+                    ModUpdateData data = new ModUpdateData();
+                    data.ZipUrl = url;
+                    data.LatestVersion = latest;
 
-                modUpdateData.Add(id, data);
+                    modUpdateData.Add(id, data);
+                }
+                catch
+                {
+                    continue;
+                }
             }
-        }
-
-        internal ModUpdateData Get(Mod mod)
-        {
-            return modUpdateData.FirstOrDefault(m => m.Key == mod.ID).Value;
         }
 
         internal void Save()
@@ -733,13 +769,19 @@ namespace MSCLoader
             string output = "";
             foreach (Mod mod in mods)
             {
-                output += $"{mod.ID},{mod.ModUpdateData.ZipUrl},{mod.ModUpdateData.LatestVersion}\n";
+                string updateLink = string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) ? mod.UpdateLink : mod.ModUpdateData.ZipUrl;
+                output += $"{mod.ID},{updateLink},{mod.ModUpdateData.LatestVersion}\n";
             }
 
             if (File.Exists(DatabaseFile))
                 File.Delete(DatabaseFile);
 
             File.WriteAllText(DatabaseFile, output);
+        }
+
+        internal ModUpdateData Get(Mod mod)
+        {
+            return modUpdateData.FirstOrDefault(m => m.Key == mod.ID).Value;
         }
 
         internal Dictionary<string, ModUpdateData> GetAll()
