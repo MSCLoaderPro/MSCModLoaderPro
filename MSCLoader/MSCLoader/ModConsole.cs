@@ -198,17 +198,13 @@ namespace MSCLoader
         static string OutputString(string text) => Regex.Replace(text, "<.*?>", "");
 
         #region Obsolete Methods
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use Log() instead.")]
+        [Obsolete("Deprecated, use Log() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static void Print(string text) => Log(text);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use Log() instead.")]
+        [Obsolete("Deprecated, use Log() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static void Print(object obj) => Log(obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use LogError() instead.")]
+        [Obsolete("Deprecated, use LogError() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static void Error(string text = "") => LogError(text);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use LogWarning() instead.")]
+        [Obsolete("Deprecated, use LogWarning() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static void Warning(string text) => LogWarning(text);
         #endregion
     }

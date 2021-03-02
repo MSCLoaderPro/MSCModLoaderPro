@@ -17,11 +17,11 @@ namespace MSCLoader
 {
     /// <summary>Parent class for settings.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public class ModSetting : MonoBehaviour
-    {
+    public class ModSetting : MonoBehaviour 
+    { 
         /// <summary>Method to save settings into the provided ModConfig.</summary>
         /// <param name="modConfig">ModConfig to save settings to.</param>
-        public virtual void SaveSetting(ModConfig modConfig) { }
+        public virtual void SaveSetting(ModConfig modConfig) { } 
     }
     /// <summary>Main Component for the Button setting type.</summary>
     public class SettingButton : ModSetting
@@ -210,7 +210,7 @@ namespace MSCLoader
         {
             for (int i = 0; i < modConfig.Keybinds.Count; i++)
             {
-                if (modConfig.Keybinds[i].id == ID)
+                if (modConfig.Keybinds[i].id == ID) 
                 {
                     modConfig.Keybinds[i] = new ModConfigKeybind(ID, keybind, modifiers);
                     return;
@@ -220,7 +220,7 @@ namespace MSCLoader
         }
     }
     /// <summary>Main Component for the Radio Buttons setting type.</summary>
-    public class SettingRadioButtons : ModSetting, IEventSystemHandler
+    public class SettingRadioButtons : ModSetting
     {
         [System.Serializable]
         public class RadioEvent : UnityEvent<int> { }
@@ -288,7 +288,7 @@ namespace MSCLoader
             newButton.transform.SetParent(toggleGroup, false);
 
             RadioButton radioButton = newButton.GetComponent<RadioButton>();
-            radioButton.settingRadioButtons = this; // This little boye
+            radioButton.settingRadioButtons = this;
             radioButton.radioID = buttons.Count;
             radioButton.name = $"Radio{radioButton.radioID}";
             radioButton.labelText.text = labelText;
@@ -524,7 +524,7 @@ namespace MSCLoader
         /// <summary>What type of characters should be allowed?</summary>
         public InputField.CharacterValidation InputType { get => inputField.characterValidation; set => inputField.characterValidation = value; }
         /// <summary>Event called whenever a character is typed.</summary>
-        public InputField.OnChangeEvent OnValueChange { get => inputField.onValueChange; }
+        public InputField.OnChangeEvent OnValueChange { get => inputField.onValueChange; }        
         /// <summary>Event called whenever the text box is exited (Pressing Enter, click outside etc.).</summary>
         public InputField.SubmitEvent OnEndEdit { get => inputField.onEndEdit; }
         /// <summary>Default setting value.</summary>

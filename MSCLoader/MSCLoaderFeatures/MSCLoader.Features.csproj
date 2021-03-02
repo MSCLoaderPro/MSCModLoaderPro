@@ -56,9 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MSCCar\DragRace.cs" />
-    <Compile Include="PaintSystem.cs" />
+    <Compile Include="PaintSystem\PaintCore.cs" />
+    <Compile Include="PaintSystem\PaintSystem.cs" />
+    <Compile Include="PartMagnet\Bolt.cs" />
     <Compile Include="PartMagnet\BoltMagnet.cs" />
-    <Compile Include="Shopping.cs" />
+    <Compile Include="PartMagnet\PartMagnet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,4 +70,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "D:\Program Files\Unity\Projects\My Summer Car Mods\Assets\Verktyg\$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

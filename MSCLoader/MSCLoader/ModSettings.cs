@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -282,24 +281,21 @@ namespace MSCLoader
             string path = Path.Combine(ModLoader.GetModSettingsFolder(mod, true), $"{mod.ID}.json");
             if (!File.Exists(path)) SaveSettings();
 
-            loadedSettings = JsonConvert.DeserializeObject<ModConfig>(File.ReadAllText(path));
+            loadedSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<ModConfig>(File.ReadAllText(path));
 
             mod.modListElement.SetModEnabled(loadedSettings.Enabled);
         }
 
         public void SaveSettings()
         {
-            ModConfig modConfig = new ModConfig {
-                Enabled = mod.Enabled,
-                Keybinds = new List<ModConfigKeybind>(),
-                Numbers = new List<ModConfigNumber>(),
-                Booleans = new List<ModConfigBool>(),
-                Strings = new List<ModConfigString>()
-            };
-            foreach (ModSetting setting in settings) setting.SaveSetting(modConfig);
+            ModConfig modConfig = loadedSettings ?? new ModConfig();
+            modConfig.Enabled = mod.Enabled;
+
+            if (settings.Count > 0)
+                foreach (ModSetting setting in settings) setting.SaveSetting(modConfig);
 
             string path = $@"{ModLoader.GetModSettingsFolder(mod, true)}\{mod.ID}.json";
-            string data = JsonConvert.SerializeObject(modConfig, Formatting.Indented);
+            string data = Newtonsoft.Json.JsonConvert.SerializeObject(modConfig, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(path, data);
         }
 

@@ -21,9 +21,9 @@ namespace MSCLoader
         /// <summary>Contains the mod version.</summary>
         public abstract string Version { get; }
         /// <summary>A short description of your mod. Displayed in the settings window for the mod, hidden if empty.</summary>
-        public virtual string Description { get; } = "";
+        public virtual string Description { get; set; } = "";
         /// <summary>Icon displayed in the mod list, preferably square and not larger than 256x256.</summary>
-        public virtual byte[] Icon { get; set; } = null;
+        public virtual byte[] Icon { get; internal set; } = null;
         /// <summary>A link from which ModLoader will check for updates. Must be GitHub or NexusMods, eg. https://github.com/Athlon007/MOP </summary>
         public virtual string UpdateLink { get; } = "";
 
@@ -39,11 +39,11 @@ namespace MSCLoader
 
         /// <summary> Load Method for anything involving the menu scene. Order of execution: 3 </summary>
         public virtual void MenuOnLoad() { OnMenuLoad(); }
-        /// <summary> Update Method for the menu scene. Order of execution: Every frame in menu </summary>
+        /// <summary> OnGUI Method for the menu scene. Order of execution: Every frame in menu </summary>
         public virtual void MenuOnGUI() { }
-        /// <summary> FixedUpdate Method for the menu scene. Order of execution: Every fixed time step </summary>
+        /// <summary> Update Method for the menu scene. Order of execution: Every fixed time step </summary>
         public virtual void MenuUpdate() { }
-        /// <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
+        /// <summary> FixedUpdate Method for the menu scene. Order of execution: Every GUI frame </summary>
         public virtual void MenuFixedUpdate() { }
 
         /// <summary> Method executed when the player starts a new game, use cases include removing old save files. Order of execution: 4 </summary>
@@ -64,26 +64,20 @@ namespace MSCLoader
         /// <summary> FixedUpdate method for the game scene. Order of execution: Every fixed time step </summary>
         public virtual void FixedUpdate() { }
 
-        #region Obsolete Methods        
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, not needed.")]
+        #region Obsolete Methods
+        [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]
         public virtual bool UseAssetsFolder => false;
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, not needed.")]
+        [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]
         public virtual bool LoadInMenu => false;
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, not needed.")]
+        [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]
         public virtual bool SecondPass => false;
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use PostLoad() instead.")]
+        [Obsolete("Deprecated, use PostLoad() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void SecondPassOnLoad() { }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use MenuOnLoad() instead.")]
+        [Obsolete("Deprecated, use MenuOnLoad() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void OnMenuLoad() { }
 
         internal bool disabled = false;
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use Enabled instead.")]
+        [Obsolete("Deprecated, use Enabled instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public virtual bool isDisabled { get => !enabled; internal set { enabled = !value; modListElement.SetModEnabled(!value); } }
 
         bool update = false;

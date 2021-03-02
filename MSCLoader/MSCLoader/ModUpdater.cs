@@ -110,6 +110,7 @@ namespace MSCLoader
 
         IEnumerator UpdateSliderText(string message, string finishedMessage)
         {
+            menuLabelUpdateText.gameObject.SetActive(true);
             WaitForSeconds wait = new WaitForSeconds(0.25f);
             int numberOfDots = 0;
             while (isBusy)
@@ -128,6 +129,7 @@ namespace MSCLoader
             menuLabelUpdateText.text = finishedMessage;
             yield return new WaitForSeconds(5f);
             headerProgressBar.SetActive(false);
+            menuLabelUpdateText.gameObject.SetActive(false);
         }
 
         #region Looking for updates

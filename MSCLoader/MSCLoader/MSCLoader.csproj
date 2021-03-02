@@ -69,10 +69,6 @@
       <HintPath>..\References\System.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Core">
-      <Aliases>global</Aliases>
-    </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -116,6 +112,7 @@
     <Compile Include="MSCLoader.cs" />
     <Compile Include="ModUnloader.cs" />
     <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
+    <Compile Include="MSCLoaderHarmonyPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Legacy\AudioLibrary\AudioFileReader.cs" />
     <Compile Include="Legacy\AudioLibrary\Manager.cs" />

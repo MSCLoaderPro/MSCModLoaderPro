@@ -1,23 +1,20 @@
-﻿using Harmony;
+﻿//using Harmony;
 using System;
 using System.IO;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using System.Linq;
 using System.ComponentModel;
-using System.Collections.Generic;
 
 #pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class MSCLoader
+    internal static class MSCLoader
     {
         internal static LoaderSettings settings;
+        internal static Harmony.HarmonyInstance ModLoaderInstance;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Main()
+        internal static void Main()
         {
             Console.WriteLine("STARTING MOD LOADER PRO!");
             settings = new LoaderSettings();
@@ -34,24 +31,23 @@ namespace MSCLoader
             }
         }
 
-        internal static HarmonyInstance ModLoaderInstance;
         static void StartModLoader()
         {
             try
             {
                 //HarmonyInstance.DEBUG = true;
                 Console.WriteLine("MODLOADER: PATCHING METHODS!");
-                ModLoaderInstance = HarmonyInstance.Create("MSCModLoaderPro");
+                ModLoaderInstance = Harmony.HarmonyInstance.Create("MSCModLoaderPro");
                 if (settings.EnableModLoader)
                 {
-                    HarmonyInstance.Create("MSCModLoaderProInit").Patch(typeof(PlayMakerArrayListProxy).GetMethod("Awake"), new HarmonyMethod(typeof(InjectModLoaderInit).GetMethod("Prefix")));
-                    HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
+                    Harmony.HarmonyInstance.Create("MSCModLoaderProInit").Patch(typeof(PlayMakerArrayListProxy).GetMethod("Awake"), new Harmony.HarmonyMethod(typeof(InjectModLoaderInit).GetMethod("Prefix")));
+                    Harmony.HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new Harmony.HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
                     
-                    ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.LoadLevel).GetMethod("OnEnter"), new HarmonyMethod(typeof(InjectLoadSceneFix).GetMethod("Prefix")));
+                    ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.LoadLevel).GetMethod("OnEnter"), new Harmony.HarmonyMethod(typeof(InjectLoadSceneFix).GetMethod("Prefix")));
                 }
                 else if (settings.SkipSplashScreen)
                 {
-                    HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
+                    Harmony.HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new Harmony.HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
                 }
             }
             catch (Exception exception)
@@ -114,68 +110,5 @@ namespace MSCLoader
             }
             return i;
         }
-
-
-        [HarmonyPatch(typeof(PlayMakerArrayListProxy), "Awake")]
-        class InjectModLoaderInit
-        {
-            public static void Prefix()
-            {
-                System.Console.WriteLine("MODLOADER: INITIALIZING");
-                ModLoader.Init(); 
-                ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent).GetMethod("DoRaycast", BindingFlags.Instance | BindingFlags.NonPublic), new HarmonyMethod(typeof(InjectUIClickFix).GetMethod("Prefix")));
-                ModLoaderInstance.UnpatchAll("MSCModLoaderProInit");
-            }
-        }
-
-        [HarmonyPatch(typeof(PlayMakerFSM), "Awake")]
-        class InjectSplashSkip
-        {
-            public static void Prefix()
-            {
-                if (settings.SkipSplashScreen && Application.loadedLevel == 0)
-                {
-                    System.Console.WriteLine("MODLOADER: SKIP SPLASH");
-                    Application.LoadLevel(1);
-                    ModLoaderInstance.UnpatchAll("MSCModLoaderProSplash");
-
-                }
-            }
-        }
-        
-        [HarmonyPatch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent), "DoRaycast")]
-        class InjectUIClickFix
-        {
-            public static bool Prefix(ref bool __result)
-            {
-                if (GUIUtility.hotControl != 0 || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
-                {
-                    __result = false;
-                    return false;
-                }
-                return true;
-            }
-        }
-
-        // OLD, BAD METHOD OF CLICK THROUGH FIX
-        /*[HarmonyPatch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent), "DoMousePickEvent")]
-        class InjectUIClickFix
-        {
-            public static bool Prefix() => 
-                (GUIUtility.hotControl == 0 && EventSystem.current != null && !EventSystem.current.IsPointerOverGameObject());
-        }*/
-
-        [HarmonyPatch(typeof(HutongGames.PlayMaker.Actions.LoadLevel), "OnEnter")]
-        class InjectLoadSceneFix
-        {
-            public static void Prefix()
-            {
-                // Because of a delay this method can't be used in the main menu, 
-                // that's done by adding an OnEnable to the load screen object instead 
-                if (Application.loadedLevel > 1)
-                    ModLoader.modLoaderInstance.modSceneLoadHandler.Disable();
-            }
-        }
     }
 }
-#pragma warning restore CS0618, IDE1006, CS1591

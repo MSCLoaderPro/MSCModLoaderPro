@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace MSCLoader
 {
+    /// <summary>Container class for all things saving!</summary>
     public class ModSave
     {
         /// <summary>Saves a class (T) into an XML file of the specified name.</summary>
@@ -34,7 +35,7 @@ namespace MSCLoader
             catch (System.Exception ex)
             {
                 Debug.LogError(ex);
-                ModConsole.LogError($"{fileName}: {ex}");
+                ModConsole.LogError($"{fileName}: Couldn't be saved. \n{ex}");
             }
         }
         /// <summary>Loads a save file with the specified name.</summary>
@@ -53,14 +54,14 @@ namespace MSCLoader
                     XmlReader xmlReader = XmlReader.Create(input);
                     return xmlSerializer.Deserialize(xmlReader) as T;
                 }
-                else return new T();
             }
             catch (System.Exception ex)
             {
                 Debug.LogError(ex);
                 ModConsole.LogError($"{fileName}: {ex}");
-                return new T();
             }
+
+            return new T();
         }
         /// <summary>Deletes a save file of the specified name.</summary>
         /// <param name="fileName">Name of the save file. (excluding extension)</param>

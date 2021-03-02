@@ -239,6 +239,7 @@
             <param name="type">Type of sound.</param>
             <param name="variation">Variation of sound.</param>
             <param name="volume">(Optional) Sound volume.</param>
+            <param name="pitch">(Optional) Sound pitch.</param>
         </member>
         <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Vector3,System.String,System.String,System.Single,System.Single)">
             <summary>Play a MasterAudio sound from a Vector3 world position.</summary>
@@ -246,6 +247,7 @@
             <param name="type">Type of sound.</param>
             <param name="variation">Variation of sound.</param>
             <param name="volume">(Optional) Sound volume.</param>
+            <param name="pitch">(Optional) Sound pitch.</param>
         </member>
         <member name="M:MSCLoader.ModHelper.SelectRandom``1(System.Collections.Generic.IList{``0})">
             <summary>Select a random element from a List or an Array.</summary>
@@ -558,13 +560,13 @@
             <summary> Load Method for anything involving the menu scene. Order of execution: 3 </summary>
         </member>
         <member name="M:MSCLoader.Mod.MenuOnGUI">
-            <summary> Update Method for the menu scene. Order of execution: Every frame in menu </summary>
+            <summary> OnGUI Method for the menu scene. Order of execution: Every frame in menu </summary>
         </member>
         <member name="M:MSCLoader.Mod.MenuUpdate">
-            <summary> FixedUpdate Method for the menu scene. Order of execution: Every fixed time step </summary>
+            <summary> Update Method for the menu scene. Order of execution: Every fixed time step </summary>
         </member>
         <member name="M:MSCLoader.Mod.MenuFixedUpdate">
-            <summary> OnGUI Method for the menu scene. Order of execution: Every GUI frame </summary>
+            <summary> FixedUpdate Method for the menu scene. Order of execution: Every GUI frame </summary>
         </member>
         <member name="M:MSCLoader.Mod.OnNewGame">
             <summary> Method executed when the player starts a new game, use cases include removing old save files. Order of execution: 4 </summary>
@@ -726,6 +728,9 @@
         </member>
         <member name="M:MSCLoader.ModPromptButton.ClickDisable">
             <summary>When the button is clicked, disable the prompt.</summary>
+        </member>
+        <member name="T:MSCLoader.ModSave">
+            <summary>Container class for all things saving!</summary>
         </member>
         <member name="M:MSCLoader.ModSave.Save``1(System.String,``0)">
             <summary>Saves a class (T) into an XML file of the specified name.</summary>
@@ -1213,6 +1218,9 @@
         <member name="T:MSCLoader.SettingButton">
             <summary>Main Component for the Button setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingButton.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingButton.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1236,6 +1244,9 @@
         <member name="T:MSCLoader.SettingHeader">
             <summary>Main Component for the Header setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingHeader.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingHeader.Height">
             <summary>The height of the header.</summary>
         </member>
@@ -1250,6 +1261,9 @@
         </member>
         <member name="T:MSCLoader.SettingKeybind">
             <summary>Main Component for the Keybind setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingKeybind.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
         </member>
         <member name="P:MSCLoader.SettingKeybind.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
@@ -1293,6 +1307,9 @@
         <member name="T:MSCLoader.SettingRadioButtons">
             <summary>Main Component for the Radio Buttons setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingRadioButtons.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingRadioButtons.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1302,7 +1319,7 @@
         <member name="P:MSCLoader.SettingRadioButtons.Value">
             <summary>Current setting value.</summary>
         </member>
-        <member name="F:MSCLoader.SettingRadioButtons.OnValueChanged">
+        <member name="P:MSCLoader.SettingRadioButtons.OnValueChanged">
             <summary>Event that triggers whenever the setting changes value.</summary>
         </member>
         <member name="F:MSCLoader.SettingRadioButtons.defaultValue">
@@ -1345,6 +1362,9 @@
         <member name="T:MSCLoader.SettingSlider">
             <summary>Main Component for the Slider setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingSlider.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingSlider.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1372,14 +1392,14 @@
         <member name="P:MSCLoader.SettingSlider.OnValueChanged">
             <summary>Event that triggers whenever the slider value is changed.</summary>
         </member>
-        <member name="F:MSCLoader.SettingSlider.valuePrefix">
-            <summary>Prefix and suffix for the value text.</summary>
+        <member name="P:MSCLoader.SettingSlider.ValuePrefix">
+            <summary>Prefix for the value text.</summary>
         </member>
-        <member name="F:MSCLoader.SettingSlider.valueSuffix">
-            <summary>Prefix and suffix for the value text.</summary>
+        <member name="P:MSCLoader.SettingSlider.ValueSuffix">
+            <summary>Suffix for the value text.</summary>
         </member>
-        <member name="F:MSCLoader.SettingSlider.textValues">
-            <summary>Text to be displayed instead of the value, determined by index on the array.</summary>
+        <member name="P:MSCLoader.SettingSlider.TextValues">
+            <summary>Text to be displayed instead of the value, determined by index on the array.</summary>public string[] textValues
         </member>
         <member name="F:MSCLoader.SettingSlider.defaultValue">
             <summary>Default setting value.</summary>
@@ -1393,11 +1413,17 @@
         <member name="T:MSCLoader.SettingSpacer">
             <summary>Main Component for the Spacer setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingSpacer.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingSpacer.Height">
             <summary>The height of the empty space.</summary>
         </member>
         <member name="T:MSCLoader.SettingText">
             <summary>Main Component for the Text setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingText.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
         </member>
         <member name="P:MSCLoader.SettingText.Text">
             <summary>Text displayed in the box of text.</summary>
@@ -1413,6 +1439,9 @@
         </member>
         <member name="T:MSCLoader.SettingTextBox">
             <summary>Main Component for the TextBox setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingTextBox.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
         </member>
         <member name="P:MSCLoader.SettingTextBox.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
@@ -1453,6 +1482,9 @@
         <member name="T:MSCLoader.SettingToggle">
             <summary>Main Component for the Toggle setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingToggle.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingToggle.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1477,6 +1509,9 @@
         <member name="T:MSCLoader.SettingBoolean">
             <summary>Main Component for the Boolean setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingBoolean.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingBoolean.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1486,6 +1521,9 @@
         <member name="T:MSCLoader.SettingNumber">
             <summary>Main Component for the Number setting type.</summary>
         </member>
+        <member name="P:MSCLoader.SettingNumber.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
+        </member>
         <member name="P:MSCLoader.SettingNumber.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1494,6 +1532,9 @@
         </member>
         <member name="T:MSCLoader.SettingString">
             <summary>Main Component for the String setting type.</summary>
+        </member>
+        <member name="P:MSCLoader.SettingString.Enabled">
+            <summary>Should the setting be shown in the Mod Settings list?</summary>
         </member>
         <member name="P:MSCLoader.SettingString.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>

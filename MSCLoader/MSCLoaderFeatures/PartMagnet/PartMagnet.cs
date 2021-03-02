@@ -6,38 +6,29 @@ using UnityEngine.Events;
 
 namespace MSCLoader.PartMagnet
 {
-    public class BoltMagnetSaveData
-    {
-        public bool Attached = false;
-        public int attachIndex;
-        public int[] boltTightness;
-    }
-
-    [AddComponentMenu("Mod Loader Pro/Bolt Magnet")]
+    [AddComponentMenu("Mod Loader Pro/Part Magnet")]
     [RequireComponent(typeof(Rigidbody), typeof(Collider))]
-    public class BoltMagnet : MonoBehaviour
+    public class PartMagnet : MonoBehaviour
     {
         public enum AttachmentType { Static, Breakable }
 
-        [Header("Bolt Magnet, created by Fredrik!"), Space(10)]
+        [Header("Part Magnet, created by Fredrik!"), Space(10)]
         public AttachmentType attachmentType;
 
         public Collider[] attachmentPoints = new Collider[1];
-        [Space(10)]
-        public Bolt[] bolts = new Bolt[1];
 
-        [Space(10), Header("(OPTIONAL) Interaction text:")]
+        [Space(10), Header("(OPTIONAL) Interaction text.")]
         public string attachText = "";
         public string detachText = "";
 
-        [Space(10), Header("(OPTIONAL) Specific rigidbodies to attach breakable parts to, else it looks for the best match:")]
+        [Space(10), Header("(OPTIONAL) Specific rigidbodies to attach breakable parts to, else it looks for the best match.")]
         public Rigidbody[] attachmentPointsRigidbody;
 
-        [Space(10), Header("(OPTIONAL) Custom Attach- and Detach-sound:")]
+        [Space(10), Header("(OPTIONAL) Custom Attach- and Detach-sound.")]
         public AudioSource customAudioSource;
         public AudioClip customAssembleSound, customDisassembleSound;
-
-        [Space(10), Header("(OPTIONAL) Breakable base break-force and -torque:")]
+        
+        [Space(10), Header("(OPTIONAL) Breakable base break-force and -torque.")]
         public float baseBreakForce = 100;
         public float baseBreakTorque = 100;
 
@@ -47,11 +38,13 @@ namespace MSCLoader.PartMagnet
 
         [HideInInspector] public FixedJoint joint;
         [HideInInspector] public bool attached;
-        [HideInInspector] public int attachmentPointIndex;
-
+        [HideInInspector] public int attachmentPointIndex; 
+        
         int wheelLayer; // 16
         bool inTrigger = false;
         bool mouseOver = false;
+        HutongGames.PlayMaker.FsmBool guiAssemble, guiDisassemble;
+        HutongGames.PlayMaker.FsmString guiInteraction;
         string untagged = "Untagged", part = "PART";
 
         GameObject raycastParent;
@@ -72,6 +65,9 @@ namespace MSCLoader.PartMagnet
             if (Application.isEditor) { enabled = false; return; }
 
             wheelLayer = LayerMask.NameToLayer("Wheel");
+            guiAssemble = PlayMakerHelper.GetGlobalVariable<HutongGames.PlayMaker.FsmBool>("GUIassemble");
+            guiDisassemble = PlayMakerHelper.GetGlobalVariable<HutongGames.PlayMaker.FsmBool>("GUIdisassemble");
+            guiInteraction = PlayMakerHelper.GetGlobalVariable<HutongGames.PlayMaker.FsmString>("GUIinteraction");
 
             raycastParent = ModHelper.GetGameObject("PLAYER", "Pivot/AnimPivot/Camera/FPSCamera/1Hand_Assemble/Hand");
             raycastObject = raycastParent.GetPlayMakerFSM("PickUp").GetVariable<HutongGames.PlayMaker.FsmGameObject>("RaycastHitObject");
@@ -83,23 +79,6 @@ namespace MSCLoader.PartMagnet
             playerCamera = ModHelper.GetTransform("PLAYER", "Pivot/AnimPivot/Camera/FPSCamera/FPSCamera").GetComponent<Camera>();
             partLayerMask = 1 << LayerMask.NameToLayer("Parts");
         }
-
-        public void Setup(bool attached, int attachmentIndex, int[] boltTightness)
-        {
-            if (attached) Attach(attachmentPoints[attachmentIndex], false);
-            for (int i = 0; i < bolts.Length; i++) bolts[i].tightness = boltTightness[i];
-        }
-
-        public BoltMagnetSaveData Save()
-        {
-            return new BoltMagnetSaveData
-            {
-                Attached = attached,
-                attachIndex = attachmentPointIndex,
-                boltTightness = bolts.Select(x => x.tightness).ToArray()
-            };
-        }
-
         void OnTriggerEnter(Collider other)
         {
             if (!attached && attachmentPoints.Contains(other) && gameObject.layer == wheelLayer)
@@ -114,12 +93,12 @@ namespace MSCLoader.PartMagnet
             inTrigger = true;
             while (inTrigger)
             {
-                PlayMakerHelper.GUIAssemble = true;
-                if (attachText != "") PlayMakerHelper.GUIInteraction = attachText;
+                guiAssemble.Value = true;
+                if (attachText != "") guiInteraction.Value = attachText;
                 if (Input.GetMouseButtonDown(0))
                 {
-                    PlayMakerHelper.GUIAssemble = false;
-                    if (attachText != "") PlayMakerHelper.GUIInteraction = "";
+                    guiAssemble.Value = false;
+                    if (attachText != "") guiInteraction.Value = "";
 
                     Attach(other);
 
@@ -135,8 +114,8 @@ namespace MSCLoader.PartMagnet
             {
                 if (triggerRoutine != null) StopCoroutine(triggerRoutine);
                 inTrigger = false;
-                PlayMakerHelper.GUIAssemble = false;
-                if (attachText != "") PlayMakerHelper.GUIInteraction = "";
+                guiAssemble.Value = false;
+                if (attachText != "") guiInteraction.Value = "";
             }
         }
 
@@ -155,7 +134,7 @@ namespace MSCLoader.PartMagnet
             {
                 joint = gameObject.AddComponent<FixedJoint>();
 
-                if (attachmentPointsRigidbody.Length > attachmentPointIndex) 
+                if (attachmentPointsRigidbody.Length > attachmentPointIndex)
                     joint.connectedBody = attachmentPointsRigidbody[attachmentPointIndex];
                 else
                 {
@@ -163,7 +142,7 @@ namespace MSCLoader.PartMagnet
 
                     if (joint.connectedBody == null)
                     {
-                        ModConsole.LogError($"BoltMagnet: {gameObject.name} can't find suitable rigidbody to attach to, Detaching...\nYou may have to specify exactly which rigidbody should be used with the \"attachmentPointsRigidbody\" array.");
+                        ModConsole.LogError($"PartMagnet: {gameObject.name} can't find suitable rigidbody to attach to, Detaching...\nYou may have to specify exactly which rigidbody should be used with the \"attachmentPointsRigidbody\" array.");
                         Detach();
                         return;
                     }
@@ -177,14 +156,7 @@ namespace MSCLoader.PartMagnet
                 gameObject.GetComponent<Rigidbody>().detectCollisions = false;
             }
 
-
-            for (int i = 0; i < bolts.Length; i++)
-            {
-                bolts[i].tightness = bolts[i].minTightness;
-                bolts[i].gameObject.SetActive(true);
-            }
-
-            if (playSound) 
+            if (playSound)
             {
                 if (customAudioSource) customAudioSource.PlayOneShot(customAssembleSound);
                 else transform.PlaySound3D("CarBuilding", "assemble");
@@ -195,19 +167,18 @@ namespace MSCLoader.PartMagnet
             if (attachedRoutine != null) StopCoroutine(attachedRoutine);
             attachedRoutine = StartCoroutine(PartAttached());
 
-            ModConsole.Log($"BoltMagnet: {gameObject.name} attached on attachment point: {attachmentPoint}.");
+            ModConsole.Log($"PartMagnet: {gameObject.name} attached on attachment point: {attachmentPoint}.");
         }
 
-        internal IEnumerator SetJointBreak()
+        IEnumerator SetJointBreak()
         {
             yield return new WaitForSeconds(0.5f);
 
-            UpdateJointBreakValues();
-        }
-
-        void OnEnable()
-        {
-            if (attached) StartCoroutine(PartAttached());
+            if (attached && joint)
+            {
+                joint.breakForce = baseBreakForce;
+                joint.breakTorque = baseBreakTorque;
+            }
         }
 
         IEnumerator PartAttached()
@@ -217,13 +188,12 @@ namespace MSCLoader.PartMagnet
 
             while (attached)
             {
-                if (((raycastParent.activeInHierarchy && raycastObject.Value == gameObject) ||
+                if ((raycastParent.activeInHierarchy && raycastObject.Value == gameObject) ||
                     (boltDetectionParent.activeInHierarchy && boltDetection.Value == null && Physics.Raycast(playerCamera.ViewportPointToRay(viewportCenter), out hitInfo, 1f, partLayerMask.value) && hitInfo.collider.transform == transform))
-                    && bolts.All(tempBolt => tempBolt.tightness <= tempBolt.minTightness))
                 {
                     mouseOver = true;
-                    PlayMakerHelper.GUIDisassemble = true;
-                    if (detachText != "") PlayMakerHelper.GUIInteraction = detachText;
+                    guiDisassemble.Value = true;
+                    if (detachText != "") guiInteraction.Value = detachText;
 
                     if (Input.GetMouseButtonDown(1))
                     {
@@ -256,12 +226,6 @@ namespace MSCLoader.PartMagnet
                 gameObject.GetComponent<Rigidbody>().detectCollisions = true;
             }
 
-            for (int i = 0; i < bolts.Length; i++)
-            {
-                bolts[i].Reset();
-                bolts[i].gameObject.SetActive(false);
-            }
-
             if (playSound)
             {
                 if (customAudioSource) customAudioSource.PlayOneShot(customDisassembleSound);
@@ -270,9 +234,9 @@ namespace MSCLoader.PartMagnet
 
             OnDetach.Invoke();
 
-            ModConsole.Log($"BoltMagnet: {gameObject.name} detached from attachment point: {attachmentPoints[attachmentPointIndex]}.");
+            ModConsole.Log($"PartMagnet: {gameObject.name} detached from attachment point: {attachmentPoints[attachmentPointIndex]}.");
         }
-       
+
         void OnJointBreak(float breakForce)
         {
             Detach();
@@ -281,9 +245,8 @@ namespace MSCLoader.PartMagnet
         void MouseOver()
         {
             mouseOver = false;
-            PlayMakerHelper.GUIDisassemble = false;
-            if (detachText != "") PlayMakerHelper.GUIInteraction = "";
-            for (int i = 0; i < bolts.Length; i++) bolts[i].BoltOver();
+            guiDisassemble.Value = false;
+            if (detachText != "") guiInteraction.Value = "";
         }
 
         IEnumerator SetParent(Transform parent)
@@ -303,20 +266,5 @@ namespace MSCLoader.PartMagnet
                 yield return null;
             }
         }
-
-        public void UpdateJointBreakValues() 
-        {
-            if (attached && joint)
-            {
-                joint.breakForce = baseBreakForce;
-                for (int i = 0; i < bolts.Length; i++)
-                    joint.breakForce += (bolts[i].deltaBreakForce * bolts[i].tightness);
-
-                joint.breakTorque = baseBreakTorque;
-                for (int i = 0; i < bolts.Length; i++)
-                    joint.breakTorque += (bolts[i].deltaBreakTorque * bolts[i].tightness);
-            }
-        }
-
     }
 }

@@ -94,6 +94,16 @@ namespace MSCLoader
             // Get todays date from the internet or local system time
             Date = ModEarlyAccess.GetDate();
 
+            // Setup PlayMakerHelper Global Variables
+            PlayMakerHelper.fsmGUIUse = PlayMakerHelper.GetGlobalVariable<FsmBool>("GUIuse");
+            PlayMakerHelper.fsmGUIAssemble = PlayMakerHelper.GetGlobalVariable<FsmBool>("GUIassemble");
+            PlayMakerHelper.fsmGUIDisassemble = PlayMakerHelper.GetGlobalVariable<FsmBool>("GUIdisassemble");
+            PlayMakerHelper.fsmGUIBuy = PlayMakerHelper.GetGlobalVariable<FsmBool>("GUIbuy");
+            PlayMakerHelper.fsmGUIDrive = PlayMakerHelper.GetGlobalVariable<FsmBool>("GUIdrive");
+            PlayMakerHelper.fsmGUIPassenger = PlayMakerHelper.GetGlobalVariable<FsmBool>("GUIpassenger");
+            PlayMakerHelper.fsmGUIInteraction = PlayMakerHelper.GetGlobalVariable<FsmString>("GUIinteraction");
+            PlayMakerHelper.fsmGUISubtitle = PlayMakerHelper.GetGlobalVariable<FsmString>("GUIsubtitle");
+
             // Create the stopwatch for method execution time.
             timer = new Stopwatch();
 

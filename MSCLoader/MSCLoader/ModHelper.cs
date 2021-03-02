@@ -5,8 +5,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using UnityEngine;
 using HutongGames.PlayMaker;
-using Random = UnityEngine.Random;
 using System.Collections;
+using Random = UnityEngine.Random;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -44,6 +44,7 @@ namespace MSCLoader
         /// <param name="type">Type of sound.</param>
         /// <param name="variation">Variation of sound.</param>
         /// <param name="volume">(Optional) Sound volume.</param>
+        /// <param name="pitch">(Optional) Sound pitch.</param>
         public static void PlaySound3D(this Transform transform, string type, string variation, float volume = 1f, float pitch = 1f) =>
             MasterAudio.PlaySound3DAndForget(type, transform, variationName: variation, volumePercentage: volume, pitch: pitch);
         /// <summary>Play a MasterAudio sound from a Vector3 world position.</summary>
@@ -51,6 +52,7 @@ namespace MSCLoader
         /// <param name="type">Type of sound.</param>
         /// <param name="variation">Variation of sound.</param>
         /// <param name="volume">(Optional) Sound volume.</param>
+        /// <param name="pitch">(Optional) Sound pitch.</param>
         public static void PlaySound3D(this Vector3 vector3, string type, string variation, float volume = 1f, float pitch = 1f) =>
             MasterAudio.PlaySound3DAtVector3AndForget(type, vector3, variationName: variation, volumePercentage: volume, pitch: pitch);
         /// <summary>Select a random element from a List or an Array.</summary>
@@ -112,6 +114,23 @@ namespace MSCLoader
     /// <summary>Container for PlayMaker related helper and extension methods.</summary>
     public static class PlayMakerHelper
     {
+        public static FsmBool fsmGUIUse { get; internal set; }
+        public static FsmBool fsmGUIAssemble { get; internal set; }
+        public static FsmBool fsmGUIDisassemble { get; internal set; }
+        public static FsmBool fsmGUIBuy { get; internal set; }
+        public static FsmBool fsmGUIDrive { get; internal set; }
+        public static FsmBool fsmGUIPassenger { get; internal set; }
+        public static FsmString fsmGUIInteraction { get; internal set; }
+        public static FsmString fsmGUISubtitle { get; internal set; }
+        public static bool GUIUse { get => fsmGUIUse.Value; set => fsmGUIUse.Value = value; }
+        public static bool GUIAssemble { get => fsmGUIAssemble.Value; set => fsmGUIAssemble.Value = value; }
+        public static bool GUIDisassemble { get => fsmGUIDisassemble.Value; set => fsmGUIDisassemble.Value = value; }
+        public static bool GUIBuy { get => fsmGUIBuy.Value; set => fsmGUIBuy.Value = value; }
+        public static bool GUIDrive { get => fsmGUIDrive.Value; set => fsmGUIDrive.Value = value; }
+        public static bool GUIPassenger { get => fsmGUIPassenger.Value; set => fsmGUIPassenger.Value = value; }
+        public static string GUIInteraction { get => fsmGUIInteraction.Value; set => fsmGUIInteraction.Value = value; }
+        public static string GUISubtitle { get => fsmGUISubtitle.Value; set => fsmGUISubtitle.Value = value; }
+
         /// <summary>Get a PlayMakerFSM by name on the GameObject.</summary>
         /// <param name="gameObject">The GameObject to look for the FSM on.</param>
         /// <param name="fsmName">Name of the FSM.</param>
