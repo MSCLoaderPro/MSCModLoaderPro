@@ -374,7 +374,7 @@ namespace MSCLoader
                 ChangeValueText();
             }
         }
-        /// <summary>Prefix for the value text.</summary>
+        /// <summary>Suffix for the value text.</summary>
         public string valueSuffix
         {
             get => _valueSuffix;
