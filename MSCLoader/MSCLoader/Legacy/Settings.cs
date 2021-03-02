@@ -209,7 +209,7 @@ namespace MSCLoader
                     setting.Vals[3] = null;
                 else
                 {
-                    slider.textValues = textValues;
+                    slider.TextValues = textValues;
                     setting.Vals[3] = textValues;
                     if (textValues.Length <= (maxValue - minValue))
                         ModConsole.LogError($"[<b>{mod.ID}</b>] AddSlider: array of textValues is smaller than slider range (min to max).");
