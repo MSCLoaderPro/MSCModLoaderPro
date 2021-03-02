@@ -363,10 +363,38 @@ namespace MSCLoader
         public int RoundDigits { get => roundDigits; set => roundDigits = Math.Abs(value) % 16; }
         /// <summary>Event that triggers whenever the slider value is changed.</summary>
         public Slider.SliderEvent OnValueChanged { get => slider.onValueChanged; set => slider.onValueChanged = value; }
-        /// <summary>Prefix and suffix for the value text.</summary>
-        public string valuePrefix = "", valueSuffix = "";
+        string _valuePrefix = "", _valueSuffix = "";
+        /// <summary>Prefix for the value text.</summary>
+        public string valuePrefix
+        {
+            get => _valuePrefix;
+            set
+            {
+                _valuePrefix = value;
+                ChangeValueText();
+            }
+        }
+        /// <summary>Prefix for the value text.</summary>
+        public string valueSuffix
+        {
+            get => _valueSuffix;
+            set
+            {
+                _valueSuffix = value;
+                ChangeValueText();
+            }
+        }
+        string[] _textValues = new string[0];
         /// <summary>Text to be displayed instead of the value, determined by index on the array.</summary>
-        public string[] textValues = new string[0];
+        public string[] textValues
+        {
+            get => _textValues;
+            set
+            {
+                _textValues = value;
+                ChangeValueText();
+            }
+        }
         /// <summary>Default setting value.</summary>
         public float defaultValue;
 
