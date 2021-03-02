@@ -9,6 +9,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using unityUI::UnityEngine.EventSystems;
 using Outline = unityUI.UnityEngine.UI.Outline;
 
 #pragma warning disable CS1591
@@ -16,11 +17,11 @@ namespace MSCLoader
 {
     /// <summary>Parent class for settings.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public class ModSetting : MonoBehaviour 
-    { 
+    public class ModSetting : MonoBehaviour
+    {
         /// <summary>Method to save settings into the provided ModConfig.</summary>
         /// <param name="modConfig">ModConfig to save settings to.</param>
-        public virtual void SaveSetting(ModConfig modConfig) { } 
+        public virtual void SaveSetting(ModConfig modConfig) { }
     }
     /// <summary>Main Component for the Button setting type.</summary>
     public class SettingButton : ModSetting
@@ -33,6 +34,8 @@ namespace MSCLoader
         public Text buttonText;
         public Shadow buttonTextShadow;
 
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Setting name, displayed in the settings window. An empty string disables the label.</summary>
@@ -70,6 +73,8 @@ namespace MSCLoader
 
         public Text text;
         public Shadow textShadow;
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>The height of the header.</summary>
         public float Height { get => layoutElement.preferredHeight; set => layoutElement.preferredHeight = value; }
         /// <summary>The background color for the header.</summary>
@@ -89,15 +94,17 @@ namespace MSCLoader
         public Button keyButton;
         public Image backgroundImage;
 
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Setting name, displayed in the settings window.</summary>
         public string Name { get => nameText.text; set => nameText.text = value; }
 
         /// <summary>Event that triggers just after the player have started the keybinding process before pressing any keys.</summary>
-        public KeybindPreBind PreBind = new KeybindPreBind();
+        public UnityEvent PreBind = new UnityEvent();
         /// <summary>Event that triggers just after the player have assigned a new binding.</summary>
-        public KeybindPostBind PostBind = new KeybindPostBind();
+        public UnityEvent PostBind = new UnityEvent();
 
         /// <summary>Current main key.</summary>
         public KeyCode keybind;
@@ -201,23 +208,32 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Keybinds.Count; i++)
+            {
+                if (modConfig.Keybinds[i].id == ID)
+                {
+                    modConfig.Keybinds[i] = new ModConfigKeybind(ID, keybind, modifiers);
+                    return;
+                }
+            }
             modConfig.Keybinds.Add(new ModConfigKeybind(ID, keybind, modifiers));
         }
-
-        [Serializable]
-        public class KeybindPreBind : UnityEvent { }
-        [Serializable]
-        public class KeybindPostBind : UnityEvent { }
     }
     /// <summary>Main Component for the Radio Buttons setting type.</summary>
-    public class SettingRadioButtons : ModSetting
+    public class SettingRadioButtons : ModSetting, IEventSystemHandler
     {
+        [System.Serializable]
+        public class RadioEvent : UnityEvent<int> { }
+
         internal int radioValue;
         public List<RadioButton> buttons = new List<RadioButton>();
 
         public Text nameText;
         public Shadow nameShadow;
         public ToggleGroup group;
+
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Setting name, displayed in the settings window.</summary>
@@ -234,10 +250,13 @@ namespace MSCLoader
                     buttons[i].toggle.isOn = (i == value);
                     buttons[i].suspendSetValue = false;
                 }
+                onValueChanged.Invoke(radioValue);
             }
         }
+
+        RadioEvent onValueChanged = new RadioEvent();
         /// <summary>Event that triggers whenever the setting changes value.</summary>
-        public RadioButtonsOnValueChanged OnValueChanged = new RadioButtonsOnValueChanged();
+        public RadioEvent OnValueChanged { get => onValueChanged; set => onValueChanged = value; }
 
         /// <summary>Default setting value</summary>
         public int defaultValue;
@@ -269,6 +288,7 @@ namespace MSCLoader
             newButton.transform.SetParent(toggleGroup, false);
 
             RadioButton radioButton = newButton.GetComponent<RadioButton>();
+            radioButton.settingRadioButtons = this; // This little boye
             radioButton.radioID = buttons.Count;
             radioButton.name = $"Radio{radioButton.radioID}";
             radioButton.labelText.text = labelText;
@@ -302,11 +322,16 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Numbers.Count; i++)
+            {
+                if (modConfig.Numbers[i].id == ID)
+                {
+                    modConfig.Numbers[i] = new ModConfigNumber(ID, Value);
+                    return;
+                }
+            }
             modConfig.Numbers.Add(new ModConfigNumber(ID, Value));
         }
-
-        [Serializable]
-        public class RadioButtonsOnValueChanged : UnityEvent<int> { }
     }
     /// <summary>Component for the buttons in the Radio Buttons setting.</summary>
     public class RadioButton : MonoBehaviour
@@ -344,6 +369,8 @@ namespace MSCLoader
         public Slider slider;
         public Image backgroundImage, handleImage;
 
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Setting name, displayed in the settings window.</summary>
@@ -363,7 +390,6 @@ namespace MSCLoader
         public int RoundDigits { get => roundDigits; set => roundDigits = Math.Abs(value) % 16; }
         /// <summary>Event that triggers whenever the slider value is changed.</summary>
         public Slider.SliderEvent OnValueChanged { get => slider.onValueChanged; set => slider.onValueChanged = value; }
-        string valuePrefix = "", valueSuffix = "";
         /// <summary>Prefix for the value text.</summary>
         public string ValuePrefix
         {
@@ -384,8 +410,7 @@ namespace MSCLoader
                 ChangeValueText();
             }
         }
-        string[] textValues = new string[0];
-        /// <summary>Text to be displayed instead of the value, determined by index on the array.</summary>
+        /// <summary>Text to be displayed instead of the value, determined by index on the array.</summary>public string[] textValues
         public string[] TextValues
         {
             get => textValues;
@@ -398,11 +423,15 @@ namespace MSCLoader
         /// <summary>Default setting value.</summary>
         public float defaultValue;
 
+        [SerializeField] string valuePrefix = "";
+        [SerializeField] string valueSuffix = "";
+        [SerializeField] string[] textValues = new string[0];
+
         public void ChangeValueText()
         {
-            valueText.text = (textValues.Length > ValueInt) ?
-                $"{valuePrefix}{textValues[ValueInt]}{valueSuffix}" :
-                $"{valuePrefix}{Value}{valueSuffix}";
+            valueText.text = (TextValues.Length > ValueInt) ?
+                $"{ValuePrefix}{TextValues[ValueInt]}{ValueSuffix}" :
+                $"{ValuePrefix}{Value}{ValueSuffix}";
         }
 
         internal int roundDigits = -1;
@@ -433,6 +462,14 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Numbers.Count; i++)
+            {
+                if (modConfig.Numbers[i].id == ID)
+                {
+                    modConfig.Numbers[i] = new ModConfigNumber(ID, Value);
+                    return;
+                }
+            }
             modConfig.Numbers.Add(new ModConfigNumber(ID, Value));
         }
     }
@@ -440,6 +477,8 @@ namespace MSCLoader
     public class SettingSpacer : ModSetting
     {
         public LayoutElement layoutElement;
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>The height of the empty space.</summary>
         public float Height { get => layoutElement.preferredHeight; set => layoutElement.preferredHeight = value; }
     }
@@ -451,6 +490,8 @@ namespace MSCLoader
 
         public Image background;
         public Outline outline;
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Text displayed in the box of text.</summary>
         public string Text { get => text.text; set => text.text = value; }
         /// <summary>Color of the text.</summary>
@@ -470,6 +511,8 @@ namespace MSCLoader
         public Image inputImage;
         public Text inputPlaceholderText;
 
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Setting name, displayed in the settings window.</summary>
@@ -481,7 +524,7 @@ namespace MSCLoader
         /// <summary>What type of characters should be allowed?</summary>
         public InputField.CharacterValidation InputType { get => inputField.characterValidation; set => inputField.characterValidation = value; }
         /// <summary>Event called whenever a character is typed.</summary>
-        public InputField.OnChangeEvent OnValueChange { get => inputField.onValueChange; }        
+        public InputField.OnChangeEvent OnValueChange { get => inputField.onValueChange; }
         /// <summary>Event called whenever the text box is exited (Pressing Enter, click outside etc.).</summary>
         public InputField.SubmitEvent OnEndEdit { get => inputField.onEndEdit; }
         /// <summary>Default setting value.</summary>
@@ -516,6 +559,14 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Strings.Count; i++)
+            {
+                if (modConfig.Strings[i].id == ID)
+                {
+                    modConfig.Strings[i] = new ModConfigString(ID, Value);
+                    return;
+                }
+            }
             modConfig.Strings.Add(new ModConfigString(ID, Value));
         }
     }
@@ -528,6 +579,8 @@ namespace MSCLoader
         public Toggle toggle;
         public Image offImage, onImage;
 
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Setting name, displayed in the settings window.</summary>
@@ -557,6 +610,14 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Booleans.Count; i++)
+            {
+                if (modConfig.Booleans[i].id == ID)
+                {
+                    modConfig.Booleans[i] = new ModConfigBool(ID, Value);
+                    return;
+                }
+            }
             modConfig.Booleans.Add(new ModConfigBool(ID, Value));
         }
     }
@@ -565,6 +626,8 @@ namespace MSCLoader
     /// <summary>Main Component for the Boolean setting type.</summary>
     public class SettingBoolean : ModSetting
     {
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Current setting value.</summary>
@@ -572,12 +635,22 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Booleans.Count; i++)
+            {
+                if (modConfig.Booleans[i].id == ID)
+                {
+                    modConfig.Booleans[i] = new ModConfigBool(ID, Value);
+                    return;
+                }
+            }
             modConfig.Booleans.Add(new ModConfigBool(ID, Value));
         }
     }
     /// <summary>Main Component for the Number setting type.</summary>
     public class SettingNumber : ModSetting
     {
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Current setting value.</summary>
@@ -586,12 +659,22 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Numbers.Count; i++)
+            {
+                if (modConfig.Numbers[i].id == ID)
+                {
+                    modConfig.Numbers[i] = new ModConfigNumber(ID, Value);
+                    return;
+                }
+            }
             modConfig.Numbers.Add(new ModConfigNumber(ID, Value));
         }
     }
     /// <summary>Main Component for the String setting type.</summary>
     public class SettingString : ModSetting
     {
+        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
+        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Current setting value.</summary>
@@ -599,6 +682,14 @@ namespace MSCLoader
 
         public override void SaveSetting(ModConfig modConfig)
         {
+            for (int i = 0; i < modConfig.Strings.Count; i++)
+            {
+                if (modConfig.Strings[i].id == ID)
+                {
+                    modConfig.Strings[i] = new ModConfigString(ID, Value);
+                    return;
+                }
+            }
             modConfig.Strings.Add(new ModConfigString(ID, Value));
         }
     }
