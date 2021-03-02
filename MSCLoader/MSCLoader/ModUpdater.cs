@@ -100,7 +100,7 @@ namespace MSCLoader
                 case 0: // Every launch
                     return true;
                 case 1: // Daily
-                    return now > lastCheck.AddDays(1);
+                    return now >= lastCheck.AddDays(1);
                 case 2: // Weekly
                     return now >= lastCheck.AddDays(7);
                 case 3: // Never
