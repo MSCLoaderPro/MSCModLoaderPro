@@ -30,8 +30,9 @@ namespace MSCLoader
         /// <summary>Button list for all added ModPromptButtons.</summary>
         public List<ModPromptButton> buttons = new List<ModPromptButton>();
 
+        bool destroyOnDisable = true;
         /// <summary>Should the ModPrompt be destroyed after being disabled?</summary>
-        public bool destroyOnDisable = true;
+        public bool DestroyOnDisable { get => destroyOnDisable; set => destroyOnDisable = value; }
 
         /// <summary>UnityAction that executes when the ModPrompt closes.</summary>
         public UnityAction OnCloseAction;
