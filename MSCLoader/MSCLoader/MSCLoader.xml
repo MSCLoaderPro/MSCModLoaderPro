@@ -684,7 +684,7 @@
         <member name="F:MSCLoader.ModPrompt.buttons">
             <summary>Button list for all added ModPromptButtons.</summary>
         </member>
-        <member name="F:MSCLoader.ModPrompt.destroyOnDisable">
+        <member name="P:MSCLoader.ModPrompt.DestroyOnDisable">
             <summary>Should the ModPrompt be destroyed after being disabled?</summary>
         </member>
         <member name="F:MSCLoader.ModPrompt.OnCloseAction">
