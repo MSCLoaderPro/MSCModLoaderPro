@@ -17,9 +17,9 @@ E:\Steam Library\steamapps\common\My Summer Car\ModLoader\MSCLoader.dll
 E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\ModLoader\MSCLoader.dll
 E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\MSCLoader.dll
 E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\MSCLoader.xml
-C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csprojAssemblyReference.cache
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.Properties.Resources.resources
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.GenerateResource.cache
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CoreCompileInputs.cache
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CopyComplete
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.dll
+C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csprojAssemblyReference.cache

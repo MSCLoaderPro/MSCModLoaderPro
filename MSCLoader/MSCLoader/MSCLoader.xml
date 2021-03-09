@@ -208,32 +208,32 @@
         <member name="T:MSCLoader.ModEarlyAccess">
             <summary>Class containing useful features pertaining to Early Access for mods.</summary>
         </member>
-        <member name="T:MSCLoader.ModHelper">
+        <member name="T:MSCLoader.Helper.ModHelper">
             <summary> Container for useful helper methods </summary>
         </member>
-        <member name="M:MSCLoader.ModHelper.MakePickable(UnityEngine.GameObject,System.Boolean)">
+        <member name="M:MSCLoader.Helper.ModHelper.MakePickable(UnityEngine.GameObject,System.Boolean)">
             <summary>Make the provided GameObject interactable as a object you can pick up ingame.</summary>
             <param name="gameObject">GameObject to make pickable</param>
             <param name="includeTag">Should the tag also be changed? The tag is what makes the player able to interact with the object, whereas the layer only make its name show up as a subtitle.</param>
         </member>
-        <member name="M:MSCLoader.ModHelper.MakePickable(UnityEngine.Transform,System.Boolean)">
+        <member name="M:MSCLoader.Helper.ModHelper.MakePickable(UnityEngine.Transform,System.Boolean)">
             <summary>Make the provided Transform interactable as a object you can pick up ingame.</summary>
             <param name="transform">Transform to make pickable</param>
             <param name="includeTag">Should the tag also be changed? The tag is what makes the player able to interact with the object, whereas the layer only make its name show up as a subtitle.</param>
         </member>
-        <member name="M:MSCLoader.ModHelper.GetTransform(System.String,System.String)">
+        <member name="M:MSCLoader.Helper.ModHelper.GetTransform(System.String,System.String)">
             <summary>Get a Transform child.</summary>
             <param name="parentPath">Hierarchy path to a parent Transform.</param>
             <param name="childPath">Hierarchy path from the parent to the wanted child Transform.</param>
             <returns>Transform with specified path.</returns>
         </member>
-        <member name="M:MSCLoader.ModHelper.GetGameObject(System.String,System.String)">
+        <member name="M:MSCLoader.Helper.ModHelper.GetGameObject(System.String,System.String)">
             <summary>Get a GameObject child.</summary>
             <param name="parentPath">Hierarchy path to a parent GameObject.</param>
             <param name="childPath">Hierarchy path from the parent to the wanted child GameObject.</param>
             <returns>GameObject with specified path.</returns>
         </member>
-        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Transform,System.String,System.String,System.Single,System.Single)">
+        <member name="M:MSCLoader.Helper.ModHelper.PlaySound3D(UnityEngine.Transform,System.String,System.String,System.Single,System.Single)">
             <summary>Play a MasterAudio sound from the Transform.</summary>
             <param name="transform">Transform to play the sound from.</param>
             <param name="type">Type of sound.</param>
@@ -241,7 +241,7 @@
             <param name="volume">(Optional) Sound volume.</param>
             <param name="pitch">(Optional) Sound pitch.</param>
         </member>
-        <member name="M:MSCLoader.ModHelper.PlaySound3D(UnityEngine.Vector3,System.String,System.String,System.Single,System.Single)">
+        <member name="M:MSCLoader.Helper.ModHelper.PlaySound3D(UnityEngine.Vector3,System.String,System.String,System.Single,System.Single)">
             <summary>Play a MasterAudio sound from a Vector3 world position.</summary>
             <param name="vector3">Vector3 to play the sound from.</param>
             <param name="type">Type of sound.</param>
@@ -249,25 +249,25 @@
             <param name="volume">(Optional) Sound volume.</param>
             <param name="pitch">(Optional) Sound pitch.</param>
         </member>
-        <member name="M:MSCLoader.ModHelper.SelectRandom``1(System.Collections.Generic.IList{``0})">
+        <member name="M:MSCLoader.Helper.ModHelper.SelectRandom``1(System.Collections.Generic.IList{``0})">
             <summary>Select a random element from a List or an Array.</summary>
             <typeparam name="T">List/Array Element type.</typeparam>
             <param name="list">List/Array to get a random element from.</param>
             <returns></returns>
         </member>
-        <member name="M:MSCLoader.ModHelper.InLayerMask(UnityEngine.LayerMask,System.Int32)">
+        <member name="M:MSCLoader.Helper.ModHelper.InLayerMask(UnityEngine.LayerMask,System.Int32)">
             <summary>Check if a specified layer is in the LayerMask.</summary>
             <param name="layerMask">LayerMask to check.</param>
             <param name="layer">Layer number to check for.</param>
             <returns>Whether or not the layer is in the </returns>
         </member>
-        <member name="M:MSCLoader.ModHelper.InLayerMask(UnityEngine.LayerMask,System.String)">
+        <member name="M:MSCLoader.Helper.ModHelper.InLayerMask(UnityEngine.LayerMask,System.String)">
             <summary>Check if a specified layer is in the LayerMask.</summary>
             <param name="layerMask">LayerMask to check.</param>
             <param name="layer">Layer name to check for.</param>
             <returns>Whether or not the layer is in the </returns>
         </member>
-        <member name="M:MSCLoader.ModHelper.SetParent(UnityEngine.Transform,UnityEngine.Transform,UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Vector3,System.String)">
+        <member name="M:MSCLoader.Helper.ModHelper.SetParent(UnityEngine.Transform,UnityEngine.Transform,UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Vector3,System.String)">
             <summary>Extension of SetParent, with this you can specify the new position, rotation, scale and name of the transform.</summary>
             <param name="transform">Transform to change parent of.</param>
             <param name="parent">New parent Transform.</param>
@@ -276,49 +276,49 @@
             <param name="scale">New local scale.</param>
             <param name="name">(Optional) New name.</param>
         </member>
-        <member name="M:MSCLoader.ModHelper.OpenFolder(System.String)">
+        <member name="M:MSCLoader.Helper.ModHelper.OpenFolder(System.String)">
             <summary>Open folder in Explorer or file in its default app.</summary>
             <param name="path">Path to folder/file.</param>
         </member>
-        <member name="M:MSCLoader.ModHelper.OpenWebsite(System.String)">
+        <member name="M:MSCLoader.Helper.ModHelper.OpenWebsite(System.String)">
             <summary>Open Website URL.</summary>
             <param name="url">Website URL.</param>
         </member>
-        <member name="T:MSCLoader.PlayMakerHelper">
+        <member name="T:MSCLoader.Helper.PlayMakerHelper">
             <summary>Container for PlayMaker related helper and extension methods.</summary>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetPlayMakerFSM(UnityEngine.GameObject,System.String)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetPlayMakerFSM(UnityEngine.GameObject,System.String)">
             <summary>Get a PlayMakerFSM by name on the GameObject.</summary>
             <param name="gameObject">The GameObject to look for the FSM on.</param>
             <param name="fsmName">Name of the FSM.</param>
             <returns>PlayMakerFSM of specified name, or null if it can't be found.</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetPlayMakerFSM(UnityEngine.Transform,System.String)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetPlayMakerFSM(UnityEngine.Transform,System.String)">
             <summary>Get a PlayMakerFSM by name on the Transform's GameObject.</summary>
             <param name="transform">The Transform to look for the FSM on.</param>
             <param name="fsmName">Name of the FSM.</param>
             <returns>PlayMakerFSM of specified name, or null if it can't be found.</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetState(PlayMakerFSM,System.String)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetState(PlayMakerFSM,System.String)">
             <summary>Get a state on the PlayMakerFSM.</summary>
             <param name="fsm">PlayMakerFSM to search on.</param>
             <param name="stateName">Name of the state to look for.</param>
             <returns>FsmState of specified name.</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetState(PlayMakerFSM,System.Int32)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetState(PlayMakerFSM,System.Int32)">
             <summary>Get a state on the PlayMakerFSM.</summary>
             <param name="fsm">PlayMakerFSM to search on.</param>
             <param name="stateIndex">Index of the state to look for.</param>
             <returns>FsmState of specified index.</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetAction``1(HutongGames.PlayMaker.FsmState,System.Int32)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetAction``1(HutongGames.PlayMaker.FsmState,System.Int32)">
             <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
             <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>
             <param name="state">State that contains the action</param>
             <param name="actionIndex">The index of the Actions Array in the FSMState.</param>
             <returns>FSMStateAction of type T</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetAction``1(PlayMakerFSM,System.String,System.Int32)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetAction``1(PlayMakerFSM,System.String,System.Int32)">
             <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
             <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>
             <param name="fsm">PlayMakerFSM to get the action from.</param>
@@ -326,7 +326,7 @@
             <param name="actionIndex">The index of the Actions Array in the FSMState.</param>
             <returns>FSMStateAction of type T</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetAction``1(PlayMakerFSM,System.Int32,System.Int32)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetAction``1(PlayMakerFSM,System.Int32,System.Int32)">
             <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
             <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>
             <param name="fsm">PlayMakerFSM to get the action from.</param>
@@ -334,120 +334,120 @@
             <param name="actionIndex">The index of the Actions Array in the FSMState.</param>
             <returns>FSMStateAction of type T</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.InsertAction(HutongGames.PlayMaker.FsmState,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.InsertAction(HutongGames.PlayMaker.FsmState,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Insert an action into the state.</summary>
             <param name="state">State to insert the action to.</param>
             <param name="actionIndex">The index the action should be inserted to.</param>
             <param name="action">The action that will be inserted.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.InsertAction(PlayMakerFSM,System.String,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.InsertAction(PlayMakerFSM,System.String,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Insert an action into the state.</summary>
             <param name="fsm">PlayMakerFSM to insert the action to.</param>
             <param name="stateName">Name of the state to insert the action to.</param>
             <param name="actionIndex">The index the action should be inserted to.</param>
             <param name="action">The action that will be inserted.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.InsertAction(PlayMakerFSM,System.Int32,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.InsertAction(PlayMakerFSM,System.Int32,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Insert an action into the state.</summary>
             <param name="fsm">PlayMakerFSM to insert the action to.</param>
             <param name="stateIndex">Index of the state to insert the action to.</param>
             <param name="actionIndex">The index the action should be inserted to.</param>
             <param name="action">The action that will be inserted.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.AddAction(HutongGames.PlayMaker.FsmState,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.AddAction(HutongGames.PlayMaker.FsmState,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Add an action the state.</summary>
             <param name="state">State to add the action to.</param>
             <param name="action">The action that will be added.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.AddAction(PlayMakerFSM,System.String,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.AddAction(PlayMakerFSM,System.String,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Add an action the state.</summary>
             <param name="fsm">PlayMakerFSM to add the action to.</param>
             <param name="stateName">Name of the state to add the action to</param>
             <param name="action">The action that will be added.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.AddAction(PlayMakerFSM,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.AddAction(PlayMakerFSM,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Add an action the state.</summary>
             <param name="fsm">PlayMakerFSM to add the action to.</param>
             <param name="stateIndex">Index of the state to add the action to</param>
             <param name="action">The action that will be added.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.ReplaceAction(HutongGames.PlayMaker.FsmState,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.ReplaceAction(HutongGames.PlayMaker.FsmState,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Replaces an action in the specified state.</summary>
             <param name="state">State to replace the action in.</param>
             <param name="actionIndex">Index of the action to replace.</param>
             <param name="action">The replacement action.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.ReplaceAction(PlayMakerFSM,System.String,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.ReplaceAction(PlayMakerFSM,System.String,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Replaces an action in the specified state.</summary>
             <param name="fsm">PlayMakerFSM to replace the action on.</param>
             <param name="stateName">Name of the state to replace the action in.</param>
             <param name="actionIndex">Index of the action to replace.</param>
             <param name="action">The replacement action.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.ReplaceAction(PlayMakerFSM,System.Int32,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.ReplaceAction(PlayMakerFSM,System.Int32,System.Int32,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Replaces an action in the specified state.</summary>
             <param name="fsm">PlayMakerFSM to replace the action on.</param>
             <param name="stateIndex">Index of the state to replace the action in.</param>
             <param name="actionIndex">Index of the action to replace.</param>
             <param name="action">The replacement action.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(HutongGames.PlayMaker.FsmState,System.Int32)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.RemoveAction(HutongGames.PlayMaker.FsmState,System.Int32)">
             <summary>Removes an action in the specified state.</summary>
             <param name="state">State to remove the action in.</param>
             <param name="actionIndex">Index of the action to remove.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(HutongGames.PlayMaker.FsmState,HutongGames.PlayMaker.FsmStateAction)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.RemoveAction(HutongGames.PlayMaker.FsmState,HutongGames.PlayMaker.FsmStateAction)">
             <summary>Removes an action in the specified state.</summary>
             <param name="state">State to remove the action in.</param>
             <param name="action">Action to remove.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(PlayMakerFSM,System.String,System.Int32)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.RemoveAction(PlayMakerFSM,System.String,System.Int32)">
             <summary>Removes an action in the specified state.</summary>
             <param name="fsm">PlayMakerFSM to remove an action on.</param>
             <param name="stateName">Name of the state to remove the action in.</param>
             <param name="actionIndex">Index of the action to remove.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.RemoveAction(PlayMakerFSM,System.Int32,System.Int32)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.RemoveAction(PlayMakerFSM,System.Int32,System.Int32)">
             <summary>Removes an action in the specified state.</summary>
             <param name="fsm">PlayMakerFSM to remove an action on.</param>
             <param name="stateIndex">Index of the state to remove the action in.</param>
             <param name="actionIndex">Index of the action to remove.</param>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetVariable``1(PlayMakerFSM,System.String)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetVariable``1(PlayMakerFSM,System.String)">
             <summary>Get a variable of specified type and name.</summary>
             <typeparam name="T">Type of variable to get. NamedVariable or sub-class (Standard PlayMaker Variable types)</typeparam>
             <param name="fsm">PlayMakerFSM that contains the variable.</param>
             <param name="name">Name of the variable to find.</param>
             <returns>PlayMaker variable of specified type T</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.GetGlobalVariable``1(System.String)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.GetGlobalVariable``1(System.String)">
             <summary>Get a global PlayMaker variable of specified type and name.</summary>
             <typeparam name="T">Type of variable to get. NamedVariable or sub-class (Standard PlayMaker Variable types)</typeparam>
             <param name="name">Name of the variable to find.</param>
             <returns>PlayMaker variable of specified type T</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.FindVariable``1(HutongGames.PlayMaker.FsmVariables,System.String)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.FindVariable``1(HutongGames.PlayMaker.FsmVariables,System.String)">
             <summary>Get a variable of specified type and name.</summary>
             <typeparam name="T">Type of variable to get. NamedVariable or sub-class (Standard PlayMaker Variable types)</typeparam>
             <param name="variables">Variables to search.</param>
             <param name="name">Name of the variable to find.</param>
             <returns>PlayMaker variable of specified type T</returns>
         </member>
-        <member name="M:MSCLoader.PlayMakerHelper.Initialize(PlayMakerFSM)">
+        <member name="M:MSCLoader.Helper.PlayMakerHelper.Initialize(PlayMakerFSM)">
             <summary>Initialize a PlayMakerFSM to enable editing states.</summary>
             <param name="fsm">PlayMakerFSM to initialize.</param>
         </member>
-        <member name="T:MSCLoader.CallAction">
+        <member name="T:MSCLoader.Helper.CallAction">
             <summary>FsmStateAction that executes an Action.</summary>
         </member>
-        <member name="M:MSCLoader.CallAction.#ctor(System.Action)">
+        <member name="M:MSCLoader.Helper.CallAction.#ctor(System.Action)">
             <summary>Create a new FsmStateAction that executes provided Action.</summary>
             <param name="action">Action to call when state executes the FsmStateAction.</param>
         </member>
-        <member name="T:MSCLoader.PlayMakerProxyHelper">
+        <member name="T:MSCLoader.Helper.PlayMakerProxyHelper">
             <summary>Helper Methods to work with PlayMakerArrayListProxy and PlayMakerHashTableProxy components.<br></br><br></br>Courtesy of BrennFuchS.</summary>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToProxy``1(``0,System.Object,System.Boolean)">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddToProxy``1(``0,System.Object,System.Boolean)">
             <summary>
             add a variable to a specified PMproxy.
             the variable type has to match the selected PMproxys preFillType!
@@ -457,7 +457,7 @@
             <param name="ItemToAdd"></param>
             <param name="ClearBeforeAdding"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToProxy(UnityEngine.GameObject,System.String,System.Object,System.Boolean)">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddToProxy(UnityEngine.GameObject,System.String,System.Object,System.Boolean)">
             <summary>
             add a variable to one of the PMproxy's in the GameObject.
             the variable type has to match the selected PMproxys preFillType!
@@ -467,7 +467,7 @@
             <param name="ItemToAdd"></param>
             <param name="ClearBeforeAdding"></param>       
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToProxy``1(``0,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddRangeToProxy``1(``0,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
             <summary>
             add a list of variables to a specified PMproxy.
             the variable types have to match the selected PMproxy's preFillType!
@@ -477,7 +477,7 @@
             <param name="ItemsToAdd"></param>
             <param name="ClearBeforeAdding"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToProxy(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddRangeToProxy(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
             <summary>
             add variables to one of the PMproxys in the GameObject.
             the variable types have to match the selected PMproxy's preFillType!
@@ -487,7 +487,7 @@
             <param name="ItemsToAdd"></param>
             <param name="ClearBeforeAdding"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToPrefill``1(``0,System.Object)">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddToPrefill``1(``0,System.Object)">
             <summary>
             add a variable to a specified PMproxy.
             </summary>
@@ -495,7 +495,7 @@
             <param name="PMproxy"></param>
             <param name="ItemToAdd"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddToPrefill(UnityEngine.GameObject,System.String,System.Object)">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddToPrefill(UnityEngine.GameObject,System.String,System.Object)">
             <summary>
             add a variable to one of the PMproxy's in the GameObject.
             </summary>
@@ -503,7 +503,7 @@
             <param name="wantedProxyReferenceName"></param>
             <param name="ItemToAdd"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToPrefill``1(``0,System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddRangeToPrefill``1(``0,System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
             add a list of variables to a specified PMproxy.
             </summary>
@@ -511,7 +511,7 @@
             <param name="PMproxy"></param>
             <param name="ItemsToAdd"></param>
         </member>
-        <member name="M:MSCLoader.PlayMakerProxyHelper.AddRangeToPrefill(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object})">
+        <member name="M:MSCLoader.Helper.PlayMakerProxyHelper.AddRangeToPrefill(UnityEngine.GameObject,System.String,System.Collections.Generic.IEnumerable{System.Object})">
             <summary>add a list of variables to one of the PMproxy's in the GameObject.</summary>
             <param name="PMproxysParent"></param>
             <param name="wantedProxyReferenceName"></param>
@@ -631,11 +631,29 @@
         <member name="P:MSCLoader.ModLoader.LoadedMods">
             <summary> List of Loaded Mods. </summary>
         </member>
-        <member name="F:MSCLoader.ModLoader.modMethods">
+        <member name="P:MSCLoader.ModLoader.ModMethods">
             <summary> List of used Mod Class methods. </summary>
         </member>
         <member name="F:MSCLoader.ModLoader.modSceneLoadHandler">
             <summary>Load handler for the UI. Add your GameObject to the extra list if you want your UI to be disabled when the game loads a scene.</summary>
+        </member>
+        <member name="P:MSCLoader.ModLoader.Date">
+            <summary>Get current date.</summary>
+        </member>
+        <member name="P:MSCLoader.ModLoader.UICanvas">
+            <summary>Get the mod loader canvas GameObject.</summary>
+        </member>
+        <member name="F:MSCLoader.ModLoader.MSCYellow">
+            <summary>Yellow Color that MSC uses.</summary>
+        </member>
+        <member name="F:MSCLoader.ModLoader.MSCRed">
+            <summary>Wine Red Color that MSC uses.</summary>
+        </member>
+        <member name="F:MSCLoader.ModLoader.MSCRose">
+            <summary>Rose Color that MSC uses.</summary>
+        </member>
+        <member name="F:MSCLoader.ModLoader.ModDisabledRed">
+            <summary>Red Color for disabled mods.</summary>
         </member>
         <member name="P:MSCLoader.ModLoader.CurrentScene">
             <summary> Get the current game scene. </summary>
@@ -704,6 +722,47 @@
         </member>
         <member name="M:MSCLoader.ModPrompt.OnEnable">
             <summary>Show the ModPrompt</summary>
+        </member>
+        <member name="M:MSCLoader.ModPrompt.CreatePrompt(System.String,System.String,UnityEngine.Events.UnityAction)">
+            <summary> Creates a prompt with "OK" button. </summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button. Can be</returns>
+        </member>
+        <member name="M:MSCLoader.ModPrompt.CreateYesNoPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
+            <summary> Creates a prompt with "Yes" and "No" buttons. </summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onYes">Action that will happen after player clicks Yes button.</param>
+            <param name="onNo">(Optional) Action that will happen after player clicks No button.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
+        <member name="M:MSCLoader.ModPrompt.CreateRetryCancelPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
+            <summary>Creates a prompt with "Retry" and "Cancel" buttons.</summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onRetry">Action that will happen after player clicks Retry button.</param>
+            <param name="onCancel">(Optional) Action that will happen after player clicks Cancel button.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
+        <member name="M:MSCLoader.ModPrompt.CreateContinueAbortPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
+            <summary>Creates a prompt with "Continue" and "Abort" buttons</summary>
+            <param name="message">A message that will appear in the prompt.</param>
+            <param name="title">Title of the prompt.</param>
+            <param name="onContinue">Action that will happen after player clicks Continue button.</param>
+            <param name="onAbort">(Optional) Action that will happen after player clicks Abort button.</param>
+            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
+        <member name="M:MSCLoader.ModPrompt.CreateCustomPrompt">
+            <summary>
+            Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
+            Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
+            </summary>
+            <returns>Returns a ModPrompt component of the button.</returns>
         </member>
         <member name="T:MSCLoader.ModPromptButton">
             <summary>ModPromptButton Component for buttons added the prompts.</summary>
@@ -1034,6 +1093,14 @@
             <summary>Adds a non-interactable text to the settings list.</summary>
             <param name="text">Text to display.</param>
             <param name="backgroundColor">Color of the text background.</param>
+            <param name="textColor">Color of the text.</param>
+            <returns>Added SettingText.</returns>
+        </member>
+        <member name="M:MSCLoader.ModSettings.AddText(System.String,UnityEngine.Color,UnityEngine.Color,UnityEngine.Color)">
+            <summary>Adds a non-interactable text to the settings list.</summary>
+            <param name="text">Text to display.</param>
+            <param name="backgroundColor">Color of the text background.</param>
+            <param name="textColor">Color of the text.</param>
             <param name="outlineColor">Color of the text background's outline.</param>
             <returns>Added SettingText.</returns>
         </member>
@@ -1112,66 +1179,6 @@
             <param name="id">ID of the setting.</param>
             <param name="value">Default value of the setting.</param>
             <returns>Added SettingNumber</returns>
-        </member>
-        <member name="T:MSCLoader.ModUI">
-            <summary>Contains methods and variables suitable for controlling UI.</summary>
-        </member>
-        <member name="M:MSCLoader.ModUI.GetCanvas">
-            <summary>Get the mod loader canvas GameObject.</summary>
-            <returns>Returns the mod loader canvas GameObject.</returns>
-        </member>
-        <member name="F:MSCLoader.ModUI.MSCYellow">
-            <summary>Yellow Color that MSC uses.</summary>
-        </member>
-        <member name="F:MSCLoader.ModUI.MSCRed">
-            <summary>Wine Red Color that MSC uses.</summary>
-        </member>
-        <member name="F:MSCLoader.ModUI.MSCRose">
-            <summary>Rose Color that MSC uses.</summary>
-        </member>
-        <member name="F:MSCLoader.ModUI.ModDisabledRed">
-            <summary>Red Color for disabled mods.</summary>
-        </member>
-        <member name="M:MSCLoader.ModUI.CreatePrompt(System.String,System.String,UnityEngine.Events.UnityAction)">
-            <summary> Creates a prompt with "OK" button. </summary>
-            <param name="message">A message that will appear in the prompt.</param>
-            <param name="title">Title of the prompt.</param>
-            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
-            <returns>Returns a ModPrompt component of the button. Can be</returns>
-        </member>
-        <member name="M:MSCLoader.ModUI.CreateYesNoPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
-            <summary> Creates a prompt with "Yes" and "No" buttons. </summary>
-            <param name="message">A message that will appear in the prompt.</param>
-            <param name="title">Title of the prompt.</param>
-            <param name="onYes">Action that will happen after player clicks Yes button.</param>
-            <param name="onNo">(Optional) Action that will happen after player clicks No button.</param>
-            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
-            <returns>Returns a ModPrompt component of the button.</returns>
-        </member>
-        <member name="M:MSCLoader.ModUI.CreateRetryCancelPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
-            <summary>Creates a prompt with "Retry" and "Cancel" buttons.</summary>
-            <param name="message">A message that will appear in the prompt.</param>
-            <param name="title">Title of the prompt.</param>
-            <param name="onRetry">Action that will happen after player clicks Retry button.</param>
-            <param name="onCancel">(Optional) Action that will happen after player clicks Cancel button.</param>
-            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
-            <returns>Returns a ModPrompt component of the button.</returns>
-        </member>
-        <member name="M:MSCLoader.ModUI.CreateContinueAbortPrompt(System.String,System.String,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction,UnityEngine.Events.UnityAction)">
-            <summary>Creates a prompt with "Continue" and "Abort" buttons</summary>
-            <param name="message">A message that will appear in the prompt.</param>
-            <param name="title">Title of the prompt.</param>
-            <param name="onContinue">Action that will happen after player clicks Continue button.</param>
-            <param name="onAbort">(Optional) Action that will happen after player clicks Abort button.</param>
-            <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
-            <returns>Returns a ModPrompt component of the button.</returns>
-        </member>
-        <member name="M:MSCLoader.ModUI.CreateCustomPrompt">
-            <summary>
-            Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
-            Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
-            </summary>
-            <returns>Returns a ModPrompt component of the button.</returns>
         </member>
         <member name="M:MSCLoader.ModUpdater.LookForUpdates">
             <summary> Starts looking for the update of the specific mod. </summary>
@@ -1290,16 +1297,16 @@
             <summary>Default modifiers.</summary>
         </member>
         <member name="M:MSCLoader.SettingKeybind.GetKey">
-            <summary>Get if the keybind is pressed down (including modifiers).</summary>
+            <summary>Get if the keybind is held down (including modifiers).</summary>
         </member>
         <member name="M:MSCLoader.SettingKeybind.GetKeyDown">
-            <summary>Get if the keybind is down (including modifiers).</summary>
+            <summary>Get if the keybind started being pressed down in the same frame (including modifiers).</summary>
         </member>
         <member name="M:MSCLoader.SettingKeybind.GetKeyUp">
-            <summary>Get if the keybind is up after being down (including modifiers).</summary>
+            <summary>Get if the keybind is released in the same frame (including modifiers).</summary>
         </member>
         <member name="M:MSCLoader.SettingKeybind.GetModifiers">
-            <summary>Get if the modifiers alone are pressed down.</summary>
+            <summary>Get if the modifiers are pressed down.</summary>
         </member>
         <member name="M:MSCLoader.SettingKeybind.ResetToDefaults">
             <summary>Reset the setting to default values.</summary>

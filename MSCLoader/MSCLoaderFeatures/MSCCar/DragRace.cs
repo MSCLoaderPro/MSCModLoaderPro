@@ -1,33 +1,46 @@
-﻿using System.Linq;
+﻿using MSCLoader.Helper;
+using System.Linq;
 using UnityEngine;
 
 namespace MSCLoader.MSCCar
 {
-    public static class DragRace
+    public class DragRaceVehicle : MonoBehaviour
     {
-        public class DragRaceVehicle
-        {
-            internal HutongGames.PlayMaker.FsmString Car;
-            internal HutongGames.PlayMaker.FsmString Name;
-            internal HutongGames.PlayMaker.FsmInt ID;
-            public string VehicleName { get => Car.Value; set => Car.Value = value; }
-            public string PlayerName { get => Name.Value; set => Name.Value = value; }
-            public int VehicleID { get => ID.Value; internal set => ID.Value = value; }
+        public Transform vehicle;
+        public string vehicleName = "";
+        public Vector3 stagingWheelPosition;
 
-            internal DragRaceVehicle(PlayMakerFSM data)
-            {
-                Car = data.GetVariable<HutongGames.PlayMaker.FsmString>("Car");
-                Name = data.GetVariable<HutongGames.PlayMaker.FsmString>("Name");
-                ID = data.GetVariable<HutongGames.PlayMaker.FsmInt>("ID");
-            }
+        [HideInInspector]
+        public DragRace dragRace;
+
+        void Start()
+        {
+            dragRace = DragRace.AddVehicle(vehicle, vehicleName, stagingWheelPosition);
+        }
+    }
+
+    public class DragRace
+    {
+        internal HutongGames.PlayMaker.FsmString Car;
+        internal HutongGames.PlayMaker.FsmString Name;
+        internal HutongGames.PlayMaker.FsmInt ID;
+        public string VehicleName { get => Car.Value; set => Car.Value = value; }
+        public string PlayerName { get => Name.Value; set => Name.Value = value; }
+        public int VehicleID { get => ID.Value; internal set => ID.Value = value; }
+
+        internal DragRace(PlayMakerFSM data)
+        {
+            Car = data.GetVariable<HutongGames.PlayMaker.FsmString>("Car");
+            Name = data.GetVariable<HutongGames.PlayMaker.FsmString>("Name");
+            ID = data.GetVariable<HutongGames.PlayMaker.FsmInt>("ID");
         }
 
-        public static DragRaceVehicle AddVehicle(Transform vehicle, string vehicleName, Vector3 stagingWheelPosition)
+        public static DragRace AddVehicle(Transform vehicle, string vehicleName, Vector3 stagingWheelPosition)
         {
             GameObject stagingWheel = Object.Instantiate(ModHelper.GetTransform("HAYOSIKO(1500kg, 250)", "StagingWheel").gameObject);
             stagingWheel.transform.SetParent(vehicle, stagingWheelPosition, Vector3.zero, Vector3.one, "StagingWheel");
 
-            DragRaceVehicle dragVehicle = new DragRaceVehicle(stagingWheel.GetComponent<PlayMakerFSM>())
+            DragRace dragVehicle = new DragRace(stagingWheel.GetComponent<PlayMakerFSM>())
             {
                 VehicleName = vehicleName,
                 PlayerName = PlayMakerHelper.GetGlobalVariable<HutongGames.PlayMaker.FsmString>("PlayerName").Value

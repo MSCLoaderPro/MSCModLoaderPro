@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using MSCLoader.Helper;
+using System.Linq;
 using UnityEngine;
 
 namespace MSCLoader.PartMagnet
@@ -140,7 +141,7 @@ namespace MSCLoader.PartMagnet
                 {
                     boltOver = true;
                     if (highlightBolt) 
-                        renderer.sharedMaterial = customHighlightMaterial != null ? customHighlightMaterial : highlightMaterial;
+                        renderer.sharedMaterial = customHighlightMaterial ?? highlightMaterial;
                     if (boltDelay <= 0f)
                     {
                         if (Input.GetAxis(mouseWheel) > 0f) // Scroll Up

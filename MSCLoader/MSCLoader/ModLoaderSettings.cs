@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MSCLoader.Helper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -29,30 +30,29 @@ namespace MSCLoader
         public SettingRadioButtons consoleAutoOpen;
         public SettingSlider consoleWindowHeight, consoleWindowWidth;
 
-        public string Version { get => version.text.Remove(0, 9); set
+        public string Version { get => ModLoader.Version; internal set
             {
                 version.text = $"VERSION: {value}";
                 menuLabelText.text = $"MOD LOADER PRO v{value}";
             }
         }
-        public bool SkipGameLauncher { get => skipGameLauncher.Value; set => skipGameLauncher.Value = value; }
-        public bool SkipSplashScreen { get => skipSplashScreen.Value; set => skipSplashScreen.Value = value; }
-        public bool UseVsyncInMenu { get => useVsyncInMenu.Value; set => useVsyncInMenu.Value = value; }
+        public bool SkipGameLauncher { get => skipGameLauncher.Value; internal set => skipGameLauncher.Value = value; }
+        public bool SkipSplashScreen { get => skipSplashScreen.Value; internal set => skipSplashScreen.Value = value; }
+        public bool UseVsyncInMenu { get => useVsyncInMenu.Value; internal set => useVsyncInMenu.Value = value; }
 
-        public int UpdateMode { get => updateMode.Value; set => updateMode.Value = value; }
-        public string LastUpdateCheck { get => lastUpdateCheckDate.ToString("u"); set => lastUpdateCheck.Text = $"LAST CHECKED FOR UPDATES: <color=yellow>{value}</color>"; }
-        public int UpdateInterval { get => updateInterval.Value; set => updateInterval.Value = value; }
-        public bool AskBeforeDownload { get => askBeforeDownload.Value; set => askBeforeDownload.Value = value; }
+        public int UpdateMode { get => updateMode.Value; internal set => updateMode.Value = value; }
+        public string LastUpdateCheck { get => lastUpdateCheckDate.ToString("u"); internal set => lastUpdateCheck.Text = $"LAST CHECKED FOR UPDATES: <color=yellow>{value}</color>"; }
+        public int UpdateInterval { get => updateInterval.Value; internal set => updateInterval.Value = value; }
+        public bool AskBeforeDownload { get => askBeforeDownload.Value; internal set => askBeforeDownload.Value = value; }
 
-        public KeyCode OpenConsoleKeyKeybind { get => openConsoleKey.keybind; set => openConsoleKey.keybind = value; }
-        public KeyCode[] OpenConsoleKeyModifiers { get => openConsoleKey.modifiers; set => openConsoleKey.modifiers = value; }
-        public float ConsoleFontSize { get => consoleFontSize.Value; set => consoleFontSize.Value = value; }
-        public int ConsoleAutoOpen { get => consoleAutoOpen.Value; set => consoleAutoOpen.Value = value; }
-        public float ConsoleWindowHeight { get => consoleWindowHeight.Value; set => consoleWindowHeight.Value = value; }
-        public float ConsoleWindowWidth { get => consoleWindowWidth.Value; set => consoleWindowWidth.Value = value; }
+        public KeyCode OpenConsoleKeyKeybind { get => openConsoleKey.keybind; internal set => openConsoleKey.keybind = value; }
+        public KeyCode[] OpenConsoleKeyModifiers { get => openConsoleKey.modifiers; internal set => openConsoleKey.modifiers = value; }
+        public float ConsoleFontSize { get => consoleFontSize.Value; internal set => consoleFontSize.Value = value; }
+        public int ConsoleAutoOpen { get => consoleAutoOpen.Value; internal set => consoleAutoOpen.Value = value; }
+        public float ConsoleWindowHeight { get => consoleWindowHeight.Value; internal set => consoleWindowHeight.Value = value; }
+        public float ConsoleWindowWidth { get => consoleWindowWidth.Value; internal set => consoleWindowWidth.Value = value; }
 
         public DateTime lastUpdateCheckDate;
-
 
         public bool disableSave = false;
         public void SaveSettings()
@@ -93,23 +93,23 @@ namespace MSCLoader
 
         public void OpenModLoaderSite()
         {
-            ModUI.CreateYesNoPrompt("THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.", "OPEN MOD LOADER WEBSITE?", () => ModHelper.OpenWebsite(ModLoader.modLoaderURL));
+            ModPrompt.CreateYesNoPrompt("THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.", "OPEN MOD LOADER WEBSITE?", () => ModHelper.OpenWebsite(ModLoader.modLoaderURL));
         }
         public void OpenModsFolder()
         {
-            ModUI.CreateYesNoPrompt("THIS WILL THE MODS FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN MODS FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\Mods"));
+            ModPrompt.CreateYesNoPrompt("THIS WILL THE MODS FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN MODS FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\Mods"));
         }
         public void OpenGameFolder()
         {
-            ModUI.CreateYesNoPrompt("THIS WILL THE GAME FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN GAME FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}"));
+            ModPrompt.CreateYesNoPrompt("THIS WILL THE GAME FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN GAME FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}"));
         }
         public void OpenSaveFolder()
         {
-            ModUI.CreateYesNoPrompt("THIS WILL THE SAVE FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN SAVE FOLDER?", () => ModHelper.OpenFolder(Application.persistentDataPath));
+            ModPrompt.CreateYesNoPrompt("THIS WILL THE SAVE FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN SAVE FOLDER?", () => ModHelper.OpenFolder(Application.persistentDataPath));
         }
         public void OpenOutputLog()
         {
-            ModUI.CreateYesNoPrompt("THIS WILL THE OUTPUT LOG IN YOUR DEFAULT TEXT EDITOR AND MINIMIZE THE GAME.", "OPEN OUTPUT LOG?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
+            ModPrompt.CreateYesNoPrompt("THIS WILL THE OUTPUT LOG IN YOUR DEFAULT TEXT EDITOR AND MINIMIZE THE GAME.", "OPEN OUTPUT LOG?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
         }
 
         public void RefreshUpdateCheckTime()

@@ -9,7 +9,6 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using unityUI::UnityEngine.EventSystems;
 using Outline = unityUI.UnityEngine.UI.Outline;
 
 #pragma warning disable CS1591
@@ -167,11 +166,10 @@ namespace MSCLoader
             PostBind.Invoke();
         }
 
-        public string AdjustKeyNames()
+        internal string AdjustKeyNames()
         {
             string text = "";
-            foreach (KeyCode key in modifiers)
-                text += $"{key}+";
+            foreach (KeyCode key in modifiers) text += $"{key} + ";
             text += $"{keybind}";
 
             StringBuilder stringBuilder = new StringBuilder(text);
@@ -187,15 +185,15 @@ namespace MSCLoader
 
             return stringBuilder.ToString().ToUpper();
         }
-        /// <summary>Get if the keybind is pressed down (including modifiers).</summary>
+        /// <summary>Get if the keybind is held down (including modifiers).</summary>
         public bool GetKey() => GetModifiers() && Input.GetKey(keybind);
-        /// <summary>Get if the keybind is down (including modifiers).</summary>
+        /// <summary>Get if the keybind started being pressed down in the same frame (including modifiers).</summary>
         public bool GetKeyDown() => GetModifiers() && Input.GetKeyDown(keybind);
-        /// <summary>Get if the keybind is up after being down (including modifiers).</summary>
+        /// <summary>Get if the keybind is released in the same frame (including modifiers).</summary>
         public bool GetKeyUp() => (Input.GetKeyUp(keybind) && modifiers.All(x => Input.GetKeyUp(x) || Input.GetKey(x))) ||
             (Input.GetKey(keybind) && modifiers.Any(x => Input.GetKeyUp(x)) && modifiers.All(x => Input.GetKeyUp(x) || Input.GetKey(x)));
 
-        /// <summary>Get if the modifiers alone are pressed down.</summary>
+        /// <summary>Get if the modifiers are pressed down.</summary>
         public bool GetModifiers() => modifiers.All(x => Input.GetKey(x));
 
         /// <summary>Reset the setting to default values.</summary>

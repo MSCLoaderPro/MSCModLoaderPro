@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
+using MSCLoader.Helper;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -138,7 +139,7 @@ namespace MSCLoader
         {
             if (IsBusy)
             {
-                ModUI.CreatePrompt("MOD LOADER IS BUSY LOOKING FOR UPDATES.", "MOD UPDATER");
+                ModPrompt.CreatePrompt("MOD LOADER IS BUSY LOOKING FOR UPDATES.", "MOD UPDATER");
                 return;
             }
 
@@ -248,7 +249,7 @@ namespace MSCLoader
                     }
                     catch (Exception ex)
                     {
-                        ModConsole.LogError($"An error has occured while reading the metadata of {mod.Name}:\n\n{ex.ToString()}");
+                        ModConsole.LogError($"An error has occured while reading the metadata of {mod.Name}:\n\n{ex}");
                     }
                 }
                 else if (url.Contains("nexusmods.com"))
@@ -401,7 +402,7 @@ namespace MSCLoader
                     foreach (var mod in modsWithUpdates)
                         modNames += $"{mod.Name}, ";
                     modNames = modNames.Remove(modNames.Length - 2, 1);
-                    ModPrompt prompt = ModUI.CreateCustomPrompt();
+                    ModPrompt prompt = ModPrompt.CreateCustomPrompt();
                     prompt.Text = $"MOD UPDATE IS AVAILABLE FOR THE FOLLOWING MODS:\n\n<color=yellow>{modNames}</color>\n\n" +
                                   $"YOU CAN USE \"UPDATE ALL MODS\" BUTTON TO QUICKLY UPDATE THEM.";
                     prompt.Title = "MOD UPDATER";
@@ -521,7 +522,7 @@ namespace MSCLoader
             {
                 if (!nexusIsPremium)
                 {
-                    ModUI.CreateYesNoPrompt($"MOD <color=yellow>{mod.Name}</color> USES NEXUSMODS FOR UPDATE DOWNLOADS. " +
+                    ModPrompt.CreateYesNoPrompt($"MOD <color=yellow>{mod.Name}</color> USES NEXUSMODS FOR UPDATE DOWNLOADS. " +
                                             $"UNFORTUNATELY, DUE TO NEXUSMODS POLICY, ONLY PREMIUM USERS CAN USE AUTO UPDATE FEATURE.\n\n" +
                                             $"YOUR VERSION IS <color=yellow>{mod.Version}</color> AND THE NEWEST VERSION IS <color=yellow>{mod.ModUpdateData.LatestVersion}</color>.\n\n" +
                                             $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n\n" +
@@ -533,7 +534,7 @@ namespace MSCLoader
 
             if (ModLoader.modLoaderSettings.AskBeforeDownload)
             {
-                ModPrompt prompt = ModUI.CreateCustomPrompt();
+                ModPrompt prompt = ModPrompt.CreateCustomPrompt();
                 prompt.Text = $"ARE YOU SURE YOU WANT TO DOWNLOAD UPATE FOR MOD:\n\n<color=yellow>\"{mod.Name}\"</color>\n\n" +
                               $"YOUR VERSION IS {mod.Version} AND THE NEWEST VERSION IS {mod.ModUpdateData.LatestVersion}.";
                 prompt.Title = "MOD UPDATER";
@@ -675,7 +676,7 @@ namespace MSCLoader
             int downloadedUpdates = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Downloaded).Count();
             if (downloadedUpdates > 0)
             {
-                ModUI.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
+                ModPrompt.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
                                         $"WOULD YOU LIKE TO INSTALL THEM NOW?\n\n" +
                                         $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>", 
                                         "MOD UPDATER", () => { Application.Quit(); }, null, () => { waitForInstall = true; });
@@ -752,9 +753,11 @@ namespace MSCLoader
                     url = spliitted[1];
                     latest = spliitted[2];
 
-                    ModUpdateData data = new ModUpdateData();
-                    data.ZipUrl = url;
-                    data.LatestVersion = latest;
+                    ModUpdateData data = new ModUpdateData
+                    {
+                        ZipUrl = url,
+                        LatestVersion = latest
+                    };
 
                     modUpdateData.Add(id, data);
                 }
