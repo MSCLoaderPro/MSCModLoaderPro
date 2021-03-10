@@ -1,22 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
-  <TemplateData>
-    <Name>MSC Mod Loader Pro Mod</Name>
-    <Description>A My Summer Car mod template for Mod Loader Pro.</Description>
-    <Icon>ModTemplate.ico</Icon>
-    <ProjectType>CSharp</ProjectType>
-    <LanguageTag>csharp</LanguageTag>
-    <RequiredFrameworkVersion>3.5</RequiredFrameworkVersion>
-    <SortOrder>999</SortOrder>
-    <TemplateID>7e5d713b-2e60-48d5-94aa-27097f67ddf9</TemplateID>
-    <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>My Awesome Mod</DefaultName>
-    <ProvideDefaultName>true</ProvideDefaultName>
-  </TemplateData>
-  <TemplateContent>
-    <Project File="ProjectTemplate.csproj" ReplaceParameters="true">
-      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
-      <ProjectItem ReplaceParameters="true" OpenInEditor="true" TargetFileName="$safeprojectname$.cs">Mod.cs</ProjectItem>
-    </Project>
-  </TemplateContent>
+	<TemplateData>
+		<Name>MSC Mod Loader Pro Mod</Name>
+		<Description>A My Summer Car mod project for Mod Loader Pro.</Description>
+		<Icon>ModTemplate.ico</Icon>
+		<ProjectType>CSharp</ProjectType>
+		<SortOrder>999</SortOrder>
+		<TemplateID>7e5d713b-2e60-48d5-94aa-27097f67ddf9</TemplateID>
+		<CreateNewFolder>true</CreateNewFolder>
+		<DefaultName>MyMod</DefaultName>
+		<ProvideDefaultName>true</ProvideDefaultName>
+		<LocationField>Enabled</LocationField>
+		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+		<LanguageTag>C#</LanguageTag>
+		<PlatformTag>windows</PlatformTag>
+		<PlatformTag>Unity</PlatformTag>
+		<ProjectTypeTag>Game Mod</ProjectTypeTag>
+		<ProjectTypeTag>Plugin</ProjectTypeTag>
+	</TemplateData>
+	<TemplateContent>
+		<Project TargetFileName="$safeprojectname$.csproj" File="ProjectTemplate.csproj" ReplaceParameters="true">
+			<ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      <ProjectItem TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
+			<ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.cs">Mod.cs</ProjectItem>
+		</Project>
+	</TemplateContent>
 </VSTemplate>
