@@ -35,7 +35,7 @@ namespace MSCLoader
             mod.modListElement.gameObject.SetActive(false);
             mod.modSettings.gameObject.SetActive(false);
             mod.enabled = false;
-            ModUI.CreatePrompt($"{mod.Name}\n\nTHIS MOD IS AN EARLY ACCESS MOD AND ITS TESTING PERIOD HAS ENDED.\n\nIT HAS BEEN DISABLED.\n\n{disableMessage}", "EARLY ACCESS MOD!");
+            ModPrompt.CreatePrompt($"{mod.Name}\n\nTHIS MOD IS AN EARLY ACCESS MOD AND ITS TESTING PERIOD HAS ENDED.\n\nIT HAS BEEN DISABLED.\n\n{disableMessage}", "EARLY ACCESS MOD!");
         }
 
         public static DateTime GetDate()

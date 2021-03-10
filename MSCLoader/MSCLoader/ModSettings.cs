@@ -195,7 +195,7 @@ namespace MSCLoader
             mod.enabled = modToggle.isOn;
             modSettings.SaveSettings();
 
-            nameText.color = modToggle.isOn ? ModUI.MSCYellow : ModUI.ModDisabledRed;
+            nameText.color = modToggle.isOn ? ModLoader.MSCYellow : ModLoader.ModDisabledRed;
             modContainer.UpdateModCountText();
 
             if (mod.Enabled) ModLoader.AddToMethodLists(mod);
@@ -349,7 +349,7 @@ namespace MSCLoader
         /// <param name="action">UnityAction to execute when clicking the button.</param>
         /// <param name="blockSuspension">(Optional) Should the provided action be disabled if/when actions are disabled on the setting?</param>
         /// <returns>Added SettingButton</returns>
-        public SettingButton AddButton(string id, string buttonText, UnityAction action, bool blockSuspension = false) =>
+        public SettingButton AddButton(string id, string buttonText, UnityAction action = null, bool blockSuspension = false) =>
             AddButton(id, buttonText, "", action, blockSuspension);
         /// <summary>Adds a header to the settings list.</summary>
         /// <param name="text">Text to display on the header.</param>
@@ -641,9 +641,23 @@ namespace MSCLoader
         /// <summary>Adds a non-interactable text to the settings list.</summary>
         /// <param name="text">Text to display.</param>
         /// <param name="backgroundColor">Color of the text background.</param>
+        /// <param name="textColor">Color of the text.</param>
+        /// <returns>Added SettingText.</returns>
+        public SettingText AddText(string text, Color backgroundColor, Color textColor)
+        {
+            SettingText settingText = AddText(text);
+            settingText.BackgroundColor = backgroundColor;
+            settingText.TextColor = textColor;
+
+            return settingText;
+        }
+        /// <summary>Adds a non-interactable text to the settings list.</summary>
+        /// <param name="text">Text to display.</param>
+        /// <param name="backgroundColor">Color of the text background.</param>
+        /// <param name="textColor">Color of the text.</param>
         /// <param name="outlineColor">Color of the text background's outline.</param>
         /// <returns>Added SettingText.</returns>
-        public SettingText AddText(string text, Color backgroundColor, Color outlineColor)
+        public SettingText AddText(string text, Color backgroundColor, Color textColor, Color outlineColor)
         {
             SettingText settingText = AddText(text);
             settingText.BackgroundColor = backgroundColor;

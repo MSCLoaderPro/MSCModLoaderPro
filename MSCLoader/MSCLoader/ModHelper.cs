@@ -9,7 +9,7 @@ using System.Collections;
 using Random = UnityEngine.Random;
 
 #pragma warning disable CS1591
-namespace MSCLoader
+namespace MSCLoader.Helper
 {
     /// <summary> Container for useful helper methods </summary>
     public static class ModHelper
@@ -114,22 +114,22 @@ namespace MSCLoader
     /// <summary>Container for PlayMaker related helper and extension methods.</summary>
     public static class PlayMakerHelper
     {
-        public static FsmBool fsmGUIUse { get; internal set; }
-        public static FsmBool fsmGUIAssemble { get; internal set; }
-        public static FsmBool fsmGUIDisassemble { get; internal set; }
-        public static FsmBool fsmGUIBuy { get; internal set; }
-        public static FsmBool fsmGUIDrive { get; internal set; }
-        public static FsmBool fsmGUIPassenger { get; internal set; }
-        public static FsmString fsmGUIInteraction { get; internal set; }
-        public static FsmString fsmGUISubtitle { get; internal set; }
-        public static bool GUIUse { get => fsmGUIUse.Value; set => fsmGUIUse.Value = value; }
-        public static bool GUIAssemble { get => fsmGUIAssemble.Value; set => fsmGUIAssemble.Value = value; }
-        public static bool GUIDisassemble { get => fsmGUIDisassemble.Value; set => fsmGUIDisassemble.Value = value; }
-        public static bool GUIBuy { get => fsmGUIBuy.Value; set => fsmGUIBuy.Value = value; }
-        public static bool GUIDrive { get => fsmGUIDrive.Value; set => fsmGUIDrive.Value = value; }
-        public static bool GUIPassenger { get => fsmGUIPassenger.Value; set => fsmGUIPassenger.Value = value; }
-        public static string GUIInteraction { get => fsmGUIInteraction.Value; set => fsmGUIInteraction.Value = value; }
-        public static string GUISubtitle { get => fsmGUISubtitle.Value; set => fsmGUISubtitle.Value = value; }
+        public static FsmBool FSMGUIUse { get; internal set; }
+        public static FsmBool FSMGUIAssemble { get; internal set; }
+        public static FsmBool FSMGUIDisassemble { get; internal set; }
+        public static FsmBool FSMGUIBuy { get; internal set; }
+        public static FsmBool FSMGUIDrive { get; internal set; }
+        public static FsmBool FSMGUIPassenger { get; internal set; }
+        public static FsmString FSMGUIInteraction { get; internal set; }
+        public static FsmString FSMGUISubtitle { get; internal set; }
+        public static bool GUIUse { get => FSMGUIUse.Value; set => FSMGUIUse.Value = value; }
+        public static bool GUIAssemble { get => FSMGUIAssemble.Value; set => FSMGUIAssemble.Value = value; }
+        public static bool GUIDisassemble { get => FSMGUIDisassemble.Value; set => FSMGUIDisassemble.Value = value; }
+        public static bool GUIBuy { get => FSMGUIBuy.Value; set => FSMGUIBuy.Value = value; }
+        public static bool GUIDrive { get => FSMGUIDrive.Value; set => FSMGUIDrive.Value = value; }
+        public static bool GUIPassenger { get => FSMGUIPassenger.Value; set => FSMGUIPassenger.Value = value; }
+        public static string GUIInteraction { get => FSMGUIInteraction.Value; set => FSMGUIInteraction.Value = value; }
+        public static string GUISubtitle { get => FSMGUISubtitle.Value; set => FSMGUISubtitle.Value = value; }
 
         /// <summary>Get a PlayMakerFSM by name on the GameObject.</summary>
         /// <param name="gameObject">The GameObject to look for the FSM on.</param>

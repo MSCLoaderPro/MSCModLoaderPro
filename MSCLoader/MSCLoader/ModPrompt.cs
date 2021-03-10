@@ -33,6 +33,10 @@ namespace MSCLoader
         bool destroyOnDisable = true;
         /// <summary>Should the ModPrompt be destroyed after being disabled?</summary>
         public bool DestroyOnDisable { get => destroyOnDisable; set => destroyOnDisable = value; }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
         /// <summary>UnityAction that executes when the ModPrompt closes.</summary>
         public UnityAction OnCloseAction;
@@ -95,7 +99,103 @@ namespace MSCLoader
                 AddButton("OK", null);
             }
         }
+
+        // CREATION METHODS!
+
+        internal static GameObject prompt;
+        // This one creates a dummy button and returns ModPrompt. Not meant to be accessed publicly.
+        private static ModPrompt NewPrompt()
+        {
+            Transform newPrompt = Instantiate(prompt).transform;
+            newPrompt.SetParent(ModLoader.UICanvas.transform);
+            newPrompt.localPosition = Vector3.zero;
+
+            return newPrompt.GetComponent<ModPrompt>();
+        }
+
+        /// <summary> Creates a prompt with "OK" button. </summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button. Can be</returns>
+        public static ModPrompt CreatePrompt(string message, string title = "MESSAGE", UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.AddButton("OK", null);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+        /// <summary> Creates a prompt with "Yes" and "No" buttons. </summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onYes">Action that will happen after player clicks Yes button.</param>
+        /// <param name="onNo">(Optional) Action that will happen after player clicks No button.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        public static ModPrompt CreateYesNoPrompt(string message, string title, UnityAction onYes, UnityAction onNo = null, UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.AddButton("YES", onYes);
+            modPrompt.AddButton("NO", onNo);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+        /// <summary>Creates a prompt with "Retry" and "Cancel" buttons.</summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onRetry">Action that will happen after player clicks Retry button.</param>
+        /// <param name="onCancel">(Optional) Action that will happen after player clicks Cancel button.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        public static ModPrompt CreateRetryCancelPrompt(string message, string title, UnityAction onRetry, UnityAction onCancel = null, UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.AddButton("RETRY", onRetry);
+            modPrompt.AddButton("CANCEL", onCancel);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+        /// <summary>Creates a prompt with "Continue" and "Abort" buttons</summary>
+        /// <param name="message">A message that will appear in the prompt.</param>
+        /// <param name="title">Title of the prompt.</param>
+        /// <param name="onContinue">Action that will happen after player clicks Continue button.</param>
+        /// <param name="onAbort">(Optional) Action that will happen after player clicks Abort button.</param>
+        /// <param name="onPromptClose">(Optional) Action that will happen after the window gets closed - regardless of player's choice.</param>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        public static ModPrompt CreateContinueAbortPrompt(string message, string title, UnityAction onContinue, UnityAction onAbort = null, UnityAction onPromptClose = null)
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.Text = message;
+            modPrompt.Title = title;
+            modPrompt.AddButton("CONTINUE", onContinue);
+            modPrompt.AddButton("ABORT", onAbort);
+            modPrompt.OnCloseAction = onPromptClose;
+
+            return modPrompt;
+        }
+        /// <summary>
+        /// Creates a prompt that can be fully customized. You can add any buttons you like.<br></br>
+        /// Custom prompts have to be showed manually using <b>ModPrompt.Show()</b>!
+        /// </summary>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        public static ModPrompt CreateCustomPrompt()
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.gameObject.SetActive(false); // Custom prompts have to be showed manually using ModPrompt.Show().
+
+            return NewPrompt();
+        }
     }
+
     /// <summary>ModPromptButton Component for buttons added the prompts.</summary>
     public class ModPromptButton : MonoBehaviour
     {

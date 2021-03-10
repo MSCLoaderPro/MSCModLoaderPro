@@ -1,10 +1,8 @@
-﻿//using Harmony;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.ComponentModel;
 
-#pragma warning disable CS1591, IDE1006, CS0618
 namespace MSCLoader
 {
     [EditorBrowsable(EditorBrowsableState.Never)]

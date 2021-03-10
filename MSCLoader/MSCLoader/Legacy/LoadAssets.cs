@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MSCLoader.Helper;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.IO;
