@@ -226,6 +226,8 @@ namespace MSCLoader
                                 continue;
                             }
                             string[] outputArray = ReadMetadataToArray();
+
+                            bool foundProBuild = false;
                             foreach (string s in outputArray)
                             {
                                 // Finding tag of the latest release, this servers as latest version number.
@@ -233,14 +235,23 @@ namespace MSCLoader
                                 {
                                     mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
                                 }
-                                else if (s.Contains("\"browser_download_url\"") && s.Contains(".zip"))
+
+                                if (s.Contains("\"browser_download_url\"") && s.Contains(".zip"))
                                 {
                                     string[] separated = s.Split(':');
                                     mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
+
+                                    // If we are 100% positive that Mod Loader Pro found the mod version for Mod Loader Pro,
+                                    // only then leave the loop.
+                                    // Otherwise, keep looking for pro build.
+                                    if (mod.ModUpdateData.ZipUrl.ToLower().EndsWith(".pro.zip"))
+                                    {
+                                        foundProBuild = true;
+                                    }
                                 }
 
                                 // Breaking out of the loop, if we found all that we've been looking for.
-                                if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion))
+                                if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion) && foundProBuild)
                                 {
                                     break;
                                 }
