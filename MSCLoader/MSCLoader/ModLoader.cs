@@ -290,6 +290,7 @@ namespace MSCLoader
 
                     foreach (Type modType in modAssembly.GetTypes().Where(type => typeof(Mod).IsAssignableFrom(type)))
                     {
+                        if (modType.Name == "AModWarning") continue;    
                         Mod mod = (Mod)Activator.CreateInstance(modType);
 
                         if (!LoadedMods.Contains(mod)) // Check if mod already exists and show an error if so.

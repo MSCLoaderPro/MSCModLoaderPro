@@ -19,10 +19,11 @@
 		<ProjectTypeTag>Plugin</ProjectTypeTag>
 	</TemplateData>
 	<TemplateContent>
-		<Project TargetFileName="$safeprojectname$.csproj" File="ProjectTemplate.csproj" ReplaceParameters="true">
+			<Project TargetFileName="$safeprojectname$.csproj" File="ProjectTemplate.csproj" ReplaceParameters="true">
 			<ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
       <ProjectItem TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
 			<ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.cs">Mod.cs</ProjectItem>
+		  <ProjectItem ReplaceParameters="true">AModWarning.cs</ProjectItem>
 		</Project>
 	</TemplateContent>
 </VSTemplate>
