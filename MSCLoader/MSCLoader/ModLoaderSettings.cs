@@ -33,7 +33,7 @@ namespace MSCLoader
         public string Version { get => ModLoader.Version; internal set
             {
                 version.text = $"VERSION: {value}";
-                menuLabelText.text = $"MOD LOADER PRO v{value}";
+                menuLabelText.text = $"VERSION: {value}";
             }
         }
         public bool SkipGameLauncher { get => skipGameLauncher.Value; internal set => skipGameLauncher.Value = value; }

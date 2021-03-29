@@ -224,8 +224,8 @@ namespace MSCLoader
         public void OnBeginDrag(PointerEventData eventData)
         {
             modConsole.settings.disableSave = true;
-            heightSlider.suspendOnValueChangedActions = true;
-            widthSlider.suspendOnValueChangedActions = true;
+            heightSlider.suspendActions = true;
+            widthSlider.suspendActions = true;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -245,8 +245,8 @@ namespace MSCLoader
         public void OnEndDrag(PointerEventData eventData)
         {
             modConsole.settings.disableSave = false;
-            heightSlider.suspendOnValueChangedActions = false;
-            widthSlider.suspendOnValueChangedActions = false;
+            heightSlider.suspendActions = false;
+            widthSlider.suspendActions = false;
 
             modConsole.settings.SaveINISettings();
         }

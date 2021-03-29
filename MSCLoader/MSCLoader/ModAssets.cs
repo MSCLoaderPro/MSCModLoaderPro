@@ -30,45 +30,32 @@ namespace MSCLoader
             return LoadBundle(Path.Combine(ModLoader.GetModAssetsFolder(mod), bundleName));
         }
         /// <summary>Loads a Texture2D at the specified path, supported types: .jpg, .png, .dds, .tga</summary>
-        /// <param name="path">Path to file.</param>
+        /// <param name="filePath">Path to file.</param>
         /// <param name="normalMap">(Optional) Should it be converted into a normal map?</param>
         /// <returns>Loaded Texture2D</returns>
-        public static Texture2D LoadTexture(string path, bool normalMap = false)
+        public static Texture2D LoadTexture(string filePath, bool normalMap = false)
         {
-            if (!File.Exists(path)) throw new FileNotFoundException($"<b>LoadTexture() Error:</b> File not found: {path}", path);
+            if (!File.Exists(filePath)) throw new FileNotFoundException($"<b>LoadTexture() Error:</b> File not found: {filePath}", filePath);
 
-            string fileExtension = Path.GetExtension(path).ToLower();
+            string fileExtension = Path.GetExtension(filePath).ToLower();
 
             switch (fileExtension)
             {
-                case ".jpg": return LoadTextureJPG(path, normalMap);
-                case ".png": return LoadTexturePNG(path, normalMap);
-                case ".dds": return LoadTextureDDS(path, normalMap);
-                case ".tga": return LoadTextureTGA(path, normalMap);
-                default: throw new NotSupportedException($"<b>LoadTexture() Error:</b> File {fileExtension} not supported as a texture: {path}");
+                case ".jpg": return LoadTextureJPG(filePath, normalMap);
+                case ".png": return LoadTexturePNG(filePath, normalMap);
+                case ".dds": return LoadTextureDDS(filePath, normalMap);
+                case ".tga": return LoadTextureTGA(filePath, normalMap);
+                default: throw new NotSupportedException($"<b>LoadTexture() Error:</b> File {fileExtension} not supported as a texture: {filePath}");
             }
         }
-        /// <summary>Convert a texture to a normal map.</summary>
-        /// <param name="texture">Texture2D to convert</param>
-        /// <param name="mipMaps">Generate mipmaps?</param>
-        /// <returns>Converted Texture2D</returns>
-        public static Texture2D ConvertToNormalMap(this Texture2D texture, bool mipMaps = true)
+        /// <summary>Loads a Texture2D at the specified path, supported types: .jpg, .png, .dds, .tga</summary>
+        /// <param name="mod">Mod which asset folder to look in.</param>
+        /// <param name="textureName">Name of the texture.</param>
+        /// <param name="normalMap">(Optional) Should it be converted into a normal map?</param>
+        /// <returns>Loaded Texture2D</returns>
+        public static Texture2D LoadTexture(Mod mod, string textureName, bool normalMap = false)
         {
-            // Bunny83 http://answers.unity.com/comments/1195008/view.html
-            Texture2D normalMap = new Texture2D(texture.width, texture.height, TextureFormat.ARGB32, mipMaps);
-
-            Color32[] colors = texture.GetPixels32();
-            for (int i = 0; i < colors.Length; i++)
-            {
-                Color32 c = colors[i];
-                c.a = c.r;
-                c.r = c.b = c.g;
-                colors[i] = c;
-            }
-            normalMap.SetPixels32(colors);
-            normalMap.Apply();
-
-            return normalMap;
+            return LoadTexture(Path.Combine(ModLoader.GetModAssetsFolder(mod), textureName), normalMap);
         }
         /// <summary>Loads a PNG image as a Texture2D.</summary>
         /// <param name="filePath">Path to image file.</param>
@@ -191,6 +178,28 @@ namespace MSCLoader
                     return normalMap ? texture.ConvertToNormalMap() : texture;
                 }
             }
+        }
+        /// <summary>Convert a texture to a normal map.</summary>
+        /// <param name="texture">Texture2D to convert</param>
+        /// <param name="mipMaps">Generate mipmaps?</param>
+        /// <returns>Converted Texture2D</returns>
+        public static Texture2D ConvertToNormalMap(this Texture2D texture, bool mipMaps = true)
+        {
+            // Bunny83 http://answers.unity.com/comments/1195008/view.html
+            Texture2D normalMap = new Texture2D(texture.width, texture.height, TextureFormat.ARGB32, mipMaps);
+
+            Color32[] colors = texture.GetPixels32();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Color32 c = colors[i];
+                c.a = c.r;
+                c.r = c.b = c.g;
+                colors[i] = c;
+            }
+            normalMap.SetPixels32(colors);
+            normalMap.Apply();
+
+            return normalMap;
         }
         /// <summary>Loads an OBJ model file as a Mesh.</summary>
         /// <param name="filePath">Path to model file.</param>

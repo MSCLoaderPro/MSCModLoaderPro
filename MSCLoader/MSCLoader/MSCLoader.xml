@@ -1240,7 +1240,7 @@
         <member name="P:MSCLoader.SettingButton.OnClick">
             <summary>UI Button's OnClick Eventhandler.</summary>
         </member>
-        <member name="F:MSCLoader.SettingButton.suspendOnClickActions">
+        <member name="F:MSCLoader.SettingButton.suspendActions">
             <summary>Suspends the action calling if true.</summary>
         </member>
         <member name="M:MSCLoader.SettingButton.AddAction(UnityEngine.Events.UnityAction,System.Boolean)">
@@ -1346,7 +1346,7 @@
             <param name="labelText">Text to display on the label of the new button.</param>
             <returns>Created RadioButton.</returns>
         </member>
-        <member name="F:MSCLoader.SettingRadioButtons.suspendOnValueChangedActions">
+        <member name="F:MSCLoader.SettingRadioButtons.suspendActions">
             <summary>Suspends the action calling if true.</summary>
         </member>
         <member name="M:MSCLoader.SettingRadioButtons.AddAction(UnityEngine.Events.UnityAction{System.Int32},System.Boolean)">
@@ -1411,7 +1411,7 @@
         <member name="F:MSCLoader.SettingSlider.defaultValue">
             <summary>Default setting value.</summary>
         </member>
-        <member name="F:MSCLoader.SettingSlider.suspendOnValueChangedActions">
+        <member name="F:MSCLoader.SettingSlider.suspendActions">
             <summary>Suspend action calling.</summary>
         </member>
         <member name="M:MSCLoader.SettingSlider.AddAction(UnityEngine.Events.UnityAction{System.Single},System.Boolean)">
@@ -1474,14 +1474,11 @@
         <member name="F:MSCLoader.SettingTextBox.defaultValue">
             <summary>Default setting value.</summary>
         </member>
-        <member name="F:MSCLoader.SettingTextBox.suspendOnEndEditActions">
-            <summary>Suspend action calling for the OnEndEdit event.</summary>
+        <member name="F:MSCLoader.SettingTextBox.suspendActions">
+            <summary>Suspend action calling.</summary>
         </member>
         <member name="M:MSCLoader.SettingTextBox.AddOnEndEditAction(UnityEngine.Events.UnityAction{System.String},System.Boolean)">
             <summary>Add an action to the OnEndEdit event.</summary>
-        </member>
-        <member name="F:MSCLoader.SettingTextBox.suspendOnValueChangeActions">
-            <summary>Suspend action calling for the OnValueChange event.</summary>
         </member>
         <member name="M:MSCLoader.SettingTextBox.AddOnValueChangeAction(UnityEngine.Events.UnityAction{System.String},System.Boolean)">
             <summary>Add an action to the OnValueChange event.</summary>
@@ -1507,7 +1504,7 @@
         <member name="F:MSCLoader.SettingToggle.defaultValue">
             <summary>Default setting value.</summary>
         </member>
-        <member name="F:MSCLoader.SettingToggle.suspendOnValueChangedActions">
+        <member name="F:MSCLoader.SettingToggle.suspendActions">
             <summary>Suspend action calling.</summary>
         </member>
         <member name="M:MSCLoader.SettingToggle.AddAction(UnityEngine.Events.UnityAction{System.Boolean},System.Boolean)">
