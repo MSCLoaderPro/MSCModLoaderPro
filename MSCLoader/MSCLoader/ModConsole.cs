@@ -13,23 +13,21 @@ namespace MSCLoader
     public class ModConsole : MonoBehaviour
     {
         public static ModConsole consoleInstance; 
-        /// <summary>Returns if the console is open or not.</summary>
-        public static bool IsOpen { get; private set; }
 
-        public static ConsoleController controller;
-        public GameObject console;
+        public static ConsoleController controller { get; internal set; }
+        [SerializeField] internal GameObject console;
 
-        public Text consoleText;
-        public InputField inputField;
+        [SerializeField] internal Text consoleText;
+        [SerializeField] internal InputField inputField;
 
-        public ModLoaderSettings settings;
-        public Text buttonText;
+        [SerializeField] internal ModLoaderSettings settings;
+        [SerializeField] internal Text buttonText;
 
         bool wasFocused;
         int commandHistoryIndex;
 
-        public SettingKeybind toggleKey;
-        public SettingSlider fontSizeSlider;
+        [SerializeField] internal SettingKeybind toggleKey;
+        [SerializeField] internal SettingSlider fontSizeSlider;
 
         ~ModConsole()
         {
@@ -162,10 +160,10 @@ namespace MSCLoader
             // Check if it should print the elements or the list itself.
             if (printAllElements)
             {
-                Log(list);
+                Log(list.ToString());
                 for (int i = 0; i < list.Count; i++) Log(list[i]);
             }
-            else Log(list);
+            else Log(list.ToString());
         }
 
         /// <summary>Logs a string as an error to the ModConsole and output_log.txt. (Depending on user settings, this might auto-open the console)</summary>
@@ -209,7 +207,7 @@ namespace MSCLoader
         #endregion
     }
 
-    public class ModConsoleResizer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+    internal class ModConsoleResizer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public ModConsole modConsole;
 
@@ -260,7 +258,7 @@ namespace MSCLoader
         }
     }
 
-    public class ModConsoleSliderMaxSize : MonoBehaviour
+    internal class ModConsoleSliderMaxSize : MonoBehaviour
     {
         public Slider slider;
         public bool height = true;

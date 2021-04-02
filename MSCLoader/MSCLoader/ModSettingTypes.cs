@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -15,7 +14,6 @@ using Outline = unityUI.UnityEngine.UI.Outline;
 namespace MSCLoader
 {
     /// <summary>Parent class for settings.</summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public class ModSetting : MonoBehaviour 
     { 
         /// <summary>Method to save settings into the provided ModConfig.</summary>

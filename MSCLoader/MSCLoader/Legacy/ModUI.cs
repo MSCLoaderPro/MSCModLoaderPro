@@ -13,10 +13,10 @@ namespace MSCLoader
     public class ModUI
     {
         [Obsolete("Please use ModLoader.UICanvas instead.")]
-        internal static GameObject canvas { get => ModLoader.UICanvas; set => ModLoader.UICanvas = value; }
+        internal static GameObject canvas { get => ModLoader.UICanvas.gameObject; set => ModLoader.UICanvas = value.transform; }
 
         [Obsolete("Please use ModLoader.UICanvas instead.")]
-        public static GameObject GetCanvas() => ModLoader.UICanvas;
+        public static GameObject GetCanvas() => ModLoader.UICanvas.gameObject;
 
         [Obsolete("Please use ModPrompt.CreatePrompt() instead.")]
         public static void ShowMessage(string message, string title = "MESSAGE") => ModPrompt.CreatePrompt(message, title);

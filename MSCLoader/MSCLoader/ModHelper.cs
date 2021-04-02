@@ -306,7 +306,7 @@ namespace MSCLoader.Helper
         /// <param name="name">Name of the variable to find.</param>
         /// <returns>PlayMaker variable of specified type T</returns>
         public static T GetGlobalVariable<T>(string name) where T : NamedVariable => 
-            PlayMakerGlobals.Instance.Variables.FindVariable<T>(name);
+            FsmVariables.GlobalVariables.FindVariable<T>(name);
         /// <summary>Get a variable of specified type and name.</summary>
         /// <typeparam name="T">Type of variable to get. NamedVariable or sub-class (Standard PlayMaker Variable types)</typeparam>
         /// <param name="variables">Variables to search.</param>

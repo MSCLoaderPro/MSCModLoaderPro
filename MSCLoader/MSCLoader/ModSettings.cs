@@ -12,7 +12,7 @@ namespace MSCLoader
     public class ModContainer : MonoBehaviour
     {
         /// <summary>ModLoader class instance.</summary>
-        public ModLoader modLoader;
+        [SerializeField] internal ModLoader modLoader;
 
         /// <summary>Dictionary containing all mods' ModSettings Components.</summary>
         public Dictionary<Mod, ModSettings> settingsDictionary = new Dictionary<Mod, ModSettings>();
@@ -23,7 +23,7 @@ namespace MSCLoader
         public Text modCountText;
 
         /// <summary>Container for the mod loader settings.</summary>
-        public ModLoaderSettings modLoaderSettings;
+        [SerializeField] internal ModLoaderSettings modLoaderSettings;
 
         /// <summary>Parent Transform for all mods' list elements.</summary>
         public Transform modList;

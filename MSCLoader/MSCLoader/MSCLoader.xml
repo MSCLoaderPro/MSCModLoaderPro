@@ -148,15 +148,16 @@
         </member>
         <member name="M:MSCLoader.ModAssets.LoadTexture(System.String,System.Boolean)">
             <summary>Loads a Texture2D at the specified path, supported types: .jpg, .png, .dds, .tga</summary>
-            <param name="path">Path to file.</param>
+            <param name="filePath">Path to file.</param>
             <param name="normalMap">(Optional) Should it be converted into a normal map?</param>
             <returns>Loaded Texture2D</returns>
         </member>
-        <member name="M:MSCLoader.ModAssets.ConvertToNormalMap(UnityEngine.Texture2D,System.Boolean)">
-            <summary>Convert a texture to a normal map.</summary>
-            <param name="texture">Texture2D to convert</param>
-            <param name="mipMaps">Generate mipmaps?</param>
-            <returns>Converted Texture2D</returns>
+        <member name="M:MSCLoader.ModAssets.LoadTexture(MSCLoader.Mod,System.String,System.Boolean)">
+            <summary>Loads a Texture2D at the specified path, supported types: .jpg, .png, .dds, .tga</summary>
+            <param name="mod">Mod which asset folder to look in.</param>
+            <param name="textureName">Name of the texture.</param>
+            <param name="normalMap">(Optional) Should it be converted into a normal map?</param>
+            <returns>Loaded Texture2D</returns>
         </member>
         <member name="M:MSCLoader.ModAssets.LoadTexturePNG(System.String,System.Boolean)">
             <summary>Loads a PNG image as a Texture2D.</summary>
@@ -181,6 +182,12 @@
             <param name="filePath">Path to image file.</param>
             <param name="normalMap">Is it a normal map?</param>
             <returns>Loaded Texture2D.</returns>
+        </member>
+        <member name="M:MSCLoader.ModAssets.ConvertToNormalMap(UnityEngine.Texture2D,System.Boolean)">
+            <summary>Convert a texture to a normal map.</summary>
+            <param name="texture">Texture2D to convert</param>
+            <param name="mipMaps">Generate mipmaps?</param>
+            <returns>Converted Texture2D</returns>
         </member>
         <member name="M:MSCLoader.ModAssets.LoadMeshOBJ(System.String)">
             <summary>Loads an OBJ model file as a Mesh.</summary>
@@ -595,9 +602,6 @@
         <member name="T:MSCLoader.ModConsole">
             <summary>The handler for the ModConsole</summary>
         </member>
-        <member name="P:MSCLoader.ModConsole.IsOpen">
-            <summary>Returns if the console is open or not.</summary>
-        </member>
         <member name="M:MSCLoader.ModConsole.Log(System.String)">
             <summary>Logs a string to the ModConsole and output_log.txt.</summary>
             <param name="text">Message to log.</param>
@@ -668,9 +672,10 @@
             <param name="mod">The mod you want to get the assets folder path for.</param>
             <param name="create">(Optional) Should the folder be created if it doesn't exist?</param>
         </member>
-        <member name="M:MSCLoader.ModLoader.IsModPresent(System.String)">
-            <summary>Check if the specified mod ID is loaded and isn't disabled.</summary>
+        <member name="M:MSCLoader.ModLoader.GetMod(System.String,System.Boolean)">
+            <summary>Check if the specified mod ID is loaded.</summary>
             <param name="modID">ID of the mod.</param>
+            <param name="ignoreEnabled">Ignore whether or not the mod is enabled.</param>
         </member>
         <member name="T:MSCLoader.ModPrompt">
             <summary>ModPrompt Component for a prompt window.</summary>
@@ -791,16 +796,18 @@
         <member name="T:MSCLoader.ModSave">
             <summary>Container class for all things saving!</summary>
         </member>
-        <member name="M:MSCLoader.ModSave.Save``1(System.String,``0)">
+        <member name="M:MSCLoader.ModSave.Save``1(System.String,``0,System.String)">
             <summary>Saves a class (T) into an XML file of the specified name.</summary>
             <typeparam name="T">Class to save</typeparam>
             <param name="fileName">Name of the save file. (excluding extension)</param>
-            <param name="value">Class to save.</param>
+            <param name="data">Class to save.</param>
+            <param name="encryptionKey">(Optional) Key for the save encryption.</param>
         </member>
-        <member name="M:MSCLoader.ModSave.Load``1(System.String)">
+        <member name="M:MSCLoader.ModSave.Load``1(System.String,System.String)">
             <summary>Loads a save file with the specified name.</summary>
             <typeparam name="T">Class to load.</typeparam>
             <param name="fileName">Name of the save file. (excluding extension)</param>
+            <param name="encryptionKey">(Optional) Key for the save encryption.</param>
             <returns>Loaded save class (T).</returns>
         </member>
         <member name="M:MSCLoader.ModSave.Delete(System.String)">
@@ -1513,9 +1520,6 @@
         <member name="T:MSCLoader.SettingBoolean">
             <summary>Main Component for the Boolean setting type.</summary>
         </member>
-        <member name="P:MSCLoader.SettingBoolean.Enabled">
-            <summary>Should the setting be shown in the Mod Settings list?</summary>
-        </member>
         <member name="P:MSCLoader.SettingBoolean.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1525,9 +1529,6 @@
         <member name="T:MSCLoader.SettingNumber">
             <summary>Main Component for the Number setting type.</summary>
         </member>
-        <member name="P:MSCLoader.SettingNumber.Enabled">
-            <summary>Should the setting be shown in the Mod Settings list?</summary>
-        </member>
         <member name="P:MSCLoader.SettingNumber.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         </member>
@@ -1536,9 +1537,6 @@
         </member>
         <member name="T:MSCLoader.SettingString">
             <summary>Main Component for the String setting type.</summary>
-        </member>
-        <member name="P:MSCLoader.SettingString.Enabled">
-            <summary>Should the setting be shown in the Mod Settings list?</summary>
         </member>
         <member name="P:MSCLoader.SettingString.ID">
             <summary>Setting ID. Also determines the containing GameObject's name.</summary>

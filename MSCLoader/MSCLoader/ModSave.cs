@@ -14,8 +14,9 @@ namespace MSCLoader
         /// <summary>Saves a class (T) into an XML file of the specified name.</summary>
         /// <typeparam name="T">Class to save</typeparam>
         /// <param name="fileName">Name of the save file. (excluding extension)</param>
-        /// <param name="value">Class to save.</param>
-        public static void Save<T>(string fileName, T value, string encryptionKey = null) where T : class, new()
+        /// <param name="data">Class to save.</param>
+        /// <param name="encryptionKey">(Optional) Key for the save encryption.</param>
+        public static void Save<T>(string fileName, T data, string encryptionKey = null) where T : class, new()
         {
             try
             {
@@ -33,7 +34,7 @@ namespace MSCLoader
                     OmitXmlDeclaration = true
                 };
                 XmlWriter xmlWriter = XmlWriter.Create(output, xmlSettings);
-                xmlSerializer.Serialize(xmlWriter, value, xmlNamespace);
+                xmlSerializer.Serialize(xmlWriter, data, xmlNamespace);
 
                 xmlWriter.Close();
 
@@ -68,6 +69,7 @@ namespace MSCLoader
         /// <summary>Loads a save file with the specified name.</summary>
         /// <typeparam name="T">Class to load.</typeparam>
         /// <param name="fileName">Name of the save file. (excluding extension)</param>
+        /// <param name="encryptionKey">(Optional) Key for the save encryption.</param>
         /// <returns>Loaded save class (T).</returns>
         public static T Load<T>(string fileName, string encryptionKey = "") where T : class, new()
         {

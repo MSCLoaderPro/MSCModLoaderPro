@@ -54,7 +54,7 @@ namespace MSCLoader
             // Because of a delay this method can't be used in the main menu, 
             // that's done by adding an OnEnable to the load screen object instead 
             if (Application.loadedLevel > 1)
-                ModLoader.modLoaderInstance.modSceneLoadHandler.Disable();
+                ModLoader.modSceneLoadHandler.Disable();
         }
     }
 }
