@@ -75,7 +75,13 @@ namespace CoolUpdater
                         throw new Exception("Save path is null or empty.");
                     }
 
-                    DownloadFile(args[1], args[2]);
+                    string token2 = "";
+                    if (args[0].Contains("nexusmods.com"))
+                    {
+                        token2 = args[2];
+                    }
+
+                    DownloadFile(args[1], args[2], token2);
                     break;
                 case "update-all":
                     UpdateView view = new UpdateView();
@@ -120,13 +126,19 @@ namespace CoolUpdater
             Environment.Exit(0);
         }
 
-        private static void DownloadFile(string url, string savepath)
+        private static void DownloadFile(string url, string savepath, string token = "")
         {
+            bool nexus = url.Contains("nexusmods.com");
             Thread t = new Thread(() =>
             {
                 using (WebClient client = new WebClient())
                 {
                     client.Headers.Add("User-Agent: Other");
+                    client.Headers.Add(nexus ? string.Format(NexusHeader, Version, GetSystemVersion()) : GitHubHeader);
+                    if (nexus)
+                    {
+                        client.Headers.Add(string.Format(ApiKeyFormat, token));
+                    }
 
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;
                     client.DownloadFileCompleted += Client_DownloadFileCompleted;

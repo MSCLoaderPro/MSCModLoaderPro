@@ -356,6 +356,9 @@ namespace MSCLoader
                         }
                         output = ReadMetadataToArray();
                         string lastFileID = "";
+                        bool isZipFound = false;
+                        bool isProFileFound = false;
+
                         foreach (string s in output)
                         {
                             if (s.Contains("file_id"))
@@ -363,16 +366,49 @@ namespace MSCLoader
                                 lastFileID = s.Split(':')[1].Trim();
                             }
 
+                            if (s.Contains("file_name") && s.Contains(".pro"))
+                            {
+                                isProFileFound = true;
+                            }
+
+                            if (s.Contains("file_name") && s.Contains(".zip"))
+                            {
+                                isZipFound = true;
+                            }
+
                             // We got the file_id of latest version. We can break out of the loop!
-                            if (s.Contains("version") && s.Contains(mod.ModUpdateData.LatestVersion))
+                            if (s.Contains("],") && s.Contains(mod.ModUpdateData.LatestVersion) || isProFileFound && isZipFound)
                             {
                                 break;
                             }
                         }
 
+                        // Get download link to mod file, woo!
                         if (!string.IsNullOrEmpty(lastFileID))
                         {
-                            // TODO: Add URL pulling.
+                            string requestDownloads = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}/files/{lastFileID}/download_link.json";
+                            Process fileProcess = GetMetaFile(requestDownloads, token);
+                            downloadTime = 0;
+                            while (!fileProcess.HasExited)
+                            {
+                                downloadTime++;
+                                if (downloadTime > TimeoutTime)
+                                {
+                                    ModConsole.LogError($"Mod Updater: Getting downlaod link of {mod.ID} timed-out.");
+                                    break;
+                                }
+                                yield return new WaitForSeconds(1);
+                            }
+                            output = ReadMetadataToArray();
+                            foreach (string s in output)
+                            {
+                                if (s.Contains("URI"))
+                                {
+                                    string[] separated = s.Split(':');
+                                    mod.ModUpdateData.ZipUrl = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "").Replace("\n", "").Replace(@"\u0026", "&");
+                                    break;
+                                }
+                            }
                         }
                     }
                     else
@@ -396,6 +432,7 @@ namespace MSCLoader
 
                 ModConsole.Log($"Mod Updater: {mod.ID} Latest version: {mod.ModUpdateData.LatestVersion}");
                 ModConsole.Log($"Mod Updater: {mod.ID} Your version:   {mod.Version}");
+                ModConsole.Log($"Mod Updater: {mod.ID} Link: {mod.ModUpdateData.ZipUrl}");
 
                 i++;
                 sliderProgressBar.value = i;
@@ -625,7 +662,7 @@ namespace MSCLoader
 
                 // If a ZipUrl couldn't be obtained, or the link doesn't end with .ZIP file, we open the Mod.UpdateLink website.
                 // We are also assuming that mod has been updated by the user.
-                if (string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) || !mod.ModUpdateData.ZipUrl.EndsWith(".zip"))
+                if (string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) || !mod.ModUpdateData.ZipUrl.Contains(".zip"))
                 {
                     Process.Start(mod.UpdateLink);
                     mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
@@ -634,6 +671,10 @@ namespace MSCLoader
 
                 string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.zip");
                 string args = $"get-file \"{mod.ModUpdateData.ZipUrl}\" \"{downloadToPath}\"";
+                if (mod.ModUpdateData.ZipUrl.Contains("nexusmods.com"))
+                {
+                    args += $" \"{GetNexusToken()}\"";
+                }
                 ModConsole.Log(args);
                 Process p = new Process
                 {
@@ -718,6 +759,11 @@ namespace MSCLoader
             }
         }
         #endregion
+
+        string GetNexusToken()
+        {
+            return File.ReadAllText(Path.Combine(UpdaterDirectory, "TemporaryKey.txt"));
+        }
     }
 
     enum UpdateStatus { NotChecked, NotAvailable, Available, Downloaded }
