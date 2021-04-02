@@ -140,9 +140,8 @@ namespace MSCLoader
 
         void HelpCommand(string[] args)
         {
-            //ModConsole.Print("<color=green><b>Available commands:</b></color>");
-            foreach (CommandRegistration reg in commands.Values.GroupBy(x => x.command).Select(g => g.First()).Distinct().ToList().Where(reg => reg.showInHelp))
-                AppendLogLine(string.Format("<color=orange><b>{0}</b></color>: {1}", reg.command, reg.help));
+            foreach (CommandRegistration reg in commands.Values.GroupBy(x => x.command).Select(g => g.First()).Distinct().Where(reg => reg.showInHelp))
+                AppendLogLine($"<color=orange><b>{reg.command}</b></color>: {reg.help}");
         }
     }
 

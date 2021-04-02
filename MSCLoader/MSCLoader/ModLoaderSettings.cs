@@ -12,28 +12,28 @@ namespace MSCLoader
 {
     public class ModLoaderSettings : MonoBehaviour
     {
-        public ModContainer modContainer;
-        public Toggle modLoaderSettingsToggle;
+        [SerializeField] internal ModContainer modContainer;
+        [SerializeField] internal Toggle modLoaderSettingsToggle;
 
-        public Text version;
-        public Text menuLabelText;
+        [SerializeField] internal Text version;
+        [SerializeField] internal Text menuLabelText;
 
-        public SettingToggle skipGameLauncher, skipSplashScreen, useVsyncInMenu;
+        [SerializeField] internal SettingToggle skipGameLauncher, skipSplashScreen, useVsyncInMenu;
 
-        public SettingRadioButtons updateMode;
-        public SettingText lastUpdateCheck;
-        public SettingRadioButtons updateInterval;
-        public SettingToggle askBeforeDownload;
+        [SerializeField] internal SettingRadioButtons updateMode;
+        [SerializeField] internal SettingText lastUpdateCheck;
+        [SerializeField] internal SettingRadioButtons updateInterval;
+        [SerializeField] internal SettingToggle askBeforeDownload;
 
-        public SettingKeybind openConsoleKey;
-        public SettingSlider consoleFontSize;
-        public SettingRadioButtons consoleAutoOpen;
-        public SettingSlider consoleWindowHeight, consoleWindowWidth;
+        [SerializeField] internal SettingKeybind openConsoleKey;
+        [SerializeField] internal SettingSlider consoleFontSize;
+        [SerializeField] internal SettingRadioButtons consoleAutoOpen;
+        [SerializeField] internal SettingSlider consoleWindowHeight, consoleWindowWidth;
 
         public string Version { get => ModLoader.Version; internal set
             {
                 version.text = $"VERSION: {value}";
-                menuLabelText.text = $"MOD LOADER PRO v{value}";
+                menuLabelText.text = $"VERSION: {value}";
             }
         }
         public bool SkipGameLauncher { get => skipGameLauncher.Value; internal set => skipGameLauncher.Value = value; }
@@ -52,9 +52,9 @@ namespace MSCLoader
         public float ConsoleWindowHeight { get => consoleWindowHeight.Value; internal set => consoleWindowHeight.Value = value; }
         public float ConsoleWindowWidth { get => consoleWindowWidth.Value; internal set => consoleWindowWidth.Value = value; }
 
-        public DateTime lastUpdateCheckDate;
+        [SerializeField] internal DateTime lastUpdateCheckDate;
 
-        public bool disableSave = false;
+        [SerializeField] internal bool disableSave = false;
         public void SaveSettings()
         {
             StopAllCoroutines();

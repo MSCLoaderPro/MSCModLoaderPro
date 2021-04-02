@@ -34,6 +34,7 @@ namespace MSCLoader
         /// <summary>Should the ModPrompt be destroyed after being disabled?</summary>
         public bool DestroyOnDisable { get => destroyOnDisable; set => destroyOnDisable = value; }
 
+
         /// <summary>UnityAction that executes when the ModPrompt closes.</summary>
         public UnityAction OnCloseAction;
 

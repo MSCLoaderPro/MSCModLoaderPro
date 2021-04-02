@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,8 +6,7 @@ using UnityEngine.UI;
 #pragma warning disable CS1591, IDE1006
 namespace MSCLoader
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class SwitchToggleGraphic : MonoBehaviour
+    internal class SwitchToggleGraphic : MonoBehaviour
     {
         public Toggle toggle;
         public Image background;
@@ -19,7 +17,6 @@ namespace MSCLoader
             background.enabled = !toggle.isOn;
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public class ResizeOnHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public RectTransform element;
@@ -42,8 +39,7 @@ namespace MSCLoader
             if (element) element.localScale = normalScale;
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class ToggleActive : MonoBehaviour
+    internal class ToggleActive : MonoBehaviour
     {
         public RectTransform[] rectTransforms;
 
@@ -53,8 +49,7 @@ namespace MSCLoader
                 rectTransforms[i].gameObject.SetActive(!rectTransforms[i].gameObject.activeSelf);
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class ModMenuDetection : MonoBehaviour
+    internal class ModMenuDetection : MonoBehaviour
     {
         public RectTransform[] rectTransforms;
 
@@ -64,8 +59,7 @@ namespace MSCLoader
                 rectTransforms[i].gameObject.SetActive(false);
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class TextBoxHider : MonoBehaviour
+    internal class TextBoxHider : MonoBehaviour
     {
         public GameObject textObject;
         public Text text;
@@ -75,8 +69,7 @@ namespace MSCLoader
             textObject.SetActive(!string.IsNullOrEmpty(text.text));
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class UIPositioning : MonoBehaviour
+    internal class UIPositioning : MonoBehaviour
     {
         public RectTransform rectTransform;
         public Vector3 menuPosition, gamePosition;
@@ -94,15 +87,20 @@ namespace MSCLoader
             }
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public class UILoadHandler : MonoBehaviour
     {
-        public ModContainer modContainer;
-        public ModLoaderSettings modLoaderSettings;
-        public GameObject modMenu, modList, modSettings, modMenuButton, menuLabel;
+        [SerializeField] internal ModContainer modContainer;
+        [SerializeField] internal ModLoaderSettings modLoaderSettings;
+
+        [SerializeField] internal GameObject modMenu;
+        [SerializeField] internal GameObject modList;
+        [SerializeField] internal GameObject modSettings;
+        [SerializeField] internal GameObject modMenuButton;
+        [SerializeField] internal GameObject menuLabel;
+
         public List<GameObject> extra = new List<GameObject>();
 
-        public bool lockEnable = false;
+        [SerializeField] internal bool lockEnable = false;
 
         public void Disable()
         {
@@ -127,8 +125,7 @@ namespace MSCLoader
             }
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class UIMainMenuLoad : MonoBehaviour
+    internal class UIMainMenuLoad : MonoBehaviour
     {
         public UILoadHandler loadHandler;
         void OnEnable()
@@ -138,8 +135,7 @@ namespace MSCLoader
             loadHandler.Disable();
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class UIModMenuHandler : MonoBehaviour
+    internal class UIModMenuHandler : MonoBehaviour
     {
         public GameObject modMenu, modList, modSettings, menuButton, gameButton;
         GameObject graphics, carControls, playerControls;
@@ -186,8 +182,7 @@ namespace MSCLoader
             modSettings.SetActive(false);
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class UISubMenuHandler : MonoBehaviour
+    internal class UISubMenuHandler : MonoBehaviour
     {
         public bool modMenu = false;
         public UIModMenuHandler menuHandler;
@@ -203,8 +198,7 @@ namespace MSCLoader
             }
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class UIMenuNewGameHandler : MonoBehaviour
+    internal class UIMenuNewGameHandler : MonoBehaviour
     {
         public UILoadHandler loadHandler;
         void OnEnable()
@@ -217,8 +211,7 @@ namespace MSCLoader
             loadHandler.lockEnable = false;
         }
     }
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class StartDisable : MonoBehaviour
+    internal class StartDisable : MonoBehaviour
     {
         public GameObject[] objectToDisable;
 

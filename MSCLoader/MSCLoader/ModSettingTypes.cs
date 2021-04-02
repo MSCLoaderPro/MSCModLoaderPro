@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -15,7 +14,6 @@ using Outline = unityUI.UnityEngine.UI.Outline;
 namespace MSCLoader
 {
     /// <summary>Parent class for settings.</summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public class ModSetting : MonoBehaviour 
     { 
         /// <summary>Method to save settings into the provided ModConfig.</summary>
@@ -51,14 +49,14 @@ namespace MSCLoader
         /// <summary>UI Button's OnClick Eventhandler.</summary>
         public Button.ButtonClickedEvent OnClick { get => button.onClick; set => button.onClick = value; }
         /// <summary>Suspends the action calling if true.</summary>
-        public bool suspendOnClickActions = false;
+        public bool suspendActions = false;
         /// <summary>Adds an action that's called whenever the button is clicked.</summary>
         /// <param name="action">Action to call.</param>
         /// <param name="ignoreSuspendActions">(Optional) Should the action always be called regardless of other settings? (Not recommended for regular use)</param>
         public void AddAction(UnityAction action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
-                button.onClick.AddListener(() => { if (!suspendOnClickActions) action.Invoke(); });
+                button.onClick.AddListener(() => { if (!suspendActions) action.Invoke(); });
             else
                 button.onClick.AddListener(action);
         }
@@ -300,14 +298,14 @@ namespace MSCLoader
             return radioButton;
         }
         /// <summary>Suspends the action calling if true.</summary>
-        public bool suspendOnValueChangedActions = false;
+        public bool suspendActions = false;
         /// <summary>Adds an action that's called whenever the setting's value changes.</summary>
         /// <param name="action">Action to call.</param>
         /// <param name="ignoreSuspendActions">(Optional) Should the action always be called regardless of other settings? (Not recommended for regular use)</param>
         public void AddAction(UnityAction<int> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
-                OnValueChanged.AddListener((actionValue) => { if (!suspendOnValueChangedActions) action.Invoke(actionValue); });
+                OnValueChanged.AddListener((actionValue) => { if (!suspendActions) action.Invoke(actionValue); });
             else
                 OnValueChanged.AddListener(action);
         }
@@ -435,20 +433,20 @@ namespace MSCLoader
         internal int roundDigits = -1;
         public void SetRoundValue()
         {
-            if (roundDigits >= 0 && !suspendOnValueChangedActions)
+            if (roundDigits >= 0 && !suspendActions)
             {
-                suspendOnValueChangedActions = true;
+                suspendActions = true;
                 slider.value = (float)Math.Round(slider.value, roundDigits);
-                suspendOnValueChangedActions = false;
+                suspendActions = false;
             }
         }
         /// <summary>Suspend action calling.</summary>
-        public bool suspendOnValueChangedActions = false;
+        public bool suspendActions = false;
         /// <summary>Add an action to the event that triggers whenever the slider changes value.</summary>
         public void AddAction(UnityAction<float> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
-                slider.onValueChanged.AddListener((actionValue) => { if (!suspendOnValueChangedActions) action.Invoke(actionValue); });
+                slider.onValueChanged.AddListener((actionValue) => { if (!suspendActions) action.Invoke(actionValue); });
             else
                 slider.onValueChanged.AddListener(action);
         }
@@ -528,24 +526,21 @@ namespace MSCLoader
         /// <summary>Default setting value.</summary>
         public string defaultValue;
 
-        /// <summary>Suspend action calling for the OnEndEdit event.</summary>
-        public bool suspendOnEndEditActions = false;
+        /// <summary>Suspend action calling.</summary>
+        public bool suspendActions = false;
         /// <summary>Add an action to the OnEndEdit event.</summary>
         public void AddOnEndEditAction(UnityAction<string> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
-                inputField.onEndEdit.AddListener((actionValue) => { if (!suspendOnEndEditActions) action.Invoke(actionValue); });
+                inputField.onEndEdit.AddListener((actionValue) => { if (!suspendActions) action.Invoke(actionValue); });
             else
                 inputField.onEndEdit.AddListener(action);
         }
-
-        /// <summary>Suspend action calling for the OnValueChange event.</summary>
-        public bool suspendOnValueChangeActions = false;
         /// <summary>Add an action to the OnValueChange event.</summary>
         public void AddOnValueChangeAction(UnityAction<string> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
-                inputField.onValueChange.AddListener((actionValue) => { if (!suspendOnValueChangeActions) action.Invoke(actionValue); });
+                inputField.onValueChange.AddListener((actionValue) => { if (!suspendActions) action.Invoke(actionValue); });
             else
                 inputField.onValueChange.AddListener(action);
         }
@@ -591,12 +586,12 @@ namespace MSCLoader
         public bool defaultValue;
 
         /// <summary>Suspend action calling.</summary>
-        public bool suspendOnValueChangedActions = false;
+        public bool suspendActions = false;
         /// <summary>Add an action to the event that triggers whenever the toggle changes value.</summary>
         public void AddAction(UnityAction<bool> action, bool ignoreSuspendActions = false)
         {
             if (!ignoreSuspendActions)
-                toggle.onValueChanged.AddListener((actionValue) => { if (!suspendOnValueChangedActions) action.Invoke(actionValue); });
+                toggle.onValueChanged.AddListener((actionValue) => { if (!suspendActions) action.Invoke(actionValue); });
             else
                 toggle.onValueChanged.AddListener(action);
         }
@@ -624,8 +619,6 @@ namespace MSCLoader
     /// <summary>Main Component for the Boolean setting type.</summary>
     public class SettingBoolean : ModSetting
     {
-        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
-        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Current setting value.</summary>
@@ -647,8 +640,6 @@ namespace MSCLoader
     /// <summary>Main Component for the Number setting type.</summary>
     public class SettingNumber : ModSetting
     {
-        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
-        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Current setting value.</summary>
@@ -671,8 +662,6 @@ namespace MSCLoader
     /// <summary>Main Component for the String setting type.</summary>
     public class SettingString : ModSetting
     {
-        /// <summary>Should the setting be shown in the Mod Settings list?</summary>
-        public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
         /// <summary>Setting ID. Also determines the containing GameObject's name.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
         /// <summary>Current setting value.</summary>

@@ -30,7 +30,7 @@ namespace MSCLoader
         public static List<Mod>[] ModMethods { get; internal set; }
         static string[] methodNames = { "OnNewGame", "MenuOnLoad", "MenuOnGUI", "MenuUpdate", "MenuFixedUpdate", "PreLoad", "OnLoad", "PostLoad", "OnGUI", "Update", "FixedUpdate", "OnSave" };
         /// <summary>Load handler for the UI. Add your GameObject to the extra list if you want your UI to be disabled when the game loads a scene.</summary>
-        public UILoadHandler modSceneLoadHandler;
+        public static UILoadHandler modSceneLoadHandler;
 
         internal static ModLoader modLoaderInstance;
         internal static ModUnloader modUnloader;
@@ -41,7 +41,7 @@ namespace MSCLoader
         /// <summary>Get current date.</summary>
         public static DateTime Date { get; internal set; }
         ///<summary>Get the mod loader canvas GameObject.</summary>
-        public static GameObject UICanvas { get; internal set; }
+        public static Transform UICanvas { get; internal set; }
 
         /// <summary>Yellow Color that MSC uses.</summary>
         public static Color32 MSCYellow = new Color32(255, 255, 0, 255);
@@ -78,10 +78,16 @@ namespace MSCLoader
             if (!Directory.Exists(path) && create) Directory.CreateDirectory(path);
             return path;
         }
-        /// <summary>Check if the specified mod ID is loaded and isn't disabled.</summary>
+        /// <summary>Check if the specified mod ID is loaded.</summary>
         /// <param name="modID">ID of the mod.</param>
-        public static bool IsModPresent(string modID) => 
-            LoadedMods.FirstOrDefault(mod => mod.Enabled && mod.ID == modID) != null;
+        /// <param name="ignoreEnabled">Ignore whether or not the mod is enabled.</param>
+        public static Mod GetMod(string modID, bool ignoreEnabled = false)
+        {
+            for (int i = 0; i < LoadedMods.Count; i++)
+                if (LoadedMods[i].ID == modID && (LoadedMods[i].Enabled || ignoreEnabled))
+                    return LoadedMods[i];
+            return null;
+        }
 
         internal static void Init()
         {
@@ -208,7 +214,7 @@ namespace MSCLoader
                     mainMenuReturn = true;
 
                     // Make sure the UI reacts accordingly to the game's default menus.
-                    UICanvas.transform.Find("ModMenuUIHandler").GetComponent<UIModMenuHandler>().Setup();
+                    UICanvas.Find("ModMenuUIHandler").GetComponent<UIModMenuHandler>().Setup();
 
                     // Lastly start the mod loading.
                     StartCoroutine(LoadMods());
@@ -228,12 +234,13 @@ namespace MSCLoader
             else
                 modUnloader = GameObject.Find("MSCUnloader").GetComponent<ModUnloader>();
         }
+        
         void LoadModLoaderUI()
         {
             // Load the embedded bundle, create and assign the canvas.
             AssetBundle bundle = AssetBundle.CreateFromMemoryImmediate(Properties.Resources.mscloadercanvas);
             GameObject loadedObject = bundle.LoadAsset<GameObject>("MSCLoaderCanvas.prefab");
-            UICanvas = Instantiate(loadedObject);
+            UICanvas = Instantiate(loadedObject).transform;
             UICanvas.name = "MSCLoader Canvas";
             Destroy(loadedObject);
             DontDestroyOnLoad(UICanvas);
@@ -242,7 +249,7 @@ namespace MSCLoader
             ModPrompt.prompt = bundle.LoadAsset<GameObject>("ModPrompt.prefab");
 
             // Assign the loading screen for easy access.
-            modUILoadScreen = UICanvas.transform.Find("ModLoaderUI/ModLoadScreen").gameObject;
+            modUILoadScreen = UICanvas.Find("ModLoaderUI/ModLoadScreen").gameObject;
             // Handle the disabling of the UI when a scene is loaded. Does not apply for the menu to game loading.
             modSceneLoadHandler = UICanvas.GetComponent<UILoadHandler>();
             // Handle disabling the UI when loading the game from the menu.
@@ -584,16 +591,13 @@ namespace MSCLoader
         }
 
         // LEGACY
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Does not do anything.")]
+        [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
         public static bool CheckSteam() => true;
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal static string steamID = "NOYOUDONT";
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use ModLoaderVersion instead.")]
+        [Obsolete("Deprecated, use ModLoaderVersion instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static readonly string MSCLoader_Ver = Version;
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, doesn't do anything.")]
+        [Obsolete("Deprecated, doesn't do anything."), EditorBrowsable(EditorBrowsableState.Never)]
         public static bool LogAllErrors = false;
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool CheckIfExperimental()
@@ -607,14 +611,15 @@ namespace MSCLoader
                 return false;
             }
         }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use GetModSettingsFolder() instead.")]
+        [Obsolete("Deprecated, use GetModSettingsFolder() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static string GetModConfigFolder(Mod mod) => GetModSettingsFolder(mod);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Deprecated, use ModLoader.CurrentScene instead.")]
+        [Obsolete("Deprecated, use ModLoader.CurrentScene instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static CurrentScene GetCurrentScene() => CurrentScene;
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static string GetModAssetsFolder(Mod mod) => GetModAssetsFolder(mod, true);
+
+        [Obsolete("Deprecated, use ModLoader.GetMod() instead."), EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool IsModPresent(string modID) => GetMod(modID) != null;
     }
 
     class ModMenuOnGUICall : MonoBehaviour
