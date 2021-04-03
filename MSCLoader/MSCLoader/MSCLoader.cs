@@ -1,17 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.ComponentModel;
 
 namespace MSCLoader
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
     internal static class MSCLoader
     {
         internal static LoaderSettings settings;
         internal static Harmony.HarmonyInstance ModLoaderInstance;
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
         internal static void Main()
         {
             Console.WriteLine("STARTING MOD LOADER PRO!");
