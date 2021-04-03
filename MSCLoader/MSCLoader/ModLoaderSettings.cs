@@ -116,7 +116,7 @@ namespace MSCLoader
         {
             lastUpdateCheckDate = DateTime.Now;
             LastUpdateCheck = $"{lastUpdateCheckDate:u}".TrimEnd('Z');
-            SaveSettings();
+            SaveINISettings();
         }
 
         public void ParseUpdateCheckTime(string date)

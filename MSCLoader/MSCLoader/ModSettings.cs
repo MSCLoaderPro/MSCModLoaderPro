@@ -168,6 +168,7 @@ namespace MSCLoader
             iconImage.texture = icon;
 
         bool suspendAction = false;
+        bool suspendMethods = true;
         /// <summary>Opens the mod's settings window while closing all others.</summary>
         public void ToggleSettingsActive()
         {
@@ -198,16 +199,27 @@ namespace MSCLoader
             nameText.color = modToggle.isOn ? ModLoader.MSCYellow : ModLoader.ModDisabledRed;
             modContainer.UpdateModCountText();
 
-            if (mod.Enabled) ModLoader.AddToMethodLists(mod);
-            else ModLoader.RemoveFromMethodLists(mod);
+            if (mod.Enabled)
+            {
+                ModLoader.AddToMethodLists(mod);
+                if (!suspendMethods) mod.OnModEnabled();
+            }
+            else
+            {
+                ModLoader.RemoveFromMethodLists(mod);
+                if (!suspendMethods) mod.OnModDisabled();
+            }
 
+            suspendMethods = false;
             ModConsole.Log($"<b>{mod.ID}:</b> {(mod.Enabled ? "<color=green>ENABLED</color>" : "<color=red>DISABLED</color>")}");
         }
         /// <summary>Set the enabled status of the mod.</summary>
         /// <param name="enabled">Enabled/disabled</param>
-        public void SetModEnabled(bool enabled)
+        /// <param name="callMethods">Call OnModEnabled/Disabled</param>
+        public void SetModEnabled(bool enabled, bool callMethods = true)
         {
             modToggle.isOn = enabled;
+            suspendMethods = !callMethods;
         }
 
         public void ToggleUpdateButton(bool enabled)
@@ -283,7 +295,7 @@ namespace MSCLoader
 
             loadedSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<ModConfig>(File.ReadAllText(path));
 
-            mod.modListElement.SetModEnabled(loadedSettings.Enabled);
+            mod.modListElement.SetModEnabled(loadedSettings.Enabled, false);
         }
 
         public void SaveSettings()

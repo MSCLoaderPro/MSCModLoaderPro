@@ -64,6 +64,12 @@ namespace MSCLoader
         /// <summary> FixedUpdate method for the game scene. Order of execution: Every fixed time step </summary>
         public virtual void FixedUpdate() { }
 
+        /// <summary>Method called whenever the mod is enabled.</summary>
+        public virtual void OnModEnabled() { }
+
+        /// <summary>Method called whenever the mod is enabled.</summary>
+        public virtual void OnModDisabled() { }
+
         #region Obsolete Methods
         [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]
         public virtual bool UseAssetsFolder => false;

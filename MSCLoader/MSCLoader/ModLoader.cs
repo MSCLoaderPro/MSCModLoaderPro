@@ -37,7 +37,7 @@ namespace MSCLoader
         internal static ModLoaderSettings modLoaderSettings;
         internal static ModContainer modContainer;
 
-        internal static string modLoaderURL = "https://www.youtube.com/watch?v=DLzxrzFCyOs";
+        internal static string modLoaderURL = "https://mscloaderpro.github.io/docs";
         /// <summary>Get current date.</summary>
         public static DateTime Date { get; internal set; }
         ///<summary>Get the mod loader canvas GameObject.</summary>
