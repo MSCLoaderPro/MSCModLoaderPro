@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -50,15 +51,25 @@ namespace MSCLoader
         }
 
         [Obsolete("SaveLoad is obsolete, use ModSave instead.")]
-        public static void SerializeSaveFile<T>(Mod mod, T saveDataClass, string fileName) => 
-            File.WriteAllText(Path.Combine(Application.persistentDataPath, string.Format("{0}_{1}", mod.ID, fileName)), Newtonsoft.Json.JsonConvert.SerializeObject(saveDataClass, new Newtonsoft.Json.JsonSerializerSettings { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore, Formatting = Newtonsoft.Json.Formatting.Indented } ));
-
+        public static void SerializeSaveFile<T>(Mod mod, T saveDataClass, string fileName)
+        {
+            var config = new JsonSerializerSettings();
+            config.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            config.Formatting = Formatting.Indented;
+            string path = Path.Combine(ModLoader.GetModSettingsFolder(mod), fileName);
+            string serializedData = JsonConvert.SerializeObject(saveDataClass, config);
+            File.WriteAllText(path, serializedData);
+        }
         [Obsolete("SaveLoad is obsolete, use ModSave instead.")]
         public static T DeserializeSaveFile<T>(Mod mod, string fileName) where T : new()
         {
-            string path = Path.Combine(Application.persistentDataPath, string.Format("{0}_{1}", mod.ID, fileName));
-
-            return File.Exists(path) ? Newtonsoft.Json.JsonConvert.DeserializeObject<T>(File.ReadAllText(path)) : default;
+            string path = Path.Combine(ModLoader.GetModSettingsFolder(mod), fileName);
+            if (File.Exists(path))
+            {
+                string serializedData = File.ReadAllText(path);
+                return JsonConvert.DeserializeObject<T>(serializedData);
+            }
+            return default(T);
         }
     }
 }

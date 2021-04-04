@@ -658,6 +658,9 @@ namespace MSCLoader
         [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
         public static readonly bool experimental = false;
 
+        [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
+        public static readonly bool devMode = false;
+
         [Obsolete("Deprecated, use ModLoader.GetMod() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static bool IsModPresent(string modID) => GetMod(modID) != null;
     }
