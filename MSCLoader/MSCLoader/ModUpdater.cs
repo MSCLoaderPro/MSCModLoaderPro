@@ -46,6 +46,8 @@ namespace MSCLoader
         public ModUpdater()
         {
             instance = this;
+
+            ModConsole.Log(Path.GetFullPath(ModLoader.ModsFolder));
         }
 
         void Start()
@@ -443,23 +445,26 @@ namespace MSCLoader
             ModLoader.modContainer.UpdateModCountText();
 
             IEnumerable<Mod> modsWithUpdates = mods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
-            switch (ModLoader.modLoaderSettings.UpdateMode)
+            if (modsWithUpdates.Count() > 0)
             {
-                case 1: // Notify only
-                    string modNames = "";
-                    foreach (var mod in modsWithUpdates)
-                        modNames += $"{mod.Name}, ";
-                    modNames = modNames.Remove(modNames.Length - 2, 1);
-                    ModPrompt prompt = ModPrompt.CreateCustomPrompt();
-                    prompt.Text = $"MOD UPDATE IS AVAILABLE FOR THE FOLLOWING MODS:\n\n<color=yellow>{modNames}</color>\n\n" +
-                                  $"YOU CAN USE \"UPDATE ALL MODS\" BUTTON TO QUICKLY UPDATE THEM.";
-                    prompt.Title = "MOD UPDATER";
-                    prompt.AddButton("UPDATE ALL MODS", () => UpdateAll());
-                    prompt.AddButton("CLOSE", null);
-                    break;
-                case 2: // Download
-                    UpdateAll();
-                    break;
+                switch (ModLoader.modLoaderSettings.UpdateMode)
+                {
+                    case 1: // Notify only
+                        string modNames = "";
+                        foreach (var mod in modsWithUpdates)
+                            modNames += $"{mod.Name}, ";
+                        modNames = modNames.Remove(modNames.Length - 2, 1);
+                        ModPrompt prompt = ModPrompt.CreateCustomPrompt();
+                        prompt.Text = $"MOD UPDATE IS AVAILABLE FOR THE FOLLOWING MODS:\n\n<color=yellow>{modNames}</color>\n\n" +
+                                      $"YOU CAN USE \"UPDATE ALL MODS\" BUTTON TO QUICKLY UPDATE THEM.";
+                        prompt.Title = "MOD UPDATER";
+                        prompt.AddButton("UPDATE ALL MODS", () => UpdateAll());
+                        prompt.AddButton("CLOSE", null);
+                        break;
+                    case 2: // Download
+                        UpdateAll();
+                        break;
+                }
             }
 
             isBusy = false;
@@ -749,7 +754,7 @@ namespace MSCLoader
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/C \"\" CoolUpdater.exe update-all",
+                        Arguments = $"/C \"\" CoolUpdater.exe update-all " + Path.GetFullPath(ModLoader.ModsFolder),
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = true
                     }

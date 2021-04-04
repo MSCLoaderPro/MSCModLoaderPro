@@ -20,10 +20,12 @@ namespace CoolUpdater
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
 
-        public UpdateView()
+        string modsPath;
+
+        public UpdateView(string modsPath)
         {
             InitializeComponent();
-
+            this.modsPath = modsPath;
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_HIDE);
         }
@@ -71,8 +73,6 @@ namespace CoolUpdater
                 Log($"({GetSeconds(stopwatch)}) Loading update procedure...\n");
                 await Task.Run(() => Thread.Sleep(1000));
 
-                string modsFolder = @"..\Mods";
-
                 DirectoryInfo di = new DirectoryInfo(Program.Downloads);
                 FileInfo[] files = di.GetFiles("*.zip");
 
@@ -91,7 +91,7 @@ namespace CoolUpdater
                             Log($"({GetSeconds(stopwatch)}) ({i + 1}/{files.Length}) Unpacking {file.Name}...");
                             using (ZipFile zip = ZipFile.Read(file.FullName))
                             {
-                                zip.ExtractAll(modsFolder, ExtractExistingFileAction.OverwriteSilently);
+                                zip.ExtractAll(modsPath, ExtractExistingFileAction.OverwriteSilently);
                             }
                             Log($"({GetSeconds(stopwatch)}) {file.Name} unpacking completed!\n");
                             modsList.SetItemChecked(i, true);

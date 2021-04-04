@@ -84,7 +84,8 @@ namespace CoolUpdater
                     DownloadFile(args[1], args[2], token2);
                     break;
                 case "update-all":
-                    UpdateView view = new UpdateView();
+                    string pathToMods = args.Length < 2 ? "" : args[1];
+                    UpdateView view = new UpdateView(pathToMods);
                     Application.Run(view);
                     break;
                 case "update-modloader":
