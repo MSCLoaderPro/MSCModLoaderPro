@@ -93,30 +93,45 @@ namespace MSCLoader
 
         public void OpenModLoaderSite()
         {
-            ModPrompt.CreateYesNoPrompt("THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.", "OPEN MOD LOADER WEBSITE?", () => ModHelper.OpenWebsite(ModLoader.modLoaderURL));
+            ModPrompt.CreateYesNoPrompt(
+                "THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.", 
+                "OPEN MOD LOADER WEBSITE?", 
+                () => ModHelper.OpenWebsite(ModLoader.modLoaderURL));
         }
         public void OpenModsFolder()
         {
-            ModPrompt.CreateYesNoPrompt("THIS WILL THE MODS FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN MODS FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\Mods"));
+            ModPrompt.CreateYesNoPrompt(
+                "THIS WILL OPEN THE MODS FOLDER IN THE EXPLORER AND MINIMIZE THE GAME.", 
+                "OPEN MODS FOLDER?", 
+                () => ModHelper.OpenFolder(ModLoader.ModsFolder));
         }
         public void OpenGameFolder()
         {
-            ModPrompt.CreateYesNoPrompt("THIS WILL THE GAME FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN GAME FOLDER?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}"));
+            ModPrompt.CreateYesNoPrompt(
+                "THIS WILL OPEN THE GAME FOLDER IN THE EXPLORER AND MINIMIZE THE GAME.", 
+                "OPEN GAME FOLDER?", 
+                () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}"));
         }
         public void OpenSaveFolder()
         {
-            ModPrompt.CreateYesNoPrompt("THIS WILL THE SAVE FOLDER IN WINDOWS EXPLORER AND MINIMIZE THE GAME.", "OPEN SAVE FOLDER?", () => ModHelper.OpenFolder(Application.persistentDataPath));
+            ModPrompt.CreateYesNoPrompt(
+                "THIS WILL OPEN THE SAVE FOLDER IN THE EXPLORER AND MINIMIZE THE GAME.", 
+                "OPEN SAVE FOLDER?", 
+                () => ModHelper.OpenFolder(Application.persistentDataPath));
         }
         public void OpenOutputLog()
         {
-            ModPrompt.CreateYesNoPrompt("THIS WILL THE OUTPUT LOG IN YOUR DEFAULT TEXT EDITOR AND MINIMIZE THE GAME.", "OPEN OUTPUT LOG?", () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
+            ModPrompt.CreateYesNoPrompt(
+                "THIS WILL OPEN THE OUTPUT LOG IN YOUR DEFAULT TEXT EDITOR AND MINIMIZE THE GAME.", 
+                "OPEN OUTPUT LOG?", 
+                () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
         }
 
         public void RefreshUpdateCheckTime()
         {
             lastUpdateCheckDate = DateTime.Now;
             LastUpdateCheck = $"{lastUpdateCheckDate:u}".TrimEnd('Z');
-            SaveSettings();
+            SaveINISettings();
         }
 
         public void ParseUpdateCheckTime(string date)
@@ -147,6 +162,7 @@ namespace MSCLoader
 
         public bool EnableModLoader = true;
         public bool UseOutputLog = true;
+        public string ModsFolderPath = "Mods";
 
         public LoaderSettings()
         {
@@ -171,6 +187,7 @@ namespace MSCLoader
 
             EnableModLoader = settingINI.Read("EnableModLoader", "Hidden", EnableModLoader);
             UseOutputLog = settingINI.Read("UseOutputLog", "Hidden", UseOutputLog);
+            ModsFolderPath = settingINI.Read("ModsFolderPath", "Hidden", ModsFolderPath);
         }
 
         public void SaveSettings(ModLoaderSettings modLoaderSettings)
@@ -213,6 +230,7 @@ namespace MSCLoader
 
             settingINI.Write("EnableModLoader", "Hidden", EnableModLoader);
             settingINI.Write("UseOutputLog", "Hidden", UseOutputLog);
+            settingINI.Write("UseOutputLog", "Hidden", ModsFolderPath);
         }
 
         public void ApplySettings(ModLoaderSettings modLoaderSettings)

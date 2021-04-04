@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MSCLoader")]
 [assembly: AssemblyDescription("My Summer Car Mod Loader Pro")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Fredman Productions")]
+[assembly: AssemblyCompany("Mod Loader Pro Team")]
 [assembly: AssemblyProduct("MSCLoader")]
-[assembly: AssemblyCopyright("Copyright © Fredrik Eriksson 2021")]
+[assembly: AssemblyCopyright("Copyright © Mod Loader Pro Team 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

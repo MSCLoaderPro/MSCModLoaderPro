@@ -599,6 +599,12 @@
         <member name="M:MSCLoader.Mod.FixedUpdate">
             <summary> FixedUpdate method for the game scene. Order of execution: Every fixed time step </summary>
         </member>
+        <member name="M:MSCLoader.Mod.OnModEnabled">
+            <summary>Method called whenever the mod is enabled.</summary>
+        </member>
+        <member name="M:MSCLoader.Mod.OnModDisabled">
+            <summary>Method called whenever the mod is enabled.</summary>
+        </member>
         <member name="T:MSCLoader.ModConsole">
             <summary>The handler for the ModConsole</summary>
         </member>
@@ -894,9 +900,10 @@
         <member name="M:MSCLoader.ModListElement.ToggleModEnabled">
             <summary>Toggle the mod's enabled state.</summary>
         </member>
-        <member name="M:MSCLoader.ModListElement.SetModEnabled(System.Boolean)">
+        <member name="M:MSCLoader.ModListElement.SetModEnabled(System.Boolean,System.Boolean)">
             <summary>Set the enabled status of the mod.</summary>
             <param name="enabled">Enabled/disabled</param>
+            <param name="callMethods">Call OnModEnabled/Disabled</param>
         </member>
         <member name="T:MSCLoader.ModSettings">
             <summary>Control Component for the mod settings.</summary>

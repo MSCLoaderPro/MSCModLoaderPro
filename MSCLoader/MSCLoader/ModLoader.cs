@@ -24,6 +24,7 @@ namespace MSCLoader
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
+        internal static string ReferenceFolder = $@"{ModsFolder}\References";
         /// <summary> List of Loaded Mods. </summary>
         public static List<Mod> LoadedMods { get; internal set; }
         /// <summary> List of used Mod Class methods. </summary>
@@ -37,7 +38,7 @@ namespace MSCLoader
         internal static ModLoaderSettings modLoaderSettings;
         internal static ModContainer modContainer;
 
-        internal static string modLoaderURL = "https://www.youtube.com/watch?v=DLzxrzFCyOs";
+        internal static string modLoaderURL = "https://mscloaderpro.github.io/docs";
         /// <summary>Get current date.</summary>
         public static DateTime Date { get; internal set; }
         ///<summary>Get the mod loader canvas GameObject.</summary>
@@ -125,6 +126,9 @@ namespace MSCLoader
 
             // Create the stopwatch for method execution time.
             timer = new Stopwatch();
+
+            // Set up Mods folder
+            SetupFolders();
 
             // Create the ModUnloader.
             CreateUnloader();
@@ -222,6 +226,19 @@ namespace MSCLoader
             }
         }
 
+        void SetupFolders()
+        {
+            ModsFolder = MSCLoader.settings.ModsFolderPath == "Mods" ? $@"{Path.GetFullPath(".")}\Mods" : MSCLoader.settings.ModsFolderPath;
+            AssetsFolder = $@"{ModsFolder}\Assets";
+            SettingsFolder = $@"{ModsFolder}\Settings";
+            ReferenceFolder = $@"{ModsFolder}\References";
+
+            if (!Directory.Exists(ModsFolder)) Directory.CreateDirectory(ModsFolder);
+            if (!Directory.Exists(AssetsFolder)) Directory.CreateDirectory(AssetsFolder);
+            if (!Directory.Exists(SettingsFolder)) Directory.CreateDirectory(SettingsFolder);
+            if (!Directory.Exists(ReferenceFolder)) Directory.CreateDirectory(ReferenceFolder);
+        }
+
         void CreateUnloader()
         {
             // Make sure to only create it once. Assign the modUnloader variable if it has.
@@ -272,9 +289,8 @@ namespace MSCLoader
         
         void LoadReferences()
         {
-            if (Directory.Exists(Path.Combine(ModsFolder, "References")))
-                foreach (string file in Directory.GetFiles(Path.Combine(ModsFolder, "References"), "*.dll"))
-                    Assembly.LoadFrom(file);
+            foreach (string file in Directory.GetFiles(ReferenceFolder, "*.dll"))
+                Assembly.LoadFrom(file);
         }
 
         void InitializeMods()
@@ -529,6 +545,13 @@ namespace MSCLoader
                 try { ModMethods[2][i].MenuOnGUI(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
+
+            // Backwards Compatibility
+            for (int i = 0; i < ModMethods[8].Count; i++)
+            {
+                try { if (ModMethods[8][i].LoadInMenu) ModMethods[8][i].OnGUI(); }
+                catch (Exception exception) { Console.WriteLine(exception); }
+            }
         }
 
         internal void ModMenuUpdate()
@@ -538,6 +561,13 @@ namespace MSCLoader
                 try { ModMethods[3][i].MenuUpdate(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
+
+            // Backwards Compatibility
+            for (int i = 0; i < ModMethods[9].Count; i++)
+            {
+                try { if (ModMethods[9][i].LoadInMenu) ModMethods[9][i].Update(); }
+                catch (Exception exception) { Console.WriteLine(exception); }
+            }
         }
 
         internal void ModMenuFixedUpdate()
@@ -545,6 +575,13 @@ namespace MSCLoader
             for (int i = 0; i < ModMethods[4].Count; i++)
             {
                 try { ModMethods[4][i].MenuFixedUpdate(); }
+                catch (Exception exception) { Console.WriteLine(exception); }
+            }
+
+            // Backwards Compatibility
+            for (int i = 0; i < ModMethods[10].Count; i++)
+            {
+                try { if (ModMethods[10][i].LoadInMenu) ModMethods[10][i].FixedUpdate(); }
                 catch (Exception exception) { Console.WriteLine(exception); }
             }
         }
@@ -617,6 +654,12 @@ namespace MSCLoader
         public static CurrentScene GetCurrentScene() => CurrentScene;
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static string GetModAssetsFolder(Mod mod) => GetModAssetsFolder(mod, true);
+
+        [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
+        public static readonly bool experimental = false;
+
+        [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
+        public static readonly bool devMode = false;
 
         [Obsolete("Deprecated, use ModLoader.GetMod() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static bool IsModPresent(string modID) => GetMod(modID) != null;
