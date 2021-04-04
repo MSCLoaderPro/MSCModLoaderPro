@@ -230,7 +230,7 @@ namespace MSCLoader
 
             settingINI.Write("EnableModLoader", "Hidden", EnableModLoader);
             settingINI.Write("UseOutputLog", "Hidden", UseOutputLog);
-            settingINI.Write("UseOutputLog", "Hidden", ModsFolderPath);
+            settingINI.Write("ModsFolderPath", "Hidden", ModsFolderPath);
         }
 
         public void ApplySettings(ModLoaderSettings modLoaderSettings)

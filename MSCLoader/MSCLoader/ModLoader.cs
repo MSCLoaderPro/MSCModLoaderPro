@@ -228,7 +228,7 @@ namespace MSCLoader
 
         void SetupFolders()
         {
-            ModsFolder = MSCLoader.settings.ModsFolderPath == "Mods" ? $@"{Path.GetFullPath(".")}\Mods" : MSCLoader.settings.ModsFolderPath;
+            ModsFolder = Path.GetFullPath(MSCLoader.settings.ModsFolderPath);
             AssetsFolder = $@"{ModsFolder}\Assets";
             SettingsFolder = $@"{ModsFolder}\Settings";
             ReferenceFolder = $@"{ModsFolder}\References";
