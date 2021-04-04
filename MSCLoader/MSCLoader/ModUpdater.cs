@@ -47,7 +47,6 @@ namespace MSCLoader
         {
             instance = this;
 
-            ModConsole.Log(Path.GetFullPath(ModLoader.ModsFolder));
         }
 
         void Start()
@@ -754,7 +753,7 @@ namespace MSCLoader
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/C \"\" CoolUpdater.exe update-all " + Path.GetFullPath(ModLoader.ModsFolder),
+                        Arguments = $"/C \"\" CoolUpdater.exe update-all \"" + Path.GetFullPath(ModLoader.ModsFolder) + "\"",
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = true
                     }
