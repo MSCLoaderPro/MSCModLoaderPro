@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Installer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("MSC Mod Moader Pro Installer")]
+[assembly: AssemblyDescription("One-Click Install of Mod Loader Pro!")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Installer")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyCompany("Mod Loader Pro Team")]
+[assembly: AssemblyProduct("My Summer Car Mod Loader Pro Installer")]
+[assembly: AssemblyCopyright("Copyright © Mod Loader Pro Team 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
