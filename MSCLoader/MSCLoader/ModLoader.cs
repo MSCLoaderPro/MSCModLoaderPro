@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0";
+        public static readonly string Version = "1.0-RC4";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -519,7 +519,6 @@ namespace MSCLoader
             StackFrame frame = new StackTrace(exception, true).GetFrame(0);
 
             ModConsole.LogError($"<b>{mod.ID}</b>! <b>Details:</b>\n{exception.Message} in <b>{frame.GetMethod()}</b>.");
-            //ModConsole.LogError(e.ToString());
             UnityEngine.Debug.LogError(exception);
         }
 
