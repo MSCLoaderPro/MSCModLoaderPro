@@ -846,15 +846,29 @@ namespace MSCLoader
                 // Finding tag of the latest release, this servers as latest version number.
                 if (s.Contains("\"tag_name\""))
                 {
-                    modLoaderLatestVersion = s.Split(':')[1].Split('-')[0].Replace("\"", "");
+                    modLoaderLatestVersion = s.Split(':')[1].Replace("\"", "").Trim();
                     break;
                 }
             }
 
-            modLoaderUpdateAvailable = IsNewerVersionAvailable(ModLoader.Version, modLoaderLatestVersion);
-            isBusy = false; 
+            bool isRemoteRC, isLocalRC = false;
+            isRemoteRC = modLoaderLatestVersion.Contains("-RC");
+            isLocalRC = ModLoader.Version.Contains("-RC");
 
-            //modLoaderUpdateAvailable = true; // DEBUG!
+            if (isRemoteRC)
+                modLoaderLatestVersion.Replace("-RC", ".");
+
+            string localVersion = ModLoader.Version;
+            if (isLocalRC)
+                localVersion = localVersion.Replace("-RC", ".");
+
+            modLoaderUpdateAvailable = IsNewerVersionAvailable(ModLoader.Version, modLoaderLatestVersion);
+            isBusy = false;
+
+            if (!isRemoteRC && isLocalRC)
+            {
+                modLoaderUpdateAvailable = true;
+            }
 
             StopCoroutine(currentSliderText);
 
