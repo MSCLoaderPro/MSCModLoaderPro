@@ -768,6 +768,10 @@ namespace MSCLoader
         {
             return File.ReadAllText(Path.Combine(UpdaterDirectory, "TemporaryKey.txt"));
         }
+
+        #region Mod Loader Update Check
+        Ienuemrator
+        #endregion
     }
 
     enum UpdateStatus { NotChecked, NotAvailable, Available, Downloaded }

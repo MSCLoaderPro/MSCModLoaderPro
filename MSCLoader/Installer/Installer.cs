@@ -284,6 +284,15 @@ namespace Installer
         {
             tabs.SelectedIndex = 2;
             btnExit.Enabled = true;
+
+            string[] userFile = File.ReadAllText(Path.Combine(MscPath, "ModLoaderSettings.ini")).Split('\n');
+            foreach (var s in userFile)
+            {
+                if (s.StartsWith("ModsFolderPath="))
+                {
+                    txtModsFolderName.Text = s.Split('=')[1].Trim() ;
+                }
+            }
         }
 
         private void btnPlay_Click(object sender, EventArgs e)

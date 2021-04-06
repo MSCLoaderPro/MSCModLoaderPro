@@ -101,6 +101,13 @@ namespace Installer
                     {
                         Directory.CreateDirectory(Path.Combine(extractPath, directory));
                     }
+
+                    // Don't override user settings.
+                    if (f.Name == "ModLoaderSettings.ini" && File.Exists(path))
+                    {
+                        continue;
+                    }
+
                     f.ExtractToFile(path, true);
                 }
             }
