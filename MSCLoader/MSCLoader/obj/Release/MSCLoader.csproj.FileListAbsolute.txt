@@ -22,4 +22,3 @@ C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.G
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CoreCompileInputs.cache
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CopyComplete
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.dll
-C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csprojAssemblyReference.cache
