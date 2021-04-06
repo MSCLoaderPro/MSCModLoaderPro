@@ -12,7 +12,6 @@ namespace MSCLoader
             if (!CheckDate(startDate, endDate, onlineTimeOnly)) 
                 DisableMod(mod, disableMessage);
         }
-
         public static bool CheckDate(string startDate, string endDate, bool onlineTimeOnly = false)
         {
             if (onlineTimeOnly)
@@ -22,14 +21,15 @@ namespace MSCLoader
 
                 if (date >= DateTime.Parse($"{startDate} 00:00:00Z") && date <= DateTime.Parse($"{endDate} 23:59:59Z"))
                     return true;
+
                 return false;
             }
 
             if (ModLoader.Date >= DateTime.Parse($"{startDate} 00:00:00Z") && ModLoader.Date <= DateTime.Parse($"{endDate} 23:59:59Z"))
                 return true;
+
             return false;
         }
-
         public static void DisableMod(Mod mod, string disableMessage = "")
         {
             mod.modListElement.gameObject.SetActive(false);
@@ -37,7 +37,6 @@ namespace MSCLoader
             mod.enabled = false;
             ModPrompt.CreatePrompt($"{mod.Name}\n\nTHIS MOD IS AN EARLY ACCESS MOD AND ITS TESTING PERIOD HAS ENDED.\n\nIT HAS BEEN DISABLED.\n\n{disableMessage}", "EARLY ACCESS MOD!");
         }
-
         public static DateTime GetDate()
         {
             try

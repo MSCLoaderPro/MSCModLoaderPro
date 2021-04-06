@@ -354,6 +354,24 @@ namespace MSCLoader.Helper
     /// <summary>Helper Methods to work with PlayMakerArrayListProxy and PlayMakerHashTableProxy components.<br></br><br></br>Courtesy of BrennFuchS.</summary>
     public static class PlayMakerProxyHelper
     {
+        static Dictionary<PlayMakerCollectionProxy.VariableEnum, Type> prefillDictionary = new Dictionary<PlayMakerCollectionProxy.VariableEnum, Type>()
+        {
+            { PlayMakerCollectionProxy.VariableEnum.AudioClip, typeof(AudioClip) },
+            { PlayMakerCollectionProxy.VariableEnum.Bool, typeof(bool) },
+            { PlayMakerCollectionProxy.VariableEnum.Color, typeof(Color) },
+            { PlayMakerCollectionProxy.VariableEnum.Float, typeof(float) },
+            { PlayMakerCollectionProxy.VariableEnum.GameObject, typeof(GameObject) },
+            { PlayMakerCollectionProxy.VariableEnum.Int, typeof(int) },
+            { PlayMakerCollectionProxy.VariableEnum.Material, typeof(Material) },
+            { PlayMakerCollectionProxy.VariableEnum.Quaternion, typeof(Quaternion) },
+            { PlayMakerCollectionProxy.VariableEnum.Rect, typeof(Rect) },
+            { PlayMakerCollectionProxy.VariableEnum.String, typeof(string) },
+            { PlayMakerCollectionProxy.VariableEnum.Texture, typeof(Texture) },
+            { PlayMakerCollectionProxy.VariableEnum.Vector2, typeof(Vector2) },
+            { PlayMakerCollectionProxy.VariableEnum.Vector3, typeof(Vector3) }
+        };
+        
+        // ARRAYLISTPROXY
         public static PlayMakerArrayListProxy GetArrayListProxy(this GameObject gameObject, string referenceName)
         {
             PlayMakerArrayListProxy[] proxies = gameObject.GetComponents<PlayMakerArrayListProxy>();
@@ -365,409 +383,197 @@ namespace MSCLoader.Helper
 
             return null;
         }
-
         public static PlayMakerArrayListProxy GetArrayListProxy(this Transform transform, string referenceName) =>
             transform.gameObject.GetArrayListProxy(referenceName); 
-        
-        public static void AddToPrefill(this PlayMakerCollectionProxy proxy, object item)
+        public static void Add(this PlayMakerArrayListProxy proxy, object item, bool clear = false)
         {
+            if (item.GetType() != prefillDictionary[proxy.preFillType])
+                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
+
+            if (clear) proxy.Clear();
+            proxy._arrayList.Add(item);
+        }
+        public static void Add(this PlayMakerArrayListProxy proxy, IEnumerable<object> items, bool clear = false)
+        {
+            if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
+                throw new Exception("One or more of the items you're trying to add have the incorrect type. Aborting...");
+
+            if (clear) proxy.Clear();
+            proxy._arrayList.AddRange(items.ToList());
+        }       
+        public static void Clear(this PlayMakerArrayListProxy proxy, bool clearPrefill = false)
+        {
+            proxy._arrayList = new ArrayList(0);
+            if (clearPrefill) proxy.ClearPrefill();
+        }
+        public static void AddPrefill(this PlayMakerArrayListProxy proxy, object item, bool clear = false)
+        {
+            if (item.GetType() != prefillDictionary[proxy.preFillType])
+                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
+
+            if (clear)
+            {
+                proxy.preFillCount = 0;
+                proxy.cleanPrefilledLists();
+            }
+
+            proxy.preFillCount++;
             switch (item)
             {
-                case AudioClip _AudioClip:
-                    proxy.preFillCount++;
-                    proxy.preFillAudioClipList.Add(_AudioClip);
-                    break;
-                case bool _bool:
-                    proxy.preFillCount++;
-                    proxy.preFillBoolList.Add(_bool);
-                    break;
-                case Color _Color:
-                    proxy.preFillCount++;
-                    proxy.preFillColorList.Add(_Color);
-                    break;
-                case float _float:
-                    proxy.preFillCount++;
-                    proxy.preFillFloatList.Add(_float);
-                    break;
-                case GameObject _GameObject:
-                    proxy.preFillCount++;
-                    proxy.preFillGameObjectList.Add(_GameObject);
-                    break;
-                case int _int:
-                    proxy.preFillCount++;
-                    proxy.preFillIntList.Add(_int);
-                    break;
-                case Material _Material:
-                    proxy.preFillCount++;
-                    proxy.preFillMaterialList.Add(_Material);
-                    break;
-                case Quaternion _Quaternion:
-                    proxy.preFillCount++;
-                    proxy.preFillQuaternionList.Add(_Quaternion);
-                    break;
-                case Rect _Rect:
-                    proxy.preFillCount++;
-                    proxy.preFillRectList.Add(_Rect);
-                    break;
-                case string _string:
-                    proxy.preFillCount++;
-                    proxy.preFillStringList.Add(_string);
-                    break;
-                case Texture2D _Texture2D:
-                    proxy.preFillCount++;
-                    proxy.preFillTextureList.Add(_Texture2D);
-                    break;
-                case Vector2 _Vector2:
-                    proxy.preFillCount++;
-                    proxy.preFillVector2List.Add(_Vector2);
-                    break;
-                case Vector3 _Vector3:
-                    proxy.preFillCount++;
-                    proxy.preFillVector3List.Add(_Vector3);
-                    break;
+                case AudioClip _AudioClip: proxy.preFillAudioClipList.Add(_AudioClip); break;
+                case bool _bool: proxy.preFillBoolList.Add(_bool); break;
+                case Color _Color: proxy.preFillColorList.Add(_Color); break;
+                case float _float: proxy.preFillFloatList.Add(_float); break;
+                case GameObject _GameObject: proxy.preFillGameObjectList.Add(_GameObject); break;
+                case int _int: proxy.preFillIntList.Add(_int); break;
+                case Material _Material: proxy.preFillMaterialList.Add(_Material); break;
+                case Quaternion _Quaternion: proxy.preFillQuaternionList.Add(_Quaternion); break;
+                case Rect _Rect: proxy.preFillRectList.Add(_Rect); break;
+                case string _string: proxy.preFillStringList.Add(_string); break;
+                case Texture2D _Texture2D: proxy.preFillTextureList.Add(_Texture2D); break;
+                case Vector2 _Vector2: proxy.preFillVector2List.Add(_Vector2); break;
+                case Vector3 _Vector3: proxy.preFillVector3List.Add(_Vector3); break;
             }
         }
-
-        /// <summary>
-        /// add a variable to a specified PMproxy.
-        /// the variable type has to match the selected PMproxys preFillType!
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="PMproxy"></param>
-        /// <param name="ItemToAdd"></param>
-        /// <param name="ClearBeforeAdding"></param>
-        public static void AddToProxy<T>(T PMproxy, object ItemToAdd, bool ClearBeforeAdding = false)
+        public static void AddPrefill(this PlayMakerArrayListProxy proxy, IEnumerable<object> items, bool clear = false)
         {
-            switch (PMproxy)
+            if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
+                throw new Exception("One or more of the items you're trying to add have the incorrect type. Aborting...");
+
+            if (clear)
             {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    if (ClearBeforeAdding) arrayListProxy._arrayList = new ArrayList(1);
-                    AddValueToArrayList(arrayListProxy, ItemToAdd, ClearBeforeAdding);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    if (ClearBeforeAdding && hashTableProxy._hashTable.Count > 0) hashTableProxy._hashTable.Clear();
-                    AddValueToHashTable(hashTableProxy, ItemToAdd);
-                    break;
+                proxy.preFillCount = 0;
+                proxy.cleanPrefilledLists();
+            }
+
+            proxy.preFillCount += items.Count();
+            switch (items.ToList()[0])
+            {
+                case AudioClip _AudioClip: proxy.preFillAudioClipList.AddRange(items.Select(x => (AudioClip)x)); break;
+                case bool _bool: proxy.preFillBoolList.AddRange(items.Select(x => (bool)x)); break;
+                case Color _Color: proxy.preFillColorList.AddRange(items.Select(x => (Color)x)); break;
+                case float _float: proxy.preFillFloatList.AddRange(items.Select(x => (float)x)); break;
+                case GameObject _GameObject: proxy.preFillGameObjectList.AddRange(items.Select(x => (GameObject)x)); break;
+                case int _int: proxy.preFillIntList.AddRange(items.Select(x => (int)x)); break;
+                case Material _Material: proxy.preFillMaterialList.AddRange(items.Select(x => (Material)x)); break;
+                case Quaternion _Quaternion: proxy.preFillQuaternionList.AddRange(items.Select(x => (Quaternion)x)); break;
+                case Rect _Rect: proxy.preFillRectList.AddRange(items.Select(x => (Rect)x)); break;
+                case string _string: proxy.preFillStringList.AddRange(items.Select(x => (string)x)); break;
+                case Texture2D _Texture2D: proxy.preFillTextureList.AddRange(items.Select(x => (Texture2D)x)); break;
+                case Vector2 _Vector2: proxy.preFillVector2List.AddRange(items.Select(x => (Vector2)x)); break;
+                case Vector3 _Vector3: proxy.preFillVector3List.AddRange(items.Select(x => (Vector3)x)); break;
             }
         }
-        /// <summary>
-        /// add a variable to one of the PMproxy's in the GameObject.
-        /// the variable type has to match the selected PMproxys preFillType!
-        /// </summary>
-        /// <param name="PMproxysParent"></param>
-        /// <param name="wantedProxyReferenceName"></param>
-        /// <param name="ItemToAdd"></param>
-        /// <param name="ClearBeforeAdding"></param>       
-        public static void AddToProxy(GameObject PMproxysParent, string wantedProxyReferenceName, object ItemToAdd, bool ClearBeforeAdding = false)
+        public static void ClearPrefill(this PlayMakerArrayListProxy proxy)
         {
-            var wantedProxy = PMproxysParent.GetComponentsInChildren<PlayMakerCollectionProxy>().FirstOrDefault(x => x.referenceName == wantedProxyReferenceName);
-            switch (wantedProxy)
-            {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    if (ClearBeforeAdding) arrayListProxy._arrayList = new ArrayList(1);
-                    AddValueToArrayList(arrayListProxy, ItemToAdd, ClearBeforeAdding);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    if (ClearBeforeAdding && hashTableProxy._hashTable.Count > 0) hashTableProxy._hashTable.Clear();
-                    AddValueToHashTable(hashTableProxy, ItemToAdd);
-                    break;
-            }
+            proxy.preFillCount = 0;
+            proxy.cleanPrefilledLists();
         }
 
-        /// <summary>
-        /// add a list of variables to a specified PMproxy.
-        /// the variable types have to match the selected PMproxy's preFillType!
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="PMproxy"></param>
-        /// <param name="ItemsToAdd"></param>
-        /// <param name="ClearBeforeAdding"></param>
-        public static void AddRangeToProxy<T>(T PMproxy, IEnumerable<object> ItemsToAdd, bool ClearBeforeAdding = false)
+        // HASHTABLEPROXY
+        public static PlayMakerHashTableProxy GetHashTableProxy(this GameObject gameObject, string referenceName)
         {
-            switch (PMproxy)
-            {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    var varList = new List<object>();
-                    if (ClearBeforeAdding) arrayListProxy._arrayList = new ArrayList(arrayListProxy._arrayList.Count);
-                    else if (!ClearBeforeAdding && arrayListProxy._arrayList.Count > 0) varList.AddRange(arrayListProxy._arrayList.ToArray().ToList());
-                    varList.AddRange(ItemsToAdd);
-                    for (var i = 0; i < varList.Count; i++) AddValueToArrayList(arrayListProxy, varList[i], ClearBeforeAdding);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    if (ClearBeforeAdding && hashTableProxy._hashTable.Count > 0) hashTableProxy._hashTable.Clear();
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddValueToHashTable(hashTableProxy, ItemsToAdd.ToList()[i]);
-                    break;
-            }
+            PlayMakerHashTableProxy[] proxies = gameObject.GetComponents<PlayMakerHashTableProxy>();
+
+            if (proxies == null) return null;
+
+            for (int i = 0; i < proxies.Length; i++)
+                if (proxies[i].referenceName == referenceName) return proxies[i];
+
+            return null;
         }
-        /// <summary>
-        /// add variables to one of the PMproxys in the GameObject.
-        /// the variable types have to match the selected PMproxy's preFillType!
-        /// </summary>
-        /// <param name="PMproxysParent"></param>
-        /// <param name="wantedProxyReferenceName"></param>
-        /// <param name="ItemsToAdd"></param>
-        /// <param name="ClearBeforeAdding"></param>
-        public static void AddRangeToProxy(GameObject PMproxysParent, string wantedProxyReferenceName, IEnumerable<object> ItemsToAdd, bool ClearBeforeAdding = false)
+        public static PlayMakerHashTableProxy GetHashTableProxy(this Transform transform, string referenceName) =>
+            transform.gameObject.GetHashTableProxy(referenceName);
+        public static void Add(this PlayMakerHashTableProxy proxy, string key, object item, bool clear = false)
         {
-            var wantedProxy = PMproxysParent.GetComponentsInChildren<PlayMakerCollectionProxy>().FirstOrDefault(x => x.referenceName == wantedProxyReferenceName);
-            switch (wantedProxy)
-            {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    var varList = new List<object>();
-                    if (ClearBeforeAdding) arrayListProxy._arrayList = new ArrayList(arrayListProxy._arrayList.Count);
-                    else if (!ClearBeforeAdding && arrayListProxy._arrayList.Count > 0) varList.AddRange(arrayListProxy._arrayList.ToArray().ToList());
-                    varList.AddRange(ItemsToAdd);
-                    for (var i = 0; i < varList.Count; i++) AddValueToArrayList(arrayListProxy, varList[i], ClearBeforeAdding);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    if (ClearBeforeAdding && hashTableProxy._hashTable.Count > 0) hashTableProxy._hashTable.Clear();
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddValueToHashTable(hashTableProxy, ItemsToAdd.ToList()[i]);
-                    break;
-            }
-        }
+            if (item.GetType() != prefillDictionary[proxy.preFillType])
+                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
 
-        static void AddValueToArrayList(PlayMakerArrayListProxy proxy, object item, bool clear)
+            if (clear) proxy.Clear();
+            proxy.hashTable.Add(key, item);
+        }
+        public static void Add(this PlayMakerHashTableProxy proxy, IEnumerable<string> keys, IEnumerable<object> items, bool clear = false)
         {
-            try
-            {
-                List<AudioClip> audios = new List<AudioClip>();
-                List<bool> bools = new List<bool>();
-                List<Color> colors = new List<Color>();
-                List<float> floats = new List<float>();
-                List<GameObject> gameObjects = new List<GameObject>();
-                List<int> ints = new List<int>();
-                List<Material> materials = new List<Material>();
-                List<Quaternion> quaternions = new List<Quaternion>();
-                List<Rect> rects = new List<Rect>();
-                List<string> strings = new List<string>();
-                List<Texture2D> texture2Ds = new List<Texture2D>();
-                List<Vector2> vector2s = new List<Vector2>();
-                List<Vector3> vector3s = new List<Vector3>();
+            if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
+                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
 
-                switch (proxy.preFillType)
-                {
-                    case PlayMakerCollectionProxy.VariableEnum.AudioClip:
-                        if (proxy._arrayList.Count > 0 && !clear) audios.AddRange(proxy._arrayList.ToArray().Select(x => (AudioClip)x));
-                        audios.Add((AudioClip)item);
-                        proxy._arrayList.AddRange(audios);
-                        break;
+            if (clear) proxy.Clear();
 
-                    case PlayMakerCollectionProxy.VariableEnum.Bool:
-                        if (proxy._arrayList.Count > 0 && !clear) bools.AddRange(proxy._arrayList.ToArray().Select(x => (bool)x));
-                        bools.Add((bool)item);
-                        proxy._arrayList.AddRange(bools);
-                        break;
+            List<string> keyList = keys.ToList();
+            List<object> itemList = items.ToList();
 
-                    case PlayMakerCollectionProxy.VariableEnum.Color:
-                        if (proxy._arrayList.Count > 0 && !clear) colors.AddRange(proxy._arrayList.ToArray().Select(x => (Color)x));
-                        colors.Add((Color)item);
-                        proxy._arrayList.AddRange(colors);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Float:
-                        if (proxy._arrayList.Count > 0 && !clear) floats.AddRange(proxy._arrayList.ToArray().Select(x => (float)x));
-                        floats.Add((float)item);
-                        proxy._arrayList.AddRange(floats);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.GameObject:
-                        if (proxy._arrayList.Count > 0 && !clear) gameObjects.AddRange(proxy._arrayList.ToArray().Select(x => (GameObject)x));
-                        gameObjects.Add((GameObject)item);
-                        proxy._arrayList.AddRange(gameObjects);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Int:
-                        if (proxy._arrayList.Count > 0 && !clear) ints.AddRange(proxy._arrayList.ToArray().Select(x => (int)x));
-                        ints.Add((int)item);
-                        proxy._arrayList.AddRange(ints);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Material:
-                        if (proxy._arrayList.Count > 0 && !clear) materials.AddRange(proxy._arrayList.ToArray().Select(x => (Material)x));
-                        materials.Add((Material)item);
-                        proxy._arrayList.AddRange(materials);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Quaternion:
-                        if (proxy._arrayList.Count > 0 && !clear) quaternions.AddRange(proxy._arrayList.ToArray().Select(x => (Quaternion)x));
-                        quaternions.Add((Quaternion)item);
-                        proxy._arrayList.AddRange(quaternions);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Rect:
-                        if (proxy._arrayList.Count > 0 && !clear) rects.AddRange(proxy._arrayList.ToArray().Select(x => (Rect)x));
-                        rects.Add((Rect)item);
-                        proxy._arrayList.AddRange(rects);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.String:
-                        if (proxy._arrayList.Count > 0 && !clear) strings.AddRange(proxy._arrayList.ToArray().Select(x => (string)x));
-                        strings.Add((string)item);
-                        proxy._arrayList.AddRange(strings);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Texture:
-                        if (proxy._arrayList.Count > 0 && !clear) texture2Ds.AddRange(proxy._arrayList.ToArray().Select(x => (Texture2D)x));
-                        texture2Ds.Add((Texture2D)item);
-                        proxy._arrayList.AddRange(texture2Ds);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Vector2:
-                        if (proxy._arrayList.Count > 0 && !clear) vector2s.AddRange(proxy._arrayList.ToArray().Select(x => (Vector2)x));
-                        vector2s.Add((Vector2)item);
-                        proxy._arrayList.AddRange(vector2s);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Vector3:
-                        if (proxy._arrayList.Count > 0 && !clear) vector3s.AddRange(proxy._arrayList.ToArray().Select(x => (Vector3)x));
-                        vector3s.Add((Vector3)item);
-                        proxy._arrayList.AddRange(vector3s);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                ModConsole.LogError(ex.ToString());
-            }
+            for (int i = 0; i < keyList.Count; i++)
+                proxy.hashTable.Add(keyList[i], itemList[i]);
         }
-        static void AddValueToHashTable(PlayMakerHashTableProxy proxy, object item)
+        public static void Clear(this PlayMakerHashTableProxy proxy, bool clearPrefill = false)
         {
-            try
-            {
-                switch (proxy.preFillType)
-                {
-                    case PlayMakerCollectionProxy.VariableEnum.AudioClip:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (AudioClip)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Bool:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (bool)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Color:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (Color)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Float:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (float)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.GameObject:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (GameObject)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Int:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (int)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Material:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (Material)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Quaternion:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (Quaternion)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Rect:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (Rect)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.String:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (string)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Texture:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (Texture2D)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Vector2:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (Vector2)item);
-                        break;
-
-                    case PlayMakerCollectionProxy.VariableEnum.Vector3:
-                        proxy._hashTable.Add(proxy._hashTable.Count, (Vector3)item);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                ModConsole.LogError(ex.ToString());
-            }
+            proxy._hashTable = new Hashtable();
+            if (clearPrefill) proxy.ClearPrefill();
         }
-
-        /// <summary>
-        /// add a variable to a specified PMproxy.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="PMproxy"></param>
-        /// <param name="ItemToAdd"></param>
-        public static void AddToPrefill<T>(T PMproxy, object ItemToAdd)
+        public static void AddPrefill(this PlayMakerHashTableProxy proxy, string key, object item, bool clear = false)
         {
-            switch (PMproxy)
-            {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemToAdd);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemToAdd);
-                    break;
-            }
-        }
-        /// <summary>
-        /// add a variable to one of the PMproxy's in the GameObject.
-        /// </summary>
-        /// <param name="PMproxysParent"></param>
-        /// <param name="wantedProxyReferenceName"></param>
-        /// <param name="ItemToAdd"></param>
-        public static void AddToPrefill(GameObject PMproxysParent, string wantedProxyReferenceName, object ItemToAdd)
-        {
-            var wantedProxy = PMproxysParent.GetComponentsInChildren<PlayMakerCollectionProxy>().FirstOrDefault(x => x.referenceName == wantedProxyReferenceName);
-            switch (wantedProxy)
-            {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemToAdd);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemToAdd);
-                    break;
-            }
-        }
-        /// <summary>
-        /// add a list of variables to a specified PMproxy.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="PMproxy"></param>
-        /// <param name="ItemsToAdd"></param>
-        public static void AddRangeToPrefill<T>(T PMproxy, IEnumerable<object> ItemsToAdd)
-        {
-            switch (PMproxy)
-            {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemsToAdd.ToList()[i]);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemsToAdd.ToList()[i]);
-                    break;
-            }
-        }
-        /// <summary>add a list of variables to one of the PMproxy's in the GameObject.</summary>
-        /// <param name="PMproxysParent"></param>
-        /// <param name="wantedProxyReferenceName"></param>
-        /// <param name="ItemsToAdd"></param>
-        public static void AddRangeToPrefill(GameObject PMproxysParent, string wantedProxyReferenceName, IEnumerable<object> ItemsToAdd)
-        {
-            var wantedProxy = PMproxysParent.GetComponentsInChildren<PlayMakerCollectionProxy>().FirstOrDefault(x => x.referenceName == wantedProxyReferenceName);
-            switch (wantedProxy)
-            {
-                case PlayMakerArrayListProxy arrayListProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)arrayListProxy, ItemsToAdd.ToList()[i]);
-                    break;
-                case PlayMakerHashTableProxy hashTableProxy:
-                    for (var i = 0; i < ItemsToAdd.Count(); i++) AddToPrefill((PlayMakerCollectionProxy)hashTableProxy, ItemsToAdd.ToList()[i]);
-                    break;
-            }
-        }
+            if (item.GetType() != prefillDictionary[proxy.preFillType])
+                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
 
-        
+            if (clear)
+            {
+                proxy.preFillCount = 0;
+                proxy.cleanPrefilledLists();
+            }
+
+            proxy.preFillCount++;
+            proxy.preFillKeyList.Add(key);
+            switch (item)
+            {
+                case AudioClip _AudioClip: proxy.preFillAudioClipList.Add(_AudioClip); break;
+                case bool _bool: proxy.preFillBoolList.Add(_bool); break;
+                case Color _Color: proxy.preFillColorList.Add(_Color); break;
+                case float _float: proxy.preFillFloatList.Add(_float); break;
+                case GameObject _GameObject: proxy.preFillGameObjectList.Add(_GameObject); break;
+                case int _int: proxy.preFillIntList.Add(_int); break;
+                case Material _Material: proxy.preFillMaterialList.Add(_Material); break;
+                case Quaternion _Quaternion: proxy.preFillQuaternionList.Add(_Quaternion); break;
+                case Rect _Rect: proxy.preFillRectList.Add(_Rect); break;
+                case string _string: proxy.preFillStringList.Add(_string); break;
+                case Texture2D _Texture2D: proxy.preFillTextureList.Add(_Texture2D); break;
+                case Vector2 _Vector2: proxy.preFillVector2List.Add(_Vector2); break;
+                case Vector3 _Vector3: proxy.preFillVector3List.Add(_Vector3); break;
+            }
+        }
+        public static void AddPrefill(this PlayMakerHashTableProxy proxy, IEnumerable<string> keys, IEnumerable<object> items, bool clear = false)
+        {
+            if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
+                throw new Exception("One or more of the items you're trying to add have the incorrect type. Aborting...");
+
+            if (clear)
+            {
+                proxy.preFillCount = 0;
+                proxy.cleanPrefilledLists();
+            }
+
+            proxy.preFillCount += items.Count();
+            proxy.preFillKeyList.AddRange(keys);
+            switch (items.ToList()[0])
+            {
+                case AudioClip _AudioClip: proxy.preFillAudioClipList.AddRange(items.Select(x => (AudioClip)x)); break;
+                case bool _bool: proxy.preFillBoolList.AddRange(items.Select(x => (bool)x)); break;
+                case Color _Color: proxy.preFillColorList.AddRange(items.Select(x => (Color)x)); break;
+                case float _float: proxy.preFillFloatList.AddRange(items.Select(x => (float)x)); break;
+                case GameObject _GameObject: proxy.preFillGameObjectList.AddRange(items.Select(x => (GameObject)x)); break;
+                case int _int: proxy.preFillIntList.AddRange(items.Select(x => (int)x)); break;
+                case Material _Material: proxy.preFillMaterialList.AddRange(items.Select(x => (Material)x)); break;
+                case Quaternion _Quaternion: proxy.preFillQuaternionList.AddRange(items.Select(x => (Quaternion)x)); break;
+                case Rect _Rect: proxy.preFillRectList.AddRange(items.Select(x => (Rect)x)); break;
+                case string _string: proxy.preFillStringList.AddRange(items.Select(x => (string)x)); break;
+                case Texture2D _Texture2D: proxy.preFillTextureList.AddRange(items.Select(x => (Texture2D)x)); break;
+                case Vector2 _Vector2: proxy.preFillVector2List.AddRange(items.Select(x => (Vector2)x)); break;
+                case Vector3 _Vector3: proxy.preFillVector3List.AddRange(items.Select(x => (Vector3)x)); break;
+            }
+        }
+        public static void ClearPrefill(this PlayMakerHashTableProxy proxy)
+        {
+            proxy.preFillCount = 0;
+            proxy.cleanPrefilledLists();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿﻿using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
@@ -44,7 +44,7 @@ namespace MSCLoader
         ModUpdaterDatabase modUpdaterDatabase;
 
         const string ModLoaderApiUri = "https://api.github.com/repos/MSCLoaderPro/EarlyAccessRelease/releases";
-        const string InstallerApiUri = "https://api.github.com/repos/MSCLoaderPro/docs/releases/latest";   
+        const string InstallerApiUri = "https://api.github.com/repos/MSCLoaderPro/docs/releases/latest";
         string modLoaderLatestVersion;
         bool modLoaderUpdateAvailable, installModLoaderUpdate;
         string TempPathModLoaderPro => Path.Combine(Path.GetTempPath(), "modloaderpro");
@@ -751,7 +751,7 @@ namespace MSCLoader
             {
                 ModPrompt.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
                                         $"WOULD YOU LIKE TO INSTALL THEM NOW?\n\n" +
-                                        $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>", 
+                                        $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>",
                                         "MOD UPDATER", () => { StartInstaller(); }, null, () => { waitForInstall = true; });
             }
         }
@@ -967,7 +967,7 @@ namespace MSCLoader
             {
                 ModPrompt.CreateYesNoPrompt("Mod Loader Pro will update after you quit the game. Would you like to do that now?", "Mod Loader Pro Update is ready!", () => { Application.Quit(); });
             }
-            
+
             isBusy = false;
         }
 
