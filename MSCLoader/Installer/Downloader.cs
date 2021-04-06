@@ -2,6 +2,7 @@
 using System.Net;
 using System.IO;
 using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace Installer
 {
@@ -9,7 +10,7 @@ namespace Installer
     {
         const string MetadataUrl = "https://api.github.com/repos/MSCLoaderPro/EarlyAccessRelease/releases";
         const string GitHubHeader = "User-Agent: Other";
-        string ZipName = "MSCModLoaderPro";
+        const string ZipName = "MSCModLoaderPro";
         string TempPath => Path.Combine(Path.GetTempPath(), "modloaderpro");
         string ZipPath => Path.Combine(TempPath, "modloaderpro.zip");
 
@@ -40,7 +41,7 @@ namespace Installer
                     client.DownloadStringAsync(new Uri(MetadataUrl));
                 }
             }
-            catch (Exception ex)
+            catch
             {
 
             }            
@@ -51,6 +52,11 @@ namespace Installer
             string output = e.Result.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
             foreach (string s in output.Split('\n'))
             {
+                if (s.Contains("\"tag_name\""))
+                {
+                    Installer.Instance.SetVersionString(s.Split(':')[1].Replace("\"", "").Replace(",", "").Trim());
+                }
+
                 if (s.Contains("\"browser_download_url\"") && s.Contains(ZipName))
                 {
                     string[] link = s.Split(':');
@@ -86,31 +92,38 @@ namespace Installer
             Unpack();
         }
 
-        void Unpack()
+        async void Unpack()
         {
             Installer.Instance.UpdateStatus(100, "Extracting...");
-            using (ZipArchive file = ZipFile.OpenRead(ZipPath))
+            await Task.Run(() =>
             {
-                string extractPath = Installer.Instance.MscPath;
-                foreach (var f in file.Entries)
+                using (ZipArchive file = ZipFile.OpenRead(ZipPath))
                 {
-                    string path = Path.Combine(extractPath, f.FullName);
-                    if (path.EndsWith("/")) continue;
-                    string directory = f.FullName.Replace(f.Name, "");
-                    if (!string.IsNullOrEmpty(directory) && !Directory.Exists(Path.Combine(extractPath, directory)))
+                    string extractPath = Installer.Instance.MscPath;
+                    int stage = 0;
+                    foreach (var f in file.Entries)
                     {
-                        Directory.CreateDirectory(Path.Combine(extractPath, directory));
-                    }
+                        int percentage = (int)(((double)stage / (double)file.Entries.Count) * 100);
+                        Installer.Instance.UpdateStatus(percentage, $"Extracting ({percentage}%)...");
+                        string path = Path.Combine(extractPath, f.FullName);
+                        if (path.EndsWith("/")) continue;
+                        string directory = f.FullName.Replace(f.Name, "");
+                        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(Path.Combine(extractPath, directory)))
+                        {
+                            Directory.CreateDirectory(Path.Combine(extractPath, directory));
+                        }
 
-                    // Don't override user settings.
-                    if (f.Name == "ModLoaderSettings.ini" && File.Exists(path))
-                    {
-                        continue;
-                    }
+                        // Don't override user settings.
+                        if (f.Name == "ModLoaderSettings.ini" && File.Exists(path))
+                        {
+                            continue;
+                        }
 
-                    f.ExtractToFile(path, true);
+                        f.ExtractToFile(path, true);
+                        stage++;
+                    }
                 }
-            }
+            });
             downloadFinished = true;
             Installer.Instance.TabEnd();
         }

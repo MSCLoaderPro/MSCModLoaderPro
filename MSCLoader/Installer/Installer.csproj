@@ -7,7 +7,7 @@
     <ProjectGuid>{A820DE00-188D-4DE8-8748-2FF561613A18}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Installer</RootNamespace>
-    <AssemblyName>MSC Mod Loader Pro Installer</AssemblyName>
+    <AssemblyName>Installer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

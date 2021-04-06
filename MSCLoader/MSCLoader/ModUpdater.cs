@@ -43,10 +43,17 @@ namespace MSCLoader
 
         ModUpdaterDatabase modUpdaterDatabase;
 
+        const string ModLoaderApiUri = "https://api.github.com/repos/MSCLoaderPro/EarlyAccessRelease/releases";
+        const string InstallerApiUri = "https://api.github.com/repos/MSCLoaderPro/docs/releases/latest";   
+        string modLoaderLatestVersion;
+        bool modLoaderUpdateAvailable, installModLoaderUpdate;
+        string TempPathModLoaderPro => Path.Combine(Path.GetTempPath(), "modloaderpro");
+        const string InstallerName = "installer.exe";
+        string InstallerPath => Path.Combine(TempPathModLoaderPro, InstallerName);
+
         public ModUpdater()
         {
             instance = this;
-
         }
 
         void Start()
@@ -81,7 +88,8 @@ namespace MSCLoader
             if (ShouldCheckForUpdates())
             {
                 autoUpdateChecked = true;
-                LookForUpdates();
+                //LookForUpdates();
+                StartCoroutine(CheckModLoaderUpdate());
             }
         }
 
@@ -110,6 +118,7 @@ namespace MSCLoader
             }
         }
 
+        IEnumerator currentSliderText;
         IEnumerator UpdateSliderText(string message, string finishedMessage)
         {
             menuLabelUpdateText.gameObject.SetActive(true);
@@ -520,43 +529,51 @@ namespace MSCLoader
             // if the local mod version is newer than the publicly available one.
 
             // First we convert string version to individual integers.
-            int modMajor, modMinor, modRevision = 0;
-            string[] modVersionSpliited = currentVersion.Split('.');
-            modMajor = int.Parse(modVersionSpliited[0]);
-            modMinor = int.Parse(modVersionSpliited[1]);
-            if (modVersionSpliited.Length == 3)
-                modRevision = int.Parse(modVersionSpliited[2]);
-
-            // Same for the newest server version.
-            int major, minor, revision = 0;
-            string[] verSplitted = serverVersion.Split('.');
-            major = int.Parse(verSplitted[0]);
-            minor = int.Parse(verSplitted[1]);
-            if (verSplitted.Length == 3)
-                revision = int.Parse(verSplitted[2]);
-
-            // And now we finally compare numbers.
-            bool isOutdated = false;
-            if (major > modMajor)
+            try
             {
-                isOutdated = true;
-            }
-            else
-            {
-                if (minor > modMinor && major == modMajor)
+                int modMajor, modMinor, modRevision = 0;
+                string[] modVersionSpliited = currentVersion.Split('.');
+                modMajor = int.Parse(modVersionSpliited[0]);
+                modMinor = int.Parse(modVersionSpliited[1]);
+                if (modVersionSpliited.Length == 3)
+                    modRevision = int.Parse(modVersionSpliited[2]);
+
+                // Same for the newest server version.
+                int major, minor, revision = 0;
+                string[] verSplitted = serverVersion.Split('.');
+                major = int.Parse(verSplitted[0]);
+                minor = int.Parse(verSplitted[1]);
+                if (verSplitted.Length == 3)
+                    revision = int.Parse(verSplitted[2]);
+
+                // And now we finally compare numbers.
+                bool isOutdated = false;
+                if (major > modMajor)
                 {
                     isOutdated = true;
                 }
                 else
                 {
-                    if (revision > modRevision && minor == modMinor && major == modMajor)
+                    if (minor > modMinor && major == modMajor)
                     {
                         isOutdated = true;
                     }
+                    else
+                    {
+                        if (revision > modRevision && minor == modMinor && major == modMajor)
+                        {
+                            isOutdated = true;
+                        }
+                    }
                 }
-            }
 
-            return isOutdated;
+                return isOutdated;
+            }
+            catch
+            {
+                ModConsole.LogError($"Mod Updater: Incorrectly formated version tag: {currentVersion} | {serverVersion}");
+                return false;
+            }
         }
         #endregion
         #region Downloading the updates
@@ -679,7 +696,7 @@ namespace MSCLoader
                 {
                     args += $" \"{GetNexusToken()}\"";
                 }
-                ModConsole.Log(args);
+
                 Process p = new Process
                 {
                     StartInfo = new ProcessStartInfo
@@ -735,16 +752,44 @@ namespace MSCLoader
                 ModPrompt.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
                                         $"WOULD YOU LIKE TO INSTALL THEM NOW?\n\n" +
                                         $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>", 
-                                        "MOD UPDATER", () => { Application.Quit(); }, null, () => { waitForInstall = true; });
+                                        "MOD UPDATER", () => { StartInstaller(); }, null, () => { waitForInstall = true; });
             }
         }
         #endregion
         #region Waiting for install
         bool waitForInstall;
         // Unity function: https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnApplicationQuit.html
+
+        void StartInstaller()
+        {
+            string pathToGame = Path.GetFullPath(ModLoader.ModsFolder).Replace("\\" + MSCLoader.settings.ModsFolderPath, "").Replace(" ", "%20");
+
+            Process p = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/C \"\" {InstallerName} fast-install {pathToGame}",
+                    WorkingDirectory = TempPathModLoaderPro,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            p.Start();
+            ModPrompt.CreatePrompt(pathToGame);
+        }
+
         void OnApplicationQuit()
         {
             modUpdaterDatabase.Save();
+
+            // Mod Loader update has a priority over mods.
+            if (installModLoaderUpdate)
+            {
+                StartInstaller();
+                return;
+            }
 
             if (waitForInstall)
             {
@@ -770,7 +815,148 @@ namespace MSCLoader
         }
 
         #region Mod Loader Update Check
-        Ienuemrator
+        IEnumerator CheckModLoaderUpdate()
+        {
+            isBusy = true;
+
+            currentSliderText = UpdateSliderText("LOOKING FOR MOD LOADER UPDATES", "CHECKING FOR MOD LOADER UPDATE FINISHED!");
+            StartCoroutine(currentSliderText);
+            ModConsole.Log($"Looking for Mod Loader Pro updates...");
+            Process p = GetMetaFile(ModLoaderApiUri);
+            int downloadTime = 0;
+            while (!p.HasExited)
+            {
+                downloadTime++;
+                if (downloadTime > TimeoutTime)
+                {
+                    ModConsole.LogError($"Mod Updater: Getting metadata of Mod Loader Pro timed-out.");
+                    isBusy = false;
+                    yield break;
+                }
+
+                yield return new WaitForSeconds(1);
+            }
+
+            p.Close();
+            ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
+
+            string output = lastDataOut.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
+            foreach (string s in output.Split('\n'))
+            {
+                // Finding tag of the latest release, this servers as latest version number.
+                if (s.Contains("\"tag_name\""))
+                {
+                    modLoaderLatestVersion = s.Split(':')[1].Split('-')[0].Replace("\"", "");
+                    break;
+                }
+            }
+
+            modLoaderUpdateAvailable = IsNewerVersionAvailable(ModLoader.Version, modLoaderLatestVersion);
+            isBusy = false; 
+
+            //modLoaderUpdateAvailable = true; // DEBUG!
+
+            StopCoroutine(currentSliderText);
+
+            if (modLoaderUpdateAvailable)
+            {
+                ModPrompt.CreateYesNoPrompt($"Mod Loader Pro update is available to download!\n\n" +
+                    $"Your version is <color=yellow>{ModLoader.Version}</color> and the newest available is <color=yellow>{modLoaderLatestVersion}</color>.\n\n" +
+                    $"Would you like to download it now?", "Mod Loader Update Available!", DownloadModLoaderUpdate, () => LookForUpdates());
+            }
+            else
+            {
+                LookForUpdates();
+            }
+
+        }
+
+        void DownloadModLoaderUpdate()
+        {
+            StartCoroutine(GetModLoaderInstaller());
+        }
+
+        IEnumerator GetModLoaderInstaller()
+        {
+            isBusy = true;
+            StartCoroutine(UpdateSliderText("DOWNLOADING MOD LOADER PRO INSTALLER", "MOD LOADER PRO INSTALLER HAS BEEN DOWNLOADED!"));
+
+            // get metadata of installer first
+            string installerUri = "";
+
+            Process p = GetMetaFile(InstallerApiUri);
+            int downloadTime = 0;
+            while (!p.HasExited)
+            {
+                downloadTime++;
+                if (downloadTime > TimeoutTime)
+                {
+                    ModConsole.LogError($"Mod Updater: Getting metadata of Mod Loader Pro timed-out.");
+                    isBusy = false;
+                    yield break;
+                }
+
+                yield return new WaitForSeconds(1);
+            }
+
+            p.Close();
+            ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
+
+            string output = lastDataOut.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
+            foreach (string s in output.Split('\n'))
+            {
+                // Finding tag of the latest release, this servers as latest version number.
+                if (s.Contains("\"browser_download_url\"") && s.Contains(".exe"))
+                {
+                    string[] separated = s.Split(':');
+                    installerUri = (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
+                    break;
+                }
+            }
+            string args = $"get-file \"{installerUri}\" \"{InstallerPath}\"";
+
+            p = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = UpdaterPath,
+                    Arguments = args,
+                    WorkingDirectory = UpdaterDirectory,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
+            p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+            p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
+
+            p.Start();
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+            downloadTime = 0;
+            while (!p.HasExited)
+            {
+                downloadTime++;
+                if (downloadTime > TimeoutTimeDownload)
+                {
+                    ModConsole.LogError($"Downloading Installer timed-out.");
+                    break;
+                }
+
+                yield return new WaitForSeconds(1);
+            }
+
+            installModLoaderUpdate = true;
+
+            if (File.Exists(InstallerPath))
+            {
+                ModPrompt.CreateYesNoPrompt("Mod Loader Pro will update after you quit the game. Would you like to do that now?", "Mod Loader Pro Update is ready!", () => { Application.Quit(); });
+            }
+            
+            isBusy = false;
+        }
+
         #endregion
     }
 

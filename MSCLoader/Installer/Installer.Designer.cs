@@ -32,11 +32,13 @@ namespace Installer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Installer));
             this.title = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnWebsite = new System.Windows.Forms.Button();
             this.btnMinimize = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.labVer = new System.Windows.Forms.Label();
             this.labelBadMessage = new System.Windows.Forms.Label();
             this.btnDownload = new System.Windows.Forms.Button();
             this.panelPath = new System.Windows.Forms.Panel();
@@ -45,17 +47,16 @@ namespace Installer
             this.label1 = new System.Windows.Forms.Label();
             this.labWelcome = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.labelStatus = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.labelStatus = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
-            this.btnPlay = new System.Windows.Forms.Button();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.btnWebsite = new System.Windows.Forms.Button();
-            this.txtModsFolderName = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.labWarning = new System.Windows.Forms.Label();
-            this.labVer = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtModsFolderName = new System.Windows.Forms.TextBox();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.btnPlay = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.labVersionInfo = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabs.SuspendLayout();
@@ -87,6 +88,22 @@ namespace Installer
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(776, 35);
             this.panel1.TabIndex = 1;
+            // 
+            // btnWebsite
+            // 
+            this.btnWebsite.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnWebsite.FlatAppearance.BorderSize = 0;
+            this.btnWebsite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWebsite.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnWebsite.ForeColor = System.Drawing.Color.White;
+            this.btnWebsite.Location = new System.Drawing.Point(5, 5);
+            this.btnWebsite.Name = "btnWebsite";
+            this.btnWebsite.Size = new System.Drawing.Size(53, 25);
+            this.btnWebsite.TabIndex = 3;
+            this.btnWebsite.Text = "?";
+            this.btnWebsite.UseCompatibleTextRendering = true;
+            this.btnWebsite.UseVisualStyleBackColor = false;
+            this.btnWebsite.Click += new System.EventHandler(this.btnWebsite_Click);
             // 
             // btnMinimize
             // 
@@ -155,6 +172,17 @@ namespace Installer
             this.tabPage1.Size = new System.Drawing.Size(769, 359);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
+            // 
+            // labVer
+            // 
+            this.labVer.AutoSize = true;
+            this.labVer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.labVer.ForeColor = System.Drawing.Color.White;
+            this.labVer.Location = new System.Drawing.Point(6, 339);
+            this.labVer.Name = "labVer";
+            this.labVer.Size = new System.Drawing.Size(39, 25);
+            this.labVer.TabIndex = 4;
+            this.labVer.Text = "1.0";
             // 
             // labelBadMessage
             // 
@@ -243,6 +271,7 @@ namespace Installer
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Black;
+            this.tabPage2.Controls.Add(this.labVersionInfo);
             this.tabPage2.Controls.Add(this.progressBar);
             this.tabPage2.Controls.Add(this.labelStatus);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -251,6 +280,14 @@ namespace Installer
             this.tabPage2.Size = new System.Drawing.Size(769, 359);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(141, 66);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(475, 23);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar.TabIndex = 9;
             // 
             // labelStatus
             // 
@@ -262,14 +299,6 @@ namespace Installer
             this.labelStatus.Size = new System.Drawing.Size(116, 25);
             this.labelStatus.TabIndex = 4;
             this.labelStatus.Text = "StatusLabel";
-            // 
-            // progressBar
-            // 
-            this.progressBar.Location = new System.Drawing.Point(141, 66);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(475, 23);
-            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progressBar.TabIndex = 9;
             // 
             // tabPage3
             // 
@@ -286,16 +315,50 @@ namespace Installer
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             // 
-            // label2
+            // labWarning
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(148, 38);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(482, 25);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "MSC Mod Loader Pro has been successfully installed!";
+            this.labWarning.AutoSize = true;
+            this.labWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.labWarning.ForeColor = System.Drawing.Color.White;
+            this.labWarning.Location = new System.Drawing.Point(218, 176);
+            this.labWarning.Name = "labWarning";
+            this.labWarning.Size = new System.Drawing.Size(336, 25);
+            this.labWarning.TabIndex = 8;
+            this.labWarning.Text = "(We recommend to leave it at default)";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(293, 102);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(184, 25);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Mods Folder Name:";
+            // 
+            // txtModsFolderName
+            // 
+            this.txtModsFolderName.Location = new System.Drawing.Point(201, 140);
+            this.txtModsFolderName.Name = "txtModsFolderName";
+            this.txtModsFolderName.Size = new System.Drawing.Size(374, 20);
+            this.txtModsFolderName.TabIndex = 6;
+            this.txtModsFolderName.Text = "Mods";
+            // 
+            // btnClose
+            // 
+            this.btnClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnClose.FlatAppearance.BorderSize = 0;
+            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnClose.ForeColor = System.Drawing.Color.White;
+            this.btnClose.Location = new System.Drawing.Point(281, 242);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(210, 35);
+            this.btnClose.TabIndex = 5;
+            this.btnClose.Text = "CLOSE";
+            this.btnClose.UseCompatibleTextRendering = true;
+            this.btnClose.UseVisualStyleBackColor = false;
             // 
             // btnPlay
             // 
@@ -313,77 +376,28 @@ namespace Installer
             this.btnPlay.UseVisualStyleBackColor = false;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
-            // btnClose
+            // label2
             // 
-            this.btnClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
-            this.btnClose.FlatAppearance.BorderSize = 0;
-            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.btnClose.ForeColor = System.Drawing.Color.White;
-            this.btnClose.Location = new System.Drawing.Point(281, 242);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(210, 35);
-            this.btnClose.TabIndex = 5;
-            this.btnClose.Text = "CLOSE";
-            this.btnClose.UseCompatibleTextRendering = true;
-            this.btnClose.UseVisualStyleBackColor = false;
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(148, 38);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(482, 25);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "MSC Mod Loader Pro has been successfully installed!";
             // 
-            // btnWebsite
+            // labVersionInfo
             // 
-            this.btnWebsite.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
-            this.btnWebsite.FlatAppearance.BorderSize = 0;
-            this.btnWebsite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnWebsite.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.btnWebsite.ForeColor = System.Drawing.Color.White;
-            this.btnWebsite.Location = new System.Drawing.Point(5, 5);
-            this.btnWebsite.Name = "btnWebsite";
-            this.btnWebsite.Size = new System.Drawing.Size(53, 25);
-            this.btnWebsite.TabIndex = 3;
-            this.btnWebsite.Text = "?";
-            this.btnWebsite.UseCompatibleTextRendering = true;
-            this.btnWebsite.UseVisualStyleBackColor = false;
-            this.btnWebsite.Click += new System.EventHandler(this.btnWebsite_Click);
-            // 
-            // txtModsFolderName
-            // 
-            this.txtModsFolderName.Location = new System.Drawing.Point(201, 140);
-            this.txtModsFolderName.Name = "txtModsFolderName";
-            this.txtModsFolderName.Size = new System.Drawing.Size(374, 20);
-            this.txtModsFolderName.TabIndex = 6;
-            this.txtModsFolderName.Text = "Mods";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(293, 102);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(184, 25);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Mods Folder Name:";
-            // 
-            // labWarning
-            // 
-            this.labWarning.AutoSize = true;
-            this.labWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.labWarning.ForeColor = System.Drawing.Color.White;
-            this.labWarning.Location = new System.Drawing.Point(218, 176);
-            this.labWarning.Name = "labWarning";
-            this.labWarning.Size = new System.Drawing.Size(336, 25);
-            this.labWarning.TabIndex = 8;
-            this.labWarning.Text = "(We recommend to leave it at default)";
-            // 
-            // labVer
-            // 
-            this.labVer.AutoSize = true;
-            this.labVer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.labVer.ForeColor = System.Drawing.Color.White;
-            this.labVer.Location = new System.Drawing.Point(6, 339);
-            this.labVer.Name = "labVer";
-            this.labVer.Size = new System.Drawing.Size(39, 25);
-            this.labVer.TabIndex = 4;
-            this.labVer.Text = "1.0";
+            this.labVersionInfo.AutoSize = true;
+            this.labVersionInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.labVersionInfo.ForeColor = System.Drawing.Color.White;
+            this.labVersionInfo.Location = new System.Drawing.Point(245, 114);
+            this.labVersionInfo.Name = "labVersionInfo";
+            this.labVersionInfo.Size = new System.Drawing.Size(272, 25);
+            this.labVersionInfo.TabIndex = 10;
+            this.labVersionInfo.Text = "Now downloading version: 1.0";
+            this.labVersionInfo.Visible = false;
             // 
             // Installer
             // 
@@ -443,6 +457,7 @@ namespace Installer
         private System.Windows.Forms.TextBox txtModsFolderName;
         private System.Windows.Forms.Label labWarning;
         private System.Windows.Forms.Label labVer;
+        private System.Windows.Forms.Label labVersionInfo;
     }
 }
 

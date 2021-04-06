@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
@@ -13,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Diagnostics;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace Installer
 {
@@ -44,7 +43,7 @@ namespace Installer
 
         Downloader downloader;
 
-        public Installer()
+        public Installer(bool fastInstall, string mscPath)
         {
             InitializeComponent();
 
@@ -52,6 +51,10 @@ namespace Installer
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             labVer.Text = "Beta " + version.Major + "." + version.Minor;
+            if (version.Build != 0)
+            {
+                labVer.Text += "." + version.Build;
+            }
 
             byte[] fontData = Properties.Resources.FugazOne_Regular;
             IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
@@ -135,15 +138,46 @@ namespace Installer
             txtboxPath.ShortcutsEnabled = false;
             txtModsFolderName.ShortcutsEnabled = false;
 
-            // Get MSC Path;
-            string mscPath = CustomExtensions.GetMSCPath();
-            if (mscPath != null)
+            if (fastInstall)
             {
-                SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
                 this.mscPath = mscPath;
-                txtboxPath.Text = mscPath;
-                btnDownload.Enabled = true;
+                DoFastInstall();
             }
+            else
+            {
+                // Get MSC Path;
+                mscPath = CustomExtensions.GetMSCPath();
+                if (!string.IsNullOrEmpty(mscPath))
+                {
+                    SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
+                    this.mscPath = mscPath;
+                    txtboxPath.Text = mscPath;
+                    btnDownload.Enabled = true;
+                }
+            }
+        }
+
+        async void DoFastInstall()
+        {
+            btnExit.Enabled = false;
+            tabs.SelectedIndex++;
+            UpdateStatus(0, "Please wait...");
+            await Task.Run(() => Thread.Sleep(500));
+            Process[] mscProcess = Process.GetProcessesByName("mysummercar");
+            if (mscProcess.Length > 0)
+            {
+                await Task.Run(() =>
+                {
+                    foreach (Process process in mscProcess)
+                    {
+                        process.Kill();
+                    }
+                });
+            }
+
+            // A small workaround for "not accessible files".
+            await Task.Run(() => Thread.Sleep(1000));
+            downloader = new Downloader();
         }
 
         private void DragWindowByThis(object sender, MouseEventArgs e)
@@ -301,7 +335,7 @@ namespace Installer
             string args = "/C start \"\" \"steam://rungameid/516750\"";
             if (ModifierKeys.HasFlag(Keys.Shift))
             {
-                args = "/C start \"\" \"..\\mysummercar.exe\"";
+                args = $"/C start \"\" \"{Path.Combine(MscPath, "mysummercar.exe")}\"";
             }
 
             Process cmd = new Process();
@@ -335,6 +369,13 @@ namespace Installer
                 input = input.Replace("ModsFolderPath=Mods", "ModsFolderPath=" + txtModsFolderName.Text);
                 File.WriteAllText(configFile, input);
             }
+        }
+
+        internal void SetVersionString(string s)
+        {
+            labVersionInfo.Text = $"Now downloading version: {s}";
+            labVersionInfo.SetToCenter(this);
+            labVersionInfo.Visible = true;
         }
     }
 
