@@ -88,8 +88,7 @@ namespace MSCLoader
             if (ShouldCheckForUpdates())
             {
                 autoUpdateChecked = true;
-                //LookForUpdates();
-                StartCoroutine(CheckModLoaderUpdate());
+                LookForUpdates();
             }
         }
 
@@ -153,6 +152,11 @@ namespace MSCLoader
                 return;
             }
 
+            StartCoroutine(CheckModLoaderUpdate());
+        }
+
+        void StartLookingForUpdates()
+        {
             if (!File.Exists(UpdaterPath))
             {
                 throw new MissingComponentException("Updater component does not exist!");
@@ -633,7 +637,7 @@ namespace MSCLoader
         /// </summary>
         public void UpdateAll()
         {
-            headerUpdateAllButton.SetActive(false);
+            //headerUpdateAllButton.SetActive(false);
             Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
             foreach (Mod mod in mods)
             {
@@ -846,7 +850,7 @@ namespace MSCLoader
                 // Finding tag of the latest release, this servers as latest version number.
                 if (s.Contains("\"tag_name\""))
                 {
-                    modLoaderLatestVersion = s.Split(':')[1].Replace("\"", "").Trim();
+                    modLoaderLatestVersion = s.Split(':')[1].Replace(",", "").Replace("\"", "").Trim();
                     break;
                 }
             }
@@ -855,6 +859,7 @@ namespace MSCLoader
             isRemoteRC = modLoaderLatestVersion.Contains("-RC");
             isLocalRC = ModLoader.Version.Contains("-RC");
 
+            string modLoaderLatestDisplay = modLoaderLatestVersion;
             if (isRemoteRC)
                 modLoaderLatestVersion = modLoaderLatestVersion.Replace("-RC", ".");
 
@@ -875,12 +880,12 @@ namespace MSCLoader
             if (modLoaderUpdateAvailable)
             {
                 ModPrompt.CreateYesNoPrompt($"Mod Loader Pro update is available to download!\n\n" +
-                    $"Your version is <color=yellow>{ModLoader.Version}</color> and the newest available is <color=yellow>{modLoaderLatestVersion}</color>.\n\n" +
-                    $"Would you like to download it now?", "Mod Loader Update Available!", DownloadModLoaderUpdate, () => LookForUpdates());
+                    $"Your version is <color=yellow>{ModLoader.Version}</color> and the newest available is <color=yellow>{modLoaderLatestDisplay}</color>.\n\n" +
+                    $"Would you like to download it now?", "Mod Loader Update Available!", DownloadModLoaderUpdate, () => StartLookingForUpdates());
             }
             else
             {
-                LookForUpdates();
+                StartLookingForUpdates();
             }
 
         }
