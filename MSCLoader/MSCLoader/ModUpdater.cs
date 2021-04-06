@@ -856,13 +856,13 @@ namespace MSCLoader
             isLocalRC = ModLoader.Version.Contains("-RC");
 
             if (isRemoteRC)
-                modLoaderLatestVersion.Replace("-RC", ".");
+                modLoaderLatestVersion = modLoaderLatestVersion.Replace("-RC", ".");
 
             string localVersion = ModLoader.Version;
             if (isLocalRC)
                 localVersion = localVersion.Replace("-RC", ".");
 
-            modLoaderUpdateAvailable = IsNewerVersionAvailable(ModLoader.Version, modLoaderLatestVersion);
+            modLoaderUpdateAvailable = IsNewerVersionAvailable(localVersion, modLoaderLatestVersion);
             isBusy = false;
 
             if (!isRemoteRC && isLocalRC)

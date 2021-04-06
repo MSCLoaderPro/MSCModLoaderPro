@@ -47,6 +47,7 @@ namespace Installer
             this.label1 = new System.Windows.Forms.Label();
             this.labWelcome = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.labVersionInfo = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.labelStatus = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -56,7 +57,6 @@ namespace Installer
             this.btnClose = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.labVersionInfo = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabs.SuspendLayout();
@@ -217,9 +217,9 @@ namespace Installer
             // 
             this.panelPath.Controls.Add(this.txtboxPath);
             this.panelPath.Controls.Add(this.btnBrowse);
-            this.panelPath.Location = new System.Drawing.Point(159, 177);
+            this.panelPath.Location = new System.Drawing.Point(21, 177);
             this.panelPath.Name = "panelPath";
-            this.panelPath.Size = new System.Drawing.Size(442, 40);
+            this.panelPath.Size = new System.Drawing.Size(707, 40);
             this.panelPath.TabIndex = 6;
             // 
             // txtboxPath
@@ -227,7 +227,7 @@ namespace Installer
             this.txtboxPath.Location = new System.Drawing.Point(3, 3);
             this.txtboxPath.Name = "txtboxPath";
             this.txtboxPath.ReadOnly = true;
-            this.txtboxPath.Size = new System.Drawing.Size(374, 20);
+            this.txtboxPath.Size = new System.Drawing.Size(642, 20);
             this.txtboxPath.TabIndex = 5;
             // 
             // btnBrowse
@@ -237,7 +237,7 @@ namespace Installer
             this.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBrowse.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnBrowse.ForeColor = System.Drawing.Color.White;
-            this.btnBrowse.Location = new System.Drawing.Point(383, 3);
+            this.btnBrowse.Location = new System.Drawing.Point(651, 3);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(53, 25);
             this.btnBrowse.TabIndex = 3;
@@ -280,6 +280,18 @@ namespace Installer
             this.tabPage2.Size = new System.Drawing.Size(769, 359);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
+            // 
+            // labVersionInfo
+            // 
+            this.labVersionInfo.AutoSize = true;
+            this.labVersionInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.labVersionInfo.ForeColor = System.Drawing.Color.White;
+            this.labVersionInfo.Location = new System.Drawing.Point(245, 114);
+            this.labVersionInfo.Name = "labVersionInfo";
+            this.labVersionInfo.Size = new System.Drawing.Size(272, 25);
+            this.labVersionInfo.TabIndex = 10;
+            this.labVersionInfo.Text = "Now downloading version: 1.0";
+            this.labVersionInfo.Visible = false;
             // 
             // progressBar
             // 
@@ -386,18 +398,6 @@ namespace Installer
             this.label2.Size = new System.Drawing.Size(482, 25);
             this.label2.TabIndex = 3;
             this.label2.Text = "MSC Mod Loader Pro has been successfully installed!";
-            // 
-            // labVersionInfo
-            // 
-            this.labVersionInfo.AutoSize = true;
-            this.labVersionInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.labVersionInfo.ForeColor = System.Drawing.Color.White;
-            this.labVersionInfo.Location = new System.Drawing.Point(245, 114);
-            this.labVersionInfo.Name = "labVersionInfo";
-            this.labVersionInfo.Size = new System.Drawing.Size(272, 25);
-            this.labVersionInfo.TabIndex = 10;
-            this.labVersionInfo.Text = "Now downloading version: 1.0";
-            this.labVersionInfo.Visible = false;
             // 
             // Installer
             // 

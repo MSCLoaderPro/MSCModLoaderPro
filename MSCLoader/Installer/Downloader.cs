@@ -95,8 +95,6 @@ namespace Installer
         async void Unpack()
         {
             Installer.Instance.UpdateStatus(100, "Extracting...");
-            await Task.Run(() =>
-            {
                 using (ZipArchive file = ZipFile.OpenRead(ZipPath))
                 {
                     string extractPath = Installer.Instance.MscPath;
@@ -104,6 +102,7 @@ namespace Installer
                     foreach (var f in file.Entries)
                     {
                         int percentage = (int)(((double)stage / (double)file.Entries.Count) * 100);
+                        
                         Installer.Instance.UpdateStatus(percentage, $"Extracting ({percentage}%)...");
                         string path = Path.Combine(extractPath, f.FullName);
                         if (path.EndsWith("/")) continue;
@@ -119,11 +118,13 @@ namespace Installer
                             continue;
                         }
 
-                        f.ExtractToFile(path, true);
+                        await Task.Run(() =>
+                        {
+                            f.ExtractToFile(path, true);
+                        });
                         stage++;
                     }
                 }
-            });
             downloadFinished = true;
             Installer.Instance.TabEnd();
         }

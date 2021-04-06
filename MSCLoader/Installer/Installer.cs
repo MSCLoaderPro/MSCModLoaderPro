@@ -383,7 +383,7 @@ namespace Installer
     { 
         public static void SetToCenter(this Control control, Form form)
         {
-            int x = form.Width / 2 - control.Width / 2;
+            int x = form.Width / 2 - control.Width / 2 - 12;
             control.Location = new Point(x, control.Location.Y);
         }
 
