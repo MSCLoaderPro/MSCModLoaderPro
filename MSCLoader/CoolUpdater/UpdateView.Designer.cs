@@ -29,6 +29,7 @@ namespace CoolUpdater
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UpdateView));
             this.title = new System.Windows.Forms.Label();
             this.updateProgress = new System.Windows.Forms.ProgressBar();
             this.modsList = new System.Windows.Forms.CheckedListBox();
@@ -198,6 +199,7 @@ namespace CoolUpdater
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "UpdateView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

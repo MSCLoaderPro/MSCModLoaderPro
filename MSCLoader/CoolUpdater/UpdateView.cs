@@ -229,7 +229,9 @@ namespace CoolUpdater
             cmd.StartInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = args
+                Arguments = args,
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
             cmd.Start();
 

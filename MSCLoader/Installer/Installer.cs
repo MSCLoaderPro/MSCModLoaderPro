@@ -357,7 +357,10 @@ namespace Installer
             cmd.StartInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = args
+                Arguments = args,
+                WorkingDirectory = MscPath,
+                CreateNoWindow = true,
+                UseShellExecute = false
             };
             cmd.Start();
 
