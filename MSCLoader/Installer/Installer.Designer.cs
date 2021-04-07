@@ -38,7 +38,6 @@ namespace Installer
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.labVer = new System.Windows.Forms.Label();
             this.labelBadMessage = new System.Windows.Forms.Label();
             this.btnDownload = new System.Windows.Forms.Button();
             this.panelPath = new System.Windows.Forms.Panel();
@@ -57,6 +56,7 @@ namespace Installer
             this.btnClose = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.labVer = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabs.SuspendLayout();
@@ -160,7 +160,6 @@ namespace Installer
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.Black;
-            this.tabPage1.Controls.Add(this.labVer);
             this.tabPage1.Controls.Add(this.labelBadMessage);
             this.tabPage1.Controls.Add(this.btnDownload);
             this.tabPage1.Controls.Add(this.panelPath);
@@ -172,17 +171,6 @@ namespace Installer
             this.tabPage1.Size = new System.Drawing.Size(769, 359);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
-            // 
-            // labVer
-            // 
-            this.labVer.AutoSize = true;
-            this.labVer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.labVer.ForeColor = System.Drawing.Color.White;
-            this.labVer.Location = new System.Drawing.Point(6, 339);
-            this.labVer.Name = "labVer";
-            this.labVer.Size = new System.Drawing.Size(39, 25);
-            this.labVer.TabIndex = 4;
-            this.labVer.Text = "1.0";
             // 
             // labelBadMessage
             // 
@@ -208,7 +196,7 @@ namespace Installer
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(210, 35);
             this.btnDownload.TabIndex = 3;
-            this.btnDownload.Text = "CONTINUE";
+            this.btnDownload.Text = "INSTALL";
             this.btnDownload.UseCompatibleTextRendering = true;
             this.btnDownload.UseVisualStyleBackColor = false;
             this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
@@ -399,12 +387,24 @@ namespace Installer
             this.label2.TabIndex = 3;
             this.label2.Text = "MSC Mod Loader Pro has been successfully installed!";
             // 
+            // labVer
+            // 
+            this.labVer.AutoSize = true;
+            this.labVer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.labVer.ForeColor = System.Drawing.Color.White;
+            this.labVer.Location = new System.Drawing.Point(14, 441);
+            this.labVer.Name = "labVer";
+            this.labVer.Size = new System.Drawing.Size(39, 25);
+            this.labVer.TabIndex = 4;
+            this.labVer.Text = "1.0";
+            // 
             // Installer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(34)))), ((int)(((byte)(18)))));
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 474);
+            this.Controls.Add(this.labVer);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -426,6 +426,7 @@ namespace Installer
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

@@ -104,6 +104,14 @@ namespace Installer
                 (control as TextBox).BorderStyle = BorderStyle.None;
             }
 
+            foreach (Control control in GetAllControls(this, typeof(ProgressBar)))
+            {
+                (control as ProgressBar).ForeColor = Color.Yellow;
+                control.BackColor = colorBtn;
+                control.SetToCenter(this);
+                (control as ProgressBar).Style = ProgressBarStyle.Continuous;
+            }
+
             tabs.Appearance = TabAppearance.FlatButtons;
             tabs.ItemSize = new Size(0, 1);
             tabs.SizeMode = TabSizeMode.Fixed;
@@ -126,10 +134,6 @@ namespace Installer
 
             btnExit.ForeColor = Color.Red;
             btnClose.Click += btnExit_Click;
-            
-            progressBar.ForeColor = Color.Yellow;
-            progressBar.BackColor = colorBtn;
-            progressBar.SetToCenter(this);
 
             Font smallFont = new Font(myFont.FontFamily, 12, myFont.Style);
             labWarning.Font = smallFont;

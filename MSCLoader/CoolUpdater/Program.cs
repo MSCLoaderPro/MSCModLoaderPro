@@ -88,9 +88,6 @@ namespace CoolUpdater
                     UpdateView view = new UpdateView(pathToMods);
                     Application.Run(view);
                     break;
-                case "update-modloader":
-                    UpdateModLoader();
-                    break;
             }
         }
 
@@ -160,10 +157,5 @@ namespace CoolUpdater
         {
             Console.WriteLine(e.ProgressPercentage + "%");
         }
-
-        private static void UpdateModLoader()
-        {
-            throw new NotImplementedException();
-        }       
     }
 }
