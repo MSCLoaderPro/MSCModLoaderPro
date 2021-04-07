@@ -50,6 +50,7 @@ namespace Installer
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.labelStatus = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnDevmenu = new System.Windows.Forms.Button();
             this.labWarning = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtModsFolderName = new System.Windows.Forms.TextBox();
@@ -57,6 +58,12 @@ namespace Installer
             this.btnPlay = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.labVer = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.chkVSTemplate = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.chkUnityTemplate = new System.Windows.Forms.CheckBox();
+            this.chkDebugger = new System.Windows.Forms.CheckBox();
+            this.btnInstallDev = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabs.SuspendLayout();
@@ -64,6 +71,7 @@ namespace Installer
             this.panelPath.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // title
@@ -151,6 +159,7 @@ namespace Installer
             this.tabs.Controls.Add(this.tabPage1);
             this.tabs.Controls.Add(this.tabPage2);
             this.tabs.Controls.Add(this.tabPage3);
+            this.tabs.Controls.Add(this.tabPage4);
             this.tabs.Location = new System.Drawing.Point(3, 3);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
@@ -303,6 +312,7 @@ namespace Installer
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Black;
+            this.tabPage3.Controls.Add(this.btnDevmenu);
             this.tabPage3.Controls.Add(this.labWarning);
             this.tabPage3.Controls.Add(this.label3);
             this.tabPage3.Controls.Add(this.txtModsFolderName);
@@ -314,6 +324,22 @@ namespace Installer
             this.tabPage3.Size = new System.Drawing.Size(769, 359);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
+            // 
+            // btnDevmenu
+            // 
+            this.btnDevmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnDevmenu.FlatAppearance.BorderSize = 0;
+            this.btnDevmenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDevmenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnDevmenu.ForeColor = System.Drawing.Color.White;
+            this.btnDevmenu.Location = new System.Drawing.Point(270, 324);
+            this.btnDevmenu.Name = "btnDevmenu";
+            this.btnDevmenu.Size = new System.Drawing.Size(230, 35);
+            this.btnDevmenu.TabIndex = 9;
+            this.btnDevmenu.Text = "INSTALL DEV TOOLS";
+            this.btnDevmenu.UseCompatibleTextRendering = true;
+            this.btnDevmenu.UseVisualStyleBackColor = false;
+            this.btnDevmenu.Click += new System.EventHandler(this.btnDevmenu_Click);
             // 
             // labWarning
             // 
@@ -397,6 +423,84 @@ namespace Installer
             this.labVer.Size = new System.Drawing.Size(39, 25);
             this.labVer.TabIndex = 4;
             this.labVer.Text = "1.0";
+            this.labVer.Click += new System.EventHandler(this.labVer_Click);
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.BackColor = System.Drawing.Color.Black;
+            this.tabPage4.Controls.Add(this.btnInstallDev);
+            this.tabPage4.Controls.Add(this.chkDebugger);
+            this.tabPage4.Controls.Add(this.chkUnityTemplate);
+            this.tabPage4.Controls.Add(this.label4);
+            this.tabPage4.Controls.Add(this.chkVSTemplate);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(769, 359);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "tabPage4";
+            // 
+            // chkVSTemplate
+            // 
+            this.chkVSTemplate.AutoSize = true;
+            this.chkVSTemplate.BackColor = System.Drawing.Color.Transparent;
+            this.chkVSTemplate.ForeColor = System.Drawing.Color.White;
+            this.chkVSTemplate.Location = new System.Drawing.Point(269, 72);
+            this.chkVSTemplate.Name = "chkVSTemplate";
+            this.chkVSTemplate.Size = new System.Drawing.Size(207, 17);
+            this.chkVSTemplate.TabIndex = 0;
+            this.chkVSTemplate.Text = "Microsoft Visual Studio 2019 Template";
+            this.chkVSTemplate.UseVisualStyleBackColor = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(169, 18);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(252, 25);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Developer Tools Installation";
+            // 
+            // chkUnityTemplate
+            // 
+            this.chkUnityTemplate.AutoSize = true;
+            this.chkUnityTemplate.BackColor = System.Drawing.Color.Transparent;
+            this.chkUnityTemplate.ForeColor = System.Drawing.Color.White;
+            this.chkUnityTemplate.Location = new System.Drawing.Point(269, 118);
+            this.chkUnityTemplate.Name = "chkUnityTemplate";
+            this.chkUnityTemplate.Size = new System.Drawing.Size(97, 17);
+            this.chkUnityTemplate.TabIndex = 5;
+            this.chkUnityTemplate.Text = "Unity Template";
+            this.chkUnityTemplate.UseVisualStyleBackColor = false;
+            // 
+            // chkDebugger
+            // 
+            this.chkDebugger.AutoSize = true;
+            this.chkDebugger.BackColor = System.Drawing.Color.Transparent;
+            this.chkDebugger.ForeColor = System.Drawing.Color.White;
+            this.chkDebugger.Location = new System.Drawing.Point(269, 164);
+            this.chkDebugger.Name = "chkDebugger";
+            this.chkDebugger.Size = new System.Drawing.Size(73, 17);
+            this.chkDebugger.TabIndex = 6;
+            this.chkDebugger.Text = "Debugger";
+            this.chkDebugger.UseVisualStyleBackColor = false;
+            // 
+            // btnInstallDev
+            // 
+            this.btnInstallDev.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnInstallDev.FlatAppearance.BorderSize = 0;
+            this.btnInstallDev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInstallDev.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnInstallDev.ForeColor = System.Drawing.Color.White;
+            this.btnInstallDev.Location = new System.Drawing.Point(266, 261);
+            this.btnInstallDev.Name = "btnInstallDev";
+            this.btnInstallDev.Size = new System.Drawing.Size(210, 35);
+            this.btnInstallDev.TabIndex = 7;
+            this.btnInstallDev.Text = "INSTALL";
+            this.btnInstallDev.UseCompatibleTextRendering = true;
+            this.btnInstallDev.UseVisualStyleBackColor = false;
+            this.btnInstallDev.Click += new System.EventHandler(this.btnInstallDev_Click);
             // 
             // Installer
             // 
@@ -425,6 +529,8 @@ namespace Installer
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -459,6 +565,13 @@ namespace Installer
         private System.Windows.Forms.Label labWarning;
         private System.Windows.Forms.Label labVer;
         private System.Windows.Forms.Label labVersionInfo;
+        private System.Windows.Forms.Button btnDevmenu;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.CheckBox chkVSTemplate;
+        private System.Windows.Forms.CheckBox chkDebugger;
+        private System.Windows.Forms.CheckBox chkUnityTemplate;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnInstallDev;
     }
 }
 

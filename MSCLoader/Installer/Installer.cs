@@ -112,6 +112,14 @@ namespace Installer
                 (control as ProgressBar).Style = ProgressBarStyle.Continuous;
             }
 
+            foreach (Control control in GetAllControls(this, typeof(CheckBox)))
+            {
+                control.Font = myFont;
+                control.BackColor = Color.Transparent;
+                (control as CheckBox).ForeColor = Color.White;
+                control.SetToCenter(this);
+            }
+
             tabs.Appearance = TabAppearance.FlatButtons;
             tabs.ItemSize = new Size(0, 1);
             tabs.SizeMode = TabSizeMode.Fixed;
@@ -141,6 +149,9 @@ namespace Installer
 
             txtboxPath.ShortcutsEnabled = false;
             txtModsFolderName.ShortcutsEnabled = false;
+
+            btnDevmenu.SetToCenter(this);
+            btnInstallDev.SetToCenter(this);
 
             if (fastInstall)
             {
@@ -320,7 +331,7 @@ namespace Installer
 
         internal void TabEnd()
         {
-            tabs.SelectedIndex = 2;
+            tabs.SelectedTab = tabPage3;
             btnExit.Enabled = true;
 
             string[] userFile = File.ReadAllText(Path.Combine(MscPath, "ModLoaderSettings.ini")).Split('\n');
@@ -360,7 +371,7 @@ namespace Installer
 
         void CreateFolders()
         {
-            string modsPath = Path.Combine(MscPath, txtModsFolderName.Text);
+            string modsPath = Path.Combine(MscPath, UserModsFolderName());
             if (!Directory.Exists(modsPath))
             {
                 Directory.CreateDirectory(modsPath);
@@ -380,6 +391,51 @@ namespace Installer
             labVersionInfo.Text = $"Now downloading version: {s}";
             labVersionInfo.SetToCenter(this);
             labVersionInfo.Visible = true;
+        }
+
+        private void btnDevmenu_Click(object sender, EventArgs e)
+        {
+            tabs.SelectedIndex++;
+            btnDevmenu.Visible = false;
+            txtModsFolderName.ReadOnly = true; // just in case.
+        }
+
+        int x = 0;
+        private void labVer_Click(object sender, EventArgs e)
+        {
+            x++;
+            if (x > 5)
+            {
+                title.Text = "MADE BY ATHLON";
+                title.SetToCenter(this);
+            }
+        }
+
+        internal bool InstallVSTemplate()
+        {
+            return chkVSTemplate.Checked;
+        }
+
+        internal bool InstallUnityTemplate()
+        {
+            return chkUnityTemplate.Checked;
+        }
+
+        internal bool InstallDebugger()
+        {
+            return chkDebugger.Checked;
+        }
+
+        private void btnInstallDev_Click(object sender, EventArgs e)
+        {
+            btnExit.Enabled = false;
+            tabs.SelectedTab = tabPage2;
+            downloader.DownloadDevTools();
+        }
+
+        internal string UserModsFolderName()
+        {
+            return txtModsFolderName.Text;
         }
     }
 
@@ -437,6 +493,23 @@ namespace Installer
 
             // Still haven't found? User will be asked to select it manually. Return null
             return null;
+        }
+
+        public static bool IsAnyNullOrEmpty(params string[] strings)
+        {
+            foreach (string s in strings)
+            {
+                if (s == "")
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static string ConvertToUrl(this string s)
+        {
+            string[] link = s.Split(':');
+            return (link[1] + ":" + link[2]).Replace("\"", "").Replace("}", "").Replace(",", "").Trim();
         }
     }
 }

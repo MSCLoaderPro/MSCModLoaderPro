@@ -3,6 +3,7 @@ using System.Net;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Installer
 {
@@ -14,7 +15,15 @@ namespace Installer
         string TempPath => Path.Combine(Path.GetTempPath(), "modloaderpro");
         string ZipPath => Path.Combine(TempPath, "modloaderpro.zip");
 
-        string downloadLink;
+        string downloadLink = "", vsTemplateLink = "", unityTemplateLink = "";
+
+        const string VSTemplateName = "MSC_Mod_Loader_Pro_Template";
+        const string UnityTemplateName = "MSCTemplateProject";
+        const string DebuggerUrl = "https://github.com/MSCLoaderPro/docs/raw/main/ForCreators/_downloads/debug.zip";
+
+        string VSTemplatePath => Path.Combine(TempPath, "vstemplate.vsix");
+        string UnityTemplatePath => Path.Combine(TempPath, "MSCTemplateProject.zip");
+        string DebuggerPath => Path.Combine(TempPath, "Debug.zip");
 
         bool downloadFinished;
         public bool DownloadFinished => downloadFinished;
@@ -47,20 +56,39 @@ namespace Installer
             }            
         }
 
+        bool verFound = false;
+
         private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             string output = e.Result.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
             foreach (string s in output.Split('\n'))
             {
-                if (s.Contains("\"tag_name\""))
+                if (s.Contains("\"tag_name\"") && !verFound)
                 {
+                    verFound = true;
                     Installer.Instance.SetVersionString(s.Split(':')[1].Replace("\"", "").Replace(",", "").Trim());
                 }
 
-                if (s.Contains("\"browser_download_url\"") && s.Contains(ZipName))
+                if (s.Contains("\"browser_download_url\""))
                 {
-                    string[] link = s.Split(':');
-                    downloadLink = (link[1] + ":" + link[2]).Replace("\"", "").Replace("}", "").Replace(",", "").Trim();
+                    if (s.Contains(ZipName) && downloadLink == "")
+                    {
+                        downloadLink = s.ConvertToUrl();
+                    }
+
+                    if (s.Contains(VSTemplateName) && vsTemplateLink == "")
+                    {
+                        vsTemplateLink = s.ConvertToUrl();
+                    }
+
+                    if (s.Contains(UnityTemplateName) && unityTemplateLink == "")
+                    {
+                        unityTemplateLink = s.ConvertToUrl();
+                    }
+                }
+
+                if (!CustomExtensions.IsAnyNullOrEmpty(downloadLink, vsTemplateLink, unityTemplateLink))
+                {
                     break;
                 }
             }
@@ -81,6 +109,50 @@ namespace Installer
             }
         }
 
+        internal async void DownloadDevTools()
+        {
+            if (Installer.Instance.InstallVSTemplate())
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Headers.Add(GitHubHeader);
+                    client.DownloadFileCompleted += Client_DownloadVSTemplateCompleted;
+                    client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                    client.DownloadFileAsync(new Uri(vsTemplateLink), VSTemplatePath);
+                    while (client.IsBusy)
+                        await Task.Run(() => Thread.Sleep(500));
+                }
+            }
+
+            if (Installer.Instance.InstallUnityTemplate())
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Headers.Add(GitHubHeader);
+                    client.DownloadFileCompleted += Client_DownloadUnityTemplateCompleted;
+                    client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                    client.DownloadFileAsync(new Uri(unityTemplateLink), UnityTemplatePath);
+                    while (client.IsBusy)
+                        await Task.Run(() => Thread.Sleep(500));
+                }
+            }
+
+            if (Installer.Instance.InstallDebugger())
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Headers.Add(GitHubHeader);
+                    client.DownloadFileCompleted += Client_DownloadDebuggerCompleted;
+                    client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                    client.DownloadFileAsync(new Uri(DebuggerUrl), DebuggerPath);
+                    while (client.IsBusy)
+                        await Task.Run(() => Thread.Sleep(500));
+                }
+            }
+
+            Installer.Instance.TabEnd();
+        }
+
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             Installer.Instance.UpdateStatus(e.ProgressPercentage, $"Downloading ({e.ProgressPercentage}%)...");
@@ -89,44 +161,67 @@ namespace Installer
         private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             Installer.Instance.UpdateStatus(100, "Mod Loader downloaded successfully!");
-            Unpack();
+            UnpackZip(ZipPath, true);
         }
 
-        async void Unpack()
+        private void Client_DownloadVSTemplateCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            Installer.Instance.UpdateStatus(100, "VS Template downloaded successfully!");
+            System.Diagnostics.Process.Start(VSTemplatePath);
+        }
+
+        private void Client_DownloadUnityTemplateCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            Installer.Instance.UpdateStatus(100, "Unity downloaded successfully!");
+            UnpackZip(UnityTemplatePath, false);
+        }
+
+        private void Client_DownloadDebuggerCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            Installer.Instance.UpdateStatus(100, "Debugger downloaded successfully!");
+
+            UnpackZip(DebuggerPath, false, Installer.Instance.UserModsFolderName());
+        }
+
+        async void UnpackZip(string pathToZip, bool goToEnd = false, string toFolder = "")
         {
             Installer.Instance.UpdateStatus(100, "Extracting...");
-                using (ZipArchive file = ZipFile.OpenRead(ZipPath))
+            using (ZipArchive file = ZipFile.OpenRead(pathToZip))
+            {
+                string extractPath = Installer.Instance.MscPath;
+                if (toFolder != "")
+                    extractPath = Path.Combine(extractPath, toFolder);
+                int stage = 0;
+                foreach (var f in file.Entries)
                 {
-                    string extractPath = Installer.Instance.MscPath;
-                    int stage = 0;
-                    foreach (var f in file.Entries)
+                    int percentage = (int)(((double)stage / (double)file.Entries.Count) * 100);
+
+                    Installer.Instance.UpdateStatus(percentage, $"Extracting ({percentage}%)...");
+                    string path = Path.Combine(extractPath, f.FullName);
+                    if (path.EndsWith("/")) continue;
+                    string directory = f.FullName.Replace(f.Name, "");
+                    if (!string.IsNullOrEmpty(directory) && !Directory.Exists(Path.Combine(extractPath, directory)))
                     {
-                        int percentage = (int)(((double)stage / (double)file.Entries.Count) * 100);
-                        
-                        Installer.Instance.UpdateStatus(percentage, $"Extracting ({percentage}%)...");
-                        string path = Path.Combine(extractPath, f.FullName);
-                        if (path.EndsWith("/")) continue;
-                        string directory = f.FullName.Replace(f.Name, "");
-                        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(Path.Combine(extractPath, directory)))
-                        {
-                            Directory.CreateDirectory(Path.Combine(extractPath, directory));
-                        }
-
-                        // Don't override user settings.
-                        if (f.Name == "ModLoaderSettings.ini" && File.Exists(path))
-                        {
-                            continue;
-                        }
-
-                        await Task.Run(() =>
-                        {
-                            f.ExtractToFile(path, true);
-                        });
-                        stage++;
+                        Directory.CreateDirectory(Path.Combine(extractPath, directory));
                     }
+
+                    // Don't override user settings.
+                    if (f.Name == "ModLoaderSettings.ini" && File.Exists(path))
+                    {
+                        continue;
+                    }
+
+                    await Task.Run(() =>
+                    {
+                        f.ExtractToFile(path, true);
+                    });
+                    stage++;
                 }
+            }
             downloadFinished = true;
-            Installer.Instance.TabEnd();
+
+            if (goToEnd)
+                Installer.Instance.TabEnd();
         }
     }
 }
