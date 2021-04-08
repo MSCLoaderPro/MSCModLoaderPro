@@ -68,7 +68,7 @@ namespace CoolUpdater
             title.MouseMove += DragWindowByThis;
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            labVer.Text = "Beta " + version.Major + "." + version.Minor;
+            labVer.Text = version.Major + "." + version.Minor;
             if (version.Build != 0)
             {
                 labVer.Text += "." + version.Build;
