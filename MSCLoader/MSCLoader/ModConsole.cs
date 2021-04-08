@@ -49,7 +49,7 @@ namespace MSCLoader
         void Start()
         {
             console.SetActive(false);
-            buttonText.text = "CLOSE CONSOLE";
+            buttonText.text = "OPEN CONSOLE";
         }
 
         void Update()

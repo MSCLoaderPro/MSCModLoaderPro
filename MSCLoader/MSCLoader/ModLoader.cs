@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0-RC6";
+        public static readonly string Version = "1.0-RC7";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -170,7 +170,7 @@ namespace MSCLoader
 
             // Load mod settings for each loaded mod. Then call OnMenuLoad
             LoadModsSettings();
-            CallOnMenuLoad();
+            CallMenuOnLoad();
 
             // Update the mod count in the mod list.
             modContainer.UpdateModCountText();
@@ -312,8 +312,7 @@ namespace MSCLoader
                         throw new Exception("Targeting forbidden reference.");
 
                     foreach (Type modType in modAssembly.GetTypes().Where(type => typeof(Mod).IsAssignableFrom(type)))
-                    {
-                        if (modType.Name == "AModWarning") continue;    
+                    {   
                         Mod mod = (Mod)Activator.CreateInstance(modType);
 
                         if (!LoadedMods.Contains(mod)) // Check if mod already exists and show an error if so.
@@ -388,7 +387,6 @@ namespace MSCLoader
                 catch (Exception e)
                 {
                     ModConsole.LogError($"Settings error for mod <b>{mod.ID}</b>.\n{e.Message}");
-                    ModConsole.LogError(e.ToString());
                     Console.WriteLine(e);
                 }
             }
@@ -403,7 +401,6 @@ namespace MSCLoader
                 catch (Exception exception)
                 {
                     ModConsole.LogError($"Settings error for mod <b>{mod.ID}</b>.\n{exception.Message}");
-                    ModConsole.LogError(exception.ToString());
                     Console.WriteLine(exception);
                 }
             }
@@ -411,7 +408,7 @@ namespace MSCLoader
             MethodTimerStop("ModSettingsLoaded");
         }
 
-        void CallOnMenuLoad()
+        void CallMenuOnLoad()
         {
             if (ModMethods[1].Count > 0)
             {
@@ -476,8 +473,6 @@ namespace MSCLoader
 
             if (ModMethods[6].Count > 0)
             {
-                yield return null;
-
                 MethodTimerStart("OnLoad");
 
                 for (int i = 0; i < ModMethods[6].Count; i++)

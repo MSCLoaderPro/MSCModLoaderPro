@@ -83,6 +83,8 @@ namespace MSCLoader
                         }
                     }
                 }
+
+                StartCoroutine(NotifyUpdatesAvailable());
             }
 
             if (ShouldCheckForUpdates())
@@ -137,9 +139,33 @@ namespace MSCLoader
             }
             textProgressBar.text = finishedMessage;
             menuLabelUpdateText.text = finishedMessage;
+
+            int updateCount = ModLoader.LoadedMods.Count(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
+            if (updateCount > 0)
+            {
+                string updateMessage = updateCount > 1 ? $" THERE ARE {updateCount} MOD UPDATES AVAILABLE!" : $" THERE IS {updateCount} MOD UPDATE AVAILABLE!";
+                menuLabelUpdateText.text += $"<color=#87f032>{updateMessage}</color>";
+            }
+
             yield return new WaitForSeconds(5f);
+
             headerProgressBar.SetActive(false);
             menuLabelUpdateText.gameObject.SetActive(false);
+        }
+
+        IEnumerator NotifyUpdatesAvailable()
+        {
+            int updateCount = ModLoader.LoadedMods.Count(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
+            if (updateCount > 0)
+            {
+                menuLabelUpdateText.gameObject.SetActive(true);
+
+                string updateMessage = updateCount > 1 ? $" THERE ARE {updateCount} MOD UPDATES AVAILABLE!" : $" THERE IS {updateCount} MOD UPDATE AVAILABLE!";
+                menuLabelUpdateText.text = $"<color=#87f032>{updateMessage}</color>";
+
+                yield return new WaitForSeconds(5f);
+                menuLabelUpdateText.gameObject.SetActive(false);
+            }
         }
 
         #region Looking for updates
@@ -171,6 +197,9 @@ namespace MSCLoader
             if (mods.Count() == 0) yield break;
 
             isBusy = true;
+
+            // Disable the Update All button while checking for updates!
+            headerUpdateAllButton.SetActive(false);
 
             ModLoader.modLoaderSettings.RefreshUpdateCheckTime();
 
@@ -637,6 +666,8 @@ namespace MSCLoader
         /// </summary>
         public void UpdateAll()
         {
+            if (isBusy) return;
+
             //headerUpdateAllButton.SetActive(false);
             Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
             foreach (Mod mod in mods)
