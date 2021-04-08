@@ -277,8 +277,15 @@ namespace Installer
             {
                 DialogResult result = fbd.ShowDialog();
 
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                if (result == DialogResult.OK)
                 {
+                    if (string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        SetBadMessage("Path is empty!", Color.Red);
+                        btnDownload.Enabled = false;
+                        return;
+                    }
+
                     if (!File.Exists(Path.Combine(fbd.SelectedPath, "mysummercar.exe")))
                     {
                         SetBadMessage("Not a My Summer Car folder.", Color.Red);
@@ -290,11 +297,6 @@ namespace Installer
                     mscPath = fbd.SelectedPath;
                     txtboxPath.Text = mscPath;
                     btnDownload.Enabled = true;
-                }
-                else
-                {
-                    SetBadMessage("Path is empty!", Color.Red);
-                    btnDownload.Enabled = false;
                 }
             }
         }
