@@ -303,8 +303,7 @@ namespace MSCLoader
             ModConfig modConfig = loadedSettings ?? new ModConfig();
             modConfig.Enabled = mod.Enabled;
 
-            if (settings.Count > 0)
-                foreach (ModSetting setting in settings) setting.SaveSetting(modConfig);
+            if (settings.Count > 0) foreach (ModSetting setting in settings) setting.SaveSetting(modConfig);
 
             string path = $@"{ModLoader.GetModSettingsFolder(mod, true)}\{mod.ID}.json";
             string data = Newtonsoft.Json.JsonConvert.SerializeObject(modConfig, Newtonsoft.Json.Formatting.Indented);
