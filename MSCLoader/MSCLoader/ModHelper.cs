@@ -110,6 +110,12 @@ namespace MSCLoader.Helper
         }
 
         public static bool IsWithinRange(this int value, int minValue, int maxValue) => (value > minValue && value < maxValue);
+
+        public static string GetImagesFolder() => $@"{Path.GetFullPath(".")}\Images";
+        public static string GetRadioFolder() => $@"{Path.GetFullPath(".")}\Radio";
+        public static string GetCD1Folder() => $@"{Path.GetFullPath(".")}\CD1";
+        public static string GetCD2Folder() => $@"{Path.GetFullPath(".")}\CD2";
+        public static string GetCD3Folder() => $@"{Path.GetFullPath(".")}\CD3";
     }
     /// <summary>Container for PlayMaker related helper and extension methods.</summary>
     public static class PlayMakerHelper

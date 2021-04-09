@@ -103,6 +103,10 @@ namespace MSCLoader
         /// <summary>Event that triggers just after the player have assigned a new binding.</summary>
         public UnityEvent PostBind = new UnityEvent();
 
+        public UnityEvent OnKeyDown = new UnityEvent();
+        public UnityEvent OnKey = new UnityEvent();
+        public UnityEvent OnKeyUp = new UnityEvent();
+
         /// <summary>Current main key.</summary>
         public KeyCode keybind;
         /// <summary>Current main modifiers.</summary>
@@ -188,11 +192,33 @@ namespace MSCLoader
         /// <summary>Get if the keybind started being pressed down in the same frame (including modifiers).</summary>
         public bool GetKeyDown() => GetModifiers() && Input.GetKeyDown(keybind);
         /// <summary>Get if the keybind is released in the same frame (including modifiers).</summary>
-        public bool GetKeyUp() => (Input.GetKeyUp(keybind) && modifiers.All(x => Input.GetKeyUp(x) || Input.GetKey(x))) ||
-            (Input.GetKey(keybind) && modifiers.Any(x => Input.GetKeyUp(x)) && modifiers.All(x => Input.GetKeyUp(x) || Input.GetKey(x)));
+        public bool GetKeyUp() => (Input.GetKeyUp(keybind) && GetModifiers()) ||
+            (Input.GetKey(keybind) && GetModifiersUpAny() && GetModifiersUp());
 
         /// <summary>Get if the modifiers are pressed down.</summary>
-        public bool GetModifiers() => modifiers.All(x => Input.GetKey(x));
+        public bool GetModifiers()
+        {
+            for (int i = 0; i < modifiers.Length; i++)
+                if (!Input.GetKey(modifiers[i])) return false;
+            return true;
+        }
+        /// <summary>Get if the modifiers were released.</summary>
+        public bool GetModifiersUp()
+        {
+            for (int i = 0; i < modifiers.Length; i++)
+                if (!Input.GetKeyUp(modifiers[i]) && !Input.GetKey(modifiers[i])) 
+                    return false;
+
+            return true;
+        }
+        /// <summary>Get if the modifiers were released.</summary>
+        public bool GetModifiersUpAny()
+        {
+            for (int i = 0; i < modifiers.Length; i++)
+                if (Input.GetKeyUp(modifiers[i])) return true;
+
+            return false;
+        }
 
         /// <summary>Reset the setting to default values.</summary>
         public void ResetToDefaults()
