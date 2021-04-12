@@ -37,6 +37,8 @@ namespace MSCLoader
         /// <summary>Component responsible for updating.</summary>
         public ModUpdater modUpdater;
 
+        public List<SettingKeybind> keybinds = new List<SettingKeybind>();
+
         void OnApplicationQuit()
         {
             foreach (ModSettings modSettings in settingsDictionary.Values)
@@ -62,13 +64,6 @@ namespace MSCLoader
 
                 modListElement.SetModIcon(iconTexture);
             }
-            //else if (!string.IsNullOrEmpty(mod.IconName))
-            //{
-            //    Texture2D iconTexture = new Texture2D(1, 1);
-            //    iconTexture.LoadImage(GetIcon(mod, mod.IconName));
-            //
-            //    modListElement.SetModIcon(iconTexture);
-            //}
 
             modListElement.transform.SetParent(modList, false);
             modListDictionary.Add(mod, modListElement);
@@ -119,23 +114,16 @@ namespace MSCLoader
                 mod.modToggle.interactable = false;
         }
 
-        // NOT WORKING BECAUSE OF UNITY SYSTEM.DRAWING
-        //public byte[] GetIcon(Mod mod, string name)
-        //{
-        //    //https://stackoverflow.com/a/9901769
-        //    System.Reflection.Assembly assembly = mod.GetType().Assembly;
-        //
-        //    string resourceName = assembly.GetManifestResourceNames().FirstOrDefault(x => x.Contains(name));
-        //
-        //    ModConsole.Log(resourceName);
-        //
-        //    using (var stream = assembly.GetManifestResourceStream(resourceName))
-        //    {
-        //        byte[] buffer = new byte[stream.Length];
-        //        stream.Read(buffer, 0, (int)stream.Length);
-        //        return buffer;
-        //    }
-        //}
+        // CHECK ALL KEYBINDS
+        void Update()
+        {
+            for (int i = 0; i < keybinds.Count; i++)
+            {
+                if (keybinds[i].GetKeyDown()) keybinds[i].OnKeyDown.Invoke();
+                else if (keybinds[i].GetKeyUp()) keybinds[i].OnKeyUp.Invoke();
+                else if (keybinds[i].GetKey()) keybinds[i].OnKey.Invoke();
+            }
+        }
     }
 
     /// <summary>Control Component for the mod list elements.</summary>
@@ -303,8 +291,7 @@ namespace MSCLoader
             ModConfig modConfig = loadedSettings ?? new ModConfig();
             modConfig.Enabled = mod.Enabled;
 
-            if (settings.Count > 0)
-                foreach (ModSetting setting in settings) setting.SaveSetting(modConfig);
+            if (settings.Count > 0) foreach (ModSetting setting in settings) setting.SaveSetting(modConfig);
 
             string path = $@"{ModLoader.GetModSettingsFolder(mod, true)}\{mod.ID}.json";
             string data = Newtonsoft.Json.JsonConvert.SerializeObject(modConfig, Newtonsoft.Json.Formatting.Indented);
@@ -427,6 +414,7 @@ namespace MSCLoader
             keybind.defaultKeybind = key;
             keybind.defaultModifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]);
             keybind.keyText.text = keybind.AdjustKeyNames();
+            modContainer.keybinds.Add(keybind);
 
             AddSettingToList(keybind);
 

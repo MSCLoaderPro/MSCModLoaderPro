@@ -164,7 +164,7 @@ namespace MSCLoader
                 menuLabelUpdateText.text = $"<color=#87f032>{updateMessage}</color>";
 
                 yield return new WaitForSeconds(5f);
-                menuLabelUpdateText.gameObject.SetActive(false);
+                if (!IsBusy) menuLabelUpdateText.gameObject.SetActive(false);
             }
         }
 

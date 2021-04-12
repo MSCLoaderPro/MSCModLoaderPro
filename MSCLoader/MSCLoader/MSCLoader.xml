@@ -1252,6 +1252,12 @@
         <member name="M:MSCLoader.SettingKeybind.GetModifiers">
             <summary>Get if the modifiers are pressed down.</summary>
         </member>
+        <member name="M:MSCLoader.SettingKeybind.GetModifiersUp">
+            <summary>Get if the modifiers were released.</summary>
+        </member>
+        <member name="M:MSCLoader.SettingKeybind.GetModifiersUpAny">
+            <summary>Get if the modifiers were released.</summary>
+        </member>
         <member name="M:MSCLoader.SettingKeybind.ResetToDefaults">
             <summary>Reset the setting to default values.</summary>
         </member>

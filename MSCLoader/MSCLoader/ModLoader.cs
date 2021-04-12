@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0-RC7";
+        public static readonly string Version = "1.0-RC8";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -295,20 +295,21 @@ namespace MSCLoader
 
         void InitializeMods()
         {
+            string mscLoaderVersions = "\nAssembly MSCLoader version:\n";
             foreach (string file in Directory.GetFiles(ModsFolder, "*.dll"))
             {
                 try
                 {
                     Assembly modAssembly = Assembly.LoadFrom(file);
 
-                    AssemblyName[] list = modAssembly.GetReferencedAssemblies();
+                    AssemblyName[] referenceList = modAssembly.GetReferencedAssemblies();
 
                     // Check if the dll is referencing either the registry or Steamworks by string.
                     string fileString = File.ReadAllText(file);
                     if (fileString.Contains("RegistryKey") || fileString.Contains("Steamworks")) throw new FileLoadException("Using forbidden key phrases.");
 
                     // Check if the dll is referencing Steamworks.
-                    if (list.Any(assembly => assembly.Name == "Assembly-CSharp-firstpass") && (fileString.Contains("Steamworks") || fileString.Contains("GetSteamID")))
+                    if (referenceList.Any(assembly => assembly.Name == "Assembly-CSharp-firstpass") && (fileString.Contains("Steamworks") || fileString.Contains("GetSteamID")))
                         throw new Exception("Targeting forbidden reference.");
 
                     foreach (Type modType in modAssembly.GetTypes().Where(type => typeof(Mod).IsAssignableFrom(type)))
@@ -323,6 +324,9 @@ namespace MSCLoader
                         else
                             ModConsole.LogError($"<color=orange><b>Mod with ID: <color=red>{mod.ID}</color> already loaded:</color></b>");
                     }
+
+                    if (referenceList.Any(x => x.Name == "MSCLoader"))
+                        mscLoaderVersions += $"{file.Split('\\').Last()}:\n    {referenceList.FirstOrDefault(x => x.Name == "MSCLoader").Version}\n";
                 }
                 catch (Exception e)
                 {
@@ -331,6 +335,8 @@ namespace MSCLoader
                     Console.WriteLine(e);
                 }
             }
+
+            Console.Write($"{mscLoaderVersions}\n");
         }
 
         internal static void RemoveFromMethodLists(Mod mod)
@@ -486,6 +492,9 @@ namespace MSCLoader
 
             if (ModMethods[7].Count > 0)
             {
+                // Wait a few frames to give newly created MonoBehaviours and mods time to set up and call their various methods.
+                yield return null;
+                yield return null;
                 yield return null;
 
                 MethodTimerStart("PostLoad");
@@ -648,13 +657,10 @@ namespace MSCLoader
         public static CurrentScene GetCurrentScene() => CurrentScene;
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static string GetModAssetsFolder(Mod mod) => GetModAssetsFolder(mod, true);
-
         [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
         public static readonly bool experimental = false;
-
         [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
         public static readonly bool devMode = false;
-
         [Obsolete("Deprecated, use ModLoader.GetMod() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static bool IsModPresent(string modID) => GetMod(modID) != null;
     }

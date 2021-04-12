@@ -110,6 +110,12 @@ namespace MSCLoader.Helper
         }
 
         public static bool IsWithinRange(this int value, int minValue, int maxValue) => (value > minValue && value < maxValue);
+
+        public static string GetImagesFolder() => $@"{Path.GetFullPath(".")}\Images";
+        public static string GetRadioFolder() => $@"{Path.GetFullPath(".")}\Radio";
+        public static string GetCD1Folder() => $@"{Path.GetFullPath(".")}\CD1";
+        public static string GetCD2Folder() => $@"{Path.GetFullPath(".")}\CD2";
+        public static string GetCD3Folder() => $@"{Path.GetFullPath(".")}\CD3";
     }
     /// <summary>Container for PlayMaker related helper and extension methods.</summary>
     public static class PlayMakerHelper
@@ -388,7 +394,7 @@ namespace MSCLoader.Helper
         public static void Add(this PlayMakerArrayListProxy proxy, object item, bool clear = false)
         {
             if (item.GetType() != prefillDictionary[proxy.preFillType])
-                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
+                throw new Exception("The item you're trying to add has the incorrect type.");
 
             if (clear) proxy.Clear();
             proxy._arrayList.Add(item);
@@ -396,7 +402,7 @@ namespace MSCLoader.Helper
         public static void Add(this PlayMakerArrayListProxy proxy, IEnumerable<object> items, bool clear = false)
         {
             if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
-                throw new Exception("One or more of the items you're trying to add have the incorrect type. Aborting...");
+                throw new Exception("One or more of the items you're trying to add have the incorrect type.");
 
             if (clear) proxy.Clear();
             proxy._arrayList.AddRange(items.ToList());
@@ -409,7 +415,7 @@ namespace MSCLoader.Helper
         public static void AddPrefill(this PlayMakerArrayListProxy proxy, object item, bool clear = false)
         {
             if (item.GetType() != prefillDictionary[proxy.preFillType])
-                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
+                throw new Exception("The item you're trying to add has the incorrect type.");
 
             if (clear)
             {
@@ -438,7 +444,7 @@ namespace MSCLoader.Helper
         public static void AddPrefill(this PlayMakerArrayListProxy proxy, IEnumerable<object> items, bool clear = false)
         {
             if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
-                throw new Exception("One or more of the items you're trying to add have the incorrect type. Aborting...");
+                throw new Exception("One or more of the items you're trying to add have the incorrect type.");
 
             if (clear)
             {
@@ -487,7 +493,7 @@ namespace MSCLoader.Helper
         public static void Add(this PlayMakerHashTableProxy proxy, string key, object item, bool clear = false)
         {
             if (item.GetType() != prefillDictionary[proxy.preFillType])
-                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
+                throw new Exception("The item you're trying to add has the incorrect type.");
 
             if (clear) proxy.Clear();
             proxy.hashTable.Add(key, item);
@@ -495,7 +501,7 @@ namespace MSCLoader.Helper
         public static void Add(this PlayMakerHashTableProxy proxy, IEnumerable<string> keys, IEnumerable<object> items, bool clear = false)
         {
             if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
-                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
+                throw new Exception("The item you're trying to add has the incorrect type.");
 
             if (clear) proxy.Clear();
 
@@ -513,7 +519,7 @@ namespace MSCLoader.Helper
         public static void AddPrefill(this PlayMakerHashTableProxy proxy, string key, object item, bool clear = false)
         {
             if (item.GetType() != prefillDictionary[proxy.preFillType])
-                throw new Exception("The item you're trying to add has the incorrect type. Aborting...");
+                throw new Exception("The item you're trying to add has the incorrect type.");
 
             if (clear)
             {
@@ -543,7 +549,7 @@ namespace MSCLoader.Helper
         public static void AddPrefill(this PlayMakerHashTableProxy proxy, IEnumerable<string> keys, IEnumerable<object> items, bool clear = false)
         {
             if (items.Any(item => item.GetType() != prefillDictionary[proxy.preFillType]))
-                throw new Exception("One or more of the items you're trying to add have the incorrect type. Aborting...");
+                throw new Exception("One or more of the items you're trying to add have the incorrect type.");
 
             if (clear)
             {
