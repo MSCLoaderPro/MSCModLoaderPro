@@ -105,8 +105,9 @@ namespace MSCLoader
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
                     StreamReader input = new StreamReader(path);
                     XmlReader xmlReader = XmlReader.Create(input);
+                    T t = xmlSerializer.Deserialize(xmlReader) as T;
                     input.Close();
-                    return xmlSerializer.Deserialize(xmlReader) as T;
+                    return t;
                 }
             }
             catch (System.Exception ex)
