@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="MSCLoaderProModProjectExtension.a94714c3-0ce7-483a-8d22-91a403674fd1" Version="1.1" Language="en-US" Publisher="The Mod Loader Pro Project" />
+        <Identity Id="MSCLoaderProModProjectExtension.a94714c3-0ce7-483a-8d22-91a403674fd1" Version="1.2" Language="en-US" Publisher="The Mod Loader Pro Project" />
         <DisplayName>MSC Mod Loader Pro Mod</DisplayName>
         <Description xml:space="preserve">A MSC Mod Loader Pro mod project template.</Description>
         <Icon>ico.ico</Icon>

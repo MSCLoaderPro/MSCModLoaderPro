@@ -32,7 +32,7 @@ namespace Installer
         {
             if (Installer.Instance.OfflineMode)
             {
-                UnpackZip(, true);
+                UnpackZip(Installer.Instance.OfflineZipPath, true);
                 return;
             }
 
@@ -223,6 +223,8 @@ namespace Installer
                     });
                     stage++;
                 }
+
+                file.Dispose();
             }
             downloadFinished = true;
 

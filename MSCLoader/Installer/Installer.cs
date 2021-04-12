@@ -381,20 +381,37 @@ namespace Installer
         private void btnPlay_Click(object sender, EventArgs e)
         {
             CreateFolders();
-            string args = "/C start \"\" \"steam://rungameid/516750\"";
+            /*
+            string args = $"/C ping 127.0.0.1 -n 2 && start \"\" /d \"{MscPath}\" \"steam://rungameid/516750\"";
             if (ModifierKeys.HasFlag(Keys.Shift))
             {
-                args = $"/C start \"\" \"{Path.Combine(MscPath, "mysummercar.exe")}\"";
+                args = $"/C ping 127.0.0.1 -n 2 && start \"\" /d \"{MscPath}\" \"{Path.Combine(MscPath, "mysummercar.exe")}\"";
             }
 
-            Process cmd = new Process();
-            cmd.StartInfo = new ProcessStartInfo
+            Process cmd = new Process
             {
-                FileName = "cmd.exe",
-                Arguments = args,
-                WorkingDirectory = MscPath,
-                CreateNoWindow = true,
-                UseShellExecute = false
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = args,
+                    WorkingDirectory = MscPath,
+                    CreateNoWindow = true,
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                }
+            };
+            cmd.Start();
+            */
+            
+            Process cmd = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = ModifierKeys.HasFlag(Keys.Shift) ? "mysummercar.exe" : "steam://rungameid/516750",
+                    WorkingDirectory = MscPath,
+                    //CreateNoWindow = true,
+                    UseShellExecute = true,
+                }
             };
             cmd.Start();
 
@@ -440,6 +457,7 @@ namespace Installer
         int x = 0;
         private void labVer_Click(object sender, EventArgs e)
         {
+            TabEnd();
             x++;
             if (x > 5)
             {
