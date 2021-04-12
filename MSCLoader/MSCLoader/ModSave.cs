@@ -36,8 +36,8 @@ namespace MSCLoader
                 XmlWriter xmlWriter = XmlWriter.Create(output, xmlSettings);
                 xmlSerializer.Serialize(xmlWriter, data, xmlNamespace);
 
-                output.Close();
                 xmlWriter.Close();
+                output.Close();
 
                 if (!string.IsNullOrEmpty(encryptionKey))
                 {
