@@ -36,6 +36,7 @@ namespace MSCLoader
                 XmlWriter xmlWriter = XmlWriter.Create(output, xmlSettings);
                 xmlSerializer.Serialize(xmlWriter, data, xmlNamespace);
 
+                output.Close();
                 xmlWriter.Close();
 
                 if (!string.IsNullOrEmpty(encryptionKey))
@@ -60,7 +61,7 @@ namespace MSCLoader
                     File.WriteAllText(filePath, clearText);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError(ex);
                 ModConsole.LogError($"{fileName}: Couldn't be saved. \n{ex}");
@@ -105,12 +106,12 @@ namespace MSCLoader
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
                     StreamReader input = new StreamReader(path);
                     XmlReader xmlReader = XmlReader.Create(input);
-                    T t = xmlSerializer.Deserialize(xmlReader) as T;
+					T t = xmlSerializer.Deserialize(xmlReader) as T;
                     input.Close();
                     return t;
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError(ex);
                 ModConsole.LogError($"{fileName}: {ex}");

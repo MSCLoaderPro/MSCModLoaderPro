@@ -8,12 +8,14 @@ namespace MSCLoader
     {
         internal static LoaderSettings settings;
         internal static Harmony.HarmonyInstance ModLoaderInstance;
+        static string[] arguments;
 
         internal static void Main()
         {
-            Console.WriteLine("STARTING MOD LOADER PRO!");
+            arguments = System.Environment.GetCommandLineArgs();
             settings = new LoaderSettings();
             ExtraTweaks();
+            if (FindArgument("-disableModLoader") != null) return;
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyWatcher;
         }
 
@@ -22,6 +24,7 @@ namespace MSCLoader
             if (args.LoadedAssembly.GetName().Name == "System")
             {
                 AppDomain.CurrentDomain.AssemblyLoad -= AssemblyWatcher;
+                Console.WriteLine("STARTING MOD LOADER PRO!");
                 StartModLoader();
             }
         }
@@ -64,13 +67,12 @@ namespace MSCLoader
 
             try
             {
-                Console.WriteLine("MODLOADER: WRITING TWEAKS");
                 long offset = FindBytes(@"mysummercar_Data\mainData", data);
 
                 using (FileStream stream = new FileStream(@"mysummercar_Data\mainData", FileMode.Open, FileAccess.ReadWrite))
                 {
                     stream.Position = offset + 96L;
-                    if (!settings.SkipGameLauncher) stream.WriteByte(0x01);
+                    if (!settings.SkipGameLauncher && FindArgument("-skipLauncher") == null || FindArgument("-disableModLoader") != null) stream.WriteByte(0x01);
                     else stream.WriteByte(0x00);
 
                     stream.Position = offset + 115L;
@@ -105,6 +107,15 @@ namespace MSCLoader
                 fs.Close();
             }
             return i;
+        }// Helper function for getting the command line arguments
+        
+        internal static string FindArgument(string name)
+        {
+            for (int i = 0; i < arguments.Length; i++)
+                if (arguments[i] == name && arguments.Length > i + 1)
+                    return arguments[i + 1];
+
+            return null;
         }
     }
 }

@@ -94,9 +94,16 @@ namespace MSCLoader
         public void OpenModLoaderSite()
         {
             ModPrompt.CreateYesNoPrompt(
-                "THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.", 
+                $"THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.\n\n{ModLoader.modLoaderURL}", 
                 "OPEN MOD LOADER WEBSITE?", 
                 () => ModHelper.OpenWebsite(ModLoader.modLoaderURL));
+        }
+        public void OpenCredits()
+        {
+               ModPrompt.CreateYesNoPrompt(
+                $"THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.\n\n{ModLoader.modLoaderURL}/#/Credits", 
+                "OPEN MOD LOADER WEBSITE?", 
+                () => ModHelper.OpenWebsite($"{ModLoader.modLoaderURL}/#/Credits"));
         }
         public void OpenModsFolder()
         {

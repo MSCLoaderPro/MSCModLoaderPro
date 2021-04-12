@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -59,7 +58,7 @@ namespace MSCLoader
 
             if (console.activeInHierarchy)
             {
-                if (Input.GetKeyDown(KeyCode.Return)) SubmitCommand();
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) SubmitCommand();
 
                 if (inputField.isFocused) CommandHistory();
                 else wasFocused = false;

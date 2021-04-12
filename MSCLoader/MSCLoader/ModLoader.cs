@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0-RC8";
+        public static readonly string Version = "1.0-RC10";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -495,7 +495,6 @@ namespace MSCLoader
                 // Wait a few frames to give newly created MonoBehaviours and mods time to set up and call their various methods.
                 yield return null;
                 yield return null;
-                yield return null;
 
                 MethodTimerStart("PostLoad");
 
@@ -507,6 +506,8 @@ namespace MSCLoader
 
                 MethodTimerStop("PostLoad");
             }
+
+            yield return null;
 
             GameObject methods = new GameObject("ModLoaderMethods");
             methods.AddComponent<ModOnGUICall>().modLoader = this;

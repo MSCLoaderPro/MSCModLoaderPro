@@ -67,14 +67,12 @@ namespace MSCLoader
             texture.LoadImage(File.ReadAllBytes(filePath));
             return normalMap ? texture.ConvertToNormalMap() : texture;
         }
-
         /// <summary>Loads a JPG image as a Texture2D.</summary>
         /// <param name="filePath">Path to image file.</param>
         /// <param name="normalMap">Is it a normal map?</param>
         /// <returns>Loaded Texture2D.</returns>
         public static Texture2D LoadTextureJPG(string filePath, bool normalMap = false) =>
             LoadTexturePNG(filePath, normalMap);
-
         /// <summary>Loads a DDS image as a Texture2D.</summary>
         /// <param name="filePath">Path to image file.</param>
         /// <param name="normalMap">Is it a normal map?</param>
@@ -117,7 +115,6 @@ namespace MSCLoader
                 return new Texture2D(8, 8);
             }
         }
-
         /// <summary>Loads a TGA image as a Texture2D.</summary>
         /// <param name="filePath">Path to image file.</param>
         /// <param name="normalMap">Is it a normal map?</param>

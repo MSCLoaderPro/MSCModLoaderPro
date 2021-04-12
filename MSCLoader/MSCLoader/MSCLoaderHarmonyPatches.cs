@@ -22,7 +22,7 @@ namespace MSCLoader
     {
         public static void Prefix()
         {
-            if (MSCLoader.settings.SkipSplashScreen && Application.loadedLevel == 0)
+            if ((MSCLoader.settings.SkipSplashScreen || MSCLoader.FindArgument("-skipSplash") != null) && Application.loadedLevel == 0)
             {
                 System.Console.WriteLine("MODLOADER: SKIP SPLASH");
                 Application.LoadLevel(1);
