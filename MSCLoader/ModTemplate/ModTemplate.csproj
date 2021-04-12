@@ -67,11 +67,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources.Designer.cs">
+    <EmbeddedResource Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="AssemblyInfo.cs" />

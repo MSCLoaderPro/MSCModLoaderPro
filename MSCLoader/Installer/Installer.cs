@@ -15,6 +15,13 @@ using System.Threading;
 
 namespace Installer
 {
+    public enum Modes
+    { 
+        Regular,
+        FastInstall,
+        OfflineInstall
+    }
+
     public partial class Installer : Form
     {
         [DllImport("gdi32.dll")]
@@ -41,9 +48,12 @@ namespace Installer
         static Installer instance;
         public static Installer Instance => instance;
 
+        public bool OfflineMode;
+        public string OfflineZipPath;
+
         Downloader downloader;
 
-        public Installer(bool fastInstall, string mscPath)
+        public Installer(Modes mode = Modes.Regular, string arg = "")
         {
             InitializeComponent();
 
@@ -152,23 +162,36 @@ namespace Installer
 
             btnDevmenu.SetToCenter(this);
             btnInstallDev.SetToCenter(this);
+            btnLicenses.Font = smallFont;
 
-            if (fastInstall)
+            switch (mode)
             {
-                this.mscPath = mscPath;
-                DoFastInstall();
-            }
-            else
-            {
-                // Get MSC Path;
-                mscPath = CustomExtensions.GetMSCPath();
-                if (!string.IsNullOrEmpty(mscPath))
-                {
-                    SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
-                    this.mscPath = mscPath;
-                    txtboxPath.Text = mscPath;
-                    btnDownload.Enabled = true;
-                }
+                default:
+                    // Get MSC Path;
+                    mscPath = CustomExtensions.GetMSCPath();
+                    if (!string.IsNullOrEmpty(mscPath))
+                    {
+                        SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
+                        txtboxPath.Text = mscPath;
+                        btnDownload.Enabled = true;
+                    }
+                    break;
+                case Modes.FastInstall:
+                    this.mscPath = arg;
+                    DoFastInstall();
+                    break;
+                case Modes.OfflineInstall:
+                    labVer.Text += " (OFFLINE MODE)";
+                    mscPath = CustomExtensions.GetMSCPath();
+                    if (!string.IsNullOrEmpty(mscPath))
+                    {
+                        SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
+                        txtboxPath.Text = mscPath;
+                        btnDownload.Enabled = true;
+                    }
+                    OfflineMode = true;
+                    OfflineZipPath = arg;
+                    break;
             }
         }
 
@@ -176,6 +199,15 @@ namespace Installer
         {
             btnExit.Enabled = false;
             tabs.SelectedIndex++;
+
+            if (!File.Exists(Path.Combine(MscPath, "mysummercar.exe")))
+            {
+                UpdateStatus(0, "Path is not a MSC path! Exiting...");
+                await Task.Run(() => Thread.Sleep(2000));
+                Environment.Exit(0);
+                return;
+            }
+
             UpdateStatus(0, "Please wait...");
             await Task.Run(() => Thread.Sleep(500));
             Process[] mscProcess = Process.GetProcessesByName("mysummercar");
@@ -441,6 +473,11 @@ namespace Installer
         internal string UserModsFolderName()
         {
             return txtModsFolderName.Text;
+        }
+
+        private void btnLicenses_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://mscloaderpro.github.io/docs/#/Credits");
         }
     }
 

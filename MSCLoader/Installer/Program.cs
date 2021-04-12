@@ -14,26 +14,43 @@ namespace Installer
         [STAThread]
         static void Main(string[] args)
         {
-            bool fastInstall = false;
-            string mscPath = "";
+            Modes mode = Modes.Regular;
+            string arg = "";
 
-            if (args.Length > 0 && args[0] == "fast-install")
+            if (args.Length > 0)
             {
-                // Check if missing path to MSC.
-                if (args.Length < 2)
+                switch (args[0])
                 {
-                    MessageBox.Show("Missing path!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(0);
-                    return;
-                }
+                    case "fast-install":
+                        // Check if missing path to MSC.
+                        if (args.Length < 2)
+                        {
+                            MessageBox.Show("Missing path to MSC!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Environment.Exit(0);
+                            return;
+                        }
 
-                fastInstall = true;
-                mscPath = args[1].Replace("%20", " ");
+                        mode = Modes.FastInstall;
+                        arg = args[1].Replace("%20", " ");
+                        break;
+                    case "offline-install":                      
+                        string modloaderzip = System.IO.Directory.GetFiles(Application.StartupPath).FirstOrDefault(f => f.Contains("MSCModLoaderPro") && f.EndsWith(".zip"));
+                        if (string.IsNullOrEmpty(modloaderzip))
+                        {
+                            MessageBox.Show("No MSC Mod Loader Pro installation archive found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Environment.Exit(0);
+                            return;
+                        }
+
+                        mode = Modes.OfflineInstall;
+                        arg = modloaderzip;
+                        break;
+                }
             }
 
             //Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Installer(fastInstall, mscPath));
+            Application.Run(new Installer(mode, arg));
         }
     }
 }

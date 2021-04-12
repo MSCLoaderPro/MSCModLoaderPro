@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ModTemplate {
+namespace $safeprojectname$ {
     using System;
 
 

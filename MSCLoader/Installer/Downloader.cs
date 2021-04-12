@@ -30,6 +30,12 @@ namespace Installer
 
         public Downloader()
         {
+            if (Installer.Instance.OfflineMode)
+            {
+                UnpackZip(, true);
+                return;
+            }
+
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 

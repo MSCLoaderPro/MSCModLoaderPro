@@ -57,13 +57,14 @@ namespace Installer
             this.btnClose = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.labVer = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.chkVSTemplate = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.chkUnityTemplate = new System.Windows.Forms.CheckBox();
-            this.chkDebugger = new System.Windows.Forms.CheckBox();
             this.btnInstallDev = new System.Windows.Forms.Button();
+            this.chkDebugger = new System.Windows.Forms.CheckBox();
+            this.chkUnityTemplate = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.chkVSTemplate = new System.Windows.Forms.CheckBox();
+            this.labVer = new System.Windows.Forms.Label();
+            this.btnLicenses = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabs.SuspendLayout();
@@ -201,9 +202,9 @@ namespace Installer
             this.btnDownload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnDownload.ForeColor = System.Drawing.Color.White;
-            this.btnDownload.Location = new System.Drawing.Point(277, 279);
+            this.btnDownload.Location = new System.Drawing.Point(250, 276);
             this.btnDownload.Name = "btnDownload";
-            this.btnDownload.Size = new System.Drawing.Size(210, 35);
+            this.btnDownload.Size = new System.Drawing.Size(230, 35);
             this.btnDownload.TabIndex = 3;
             this.btnDownload.Text = "INSTALL";
             this.btnDownload.UseCompatibleTextRendering = true;
@@ -378,9 +379,9 @@ namespace Installer
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnClose.ForeColor = System.Drawing.Color.White;
-            this.btnClose.Location = new System.Drawing.Point(281, 242);
+            this.btnClose.Location = new System.Drawing.Point(270, 242);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(210, 35);
+            this.btnClose.Size = new System.Drawing.Size(230, 35);
             this.btnClose.TabIndex = 5;
             this.btnClose.Text = "CLOSE";
             this.btnClose.UseCompatibleTextRendering = true;
@@ -393,9 +394,9 @@ namespace Installer
             this.btnPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnPlay.ForeColor = System.Drawing.Color.White;
-            this.btnPlay.Location = new System.Drawing.Point(281, 201);
+            this.btnPlay.Location = new System.Drawing.Point(270, 204);
             this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Size = new System.Drawing.Size(210, 35);
+            this.btnPlay.Size = new System.Drawing.Size(230, 35);
             this.btnPlay.TabIndex = 4;
             this.btnPlay.Text = "START GAME";
             this.btnPlay.UseCompatibleTextRendering = true;
@@ -413,18 +414,6 @@ namespace Installer
             this.label2.TabIndex = 3;
             this.label2.Text = "MSC Mod Loader Pro has been successfully installed!";
             // 
-            // labVer
-            // 
-            this.labVer.AutoSize = true;
-            this.labVer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.labVer.ForeColor = System.Drawing.Color.White;
-            this.labVer.Location = new System.Drawing.Point(14, 441);
-            this.labVer.Name = "labVer";
-            this.labVer.Size = new System.Drawing.Size(39, 25);
-            this.labVer.TabIndex = 4;
-            this.labVer.Text = "1.0";
-            this.labVer.Click += new System.EventHandler(this.labVer_Click);
-            // 
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.Black;
@@ -439,40 +428,21 @@ namespace Installer
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "tabPage4";
             // 
-            // chkVSTemplate
+            // btnInstallDev
             // 
-            this.chkVSTemplate.AutoSize = true;
-            this.chkVSTemplate.BackColor = System.Drawing.Color.Transparent;
-            this.chkVSTemplate.ForeColor = System.Drawing.Color.White;
-            this.chkVSTemplate.Location = new System.Drawing.Point(269, 72);
-            this.chkVSTemplate.Name = "chkVSTemplate";
-            this.chkVSTemplate.Size = new System.Drawing.Size(207, 17);
-            this.chkVSTemplate.TabIndex = 0;
-            this.chkVSTemplate.Text = "Microsoft Visual Studio 2019 Template";
-            this.chkVSTemplate.UseVisualStyleBackColor = false;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(169, 18);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(252, 25);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Developer Tools Installation";
-            // 
-            // chkUnityTemplate
-            // 
-            this.chkUnityTemplate.AutoSize = true;
-            this.chkUnityTemplate.BackColor = System.Drawing.Color.Transparent;
-            this.chkUnityTemplate.ForeColor = System.Drawing.Color.White;
-            this.chkUnityTemplate.Location = new System.Drawing.Point(269, 118);
-            this.chkUnityTemplate.Name = "chkUnityTemplate";
-            this.chkUnityTemplate.Size = new System.Drawing.Size(97, 17);
-            this.chkUnityTemplate.TabIndex = 5;
-            this.chkUnityTemplate.Text = "Unity Template";
-            this.chkUnityTemplate.UseVisualStyleBackColor = false;
+            this.btnInstallDev.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnInstallDev.FlatAppearance.BorderSize = 0;
+            this.btnInstallDev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInstallDev.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnInstallDev.ForeColor = System.Drawing.Color.White;
+            this.btnInstallDev.Location = new System.Drawing.Point(266, 261);
+            this.btnInstallDev.Name = "btnInstallDev";
+            this.btnInstallDev.Size = new System.Drawing.Size(230, 35);
+            this.btnInstallDev.TabIndex = 7;
+            this.btnInstallDev.Text = "INSTALL";
+            this.btnInstallDev.UseCompatibleTextRendering = true;
+            this.btnInstallDev.UseVisualStyleBackColor = false;
+            this.btnInstallDev.Click += new System.EventHandler(this.btnInstallDev_Click);
             // 
             // chkDebugger
             // 
@@ -486,21 +456,68 @@ namespace Installer
             this.chkDebugger.Text = "Debugger";
             this.chkDebugger.UseVisualStyleBackColor = false;
             // 
-            // btnInstallDev
+            // chkUnityTemplate
             // 
-            this.btnInstallDev.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
-            this.btnInstallDev.FlatAppearance.BorderSize = 0;
-            this.btnInstallDev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnInstallDev.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.btnInstallDev.ForeColor = System.Drawing.Color.White;
-            this.btnInstallDev.Location = new System.Drawing.Point(266, 261);
-            this.btnInstallDev.Name = "btnInstallDev";
-            this.btnInstallDev.Size = new System.Drawing.Size(210, 35);
-            this.btnInstallDev.TabIndex = 7;
-            this.btnInstallDev.Text = "INSTALL";
-            this.btnInstallDev.UseCompatibleTextRendering = true;
-            this.btnInstallDev.UseVisualStyleBackColor = false;
-            this.btnInstallDev.Click += new System.EventHandler(this.btnInstallDev_Click);
+            this.chkUnityTemplate.AutoSize = true;
+            this.chkUnityTemplate.BackColor = System.Drawing.Color.Transparent;
+            this.chkUnityTemplate.ForeColor = System.Drawing.Color.White;
+            this.chkUnityTemplate.Location = new System.Drawing.Point(269, 118);
+            this.chkUnityTemplate.Name = "chkUnityTemplate";
+            this.chkUnityTemplate.Size = new System.Drawing.Size(97, 17);
+            this.chkUnityTemplate.TabIndex = 5;
+            this.chkUnityTemplate.Text = "Unity Template";
+            this.chkUnityTemplate.UseVisualStyleBackColor = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(169, 18);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(252, 25);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Developer Tools Installation";
+            // 
+            // chkVSTemplate
+            // 
+            this.chkVSTemplate.AutoSize = true;
+            this.chkVSTemplate.BackColor = System.Drawing.Color.Transparent;
+            this.chkVSTemplate.ForeColor = System.Drawing.Color.White;
+            this.chkVSTemplate.Location = new System.Drawing.Point(269, 72);
+            this.chkVSTemplate.Name = "chkVSTemplate";
+            this.chkVSTemplate.Size = new System.Drawing.Size(207, 17);
+            this.chkVSTemplate.TabIndex = 0;
+            this.chkVSTemplate.Text = "Microsoft Visual Studio 2019 Template";
+            this.chkVSTemplate.UseVisualStyleBackColor = false;
+            // 
+            // labVer
+            // 
+            this.labVer.AutoSize = true;
+            this.labVer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.labVer.ForeColor = System.Drawing.Color.White;
+            this.labVer.Location = new System.Drawing.Point(14, 441);
+            this.labVer.Name = "labVer";
+            this.labVer.Size = new System.Drawing.Size(39, 25);
+            this.labVer.TabIndex = 4;
+            this.labVer.Text = "1.0";
+            this.labVer.Click += new System.EventHandler(this.labVer_Click);
+            // 
+            // btnLicenses
+            // 
+            this.btnLicenses.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnLicenses.FlatAppearance.BorderSize = 0;
+            this.btnLicenses.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLicenses.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnLicenses.ForeColor = System.Drawing.Color.White;
+            this.btnLicenses.Location = new System.Drawing.Point(556, 441);
+            this.btnLicenses.Name = "btnLicenses";
+            this.btnLicenses.Size = new System.Drawing.Size(232, 29);
+            this.btnLicenses.TabIndex = 8;
+            this.btnLicenses.Text = "THIRD-PARTY LICENSES";
+            this.btnLicenses.UseCompatibleTextRendering = true;
+            this.btnLicenses.UseVisualStyleBackColor = false;
+            this.btnLicenses.Click += new System.EventHandler(this.btnLicenses_Click);
             // 
             // Installer
             // 
@@ -508,6 +525,7 @@ namespace Installer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(34)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(800, 474);
+            this.Controls.Add(this.btnLicenses);
             this.Controls.Add(this.labVer);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -572,6 +590,7 @@ namespace Installer
         private System.Windows.Forms.CheckBox chkUnityTemplate;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnInstallDev;
+        private System.Windows.Forms.Button btnLicenses;
     }
 }
 
