@@ -52,16 +52,14 @@ namespace MSCLoader.MSCCar
             {
                 if (proxy.referenceName == "Times")
                 {
-                    proxy.preFillCount++;
-                    proxy.preFillFloatList.Add(0f);
+                    proxy.AddPrefill(0f);
                     if (proxy._arrayList != null && proxy._arrayList.Count > 0) proxy._arrayList.Add(0f);
 
                     continue;
                 }
                 if (stringProxies.Contains(proxy.referenceName))
                 {
-                    proxy.preFillCount++;
-                    proxy.preFillStringList.Add("");
+                    proxy.AddPrefill("");
                     if (proxy._arrayList != null && proxy._arrayList.Count > 0) proxy._arrayList.Add("");
 
                     continue;
@@ -69,9 +67,7 @@ namespace MSCLoader.MSCCar
             }
 
             PlayMakerHashTableProxy hashTable = GameObject.Find("DRAGRACE").transform.Find("LOD/DRAGSTRIP/DragTiming").GetComponents<PlayMakerHashTableProxy>().FirstOrDefault(x => x.referenceName == "Results");
-            hashTable.preFillCount++;
-            hashTable.preFillKeyList.Add("");
-            hashTable.preFillFloatList.Add(0f);
+            hashTable.AddPrefill("", 0f);
             if (hashTable._hashTable != null && hashTable._hashTable.Count > 0) hashTable._hashTable.Add("", 0f);
 
             dragVehicle.VehicleID = hashTable.preFillCount - 1;

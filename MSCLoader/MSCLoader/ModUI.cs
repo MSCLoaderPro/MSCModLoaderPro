@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -109,8 +110,9 @@ namespace MSCLoader
             modMenuButton.SetActive(false);
             modSettings.SetActive(false);
 
-            foreach (ModListElement mod in modContainer.modListDictionary.Values) mod.ToggleSettingsOff();
-            modLoaderSettings.ToggleMenuOff();
+            modLoaderSettings.SetSettingsOpen(false, true);
+            foreach (ModListElement mod in modContainer.modListDictionary.Values) 
+                mod.SetSettingsOpen(false, true);
 
             for (int i = 0; i < extra.Count; i++)
                 extra[i].SetActive(false);
@@ -166,7 +168,7 @@ namespace MSCLoader
 
         public void OnDisable()
         {
-            modMenu.SetActive(false);
+            modMenu?.SetActive(false);
         }
 
         public void DisableDefaultMenus()
@@ -222,5 +224,41 @@ namespace MSCLoader
 
             gameObject.SetActive(false);
         }
+    }
+
+    internal class UITooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    {
+        public string toolTipText;
+        public static GameObject toolTipPrefab;
+
+        Transform toolTip;
+        WaitForSeconds wait = new WaitForSeconds(0.75f);
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (ModLoader.modLoaderSettings.ShowTooltips && toolTipPrefab != null) StartCoroutine(ShowDelay());
+        }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            StopAllCoroutines();
+            if (toolTip != null) Destroy(toolTip.gameObject);
+        }
+
+        IEnumerator ShowDelay()
+        {
+            yield return wait;
+
+            toolTip = Instantiate(toolTipPrefab).transform;
+            toolTip.SetParent(ModLoader.UICanvas);
+            toolTip.localScale = Vector3.one;
+            toolTip.GetComponentInChildren<Text>().text = toolTipText;
+
+            while(true)
+            {
+                toolTip.position = Input.mousePosition;
+                yield return null;
+            }
+        }
+
     }
 }

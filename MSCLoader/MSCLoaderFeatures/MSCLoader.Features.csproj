@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InteractionSystem.cs" />
     <Compile Include="MSCCar\DragRace.cs" />
     <Compile Include="PaintSystem\PaintCore.cs" />
     <Compile Include="PaintSystem\PaintSystem.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="PartMagnet\BoltMagnet.cs" />
     <Compile Include="PartMagnet\PartMagnet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShopSystem\FleetariShopCore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MSCLoader\MSCLoader.csproj">
@@ -71,6 +73,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "D:\Program Files\Unity\Projects\My Summer Car Mods\Assets\Verktyg\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "D:\Program Files\Unity\Projects\My Summer Car Mods\Assets\Verktyg\$(TargetFileName)"
+
+copy "$(TargetPath)" "C:\Users\Fredrik\source\repos\MSCLoader\Release\mysummercar_Data\Managed\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

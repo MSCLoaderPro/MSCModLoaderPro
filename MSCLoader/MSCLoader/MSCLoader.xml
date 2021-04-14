@@ -821,11 +821,11 @@
             <summary>Set the mod's icon to the specified texture.</summary>
             <param name="icon">Texture to use as the icon for the mod.</param>
         </member>
-        <member name="M:MSCLoader.ModListElement.ToggleSettingsActive">
+        <member name="M:MSCLoader.ModListElement.ToggleSettingsOpen">
             <summary>Opens the mod's settings window while closing all others.</summary>
         </member>
-        <member name="M:MSCLoader.ModListElement.ToggleSettingsOff">
-            <summary>Close the mod's settings window</summary>
+        <member name="M:MSCLoader.ModListElement.SetSettingsOpen(System.Boolean,System.Boolean)">
+            <summary>Open/Close the mod's settings window</summary>
         </member>
         <member name="M:MSCLoader.ModListElement.ToggleModEnabled">
             <summary>Toggle the mod's enabled state.</summary>

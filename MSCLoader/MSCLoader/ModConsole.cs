@@ -44,10 +44,7 @@ namespace MSCLoader
             controller.LogChanged += UpdateLog;
 
             UpdateLog(controller.scrollback.ToArray());
-        }
-        
-        void Start()
-        {
+
             console.SetActive(false);
             buttonText.text = "OPEN CONSOLE";
         }
