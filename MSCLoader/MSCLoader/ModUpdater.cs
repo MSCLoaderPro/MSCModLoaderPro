@@ -952,6 +952,11 @@ namespace MSCLoader
             p.Close();
             ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
 
+            if (!Directory.Exists(TempPathModLoaderPro))
+            {
+                Directory.CreateDirectory(TempPathModLoaderPro);
+            }
+
             string output = lastDataOut.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
             foreach (string s in output.Split('\n'))
             {
