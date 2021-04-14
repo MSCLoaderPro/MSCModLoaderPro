@@ -168,7 +168,7 @@ namespace MSCLoader.PartMagnet
             if (attachedRoutine != null) StopCoroutine(attachedRoutine);
             attachedRoutine = StartCoroutine(PartAttached());
 
-            ModConsole.Log($"PartMagnet: {gameObject.name} attached on attachment point: {attachmentPoint}.");
+            ModConsole.Log($"PartMagnet: {gameObject.name} attached on attachment point: {attachmentPoint.name}.");
         }
 
         IEnumerator SetJointBreak()
@@ -235,7 +235,7 @@ namespace MSCLoader.PartMagnet
 
             OnDetach.Invoke();
 
-            ModConsole.Log($"PartMagnet: {gameObject.name} detached from attachment point: {attachmentPoints[attachmentPointIndex]}.");
+            ModConsole.Log($"PartMagnet: {gameObject.name} detached from attachment point: {attachmentPoints[attachmentPointIndex].name}.");
         }
 
         void OnJointBreak(float breakForce)

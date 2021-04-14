@@ -90,7 +90,7 @@ namespace MSCLoader
             rect.offsetMax = new Vector2(0, 0);
 
             mod.modListElement.modSettings = modSettings;
-            mod.modListElement.ToggleSettingsOff();
+            mod.modListElement.SetSettingsOpen(false);
 
             settingsDictionary.Add(mod, modSettings);
 
@@ -111,7 +111,7 @@ namespace MSCLoader
         internal void DisableModToggle()
         {
             foreach (ModListElement mod in modListDictionary.Values)
-                mod.modToggle.interactable = false;
+                mod.LockModEnabled();
         }
 
         // CHECK ALL KEYBINDS
@@ -136,10 +136,17 @@ namespace MSCLoader
         /// <summary>The ModSettings this ModListElement is linked to.</summary>
         public ModSettings modSettings;
 
-        public Toggle modToggle, modSettingsToggle;
+        public Toggle modSettingsToggle;
         public Text nameText, authorText, versionText;
         public RawImage iconImage;
         public GameObject updateButton;
+
+        public Button buttonEnabled;
+        public Image imageEnabled;
+        public Sprite spriteEnabled, spriteDisabled, spriteLockedEnabled, spriteLockedDisabled;
+
+        public RectTransform openArrowTransform;
+        Vector3 openArrowOpen = new Vector3(-1, 1, 1);
 
         /// <summary>ID for the ModListElement, gets/sets the name of the GameObject the list is on.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
@@ -152,62 +159,52 @@ namespace MSCLoader
 
         /// <summary>Set the mod's icon to the specified texture.</summary>
         /// <param name="icon">Texture to use as the icon for the mod.</param>
-        public void SetModIcon(Texture2D icon) =>
-            iconImage.texture = icon;
+        public void SetModIcon(Texture2D icon) => iconImage.texture = icon;
 
-        bool suspendAction = false;
-        bool suspendMethods = true;
         /// <summary>Opens the mod's settings window while closing all others.</summary>
-        public void ToggleSettingsActive()
+        public void ToggleSettingsOpen() => SetSettingsOpen(!modSettings.gameObject.activeSelf);
+        /// <summary>Open/Close the mod's settings window</summary>
+        public void SetSettingsOpen(bool open, bool ignoreOthers = false)
         {
-            if (suspendAction) return;
+            if (!ignoreOthers)
+            {
+                modContainer.modLoaderSettings.SetSettingsOpen(false, true);
+                foreach (ModListElement otherMod in modContainer.modListDictionary.Values.Where(x => x != this))
+                    otherMod.SetSettingsOpen(false, true);
+            }
+            
+            modSettings.gameObject.SetActive(open);
 
-            modContainer.modLoaderSettings.ToggleMenuOff();
-            foreach (ModListElement otherMod in modContainer.modListDictionary.Values.Where(x => x != this))
-                otherMod.ToggleSettingsOff();
-
-            modSettings.gameObject.SetActive(modSettingsToggle.isOn);
+            openArrowTransform.localScale = open ? openArrowOpen : Vector3.one;
         }
-        /// <summary>Close the mod's settings window</summary>
-        public void ToggleSettingsOff()
-        {
-            suspendAction = true;
 
-            modSettingsToggle.isOn = false;
-            modSettings.gameObject.SetActive(false);
-
-            suspendAction = false;
-        }
         /// <summary>Toggle the mod's enabled state.</summary>
-        public void ToggleModEnabled()
-        {
-            mod.enabled = modToggle.isOn;
-            modSettings.SaveSettings();
-
-            nameText.color = modToggle.isOn ? ModLoader.MSCYellow : ModLoader.ModDisabledRed;
-            modContainer.UpdateModCountText();
-
-            if (mod.Enabled)
-            {
-                ModLoader.AddToMethodLists(mod);
-                if (!suspendMethods) mod.OnModEnabled();
-            }
-            else
-            {
-                ModLoader.RemoveFromMethodLists(mod);
-                if (!suspendMethods) mod.OnModDisabled();
-            }
-
-            suspendMethods = false;
-            ModConsole.Log($"<b>{mod.ID}:</b> {(mod.Enabled ? "<color=green>ENABLED</color>" : "<color=red>DISABLED</color>")}");
-        }
+        public void ToggleModEnabled() => SetModEnabled(!mod.enabled);
         /// <summary>Set the enabled status of the mod.</summary>
         /// <param name="enabled">Enabled/disabled</param>
         /// <param name="callMethods">Call OnModEnabled/Disabled</param>
         public void SetModEnabled(bool enabled, bool callMethods = true)
         {
-            modToggle.isOn = enabled;
-            suspendMethods = !callMethods;
+            mod.enabled = enabled;
+            modSettings.SaveSettings();
+            modContainer.UpdateModCountText();
+
+            nameText.color = mod.enabled ? ModLoader.MSCYellow : ModLoader.ModDisabledRed;
+            imageEnabled.sprite = mod.enabled ? spriteEnabled : spriteDisabled;
+
+            if (mod.enabled) ModLoader.AddToMethodLists(mod); else ModLoader.RemoveFromMethodLists(mod);
+
+            if (callMethods)
+            {
+                if (mod.enabled) mod.OnModEnabled(); else mod.OnModDisabled();
+                ModConsole.Log($"<b>{mod.ID}:</b> {(mod.Enabled ? "<color=green>ENABLED</color>" : "<color=red>DISABLED</color>")}");
+            }
+        }
+        public void LockModEnabled()
+        {
+            buttonEnabled.interactable = false;
+            imageEnabled.sprite = mod.enabled ? spriteLockedEnabled : spriteLockedDisabled;
+
         }
 
         public void ToggleUpdateButton(bool enabled)

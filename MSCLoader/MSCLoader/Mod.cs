@@ -11,7 +11,7 @@ namespace MSCLoader
         internal ModUpdateData ModUpdateData;
 
         /// <summary>Determines whether or not the mod is enabled.</summary>
-        public virtual bool Enabled { get => enabled; set { enabled = value; modListElement.SetModEnabled(value); } }
+        public virtual bool Enabled { get => enabled; set { modListElement.SetModEnabled(value); } }
         /// <summary>The mod's ID, used for identification. Has to be unique!</summary>
         public abstract string ID { get; }
         /// <summary>The mod's name, shown in lists etc.</summary>

@@ -13,12 +13,11 @@ namespace MSCLoader
     public class ModLoaderSettings : MonoBehaviour
     {
         [SerializeField] internal ModContainer modContainer;
-        [SerializeField] internal Toggle modLoaderSettingsToggle;
 
         [SerializeField] internal Text version;
         [SerializeField] internal Text menuLabelText;
 
-        [SerializeField] internal SettingToggle skipGameLauncher, skipSplashScreen, useVsyncInMenu;
+        [SerializeField] internal SettingToggle skipGameLauncher, skipSplashScreen, useVsyncInMenu, showTooltips;
 
         [SerializeField] internal SettingRadioButtons updateMode;
         [SerializeField] internal SettingText lastUpdateCheck;
@@ -30,6 +29,9 @@ namespace MSCLoader
         [SerializeField] internal SettingRadioButtons consoleAutoOpen;
         [SerializeField] internal SettingSlider consoleWindowHeight, consoleWindowWidth;
 
+        [SerializeField] internal RectTransform openArrowTransform;
+        Vector3 openArrowOpen = new Vector3(-1, 1, 1);
+
         public string Version { get => ModLoader.Version; internal set
             {
                 version.text = $"VERSION: {value}";
@@ -39,6 +41,7 @@ namespace MSCLoader
         public bool SkipGameLauncher { get => skipGameLauncher.Value; internal set => skipGameLauncher.Value = value; }
         public bool SkipSplashScreen { get => skipSplashScreen.Value; internal set => skipSplashScreen.Value = value; }
         public bool UseVsyncInMenu { get => useVsyncInMenu.Value; internal set => useVsyncInMenu.Value = value; }
+        public bool ShowTooltips { get => showTooltips.Value; internal set => showTooltips.Value = value; }
 
         public int UpdateMode { get => updateMode.Value; internal set => updateMode.Value = value; }
         public string LastUpdateCheck { get => lastUpdateCheckDate.ToString("u"); internal set => lastUpdateCheck.Text = $"LAST CHECKED FOR UPDATES: <color=yellow>{value}</color>"; }
@@ -74,21 +77,15 @@ namespace MSCLoader
             MSCLoader.settings.SaveSettings(this);
         }
 
-        bool suspendAction = false;
-        public void ToggleMenuOff()
-        {
-            suspendAction = true;
-            modLoaderSettingsToggle.isOn = false;
-            gameObject.SetActive(false);
-            suspendAction = false;
-        }
+        public void ToggleSettingsOpen() => SetSettingsOpen(!gameObject.activeSelf);
 
-        public void ToggleMenu()
+        public void SetSettingsOpen(bool open, bool ignoreOthers = false)
         {
-            if (suspendAction) return;
+            if (!ignoreOthers)
+                foreach (ModListElement otherMod in modContainer.modListDictionary.Values) otherMod.SetSettingsOpen(false, true);
 
-            foreach (ModListElement otherMod in modContainer.modListDictionary.Values) otherMod.ToggleSettingsOff();
-            gameObject.SetActive(modLoaderSettingsToggle.isOn);
+            gameObject.SetActive(open);
+            openArrowTransform.localScale = open ? openArrowOpen : Vector3.one;
         }
 
         public void OpenModLoaderSite()
@@ -155,6 +152,7 @@ namespace MSCLoader
         public bool SkipGameLauncher = false;
         public bool SkipSplashScreen = false;
         public bool UseVsyncInMenu = true;
+        public bool ShowTooltips = true;
 
         public int UpdateMode = 2;
         public string LastUpdateCheck = "2000-01-01 00:00:00Z";
@@ -180,6 +178,7 @@ namespace MSCLoader
             SkipGameLauncher = settingINI.Read("SkipGameLauncher", "General", SkipGameLauncher);
             SkipSplashScreen = settingINI.Read("SkipSplashScreen", "General", SkipSplashScreen);
             UseVsyncInMenu = settingINI.Read("UseVsyncInMenu", "General", UseVsyncInMenu);
+            ShowTooltips = settingINI.Read("ShowTooltips", "General", ShowTooltips);
 
             UpdateMode = settingINI.Read("UpdateMode", "Updates", UpdateMode);
             LastUpdateCheck = settingINI.Read("LastUpdateCheck", "Updates", LastUpdateCheck);
@@ -202,6 +201,7 @@ namespace MSCLoader
             SkipGameLauncher = modLoaderSettings.SkipGameLauncher;
             SkipSplashScreen = modLoaderSettings.SkipSplashScreen;
             UseVsyncInMenu = modLoaderSettings.UseVsyncInMenu;
+            ShowTooltips = modLoaderSettings.ShowTooltips;
 
             UpdateMode = modLoaderSettings.UpdateMode;
             LastUpdateCheck = modLoaderSettings.LastUpdateCheck;
@@ -223,6 +223,7 @@ namespace MSCLoader
             settingINI.Write("SkipGameLauncher", "General", SkipGameLauncher);
             settingINI.Write("SkipSplashScreen", "General", SkipSplashScreen);
             settingINI.Write("UseVsyncInMenu", "General", UseVsyncInMenu);
+            settingINI.Write("ShowTooltips", "General", ShowTooltips);
 
             settingINI.Write("UpdateMode", "Updates", UpdateMode);
             settingINI.Write("LastUpdateCheck", "Updates", LastUpdateCheck);
@@ -256,6 +257,7 @@ namespace MSCLoader
                 if (!ModLoader.modLoaderInstance.vSyncEnabled && ModLoader.CurrentScene == CurrentScene.MainMenu)
                     QualitySettings.vSyncCount = modLoaderSettings.UseVsyncInMenu ? 1 : 0;
             });
+            modLoaderSettings.ShowTooltips = ShowTooltips;
 
             modLoaderSettings.UpdateMode = UpdateMode;
             modLoaderSettings.ParseUpdateCheckTime(LastUpdateCheck);
