@@ -225,7 +225,6 @@ namespace MSCLoader
             gameObject.SetActive(false);
         }
     }
-
     internal class UITooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public string toolTipText;

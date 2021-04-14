@@ -131,6 +131,11 @@ namespace MSCLoader
                 () => ModHelper.OpenFolder($@"{Path.GetFullPath(".")}\output_log.txt"));
         }
 
+        public void LoginNexus() 
+        {
+
+        }
+
         public void RefreshUpdateCheckTime()
         {
             lastUpdateCheckDate = DateTime.Now;
