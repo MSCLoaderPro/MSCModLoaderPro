@@ -231,5 +231,13 @@ namespace Installer
             if (goToEnd)
                 Installer.Instance.TabEnd();
         }
+
+        internal void DeleteTemporaryFiles()
+        {
+            if (Directory.Exists(TempPath))
+            {
+                Directory.Delete(TempPath, true);
+            }
+        }
     }
 }

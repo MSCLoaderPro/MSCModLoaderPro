@@ -163,6 +163,7 @@ namespace Installer
             btnDevmenu.SetToCenter(this);
             btnInstallDev.SetToCenter(this);
             btnLicenses.Font = smallFont;
+            btnWebsite.Font = smallFont;
 
             switch (mode)
             {
@@ -191,6 +192,7 @@ namespace Installer
                     }
                     OfflineMode = true;
                     OfflineZipPath = arg;
+                    btnDevmenu.Enabled = false;
                     break;
             }
         }
@@ -295,6 +297,7 @@ namespace Installer
             {
                 CreateFolders();
             }
+            downloader?.DeleteTemporaryFiles();
             Environment.Exit(0);
         }
 
@@ -381,6 +384,7 @@ namespace Installer
         private void btnPlay_Click(object sender, EventArgs e)
         {
             CreateFolders();
+            downloader.DeleteTemporaryFiles();
             /*
             string args = $"/C ping 127.0.0.1 -n 2 && start \"\" /d \"{MscPath}\" \"steam://rungameid/516750\"";
             if (ModifierKeys.HasFlag(Keys.Shift))
@@ -457,7 +461,9 @@ namespace Installer
         int x = 0;
         private void labVer_Click(object sender, EventArgs e)
         {
+#if DEBUG
             TabEnd();
+#endif
             x++;
             if (x > 5)
             {

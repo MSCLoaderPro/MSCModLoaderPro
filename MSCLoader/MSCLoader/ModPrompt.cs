@@ -34,6 +34,8 @@ namespace MSCLoader
         /// <summary>Should the ModPrompt be destroyed after being disabled?</summary>
         public bool DestroyOnDisable { get => destroyOnDisable; set => destroyOnDisable = value; }
 
+        protected bool DontCheckForMissingButtons;
+
 
         /// <summary>UnityAction that executes when the ModPrompt closes.</summary>
         public UnityAction OnCloseAction;
@@ -91,7 +93,7 @@ namespace MSCLoader
         IEnumerator IsAnyButtonPresent()
         {
             yield return null;
-            if (buttons.Count == 0)
+            if (buttons.Count == 0 && !DontCheckForMissingButtons)
             {
                 AddButton("OK", null);
             }
@@ -190,6 +192,17 @@ namespace MSCLoader
             modPrompt.gameObject.SetActive(false); // Custom prompts have to be showed manually using ModPrompt.Show().
 
             return NewPrompt();
+        }
+
+        /// <summary>
+        /// Makes a prompt without buttons (for internal use only!)<br></br>
+        /// </summary>
+        /// <returns>Returns a ModPrompt component of the button.</returns>
+        internal static ModPrompt CreateButtonlessPrompt()
+        {
+            ModPrompt modPrompt = NewPrompt();
+            modPrompt.DontCheckForMissingButtons = true;
+            return modPrompt;
         }
     }
 

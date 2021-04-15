@@ -46,10 +46,6 @@
       <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MSCLoader.Legacy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Release\mysummercar_Data\Managed\MSCLoader.Legacy.dll</HintPath>
-    </Reference>
     <Reference Include="NAudio">
       <HintPath>..\References\NAudio.dll</HintPath>
       <Private>False</Private>
@@ -118,6 +114,9 @@
     <Compile Include="ModUnloader.cs" />
     <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
     <Compile Include="MSCLoaderHarmonyPatches.cs" />
+    <Compile Include="NexusMods\NexusSSO.cs" />
+    <Compile Include="NexusMods\SecureStorage.cs" />
+    <Compile Include="NexusMods\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Legacy\AudioLibrary\AudioFileReader.cs" />
     <Compile Include="Legacy\AudioLibrary\Manager.cs" />
@@ -147,6 +146,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Credits.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetName).xml" "C:\Users\Fredrik\source\repos\MSCLoader\Release\mysummercar_Data\Managed\$(TargetName).xml"

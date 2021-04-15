@@ -4,6 +4,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace CoolUpdater
 {
@@ -84,9 +85,26 @@ namespace CoolUpdater
                     DownloadFile(args[1], args[2], token2);
                     break;
                 case "update-all":
-                    string pathToMods = args.Length < 2 ? "" : args[1];
+                    string pathToMods = args.Length < 2 ? "" : args[1].Replace("%20", " ");
                     UpdateView view = new UpdateView(pathToMods);
                     Application.Run(view);
+                    break;
+                case "nexus-login":
+                    if (Process.GetCurrentProcess().Parent().ProcessName == "mysummercar")
+                    {
+                        string tok = "";
+                        if (args.Length > 1)
+                        {
+                            tok = args[1];
+                        }
+                        new NexusLoginSystem(tok);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Parent process is not a My Summer Car.");
+                        Environment.Exit(0);
+                    }
+
                     break;
             }
         }

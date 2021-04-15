@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 using MSCLoader.Helper;
+using MSCLoader.NexusMods;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -30,16 +31,13 @@ namespace MSCLoader
         bool isBusy;
         public bool IsBusy => isBusy;
 
-        internal string UpdaterDirectory => Path.Combine(Directory.GetCurrentDirectory(), "ModUpdater");
-        string UpdaterPath => Path.Combine(UpdaterDirectory, "CoolUpdater.exe");
+        internal static string UpdaterDirectory => Path.Combine(Directory.GetCurrentDirectory(), "ModUpdater");
+        internal static string UpdaterPath => Path.Combine(UpdaterDirectory, "CoolUpdater.exe");
         string DownloadsDirectory => Path.Combine(UpdaterDirectory, "Downloads");
         const int TimeoutTime = 10; // in seconds.
         const int TimeoutTimeDownload = 20; // in seconds.
 
         bool autoUpdateChecked;
-
-        bool nexusIsPremium;
-        bool nexusMissingToken;
 
         ModUpdaterDatabase modUpdaterDatabase;
 
@@ -153,6 +151,12 @@ namespace MSCLoader
             menuLabelUpdateText.gameObject.SetActive(false);
         }
 
+        void ClearSliderText()
+        {
+            headerProgressBar.SetActive(false);
+            menuLabelUpdateText.gameObject.SetActive(false);
+        }
+
         IEnumerator NotifyUpdatesAvailable()
         {
             int updateCount = ModLoader.LoadedMods.Count(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
@@ -191,10 +195,31 @@ namespace MSCLoader
             StartCoroutine(CheckForModUpdates(ModLoader.LoadedMods.Where(x => !string.IsNullOrEmpty(x.UpdateLink))));
         }
 
+        bool userAnswered, userAbort;
+
         /// <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
         IEnumerator CheckForModUpdates(IEnumerable<Mod> mods)
         {
             if (mods.Count() == 0) yield break;
+
+            if (!NexusSSO.Instance.IsValid)
+            {
+                ModPrompt prompt = ModPrompt.CreateYesNoPrompt("Looks like you're not logged into NexusMods.\n" +
+                                                          "Some mods require NexusMods to be able to check for updates.\n\n" +
+                                                          "Are you sure you want to continue?", "Mod Updater", () => { }, onNo: () => { userAbort = true; }, onPromptClose: () => { userAnswered = true; });
+
+                while (!userAnswered)
+                {
+                    yield return null;
+                }
+                if (userAbort)
+                {
+                    isBusy = false;
+                    ClearSliderText();
+                    yield break;
+                }
+            }
+
 
             isBusy = true;
 
@@ -310,57 +335,25 @@ namespace MSCLoader
                 {
                     //SAMPLE: https://www.nexusmods.com/mysummercar/mods/146
                     // First we need mod ID.
-                    if (!File.Exists(Path.Combine(UpdaterDirectory, "TemporaryKey.txt")) && !nexusMissingToken)
+                    if (!NexusSSO.Instance.IsValid)
                     {
                         ModConsole.LogError("Mods that use NexusMods for its updates require user authentication API key. Please provide one first.");
-                        nexusMissingToken = true;
                     }
 
-                    if (nexusMissingToken)
-                    {
-                        ModConsole.LogError($"Mod {mod.ID} needs NexusMods API key to check for updates :(");
-                        continue;
-                    }
-
-                    string token = File.ReadAllText(Path.Combine(UpdaterDirectory, "TemporaryKey.txt")); // TODO; add getting a key. Right now we are reading from TemporaryKey.txt file.
                     string modID = url.Split('/').Last();
                     string userInfo = "https://api.nexusmods.com/v1/users/validate.json";
                     string mainModInfo = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}.json";
 
-                    if (string.IsNullOrEmpty(token))
+                    if (string.IsNullOrEmpty(NexusSSO.Instance.ApiKey))
                     {
                         ModConsole.LogError("NexusMods API key is empty.");
-                        nexusMissingToken = true;
                         continue;
                     }
 
-                    // we are checking if user has a premium account.
-                    Process userDataProcess = GetMetaFile(userInfo, token);
-                    int downloadTime = 0;
-                    while (!userDataProcess.HasExited)
-                    {
-                        downloadTime++;
-                        if (downloadTime > TimeoutTime)
-                        {
-                            ModConsole.LogError($"Mod Updater: Getting metadata of User timed-out.");
-                            break;
-                        }
-                        yield return new WaitForSeconds(1);
-                    }
-                    string[] output = ReadMetadataToArray();
-                    foreach (string s in output)
-                    {
-                        // TODO: Check if user exists
-                        if (s.Contains("is_premium?"))
-                        {
-                            nexusIsPremium = s.Contains("true");
-                        }
-                    }
-
                     // Now we are getting version info.
-                    Process modInfoProcess = GetMetaFile(mainModInfo, token);
+                    Process modInfoProcess = GetMetaFile(mainModInfo, NexusSSO.Instance.ApiKey);
                     mod.ModUpdateData = new ModUpdateData();
-                    downloadTime = 0;
+                    int downloadTime = 0;
                     while (!modInfoProcess.HasExited)
                     {
                         downloadTime++;
@@ -371,7 +364,7 @@ namespace MSCLoader
                         }
                         yield return new WaitForSeconds(1);
                     }
-                    output = ReadMetadataToArray();
+                    string[] output = ReadMetadataToArray();
                     foreach (string s in output)
                     {
                         if (s.Contains("version"))
@@ -382,10 +375,10 @@ namespace MSCLoader
                     }
 
                     // Retrieve latest file version.
-                    if (nexusIsPremium)
+                    if (NexusSSO.Instance.IsPremium)
                     {
                         string modFiles = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}/files.json?category=main";
-                        Process modFilesProcess = GetMetaFile(modFiles, token);
+                        Process modFilesProcess = GetMetaFile(modFiles, NexusSSO.Instance.ApiKey);
                         downloadTime = 0;
                         while (!modFilesProcess.HasExited)
                         {
@@ -430,7 +423,7 @@ namespace MSCLoader
                         if (!string.IsNullOrEmpty(lastFileID))
                         {
                             string requestDownloads = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}/files/{lastFileID}/download_link.json";
-                            Process fileProcess = GetMetaFile(requestDownloads, token);
+                            Process fileProcess = GetMetaFile(requestDownloads, NexusSSO.Instance.ApiKey);
                             downloadTime = 0;
                             while (!fileProcess.HasExited)
                             {
@@ -511,7 +504,7 @@ namespace MSCLoader
             isBusy = false;
         }
 
-        Process GetMetaFile(params string[] args)
+        static Process GetMetaFile(params string[] args)
         {
             Process p = new Process
             {
@@ -537,7 +530,7 @@ namespace MSCLoader
             return p;
         }
 
-        private void ErrorHandler(object sender, DataReceivedEventArgs e)
+        private static void ErrorHandler(object sender, DataReceivedEventArgs e)
         {
             ModConsole.Log(e.Data);
         }
@@ -548,7 +541,7 @@ namespace MSCLoader
             lastDataOut += e.Data + "\n";
         }
 
-        string[] ReadMetadataToArray()
+        internal static string[] ReadMetadataToArray()
         {
             return string.IsNullOrEmpty(lastDataOut) ? new string[] { "" } : lastDataOut.Split(',');
         }
@@ -622,7 +615,7 @@ namespace MSCLoader
 
             if (mod.UpdateLink.Contains("nexusmods.com"))
             {
-                if (!nexusIsPremium)
+                if (!NexusSSO.Instance.IsPremium)
                 {
                     ModPrompt.CreateYesNoPrompt($"MOD <color=yellow>{mod.Name}</color> USES NEXUSMODS FOR UPDATE DOWNLOADS. " +
                                             $"UNFORTUNATELY, DUE TO NEXUSMODS POLICY, ONLY PREMIUM USERS CAN USE AUTO UPDATE FEATURE.\n\n" +
@@ -729,7 +722,7 @@ namespace MSCLoader
                 string args = $"get-file \"{mod.ModUpdateData.ZipUrl}\" \"{downloadToPath}\"";
                 if (mod.ModUpdateData.ZipUrl.Contains("nexusmods.com"))
                 {
-                    args += $" \"{GetNexusToken()}\"";
+                    args += $" \"{NexusMods.NexusSSO.Instance.ApiKey}\"";
                 }
 
                 Process p = new Process
@@ -787,7 +780,7 @@ namespace MSCLoader
                 ModPrompt.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
                                         $"WOULD YOU LIKE TO INSTALL THEM NOW?\n\n" +
                                         $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>",
-                                        "MOD UPDATER", () => { StartInstaller(); }, null, () => { waitForInstall = true; });
+                                        "MOD UPDATER", () => { waitForInstall = true; Application.Quit(); }, null, () => { waitForInstall = true; });
             }
         }
         #endregion
@@ -833,7 +826,7 @@ namespace MSCLoader
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/C \"\" CoolUpdater.exe update-all \"" + Path.GetFullPath(ModLoader.ModsFolder) + "\"",
+                        Arguments = $"/C \"\" CoolUpdater.exe update-all {Path.GetFullPath(ModLoader.ModsFolder).Replace(" ", "%20")}",
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = true
                     }
@@ -844,14 +837,22 @@ namespace MSCLoader
         }
         #endregion
 
-        string GetNexusToken()
-        {
-            return File.ReadAllText(Path.Combine(UpdaterDirectory, "TemporaryKey.txt"));
-        }
-
         #region Mod Loader Update Check
         IEnumerator CheckModLoaderUpdate()
         {
+            currentSliderText = UpdateSliderText("COMMUNICATING WITH NEXUSMODS", "");
+            StartCoroutine(currentSliderText);
+            int waitTime = 0;
+            while (!NexusSSO.Instance.IsReady)
+            {
+                waitTime++;
+                if (waitTime > 20)
+                    break;
+
+                yield return new WaitForSeconds(1);
+            }
+            StopCoroutine(currentSliderText);
+
             isBusy = true;
 
             currentSliderText = UpdateSliderText("LOOKING FOR MOD LOADER UPDATES", "CHECKING FOR MOD LOADER UPDATE FINISHED!");
@@ -1011,7 +1012,6 @@ namespace MSCLoader
 
             isBusy = false;
         }
-
         #endregion
     }
 
@@ -1030,7 +1030,7 @@ namespace MSCLoader
         // Because of some weird conflict between Newtonsoft.Json.Linq and System.Linq conflict,
         // we are forced to use a custom database solution.
 
-        string DatabaseFile = Path.Combine(ModUpdater.Instance.UpdaterDirectory, "Updater.txt");
+        string DatabaseFile = Path.Combine(ModUpdater.UpdaterDirectory, "Updater.txt");
 
         Dictionary<string, ModUpdateData> modUpdateData;
 

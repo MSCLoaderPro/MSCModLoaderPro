@@ -55,6 +55,8 @@ namespace MSCLoader
         public float ConsoleWindowHeight { get => consoleWindowHeight.Value; internal set => consoleWindowHeight.Value = value; }
         public float ConsoleWindowWidth { get => consoleWindowWidth.Value; internal set => consoleWindowWidth.Value = value; }
 
+        internal NexusMods.NexusSSO nexusSSO;
+
         [SerializeField] internal DateTime lastUpdateCheckDate;
 
         [SerializeField] internal bool disableSave = false;
@@ -133,7 +135,7 @@ namespace MSCLoader
 
         public void LoginNexus() 
         {
-
+            this.nexusSSO.RequestLogin();
         }
 
         public void RefreshUpdateCheckTime()

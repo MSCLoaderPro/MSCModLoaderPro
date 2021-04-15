@@ -136,6 +136,7 @@ namespace MSCLoader
             // Create the Mod UI and load the settings.
             LoadModLoaderUI();
             LoadModLoaderSettings();
+            modLoaderSettings.nexusSSO = gameObject.AddComponent<NexusMods.NexusSSO>();
 
             // Prepare the mod lists.
             LoadedMods = new List<Mod>();
