@@ -98,6 +98,7 @@ namespace MSCLoader
         [SerializeField] internal GameObject modSettings;
         [SerializeField] internal GameObject modMenuButton;
         [SerializeField] internal GameObject menuLabel;
+        [SerializeField] internal GameObject menuNexusStatus;
 
         public List<GameObject> extra = new List<GameObject>();
 
@@ -259,5 +260,9 @@ namespace MSCLoader
             }
         }
 
+    }
+    internal class NexusMenuUI : MonoBehaviour
+    {
+        [SerializeField] internal Text loggedIn, userName, memberStatus;
     }
 }
