@@ -11,6 +11,7 @@ namespace CoolUpdater
         const string Remote = "wss://sso.nexusmods.com";
 
         string uuid, token, apikey;
+        bool closed;
 
         public NexusLoginSystem(string token = "")
         {
