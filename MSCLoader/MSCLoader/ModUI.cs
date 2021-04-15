@@ -264,5 +264,6 @@ namespace MSCLoader
     internal class NexusMenuUI : MonoBehaviour
     {
         [SerializeField] internal Text loggedIn, userName, memberStatus;
+        [SerializeField] internal RawImage profilePicture;
     }
 }
