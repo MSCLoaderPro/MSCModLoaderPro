@@ -265,5 +265,21 @@ namespace MSCLoader
     {
         [SerializeField] internal Text loggedIn, userName, memberStatus;
         [SerializeField] internal RawImage profilePicture;
+        [SerializeField] internal ChangeTextOnHover hoverText;
+    }
+
+    internal class ChangeTextOnHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    {
+        [SerializeField] internal Text text;
+        [SerializeField] internal string newText;
+        [SerializeField] internal string oldText;
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            text.text = newText;
+        }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            text.text = oldText;
+        }
     }
 }
