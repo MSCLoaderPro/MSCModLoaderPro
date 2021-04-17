@@ -54,7 +54,7 @@ namespace MSCLoader
         public int ConsoleAutoOpen { get => consoleAutoOpen.Value; internal set => consoleAutoOpen.Value = value; }
         public float ConsoleWindowHeight { get => consoleWindowHeight.Value; internal set => consoleWindowHeight.Value = value; }
         public float ConsoleWindowWidth { get => consoleWindowWidth.Value; internal set => consoleWindowWidth.Value = value; }
-
+        
         internal NexusMods.NexusSSO nexusSSO;
 
         [SerializeField] internal DateTime lastUpdateCheckDate;

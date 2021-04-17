@@ -110,6 +110,7 @@ namespace MSCLoader
             modList.SetActive(false);
             modMenuButton.SetActive(false);
             modSettings.SetActive(false);
+            menuNexusStatus.SetActive(false);
 
             modLoaderSettings.SetSettingsOpen(false, true);
             foreach (ModListElement mod in modContainer.modListDictionary.Values) 
