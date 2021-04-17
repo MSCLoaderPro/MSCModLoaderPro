@@ -705,6 +705,12 @@
             </summary>
             <returns>Returns a ModPrompt component of the button.</returns>
         </member>
+        <member name="M:MSCLoader.ModPrompt.CreateButtonlessPrompt">
+            <summary>
+            Makes a prompt without buttons (for internal use only!)<br></br>
+            </summary>
+            <returns>Returns a ModPrompt component of the button.</returns>
+        </member>
         <member name="T:MSCLoader.ModPromptButton">
             <summary>ModPromptButton Component for buttons added the prompts.</summary>
         </member>

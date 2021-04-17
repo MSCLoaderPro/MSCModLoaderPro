@@ -173,7 +173,7 @@ namespace MSCLoader
 
             // Add it to the log.
             controller.AppendLogLine($"<color=red><b>Error:</b> {text}</color>");
-            // Also write it to the output_log.txt (using Console.WriteLine instead of Debug.Log to avoid a stacktrace)
+            // Also write it to the output_log.txt
             Debug.LogError($"MODLOADER ERROR: {OutputString(text)}");
         }
 

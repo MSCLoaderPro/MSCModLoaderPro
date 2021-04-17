@@ -12,10 +12,10 @@ namespace MSCLoader
 
         internal static void Main()
         {
-            arguments = System.Environment.GetCommandLineArgs();
+            arguments = Environment.GetCommandLineArgs();
             settings = new LoaderSettings();
             ExtraTweaks();
-            if (FindArgument("-disableModLoader") != null) return;
+            if (FindArgument("-disableModLoader")) return;
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyWatcher;
         }
 
@@ -71,13 +71,17 @@ namespace MSCLoader
 
                 using (FileStream stream = new FileStream(@"mysummercar_Data\mainData", FileMode.Open, FileAccess.ReadWrite))
                 {
-                    stream.Position = offset + 96L;
-                    if (!settings.SkipGameLauncher && FindArgument("-skipLauncher") == null || FindArgument("-disableModLoader") != null) stream.WriteByte(0x01);
-                    else stream.WriteByte(0x00);
+                    stream.Position = offset + 96L; 
+                    stream.WriteByte(0x01);
+
+                    if ((settings.SkipGameLauncher || FindArgument("-skipLauncher")) && !FindArgument("-disableModLoader") && !FindArgument("-showLauncher"))
+                        stream.WriteByte(0x00);
+
 
                     stream.Position = offset + 115L;
+                    stream.WriteByte(0x00);
+
                     if (settings.UseOutputLog) stream.WriteByte(0x01);
-                    else stream.WriteByte(0x00);
 
                     stream.Close();
                 }
@@ -109,13 +113,13 @@ namespace MSCLoader
             return i;
         }// Helper function for getting the command line arguments
         
-        internal static string FindArgument(string name)
+        internal static bool FindArgument(string name)
         {
             for (int i = 0; i < arguments.Length; i++)
                 if (arguments[i] == name && arguments.Length > i + 1)
-                    return arguments[i + 1];
+                    return true;
 
-            return null;
+            return false;
         }
     }
 }

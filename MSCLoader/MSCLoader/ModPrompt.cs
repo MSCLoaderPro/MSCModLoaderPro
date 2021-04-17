@@ -193,7 +193,7 @@ namespace MSCLoader
 
             return NewPrompt();
         }
-
+        
         /// <summary>
         /// Makes a prompt without buttons (for internal use only!)<br></br>
         /// </summary>
