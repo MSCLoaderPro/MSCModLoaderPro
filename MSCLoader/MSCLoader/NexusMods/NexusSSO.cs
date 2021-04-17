@@ -308,8 +308,15 @@ namespace MSCLoader.NexusMods
             }
 
             ui.loggedIn.text = "<color=lime>LOGGED IN</color>";
-            ui.userName.text = userInfo.Name;
-            ui.memberStatus.text = userInfo.IsPremium ? "PREMIUM" : "NON-PREMIUM";
+            ui.userName.text = userInfo.Name.ToUpper();
+
+            string status = userInfo.IsPremium ? "PREMIUM" : "MEMBER";
+            if (userInfo.IsSupporter)
+            {
+                status = status == "PREMIUM" ? "PREMIUM & SUPPORTER" : "SUPPORTER";
+            }
+
+            ui.memberStatus.text = status;
             ui.hoverText.oldText = "<color=lime>LOGGED IN</color>";
             ui.hoverText.newText = "<color=red>LOG OUT</color>";
 

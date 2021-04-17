@@ -35,7 +35,7 @@ namespace MSCLoader
         internal static string UpdaterPath => Path.Combine(UpdaterDirectory, "CoolUpdater.exe");
         string DownloadsDirectory => Path.Combine(UpdaterDirectory, "Downloads");
         const int TimeoutTime = 10; // in seconds.
-        const int TimeoutTimeDownload = 20; // in seconds.
+        const int TimeoutTimeDownload = 60; // in seconds.
 
         bool autoUpdateChecked;
 
@@ -270,6 +270,7 @@ namespace MSCLoader
                         if (downloadTime > TimeoutTime)
                         {
                             ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
+                            p.Kill();
                             break;
                         }
 
@@ -341,7 +342,6 @@ namespace MSCLoader
                     }
 
                     string modID = url.Split('/').Last();
-                    string userInfo = "https://api.nexusmods.com/v1/users/validate.json";
                     string mainModInfo = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{modID}.json";
 
                     if (string.IsNullOrEmpty(NexusSSO.Instance.ApiKey))
@@ -360,6 +360,7 @@ namespace MSCLoader
                         if (downloadTime > TimeoutTime)
                         {
                             ModConsole.LogError($"Mod Updater: Getting metadata of {mod.ID} timed-out.");
+                            modInfoProcess.Kill();
                             break;
                         }
                         yield return new WaitForSeconds(1);
@@ -386,6 +387,7 @@ namespace MSCLoader
                             if (downloadTime > TimeoutTime)
                             {
                                 ModConsole.LogError($"Mod Updater: Getting list of files of {mod.ID} timed-out.");
+                                modFilesProcess.Kill();
                                 break;
                             }
                             yield return new WaitForSeconds(1);
@@ -431,6 +433,7 @@ namespace MSCLoader
                                 if (downloadTime > TimeoutTime)
                                 {
                                     ModConsole.LogError($"Mod Updater: Getting downlaod link of {mod.ID} timed-out.");
+                                    fileProcess.Kill();
                                     break;
                                 }
                                 yield return new WaitForSeconds(1);
@@ -661,7 +664,6 @@ namespace MSCLoader
         {
             if (isBusy) return;
 
-            //headerUpdateAllButton.SetActive(false);
             Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
             foreach (Mod mod in mods)
             {
@@ -722,7 +724,7 @@ namespace MSCLoader
                 string args = $"get-file \"{mod.ModUpdateData.ZipUrl}\" \"{downloadToPath}\"";
                 if (mod.ModUpdateData.ZipUrl.Contains("nexusmods.com"))
                 {
-                    args += $" \"{NexusMods.NexusSSO.Instance.ApiKey}\"";
+                    args += $" \"{NexusSSO.Instance.ApiKey}\"";
                 }
 
                 Process p = new Process
@@ -751,6 +753,7 @@ namespace MSCLoader
                     if (downloadTime > TimeoutTimeDownload)
                     {
                         ModConsole.LogError($"Mod Update Check for {mod.ID} timed-out.");
+                        p.Kill();
                         break;
                     }
 
@@ -867,13 +870,14 @@ namespace MSCLoader
                 {
                     ModConsole.LogError($"Mod Updater: Getting metadata of Mod Loader Pro timed-out.");
                     isBusy = false;
+                    p.Kill();
                     yield break;
                 }
 
                 yield return new WaitForSeconds(1);
             }
 
-            p.Close();
+            p.Kill();
             ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
 
             string output = lastDataOut.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
@@ -944,13 +948,14 @@ namespace MSCLoader
                 {
                     ModConsole.LogError($"Mod Updater: Getting metadata of Mod Loader Pro timed-out.");
                     isBusy = false;
+                    p.Kill();
                     yield break;
                 }
 
                 yield return new WaitForSeconds(1);
             }
 
-            p.Close();
+            p.Kill();
             ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
 
             if (!Directory.Exists(TempPathModLoaderPro))
@@ -997,6 +1002,7 @@ namespace MSCLoader
                 if (downloadTime > TimeoutTimeDownload)
                 {
                     ModConsole.LogError($"Downloading Installer timed-out.");
+                    p.Kill();
                     break;
                 }
 
