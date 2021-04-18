@@ -57,4 +57,14 @@ namespace MSCLoader
                 ModLoader.modSceneLoadHandler.Disable();
         }
     }
+
+    //[HarmonyPatch(typeof(HutongGames.PlayMaker.Fsm), "BroadcastEvent")]
+    class InjectSaving
+    {
+        public static void Prefix(ref HutongGames.PlayMaker.FsmEvent fsmEvent)
+        {
+            //ModConsole.Log(fsmEvent.Name);
+            if (fsmEvent.Name == "SAVEGAME") ModLoader.modLoaderInstance.ModOnSave();
+        }
+    }
 }

@@ -33,7 +33,7 @@ namespace MSCLoader
         {
             try
             {
-                //HarmonyInstance.DEBUG = true;
+                //Harmony.HarmonyInstance.DEBUG = true;
                 Console.WriteLine("MODLOADER: PATCHING METHODS!");
                 ModLoaderInstance = Harmony.HarmonyInstance.Create("MSCModLoaderPro");
                 if (settings.EnableModLoader)
@@ -72,16 +72,19 @@ namespace MSCLoader
                 using (FileStream stream = new FileStream(@"mysummercar_Data\mainData", FileMode.Open, FileAccess.ReadWrite))
                 {
                     stream.Position = offset + 96L; 
-                    stream.WriteByte(0x01);
 
                     if ((settings.SkipGameLauncher || FindArgument("-skipLauncher")) && !FindArgument("-disableModLoader") && !FindArgument("-showLauncher"))
                         stream.WriteByte(0x00);
+                    else 
+                        stream.WriteByte(0x01);
 
 
                     stream.Position = offset + 115L;
-                    stream.WriteByte(0x00);
 
-                    if (settings.UseOutputLog) stream.WriteByte(0x01);
+                    if (settings.UseOutputLog && !FindArgument("-noLog")) 
+                        stream.WriteByte(0x01);
+                    else 
+                        stream.WriteByte(0x00);
 
                     stream.Close();
                 }

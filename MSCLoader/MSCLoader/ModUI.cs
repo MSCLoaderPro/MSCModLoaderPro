@@ -111,6 +111,7 @@ namespace MSCLoader
             modMenuButton.SetActive(false);
             modSettings.SetActive(false);
             menuNexusStatus.SetActive(false);
+            menuLabel.SetActive(false);
 
             modLoaderSettings.SetSettingsOpen(false, true);
             foreach (ModListElement mod in modContainer.modListDictionary.Values) 
@@ -230,8 +231,8 @@ namespace MSCLoader
     public class UITooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public string toolTipText;
-        public static GameObject toolTipPrefab;
 
+        internal static GameObject toolTipPrefab;
         Transform toolTip;
         WaitForSeconds wait = new WaitForSeconds(0.75f);
 

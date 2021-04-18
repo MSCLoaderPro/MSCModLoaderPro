@@ -107,6 +107,9 @@ namespace MSCLoader
 
         void Awake()
         {
+            // Unpatch saving
+            MSCLoader.ModLoaderInstance.UnpatchAll("MSCModLoaderProSave");
+
             // Prevent the menu music from being heard a split second when the loader is initializing.
             if (GameObject.Find("Music") && Application.loadedLevelName == "MainMenu")
                 GameObject.Find("Music").GetComponent<AudioSource>().Stop();
@@ -517,7 +520,11 @@ namespace MSCLoader
             methods.AddComponent<ModUpdateCall>().modLoader = this;
             methods.AddComponent<ModFixedUpdateCall>().modLoader = this;
 
-            GameObject.Find("ITEMS").GetPlayMakerFSM("SaveItems").InsertAction("Save game", 0, new ModOnSave() { modLoader = this });
+            MethodBase broadcastMethod = typeof(Fsm).GetMethod("BroadcastEvent", new Type[] { typeof(FsmEvent), typeof(bool) });
+            Harmony.HarmonyMethod prefix = new Harmony.HarmonyMethod(typeof(InjectSaving).GetMethod("Prefix"));
+            Harmony.HarmonyInstance.Create("MSCModLoaderProSave").Patch(broadcastMethod, prefix);
+
+            //GameObject.Find("ITEMS").GetPlayMakerFSM("SaveItems").InsertAction("Save game", 0, new ModOnSave() { modLoader = this });
 
             modUILoadScreen.SetActive(false);
         }
@@ -623,6 +630,9 @@ namespace MSCLoader
 
         internal void ModOnSave()
         {
+            // Unpatch saving
+            MSCLoader.ModLoaderInstance.UnpatchAll("MSCModLoaderProSave");
+
             MethodTimerStart("OnSave");
 
             for (int i = 0; i < ModMethods[11].Count; i++)
