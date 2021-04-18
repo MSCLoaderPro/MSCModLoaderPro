@@ -311,14 +311,14 @@ namespace MSCLoader.NexusMods
             ui.userName.text = userInfo.Name.ToUpper();
 
             string status = userInfo.IsPremium ? "PREMIUM" : "MEMBER";
-            if (userInfo.IsSupporter)
+            if (userInfo.IsSupporter && !userInfo.IsPremium)
             {
-                status = status == "PREMIUM" ? "PREMIUM & SUPPORTER" : "SUPPORTER";
+                status = "SUPPORTER";
             }
-
             ui.memberStatus.text = status;
             ui.hoverText.oldText = "<color=lime>LOGGED IN</color>";
             ui.hoverText.newText = "<color=red>LOG OUT</color>";
+
 
             // Download profile pic.
             string pfpPath = Path.Combine(NexusDataFolder, userInfo.Name + ".png");

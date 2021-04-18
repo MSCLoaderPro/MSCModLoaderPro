@@ -509,6 +509,11 @@ namespace MSCLoader
 
         static Process GetMetaFile(params string[] args)
         {
+            if (!File.Exists(UpdaterPath))
+            {
+                throw new Exception("Missing CoolUpdater!");
+            }
+
             Process p = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -858,7 +863,7 @@ namespace MSCLoader
 
             isBusy = true;
 
-            currentSliderText = UpdateSliderText("LOOKING FOR MOD LOADER UPDATES", "CHECKING FOR MOD LOADER UPDATE FINISHED!");
+            currentSliderText = UpdateSliderText("LOOKING FOR MOD LOADER PRO UPDATES", "CHECKING FOR MOD LOADER UPDATE FINISHED!");
             StartCoroutine(currentSliderText);
             ModConsole.Log($"Looking for Mod Loader Pro updates...");
             Process p = GetMetaFile(ModLoaderApiUri);
@@ -870,14 +875,14 @@ namespace MSCLoader
                 {
                     ModConsole.LogError($"Mod Updater: Getting metadata of Mod Loader Pro timed-out.");
                     isBusy = false;
-                    p.Kill();
+                    if (p != null) p.Close();
                     yield break;
                 }
 
                 yield return new WaitForSeconds(1);
             }
 
-            p.Kill();
+            p.Close();
             ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
 
             string output = lastDataOut.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
@@ -948,14 +953,14 @@ namespace MSCLoader
                 {
                     ModConsole.LogError($"Mod Updater: Getting metadata of Mod Loader Pro timed-out.");
                     isBusy = false;
-                    p.Kill();
+                    if (p != null) p.Kill();
                     yield break;
                 }
 
                 yield return new WaitForSeconds(1);
             }
 
-            p.Kill();
+            p.Close();
             ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
 
             if (!Directory.Exists(TempPathModLoaderPro))
