@@ -46,7 +46,7 @@ namespace MSCLoader.NexusMods
         Texture defaultPfp;
         bool forceDownloadNewPfp;
 
-        NexusMenuUI ui => ModLoader.UICanvas.GetComponentInChildren<NexusMenuUI>();
+        NexusMenuUI ui => ModLoader.UICanvas.GetComponentsInChildren<NexusMenuUI>(true)[0];
 
         public NexusSSO()
         {

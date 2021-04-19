@@ -239,6 +239,10 @@ namespace MSCLoader
             {
                 ModConsole.Log($"\nLooking for update of {mod.Name}");
                 string url = mod.UpdateLink;
+
+                i++;
+                sliderProgressBar.value = i - 1;
+
                 // Formatting the link.
                 if (url.Contains("github.com"))
                 {
@@ -289,7 +293,7 @@ namespace MSCLoader
                     {
                         if (url.Contains("github.com"))
                         {
-                            if (output.Contains("\"message\": \"Not Found\""))
+                            if (output.Contains("\"message\": \"Not Found\"") || output.Contains("(404) Not Found"))
                             {
                                 ModConsole.LogError($"Mod Updater: Mod {mod.ID}'s GitHub repository returned \"Not found\" status.");
                                 continue;
@@ -365,9 +369,15 @@ namespace MSCLoader
                         }
                         yield return new WaitForSeconds(1);
                     }
+                    if (lastDataOut.Contains("\"message\": \"Not Found\"") || lastDataOut.Contains("(404) Not Found"))
+                    {
+                        ModConsole.LogError($"Mod Updater: NexusMods returned \"Not Found\" status for mod {mod.ID}.");
+                        continue;
+                    }
                     string[] output = ReadMetadataToArray();
                     foreach (string s in output)
                     {
+
                         if (s.Contains("version"))
                         {
                             mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
@@ -472,10 +482,9 @@ namespace MSCLoader
                 ModConsole.Log($"Mod Updater: {mod.ID} Latest version: {mod.ModUpdateData.LatestVersion}");
                 ModConsole.Log($"Mod Updater: {mod.ID} Your version:   {mod.Version}");
                 ModConsole.Log($"Mod Updater: {mod.ID} Link: {mod.ModUpdateData.ZipUrl}");
-
-                i++;
-                sliderProgressBar.value = i;
             }
+
+            sliderProgressBar.value = sliderProgressBar.maxValue;
 
             // SHOW THE UPDATE ALL BUTTON THEN UPDATE THE MOD COUNT LABEL TO REFLECT HOW MANY MODS HAVE UPDATES AVAILABLE!
             headerUpdateAllButton.SetActive(mods.Any(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available));
@@ -540,7 +549,8 @@ namespace MSCLoader
 
         private static void ErrorHandler(object sender, DataReceivedEventArgs e)
         {
-            ModConsole.Log(e.Data);
+            UnityEngine.Debug.Log(e.Data);
+            lastDataOut += e.Data + "\n";
         }
 
         static string lastDataOut;

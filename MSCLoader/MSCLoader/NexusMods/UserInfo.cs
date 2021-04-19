@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace MSCLoader.NexusMods
+﻿namespace MSCLoader.NexusMods
 {
-    public class UserInfo
+    internal class UserInfo
     {
         public string Name;
         public string ProfilePic;
