@@ -205,7 +205,7 @@ namespace Uninstaller
             DeleteDirectoryIfExists(Path.Combine(MscPath, "ModUpdater"));
             if (chkDebugger.Checked)
             {
-                DeleteDirectoryIfExists(Path.Combine(MscPath, modsFolder));
+                DeleteDirectoryIfExists(modsFolder);
             }
 
             panel3.Visible = false;
@@ -224,7 +224,6 @@ namespace Uninstaller
         {
             if (Directory.Exists(path)) Directory.Delete(path, true);
         }
-
 
         string GetModFolderPath()
         {
