@@ -69,6 +69,12 @@ namespace MSCLoader
 
         /// <summary>Method called whenever the mod is enabled.</summary>
         public virtual void OnModDisabled() { }
+        
+        /// <summary>Method called whenever mod settings are open.</summary>
+        public virtual void ModSettingsOpen() { }
+
+        /// <summary>Method called whenever mod settings are closed.</summary>
+        public virtual void ModSettingsClose() { }
 
         #region Obsolete Methods
         [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]

@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModTemplate", "ModTemplate\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{A820DE00-188D-4DE8-8748-2FF561613A18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uninstaller", "Uninstaller\Uninstaller.csproj", "{6D4D7F64-327F-4367-960C-75F98975DCA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{A820DE00-188D-4DE8-8748-2FF561613A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A820DE00-188D-4DE8-8748-2FF561613A18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A820DE00-188D-4DE8-8748-2FF561613A18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D4D7F64-327F-4367-960C-75F98975DCA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D4D7F64-327F-4367-960C-75F98975DCA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D4D7F64-327F-4367-960C-75F98975DCA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D4D7F64-327F-4367-960C-75F98975DCA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
