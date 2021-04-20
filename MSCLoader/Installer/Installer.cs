@@ -313,6 +313,9 @@ namespace Installer
         {
             using (var fbd = new FolderBrowserDialog())
             {
+                fbd.Description = "Serach for My Summer Car Folder:";
+                fbd.ShowNewFolderButton = false;
+
                 DialogResult result = fbd.ShowDialog();
 
                 if (result == DialogResult.OK)
@@ -374,7 +377,6 @@ namespace Installer
         {
             tabs.SelectedTab = tabPage3;
             btnExit.Enabled = true;
-
             string[] userFile = File.ReadAllText(Path.Combine(MscPath, "ModLoaderSettings.ini")).Split('\n');
             foreach (var s in userFile)
             {
@@ -529,6 +531,9 @@ namespace Installer
                 {
                     // We are dealing with MSCLoader.
                     oldModsPath = GetMscloaderPath();
+                    label2.Text += "\nSuccessfully upgraded from MSCLoader :)";
+                    label2.SetToCenter(this);
+                    label2.Top -= label2.Height / 2;
                 }
             }
         }
@@ -542,6 +547,9 @@ namespace Installer
             control.Location = new Point(x, control.Location.Y);
         }
 
+        static string steamFolder = "";
+        public static  string GetSteamFolder => steamFolder;
+
         /// <summary>
         /// Tries to find My Summer Car folder.
         /// </summary>
@@ -549,7 +557,7 @@ namespace Installer
         public static string GetMSCPath()
         {
             // We're trying to find it in Steam root folder
-            string steamFolder = "";
+            steamFolder = "";
             if (Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Valve\Steam") != null)
             {
                 using (RegistryKey Key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Valve\Steam"))
