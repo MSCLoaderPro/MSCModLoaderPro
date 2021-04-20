@@ -51,6 +51,8 @@ namespace Installer
         public bool OfflineMode;
         public string OfflineZipPath;
 
+        string OldModLoaderModsPath;
+
         Downloader downloader;
 
         public Installer(Modes mode = Modes.Regular, string arg = "")
@@ -175,6 +177,7 @@ namespace Installer
                         SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
                         txtboxPath.Text = mscPath;
                         btnDownload.Enabled = true;
+                        CheckOldMscloaderModFolder();
                     }
                     break;
                 case Modes.FastInstall:
@@ -332,6 +335,7 @@ namespace Installer
                     mscPath = fbd.SelectedPath;
                     txtboxPath.Text = mscPath;
                     btnDownload.Enabled = true;
+                    CheckOldMscloaderModFolder();
                 }
             }
         }
@@ -376,7 +380,7 @@ namespace Installer
             {
                 if (s.StartsWith("ModsFolderPath="))
                 {
-                    txtModsFolderName.Text = s.Split('=')[1].Trim() ;
+                    txtModsFolderName.Text = !string.IsNullOrEmpty(oldModsPath) ? oldModsPath : s.Split('=')[1].Trim();
                 }
             }
         }
@@ -385,27 +389,6 @@ namespace Installer
         {
             CreateFolders();
             downloader.DeleteTemporaryFiles();
-            /*
-            string args = $"/C ping 127.0.0.1 -n 2 && start \"\" /d \"{MscPath}\" \"steam://rungameid/516750\"";
-            if (ModifierKeys.HasFlag(Keys.Shift))
-            {
-                args = $"/C ping 127.0.0.1 -n 2 && start \"\" /d \"{MscPath}\" \"{Path.Combine(MscPath, "mysummercar.exe")}\"";
-            }
-
-            Process cmd = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = args,
-                    WorkingDirectory = MscPath,
-                    CreateNoWindow = true,
-                    UseShellExecute = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                }
-            };
-            cmd.Start();
-            */
             
             Process cmd = new Process
             {
@@ -503,6 +486,52 @@ namespace Installer
         {
             Process.Start("https://mscloaderpro.github.io/docs/#/Credits");
         }
+
+        string GetMscloaderPath()
+        {
+            string doorstepPath = Path.Combine(MscPath, "doorstop_config.ini");
+            if (File.Exists(doorstepPath))
+            {
+                string[] lines = File.ReadAllLines(doorstepPath);
+                string mods = "";
+                foreach (string s in lines)
+                { 
+                    if (s.Contains("mods="))
+                    {
+                        mods = s;
+                    }
+                }
+
+                switch (mods.Split('=')[1].ToUpper())
+                {
+                    // Honestly tho, wtf is that naming?
+                    case "MD": //My Documents
+                        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"MySummerCar\Mods");
+                    case "GF": // Game Folder
+                        return "Mods";
+                    case "AD": // Application Data
+                        return Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"..\LocalLow\Amistech\My Summer Car\Mods"));
+                }
+            }
+
+            return null;
+        }
+
+        string oldModsPath;
+        void CheckOldMscloaderModFolder()
+        {
+            string dll = Path.Combine(MscPath, "mysummercar_Data/Managed/MSCLoader.dll");
+            if (File.Exists(dll))
+            {
+                var f = FileVersionInfo.GetVersionInfo(dll);
+                string copyright = f.LegalCopyright;
+                if (copyright.Contains("Kosmo Software"))
+                {
+                    // We are dealing with MSCLoader.
+                    oldModsPath = GetMscloaderPath();
+                }
+            }
+        }
     }
 
     public static class CustomExtensions
@@ -526,7 +555,6 @@ namespace Installer
                 using (RegistryKey Key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Valve\Steam"))
                 {
                     steamFolder = Key.GetValue("SteamPath").ToString();
-                    steamFolder = steamFolder.Replace("/", "\\");
                 }
             }
 
@@ -534,21 +562,23 @@ namespace Installer
             if (steamFolder != "")
             {
                 // MSC is installed in root Steam folder
-                if (File.Exists($"{steamFolder}\\steamapps\\common\\My Summer Car\\mysummercar.exe"))
+                string steamFolderMSC = Path.Combine(steamFolder, "steamapps/common/My Summer Car/mysummercar.exe");
+                if (File.Exists(steamFolderMSC))
                 {
-                    return $"{steamFolder}\\steamapps\\common\\My Summer Car";
+                    return steamFolderMSC;
                 }
 
                 // MSC not found - gotta open config.vdf file and browse all libraries for MSC folder...
                 // Dumping config.vdf to string array
-                string[] config = File.ReadAllText($"{steamFolder}\\config\\config.vdf").Split('\n');
+                string[] config = File.ReadAllText(Path.Combine(steamFolder, "config/config.vdf")).Split('\n');
                 // Creating list in which all BaseInstallFolder values will be stored
                 foreach (string line in config)
                 {
                     if (line.Contains("BaseInstallFolder"))
                     {
                         string path = line.Substring(line.LastIndexOf('\t')).Replace("\"", "").Replace("\\\\", "\\").Trim();
-                        path += "\\steamapps\\common\\My Summer Car";
+                        path = Path.Combine(path, "steamapps/common/My Summer Car");
+                        path = path.Replace("\\", "/");
                         if (Directory.Exists(path))
                         {
                             return path;
