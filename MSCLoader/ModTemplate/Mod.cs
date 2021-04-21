@@ -1,4 +1,5 @@
 ﻿using MSCLoader;
+using UnityEngine;
 
 namespace $safeprojectname$
 {
@@ -12,7 +13,7 @@ namespace $safeprojectname$
         // public override string UpdateLink => "https://www.nexusmods.com/mysummercar/mods/9999";
         // public override byte[] Icon => Properties.Resources.Icon;
 
-        // Want to use those values? See Mod Loader Pro documentation!
+        // Learn more at https://mscloaderpro.github.io/docs/!
 
         public override void ModSettings()
         {
@@ -21,12 +22,12 @@ namespace $safeprojectname$
 
         public override void OnNewGame()
         {
-            // If the player starts a new game, are there things you need to reset for maximum immersion in the game?
+            // If the player starts a new game, there are things you need to reset for maximum immersion in the game.
         }
 
         public override void OnLoad()
         {
-            // This is likely the method you want to load your stuff in the game.
+            // This is likely the method you want to use to load your stuff in the game.
         }
 
         public override void OnSave()

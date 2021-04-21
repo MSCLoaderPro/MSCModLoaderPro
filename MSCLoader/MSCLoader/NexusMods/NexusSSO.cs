@@ -165,6 +165,12 @@ namespace MSCLoader.NexusMods
                     ModConsole.LogError($"[Nexus SSO] Login token timed-out.");
                     promptCancel.gameObject.SetActive(false);
                     p.Close();
+
+                    ui.loggedIn.text = "<color=red>ERROR GETTING DATA :(</color>";
+                    ui.userName.text = "";
+                    ui.memberStatus.text = "";
+                    ui.hoverText.oldText = "<color=red>ERROR GETTING DATA :(</color>";
+                    ui.hoverText.newText = "<color=red>ERROR GETTING DATA :(</color>";
                     yield break;
                 }
 
