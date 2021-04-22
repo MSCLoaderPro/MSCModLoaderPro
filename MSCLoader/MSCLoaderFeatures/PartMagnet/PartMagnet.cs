@@ -100,7 +100,8 @@ namespace MSCLoader.PartMagnet
                 {
                     guiAssemble.Value = false;
                     if (attachText != "") guiInteraction.Value = "";
-
+                    yield return null;
+                    yield return null;
                     Attach(other);
 
                     break;
@@ -155,6 +156,7 @@ namespace MSCLoader.PartMagnet
             {
                 gameObject.GetComponent<Rigidbody>().isKinematic = true;
                 gameObject.GetComponent<Rigidbody>().detectCollisions = false;
+                gameObject.GetComponent<Rigidbody>().useGravity = false;
             }
 
             if (playSound)
@@ -225,6 +227,7 @@ namespace MSCLoader.PartMagnet
             {
                 gameObject.GetComponent<Rigidbody>().isKinematic = false;
                 gameObject.GetComponent<Rigidbody>().detectCollisions = true;
+                gameObject.GetComponent<Rigidbody>().useGravity = true;
             }
 
             if (playSound)
