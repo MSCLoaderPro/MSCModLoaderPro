@@ -9,7 +9,7 @@ namespace Installer
 {
     class Downloader
     {
-        const string MetadataUrl = "https://api.github.com/repos/MSCLoaderPro/EarlyAccessRelease/releases";
+        const string MetadataUrl = "https://api.github.com/repos/MSCLoaderPro/MSCModLoaderPro/releases";
         const string GitHubHeader = "User-Agent: Other";
         const string ZipName = "MSCModLoaderPro";
         string TempPath => Path.Combine(Path.GetTempPath(), "modloaderpro");
