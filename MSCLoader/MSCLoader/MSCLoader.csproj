@@ -119,7 +119,7 @@
     <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
     <Compile Include="MSCLoaderHarmonyPatches.cs" />
     <Compile Include="NexusMods\NexusSSO.cs" />
-    <Compile Include="NexusMods\SecureStorage.cs" />
+    <Compile Include="NexusMods\DataStorage.cs" />
     <Compile Include="NexusMods\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Legacy\AudioLibrary\AudioFileReader.cs" />
