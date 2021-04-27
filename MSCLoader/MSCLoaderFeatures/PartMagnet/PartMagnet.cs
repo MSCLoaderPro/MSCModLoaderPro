@@ -44,8 +44,6 @@ namespace MSCLoader.PartMagnet
         int wheelLayer; // 16
         bool inTrigger = false;
         bool mouseOver = false;
-        HutongGames.PlayMaker.FsmBool guiAssemble, guiDisassemble;
-        HutongGames.PlayMaker.FsmString guiInteraction;
         string untagged = "Untagged", part = "PART";
 
         GameObject raycastParent;
@@ -66,9 +64,6 @@ namespace MSCLoader.PartMagnet
             if (Application.isEditor) { enabled = false; return; }
 
             wheelLayer = LayerMask.NameToLayer("Wheel");
-            guiAssemble = PlayMakerHelper.GetGlobalVariable<HutongGames.PlayMaker.FsmBool>("GUIassemble");
-            guiDisassemble = PlayMakerHelper.GetGlobalVariable<HutongGames.PlayMaker.FsmBool>("GUIdisassemble");
-            guiInteraction = PlayMakerHelper.GetGlobalVariable<HutongGames.PlayMaker.FsmString>("GUIinteraction");
 
             raycastParent = ModHelper.GetGameObject("PLAYER", "Pivot/AnimPivot/Camera/FPSCamera/1Hand_Assemble/Hand");
             raycastObject = raycastParent.GetPlayMakerFSM("PickUp").GetVariable<HutongGames.PlayMaker.FsmGameObject>("RaycastHitObject");
@@ -94,14 +89,16 @@ namespace MSCLoader.PartMagnet
             inTrigger = true;
             while (inTrigger)
             {
-                guiAssemble.Value = true;
-                if (attachText != "") guiInteraction.Value = attachText;
+                PlayMakerHelper.GUIAssemble = true;
+                if (attachText != "") PlayMakerHelper.GUIInteraction = attachText;
                 if (Input.GetMouseButtonDown(0))
                 {
-                    guiAssemble.Value = false;
-                    if (attachText != "") guiInteraction.Value = "";
+                    PlayMakerHelper.GUIAssemble = false;
+                    if (attachText != "") PlayMakerHelper.GUIInteraction = "";
+
                     yield return null;
                     yield return null;
+
                     Attach(other);
 
                     break;
@@ -116,8 +113,8 @@ namespace MSCLoader.PartMagnet
             {
                 if (triggerRoutine != null) StopCoroutine(triggerRoutine);
                 inTrigger = false;
-                guiAssemble.Value = false;
-                if (attachText != "") guiInteraction.Value = "";
+                PlayMakerHelper.GUIAssemble = false;
+                if (attachText != "") PlayMakerHelper.GUIInteraction = "";
             }
         }
 
@@ -130,7 +127,9 @@ namespace MSCLoader.PartMagnet
             attachmentPointIndex = Array.IndexOf(attachmentPoints, attachmentPoint);
 
             gameObject.tag = untagged;
-            StartCoroutine(SetParent(attachmentPoint.transform));
+            transform.parent = attachmentPoint.transform;
+            transform.localPosition = Vector3.zero;
+            transform.localEulerAngles = Vector3.zero;
 
             if (attachmentType == AttachmentType.Breakable)
             {
@@ -156,7 +155,6 @@ namespace MSCLoader.PartMagnet
             {
                 gameObject.GetComponent<Rigidbody>().isKinematic = true;
                 gameObject.GetComponent<Rigidbody>().detectCollisions = false;
-                gameObject.GetComponent<Rigidbody>().useGravity = false;
             }
 
             if (playSound)
@@ -195,8 +193,8 @@ namespace MSCLoader.PartMagnet
                     (boltDetectionParent.activeInHierarchy && boltDetection.Value == null && Physics.Raycast(playerCamera.ViewportPointToRay(viewportCenter), out hitInfo, 1f, partLayerMask.value) && hitInfo.collider.transform == transform))
                 {
                     mouseOver = true;
-                    guiDisassemble.Value = true;
-                    if (detachText != "") guiInteraction.Value = detachText;
+                    PlayMakerHelper.GUIDisassemble = true;
+                    if (detachText != "") PlayMakerHelper.GUIInteraction = detachText;
 
                     if (Input.GetMouseButtonDown(1))
                     {
@@ -227,7 +225,6 @@ namespace MSCLoader.PartMagnet
             {
                 gameObject.GetComponent<Rigidbody>().isKinematic = false;
                 gameObject.GetComponent<Rigidbody>().detectCollisions = true;
-                gameObject.GetComponent<Rigidbody>().useGravity = true;
             }
 
             if (playSound)
@@ -249,26 +246,8 @@ namespace MSCLoader.PartMagnet
         void MouseOver()
         {
             mouseOver = false;
-            guiDisassemble.Value = false;
-            if (detachText != "") guiInteraction.Value = "";
-        }
-
-        IEnumerator SetParent(Transform parent)
-        {
-            transform.parent = parent;
-            transform.localPosition = Vector3.zero;
-            transform.localEulerAngles = Vector3.zero;
-
-            yield return new WaitForEndOfFrame();
-
-            while (transform.parent != parent)
-            {
-                transform.parent = parent;
-                transform.localPosition = Vector3.zero;
-                transform.localEulerAngles = Vector3.zero;
-
-                yield return null;
-            }
+            PlayMakerHelper.GUIDisassemble = false;
+            if (detachText != "") PlayMakerHelper.GUIInteraction = "";
         }
     }
 }

@@ -46,7 +46,7 @@ namespace MSCLoader.NexusMods
         Texture defaultPfp;
         bool forceDownloadNewPfp;
 
-        NexusMenuUI ui => ModLoader.UICanvas.GetComponentsInChildren<NexusMenuUI>(true)[0];
+		NexusMenuUI ui => ModLoader.UICanvas.GetComponentsInChildren<NexusMenuUI>(true)[0];
 
         public NexusSSO()
         {
@@ -315,16 +315,11 @@ namespace MSCLoader.NexusMods
 
             ui.loggedIn.text = "<color=lime>LOGGED IN</color>";
             ui.userName.text = userInfo.Name.ToUpper();
-
-            string status = userInfo.IsPremium ? "PREMIUM" : "MEMBER";
-            if (userInfo.IsSupporter && !userInfo.IsPremium)
-            {
-                status = "SUPPORTER";
-            }
-            ui.memberStatus.text = status;
-            ui.hoverText.oldText = "<color=lime>LOGGED IN</color>";
+            ui.userName.text = userInfo.Name.ToUpper(); 
+            ui.memberStatus.text = userInfo.IsPremium ? "PREMIUM" : (userInfo.IsSupporter ? "SUPPORTER" : "MEMBER");
+            ui.loggedIn.text = "<color=red>LOG OUT</color>";
+            ui.hoverText.oldText = "<color=red>LOG OUT</color>";
             ui.hoverText.newText = "<color=red>LOG OUT</color>";
-
 
             // Download profile pic.
             string pfpPath = Path.Combine(NexusDataFolder, userInfo.Name + ".png");

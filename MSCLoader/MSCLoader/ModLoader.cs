@@ -38,7 +38,7 @@ namespace MSCLoader
         internal static ModLoaderSettings modLoaderSettings;
         internal static ModContainer modContainer;
 
-        internal static string modLoaderURL = "https://mscloaderpro.github.io/docs";
+        internal static string modLoaderURL = "https://mscloaderpro.github.io";
         /// <summary>Get current date.</summary>
         public static DateTime Date { get; internal set; }
         ///<summary>Get the mod loader canvas GameObject.</summary>
@@ -630,9 +630,6 @@ namespace MSCLoader
 
         internal void ModOnSave()
         {
-            // Unpatch saving
-            MSCLoader.ModLoaderInstance.UnpatchAll("MSCModLoaderProSave");
-
             MethodTimerStart("OnSave");
 
             for (int i = 0; i < ModMethods[11].Count; i++)

@@ -108,8 +108,9 @@ namespace MSCLoader
         {
             modMenu.SetActive(false);
             modList.SetActive(false);
-            modMenuButton.SetActive(false);
             modSettings.SetActive(false);
+
+            modMenuButton.SetActive(false);
             menuNexusStatus.SetActive(false);
             menuLabel.SetActive(false);
 
@@ -126,7 +127,10 @@ namespace MSCLoader
             if (!lockEnable)
             {
                 modMenu.SetActive(true);
+
                 modMenuButton.SetActive(true);
+                menuNexusStatus.SetActive(true);
+                menuLabel.SetActive(true);
             }
         }
     }
@@ -137,6 +141,7 @@ namespace MSCLoader
         {
             loadHandler.lockEnable = true;
             loadHandler.menuLabel.SetActive(false);
+            loadHandler.menuNexusStatus.SetActive(false);
             loadHandler.Disable();
         }
     }
@@ -255,11 +260,13 @@ namespace MSCLoader
             toolTip.localScale = Vector3.one;
             toolTip.GetComponentInChildren<Text>().text = toolTipText;
 
-            while(true)
+            while(ModLoader.modLoaderSettings.ShowTooltips)
             {
                 toolTip.position = Input.mousePosition;
                 yield return null;
             }
+
+            if (toolTip != null) Destroy(toolTip.gameObject);
         }
 
     }
@@ -269,7 +276,6 @@ namespace MSCLoader
         [SerializeField] internal RawImage profilePicture;
         [SerializeField] internal ChangeTextOnHover hoverText;
     }
-
     internal class ChangeTextOnHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] internal Text text;

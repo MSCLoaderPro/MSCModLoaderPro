@@ -122,6 +122,9 @@ namespace MSCLoader.PartMagnet
                     PlayMakerHelper.GUIAssemble = false;
                     if (attachText != "") PlayMakerHelper.GUIInteraction = "";
 
+                    yield return null;
+                    yield return null;
+
                     Attach(other);
 
                     break;
@@ -149,8 +152,10 @@ namespace MSCLoader.PartMagnet
             attachmentPoint.enabled = false;
             attachmentPointIndex = Array.IndexOf(attachmentPoints, attachmentPoint);
 
-            gameObject.tag = untagged;
-            StartCoroutine(SetParent(attachmentPoint.transform));
+            gameObject.tag = untagged; 
+            transform.parent = attachmentPoint.transform;
+            transform.localPosition = Vector3.zero;
+            transform.localEulerAngles = Vector3.zero;
 
             if (attachmentType == AttachmentType.Breakable)
             {
@@ -285,24 +290,6 @@ namespace MSCLoader.PartMagnet
             PlayMakerHelper.GUIDisassemble = false;
             if (detachText != "") PlayMakerHelper.GUIInteraction = "";
             for (int i = 0; i < bolts.Length; i++) bolts[i].BoltOver();
-        }
-
-        IEnumerator SetParent(Transform parent)
-        {
-            transform.parent = parent;
-            transform.localPosition = Vector3.zero;
-            transform.localEulerAngles = Vector3.zero;
-
-            yield return new WaitForEndOfFrame();
-
-            while (transform.parent != parent)
-            {
-                transform.parent = parent;
-                transform.localPosition = Vector3.zero;
-                transform.localEulerAngles = Vector3.zero;
-
-                yield return null;
-            }
         }
 
         public void UpdateJointBreakValues() 
