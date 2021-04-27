@@ -5,7 +5,7 @@ using System.IO;
 
 namespace MSCLoader.NexusMods
 {
-    class SecureStorage
+    class DataStorage
     {
         static string DataFile = Path.Combine(ModUpdater.UpdaterDirectory, "Data.db");
 

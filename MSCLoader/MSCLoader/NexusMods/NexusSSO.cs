@@ -54,7 +54,7 @@ namespace MSCLoader.NexusMods
 
             defaultPfp = ui.profilePicture.texture;
 
-            string data = SecureStorage.Load();
+            string data = DataStorage.Load();
             if (string.IsNullOrEmpty(data))
             {
                 // User is not logged in.
@@ -113,7 +113,7 @@ namespace MSCLoader.NexusMods
             apiKey = null;
             token = null;
 
-            SecureStorage.Delete();
+            DataStorage.Delete();
         }
 
         IEnumerator request;
@@ -191,7 +191,7 @@ namespace MSCLoader.NexusMods
             promptCancel?.gameObject.SetActive(false);
 
             string[] arr = output.Split('\n');
-            SecureStorage.Save(output);
+            DataStorage.Save(output);
             apiKey = arr[0].Split(':')[1].Replace("\"", "").Replace(",", "").Trim();
             token = arr[1].Split(':')[1].Replace("\"", "").Replace(",", "").Trim();
             isActive = false;
