@@ -41,7 +41,7 @@ namespace MSCLoader
 
         ModUpdaterDatabase modUpdaterDatabase;
 
-        const string ModLoaderApiUri = "https://api.github.com/repos/MSCLoaderPro/EarlyAccessRelease/releases";
+        const string ModLoaderApiUri = "https://api.github.com/repos/MSCLoaderPro/MSCModLoaderPro/releases";
         const string InstallerApiUri = "https://api.github.com/repos/MSCLoaderPro/docs/releases/latest";
         string modLoaderLatestVersion;
         bool modLoaderUpdateAvailable, installModLoaderUpdate;
