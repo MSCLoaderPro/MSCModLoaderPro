@@ -65,20 +65,42 @@ namespace MSCLoader.NexusMods
                 ui.hoverText.newText = "<color=yellow>LOG IN</color>";
                 ui.userName.text = "";
                 ui.memberStatus.text = "";
+
+                if (DataStorage.ThrewException)
+                {
+                    ModPrompt.CreatePrompt("Your NexusMods login data is corrupted and we could not log you into the NexusMods.\n\n Please log in again.", "Nexus Login Error");
+                    DataStorage.Delete();
+                }
             }
             else
             {
-                string[] arr = data.Split('\n');
-                apiKey = arr[0].Split(':')[1].Trim();
-                token = arr[1].Split(':')[1].Trim();
+                try
+                {
+                    string[] arr = data.Split('\n');
+                    apiKey = arr[0].Split(':')[1].Trim();
+                    token = arr[1].Split(':')[1].Trim();
 
-                ui.loggedIn.text = "<color=yellow>GETTING DATA...</color>";
-                ui.userName.text = "";
-                ui.memberStatus.text = "";
-                ui.hoverText.oldText = "<color=yellow>GETTING DATA...</color>";
-                ui.hoverText.newText = "<color=yellow>GETTING DATA...</color>";
+                    ui.loggedIn.text = "<color=yellow>GETTING DATA...</color>";
+                    ui.userName.text = "";
+                    ui.memberStatus.text = "";
+                    ui.hoverText.oldText = "<color=yellow>GETTING DATA...</color>";
+                    ui.hoverText.newText = "<color=yellow>GETTING DATA...</color>";
 
-                VerifyAccount();
+                    VerifyAccount();
+                }
+                catch (Exception ex)
+                {
+                    ModConsole.Log(ex.ToString());
+                    ModPrompt.CreatePrompt("Your NexusMods login data is corrupted and we could not log you into the NexusMods.\n\n Please log in again.", "Nexus Login Error");
+                    
+                    isReady = true;
+                    ui.loggedIn.text = "<color=yellow>LOG IN</color>";
+                    ui.hoverText.oldText = "<color=yellow>LOG IN</color>";
+                    ui.hoverText.newText = "<color=yellow>LOG IN</color>";
+                    ui.userName.text = "";
+                    ui.memberStatus.text = "";
+                    DataStorage.Delete();
+                }
             }
         }
 
@@ -127,7 +149,7 @@ namespace MSCLoader.NexusMods
             ModPrompt prompt = ModPrompt.CreateButtonlessPrompt();
             prompt.Text = "You will now be taken to NexusMods...";
             prompt.Title = "NexusMods Login";
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
 
             output = "";
 
@@ -389,6 +411,10 @@ namespace MSCLoader.NexusMods
         void SetProfilePic()
         {
             ui.profilePicture.texture = ModAssets.LoadTexturePNG(Path.Combine(NexusDataFolder, userInfo.Name + ".png"));
+        }
+        void SetInterface()
+        {
+
         }
     }
 }

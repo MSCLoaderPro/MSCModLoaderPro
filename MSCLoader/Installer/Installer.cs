@@ -303,8 +303,9 @@ namespace Installer
             if (downloader != null && downloader.DownloadFinished)
             {
                 CreateFolders();
+                downloader?.DeleteTemporaryFiles();
             }
-            downloader?.DeleteTemporaryFiles();
+
             Environment.Exit(0);
         }
 
@@ -394,7 +395,7 @@ namespace Installer
         private void btnPlay_Click(object sender, EventArgs e)
         {
             CreateFolders();
-            downloader?.DeleteTemporaryFiles();
+            //downloader?.DeleteTemporaryFiles();
 
             StartGame(false);
 
@@ -549,7 +550,7 @@ namespace Installer
         private void btnPlayNoSteam_Click(object sender, EventArgs e)
         {
             CreateFolders();
-            downloader?.DeleteTemporaryFiles();
+            //downloader?.DeleteTemporaryFiles();
 
             StartGame(true);
 
@@ -588,8 +589,8 @@ namespace Installer
             if (steamFolder != "")
             {
                 // MSC is installed in root Steam folder
-                string steamFolderMSC = Path.Combine(steamFolder, "steamapps/common/My Summer Car/mysummercar.exe");
-                if (File.Exists(steamFolderMSC))
+                string steamFolderMSC = Path.Combine(steamFolder, "steamapps/common/My Summer Car");
+                if (Directory.Exists(steamFolderMSC))
                 {
                     return steamFolderMSC;
                 }

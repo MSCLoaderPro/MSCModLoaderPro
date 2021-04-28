@@ -9,6 +9,8 @@ namespace MSCLoader.NexusMods
     {
         static string DataFile = Path.Combine(ModUpdater.UpdaterDirectory, "Data.db");
 
+        internal static bool ThrewException;
+
         internal static void Save(string data)
         {
             if (File.Exists(DataFile))
@@ -24,12 +26,21 @@ namespace MSCLoader.NexusMods
 
         internal static string Load()
         {
-            if (!File.Exists(DataFile))
+            ThrewException = false;
+            try
             {
+                if (!File.Exists(DataFile))
+                {
+                    return "";
+                }
+
+                return Decrypt(File.ReadAllText(DataFile));
+            }
+            catch
+            {
+                ThrewException = true;
                 return "";
             }
-
-            return Decrypt(File.ReadAllText(DataFile));
         }
 
         internal static void Delete()
