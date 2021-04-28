@@ -234,9 +234,16 @@ namespace Installer
 
         internal void DeleteTemporaryFiles()
         {
-            if (Directory.Exists(TempPath))
+            try
             {
-                Directory.Delete(TempPath, true);
+                if (Directory.Exists(TempPath))
+                {
+                    Directory.Delete(TempPath, true);
+                }
+            }
+            catch 
+            { 
+
             }
         }
     }

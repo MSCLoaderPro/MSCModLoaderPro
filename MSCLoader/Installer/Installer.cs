@@ -162,8 +162,12 @@ namespace Installer
             txtboxPath.ShortcutsEnabled = false;
             txtModsFolderName.ShortcutsEnabled = false;
 
+            btnPlay.SetToCenter(this);
+            btnClose.SetToCenter(this);
             btnDevmenu.SetToCenter(this);
             btnInstallDev.SetToCenter(this);
+            btnPlayNoSteam.SetToCenter(this);
+            btnPlayNoSteam.Font = smallFont;
             btnLicenses.Font = smallFont;
             btnWebsite.Font = smallFont;
 
@@ -390,21 +394,25 @@ namespace Installer
         private void btnPlay_Click(object sender, EventArgs e)
         {
             CreateFolders();
-            downloader.DeleteTemporaryFiles();
-            
+            downloader?.DeleteTemporaryFiles();
+
+            StartGame(false);
+
+            Environment.Exit(0);
+        }
+
+        void StartGame(bool noSteam)
+        {
             Process cmd = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = ModifierKeys.HasFlag(Keys.Shift) ? "mysummercar.exe" : "steam://rungameid/516750",
+                    FileName = noSteam ? "mysummercar.exe" : "steam://rungameid/516750",
                     WorkingDirectory = MscPath,
-                    //CreateNoWindow = true,
                     UseShellExecute = true,
                 }
             };
             cmd.Start();
-
-            Environment.Exit(0);
         }
 
         private void btnWebsite_Click(object sender, EventArgs e)
@@ -536,6 +544,16 @@ namespace Installer
                     label2.Top -= label2.Height / 2;
                 }
             }
+        }
+
+        private void btnPlayNoSteam_Click(object sender, EventArgs e)
+        {
+            CreateFolders();
+            downloader?.DeleteTemporaryFiles();
+
+            StartGame(true);
+
+            Environment.Exit(0);
         }
     }
 

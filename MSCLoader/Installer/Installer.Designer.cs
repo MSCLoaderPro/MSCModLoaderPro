@@ -50,6 +50,7 @@ namespace Installer
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.labelStatus = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnPlayNoSteam = new System.Windows.Forms.Button();
             this.btnDevmenu = new System.Windows.Forms.Button();
             this.labWarning = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -313,6 +314,7 @@ namespace Installer
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Black;
+            this.tabPage3.Controls.Add(this.btnPlayNoSteam);
             this.tabPage3.Controls.Add(this.btnDevmenu);
             this.tabPage3.Controls.Add(this.labWarning);
             this.tabPage3.Controls.Add(this.label3);
@@ -326,6 +328,22 @@ namespace Installer
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             // 
+            // btnPlayNoSteam
+            // 
+            this.btnPlayNoSteam.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnPlayNoSteam.FlatAppearance.BorderSize = 0;
+            this.btnPlayNoSteam.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPlayNoSteam.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnPlayNoSteam.ForeColor = System.Drawing.Color.White;
+            this.btnPlayNoSteam.Location = new System.Drawing.Point(270, 245);
+            this.btnPlayNoSteam.Name = "btnPlayNoSteam";
+            this.btnPlayNoSteam.Size = new System.Drawing.Size(230, 35);
+            this.btnPlayNoSteam.TabIndex = 10;
+            this.btnPlayNoSteam.Text = "START GAME (NO STEAM)";
+            this.btnPlayNoSteam.UseCompatibleTextRendering = true;
+            this.btnPlayNoSteam.UseVisualStyleBackColor = false;
+            this.btnPlayNoSteam.Click += new System.EventHandler(this.btnPlayNoSteam_Click);
+            // 
             // btnDevmenu
             // 
             this.btnDevmenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
@@ -333,7 +351,7 @@ namespace Installer
             this.btnDevmenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDevmenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnDevmenu.ForeColor = System.Drawing.Color.White;
-            this.btnDevmenu.Location = new System.Drawing.Point(270, 324);
+            this.btnDevmenu.Location = new System.Drawing.Point(270, 337);
             this.btnDevmenu.Name = "btnDevmenu";
             this.btnDevmenu.Size = new System.Drawing.Size(230, 35);
             this.btnDevmenu.TabIndex = 9;
@@ -379,7 +397,7 @@ namespace Installer
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnClose.ForeColor = System.Drawing.Color.White;
-            this.btnClose.Location = new System.Drawing.Point(270, 242);
+            this.btnClose.Location = new System.Drawing.Point(270, 286);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(230, 35);
             this.btnClose.TabIndex = 5;
@@ -591,6 +609,7 @@ namespace Installer
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnInstallDev;
         private System.Windows.Forms.Button btnLicenses;
+        private System.Windows.Forms.Button btnPlayNoSteam;
     }
 }
 
