@@ -51,8 +51,6 @@ namespace Installer
         public bool OfflineMode;
         public string OfflineZipPath;
 
-        string OldModLoaderModsPath;
-
         Downloader downloader;
 
         public Installer(Modes mode = Modes.Regular, string arg = "")
