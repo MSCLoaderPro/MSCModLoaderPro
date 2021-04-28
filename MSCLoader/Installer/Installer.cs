@@ -185,7 +185,7 @@ namespace Installer
                     }
                     break;
                 case Modes.FastInstall:
-                    this.mscPath = arg;
+                    this.mscPath = arg.Replace("\\", "/");
                     DoFastInstall();
                     break;
                 case Modes.OfflineInstall:
@@ -340,7 +340,7 @@ namespace Installer
                     }
 
                     SetBadMessage("My Summer Car folder found!", Color.LightGreen);
-                    mscPath = fbd.SelectedPath;
+                    mscPath = fbd.SelectedPath.Replace("\\", "/");
                     txtboxPath.Text = mscPath;
                     btnDownload.Enabled = true;
                     CheckOldMscloaderModFolder();
@@ -408,7 +408,7 @@ namespace Installer
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = noSteam ? "mysummercar.exe" : "steam://rungameid/516750",
+                    FileName = noSteam ? Path.Combine(MscPath, "mysummercar.exe") : "steam://rungameid/516750",
                     WorkingDirectory = MscPath,
                     UseShellExecute = true,
                 }
@@ -592,7 +592,7 @@ namespace Installer
                 string steamFolderMSC = Path.Combine(steamFolder, "steamapps/common/My Summer Car");
                 if (Directory.Exists(steamFolderMSC))
                 {
-                    return steamFolderMSC;
+                    return steamFolderMSC.Replace("\\", "/");
                 }
 
                 // MSC not found - gotta open config.vdf file and browse all libraries for MSC folder...
@@ -608,7 +608,7 @@ namespace Installer
                         path = path.Replace("\\", "/");
                         if (Directory.Exists(path))
                         {
-                            return path;
+                            return path.Replace("\\", "/");
                         }
                     }
                 }
