@@ -60,7 +60,7 @@ namespace Installer
             instance = this;
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            labVer.Text = "GM-" + version.Major + "." + version.Minor;
+            labVer.Text = version.Major + "." + version.Minor;
             if (version.Build != 0)
             {
                 labVer.Text += "." + version.Build;

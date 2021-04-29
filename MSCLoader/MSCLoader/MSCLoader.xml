@@ -535,6 +535,12 @@
         <member name="M:MSCLoader.Mod.OnModDisabled">
             <summary>Method called whenever the mod is enabled.</summary>
         </member>
+        <member name="M:MSCLoader.Mod.ModSettingsOpen">
+            <summary>Method called whenever mod settings are open.</summary>
+        </member>
+        <member name="M:MSCLoader.Mod.ModSettingsClose">
+            <summary>Method called whenever mod settings are closed.</summary>
+        </member>
         <member name="T:MSCLoader.ModConsole">
             <summary>The handler for the ModConsole</summary>
         </member>

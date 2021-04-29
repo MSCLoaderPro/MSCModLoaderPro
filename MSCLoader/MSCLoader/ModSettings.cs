@@ -777,6 +777,9 @@ namespace MSCLoader
 
             AddSettingToList(boolean);
 
+            ModConfigBool configString = loadedSettings.Booleans.FirstOrDefault(x => x.id == id);
+            if (configString != null) boolean.Value = configString.value;
+
             return boolean;
         }
         /// <summary>Adds a hidden Number setting.</summary>
@@ -790,6 +793,9 @@ namespace MSCLoader
             number.Value = value;
 
             AddSettingToList(number);
+
+            ModConfigNumber configString = loadedSettings.Numbers.FirstOrDefault(x => x.id == id);
+            if (configString != null) number.Value = configString.value;
 
             return number;
         }
@@ -805,6 +811,9 @@ namespace MSCLoader
 
             AddSettingToList(number);
 
+            ModConfigNumber configString = loadedSettings.Numbers.FirstOrDefault(x => x.id == id);
+            if (configString != null) number.Value = configString.value;
+
             return number;
         }
         /// <summary>Adds a hidden String setting.</summary>
@@ -818,6 +827,9 @@ namespace MSCLoader
             text.Value = value;
 
             AddSettingToList(text);
+
+            ModConfigString configString = loadedSettings.Strings.FirstOrDefault(x => x.id == id);
+            if (configString != null) text.Value = configString.value;
 
             return text;
         }

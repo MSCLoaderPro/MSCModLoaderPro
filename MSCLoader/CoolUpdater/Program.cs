@@ -5,13 +5,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace CoolUpdater
 {
     class Program
     {
-        const string Version = "0.1";
-
         public const string Downloads = "Downloads";
         public const string Temp = "Temp";
 
@@ -112,6 +111,15 @@ namespace CoolUpdater
         static string GetSystemVersion()
         {
             return Environment.OSVersion.VersionString;
+        }
+
+        static string Version
+        {
+            get
+            {
+                Version version = Assembly.GetExecutingAssembly().GetName().Version;
+                return version.Major + "." + version.Minor + "." + version.Build;
+            }
         }
 
         static void DownloadMetafile(string url, string token = "")
