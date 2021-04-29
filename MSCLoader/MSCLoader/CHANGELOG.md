@@ -2,6 +2,10 @@
 
 ## 1.0-RC13
 
+### Changes
+
+- Updated CoolUpdater version to 1.0
+
 ### Bug Fixes
 
 - Fixed hidden settings (SettingString, SettingBoolean, SettingNumber) not loading right away
