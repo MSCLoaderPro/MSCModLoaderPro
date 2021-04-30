@@ -330,7 +330,7 @@ namespace MSCLoader
                                 }
 
                                 // Breaking out of the loop, if we found all that we've been looking for.
-                                if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion) && foundProBuild)
+                                if (!string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) && !string.IsNullOrEmpty(mod.ModUpdateData.LatestVersion) || foundProBuild)
                                 {
                                     break;
                                 }

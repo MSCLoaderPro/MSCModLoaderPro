@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Principal;
 
 namespace CoolUpdater
 {
@@ -84,6 +85,18 @@ namespace CoolUpdater
                     DownloadFile(args[1], args[2], token2);
                     break;
                 case "update-all":
+                    if (!IsUserAdministrator())
+                    {
+                        // Restart as an admin, if no admin right has been given
+                        Process p = new Process();
+                        p.StartInfo.FileName = Assembly.GetEntryAssembly().Location;
+                        p.StartInfo.Arguments = string.Join(" ", args);
+                        p.StartInfo.Verb = "runas";
+                        p.Start();
+                        Environment.Exit(0);
+                        return;
+                    }
+
                     string pathToMods = args.Length < 2 ? "" : args[1].Replace("%20", " ");
                     UpdateView view = new UpdateView(pathToMods);
                     Application.Run(view);
@@ -192,6 +205,28 @@ namespace CoolUpdater
         private static void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             Console.WriteLine(e.ProgressPercentage + "%");
+        }
+
+        public static bool IsUserAdministrator()
+        {
+            //bool value to hold our return value
+            bool isAdmin;
+            try
+            {
+                //get the currently logged in user
+                WindowsIdentity user = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(user);
+                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                isAdmin = false;
+            }
+            catch (Exception ex)
+            {
+                isAdmin = false;
+            }
+            return isAdmin;
         }
     }
 }

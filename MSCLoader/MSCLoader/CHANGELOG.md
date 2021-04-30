@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.4 (tba)
+
+### Bug Fixes
+
+- Mod Auto Updater should now prioritze archives with .pro.zip extension as intended
+- CoolUpdater: Fixed "Start Game" button not starting the game with Mod Loader Pro
+
 ## 1.0.3 (30.04.2021)
 
 ### Added
