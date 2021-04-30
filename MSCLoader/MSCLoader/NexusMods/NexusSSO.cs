@@ -291,22 +291,6 @@ namespace MSCLoader.NexusMods
                 yield break;
             }
 
-            if (output.Contains("ERROR:401"))
-            {
-                ModPrompt.CreatePrompt("Your NexusMods API key is invalid. Please log in again!\n\nError Code: 401", "Nexus SSO");
-                DataStorage.Delete();
-                userInfo = null;
-                isActive = false;
-
-                ui.loggedIn.text = "<color=red>API KEY IS INVALID :(</color>";
-                ui.hoverText.oldText = "<color=yellow>LOG IN</color>";
-                ui.hoverText.newText = "<color=yellow>LOG IN</color>";
-                ui.userName.text = "";
-                ui.memberStatus.text = "";
-
-                yield break;
-            }
-
             userInfo = new UserInfo();
             
             string[] arr = ReadMetadataToArray(output);

@@ -325,7 +325,7 @@ namespace MSCLoader
                         if (mod.Author.ToLower() == "piotrulos")
                         {
                             // Honestly, Piotrulos. You didn't have to act like an idiot, you could simply ask in the first place...
-                            ModPrompt.CreatePrompt($"Author of <color=yellow>{mod.Name}</color> (ID: <color=yellow>{mod.ID}</color>) does not wish for his mods to load under Mod Loader Pro.", ":(");
+                            ModPrompt.CreatePrompt($"AUTHOR OF\n\n<color=yellow>{mod.Name}</color> (ID: <color=yellow>{mod.ID}</color>)\n\nDOES NOT WISH FOR HIS MODS TO LOAD UNDER MOD LOADER PRO.", ":(");
                             continue;
                         }
 
@@ -464,7 +464,11 @@ namespace MSCLoader
 
                 for (int i = 0; i < ModMethods[0].Count; i++)
                 {
-                    try { ModMethods[0][i].OnNewGame(); }
+                    try
+                    {
+                        Console.WriteLine($"ONNEWGAME: {ModMethods[0][i]}");
+                        ModMethods[0][i].OnNewGame();
+                    }
                     catch (Exception exception) { LogError(exception, ModMethods[0][i]); }
                 }
 
@@ -479,7 +483,11 @@ namespace MSCLoader
 
                 for (int i = 0; i < ModMethods[5].Count; i++)
                 {
-                    try { ModMethods[5][i].PreLoad(); }
+                    try 
+                    {
+                        Console.WriteLine($"PRELOAD: {ModMethods[5][i].ID}");
+                        ModMethods[5][i].PreLoad();
+                    }
                     catch (Exception exception) { LogError(exception, ModMethods[5][i]); }
                 }
 
@@ -496,7 +504,11 @@ namespace MSCLoader
 
                 for (int i = 0; i < ModMethods[6].Count; i++)
                 {
-                    try { ModMethods[6][i].OnLoad(); }
+                    try
+                    {
+                        Console.WriteLine($"ONLOAD: {ModMethods[6][i].ID}");
+                        ModMethods[6][i].OnLoad();
+                    }
                     catch (Exception exception) { LogError(exception, ModMethods[6][i]); }
                 }
 
@@ -513,7 +525,11 @@ namespace MSCLoader
 
                 for (int i = 0; i < ModMethods[7].Count; i++)
                 {
-                    try { ModMethods[7][i].PostLoad(); }
+                    try
+                    {
+                        Console.WriteLine($"POSTLOAD: {ModMethods[7][i].ID}");
+                        ModMethods[7][i].PostLoad();
+                    }
                     catch (Exception exception) { LogError(exception, ModMethods[7][i]); }
                 }
 

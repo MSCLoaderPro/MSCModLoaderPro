@@ -166,7 +166,8 @@ namespace MSCLoader.Helper
         {
             for (int i = 0; i != fsm.FsmStates.Length; i++)
                 if (fsm.FsmStates[i].Name == stateName) return fsm.FsmStates[i];
-            throw new Exception($"GetState: Can't find state with name {stateName} on FSM {fsm.FsmName} on GameObject {fsm.gameObject.name}");
+
+            return null;
         }
         /// <summary>Get a state on the PlayMakerFSM.</summary>
         /// <param name="fsm">PlayMakerFSM to search on.</param>
@@ -175,7 +176,8 @@ namespace MSCLoader.Helper
         public static FsmState GetState(this PlayMakerFSM fsm, int stateIndex)
         {
             if (fsm.FsmStates.Length > stateIndex) return fsm.FsmStates[stateIndex];
-            throw new IndexOutOfRangeException($"GetState: stateIndex out of range on FSM {fsm.FsmName} on GameObject {fsm.gameObject.name}");
+
+            return null;
         }
         /// <summary>Get a PlayMaker FSMStateAction of specified type in the specified state.</summary>
         /// <typeparam name="T">PlayMaker Action Type, must be of type FSMStateAction or sub-class</typeparam>

@@ -93,6 +93,7 @@
     <Compile Include="Legacy\AudioLibrary\Playlists.cs" />
     <Compile Include="Legacy\Commands\CommandVersion.cs" />
     <Compile Include="Legacy\ModUI.cs" />
+    <Compile Include="Legacy\PlayMakerExtensions.cs" />
     <Compile Include="ModAssets.cs" />
     <Compile Include="Legacy\OBJLoader.cs" />
     <Compile Include="ModConfig.cs" />
