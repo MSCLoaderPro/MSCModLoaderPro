@@ -250,7 +250,7 @@ namespace MSCLoader.NexusMods
             isActive = true;
 
             // we are checking if user has a premium account and if key is valid.
-            Process p = new Process
+            p = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -415,6 +415,18 @@ namespace MSCLoader.NexusMods
         void SetInterface()
         {
 
+        }
+
+        void OnApplicationQuit()
+        {
+            if (p != null)
+            {
+                try
+                {
+                    p.Kill();
+                }
+                catch { }
+            }
         }
     }
 }
