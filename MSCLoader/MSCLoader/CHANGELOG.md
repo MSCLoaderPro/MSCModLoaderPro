@@ -2,6 +2,10 @@
 
 ## 1.0.3 (30.04.2021)
 
+### Added
+
+- Added "ExecuteCommand" method
+
 ### Bug Fixes
 
 - Fixed update status permamently staying on the main menu, if no mods are installed
