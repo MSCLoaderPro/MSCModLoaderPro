@@ -266,13 +266,13 @@ namespace MSCLoader
         void OnEnable()
         {
             CheckForSettings();
-            mod.ModSettingsOpen();
+            mod?.ModSettingsOpen();
         }
 
         void OnDisable()
         {
             try { if (loadedSettings != null) SaveSettings(); } catch { }
-            mod.ModSettingsClose();
+            mod?.ModSettingsClose();
         }
 
         public void LoadSettings()
