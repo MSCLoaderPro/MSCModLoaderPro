@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.0-RC13
+## 1.0 (30.04.2021)
+
+- Initial release
+
+## 1.0-RC13 (29.04.2021)
 
 ### Changes
 
@@ -10,7 +14,7 @@
 
 - Fixed hidden settings (SettingString, SettingBoolean, SettingNumber) not loading right away
 
-## 1.0-RC12
+## 1.0-RC12 (28.04.2021)
 
 ### Added
 
