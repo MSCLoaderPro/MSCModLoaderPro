@@ -9,6 +9,7 @@
 ### Bug Fixes
 
 - Fixed update status permamently staying on the main menu, if no mods are installed
+- Fixed compatibility with Cassette mod
 
 ## 1.0.2 (30.04.2021)
 
