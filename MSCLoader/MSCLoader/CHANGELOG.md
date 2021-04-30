@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 (30.04.2021)
+
+### Bug Fixes
+
+- Removed game freezing bug with NexusMods login
+
 ## 1.0 (30.04.2021)
 
 - Initial release
