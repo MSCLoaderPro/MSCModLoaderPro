@@ -62,12 +62,14 @@ namespace MSCLoader
         [SerializeField] internal bool disableSave = false;
         public void SaveSettings()
         {
-            StopAllCoroutines();
+            if (currentSaveToINI != null) StopCoroutine(currentSaveToINI);
             if (disableSave) return;
-            StartCoroutine(SaveToINI());
+            currentSaveToINI = SaveToINI();
+            StartCoroutine(currentSaveToINI);
         }
 
         readonly WaitForSeconds saveWait = new WaitForSeconds(0.1f);
+        private IEnumerator currentSaveToINI;
         IEnumerator SaveToINI()
         {
             yield return saveWait;

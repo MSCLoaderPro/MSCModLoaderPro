@@ -200,7 +200,13 @@ namespace MSCLoader
         /// <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
         IEnumerator CheckForModUpdates(IEnumerable<Mod> mods)
         {
-            if (mods.Count() == 0) yield break;
+            if (mods.Count() == 0)
+            {
+                isBusy = false;
+                yield break;
+            }
+
+            if (currentSliderText != null) StopCoroutine(currentSliderText);
 
             if (!NexusSSO.Instance.IsValid)
             {
@@ -925,8 +931,6 @@ namespace MSCLoader
             {
                 modLoaderUpdateAvailable = true;
             }
-
-            StopCoroutine(currentSliderText);
 
             if (modLoaderUpdateAvailable)
             {
