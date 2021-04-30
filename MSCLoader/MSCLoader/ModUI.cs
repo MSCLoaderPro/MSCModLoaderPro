@@ -243,14 +243,19 @@ namespace MSCLoader
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (ModLoader.modLoaderSettings.ShowTooltips && toolTipPrefab != null) StartCoroutine(ShowDelay());
+            if (ModLoader.modLoaderSettings.ShowTooltips && toolTipPrefab != null)
+            {
+                currentShowDelay = ShowDelay();
+                StartCoroutine(currentShowDelay);
+            }
         }
         public void OnPointerExit(PointerEventData eventData)
         {
-            StopAllCoroutines();
+            if (currentShowDelay != null) StopCoroutine(currentShowDelay);
             if (toolTip != null) Destroy(toolTip.gameObject);
         }
 
+        private IEnumerator currentShowDelay;
         IEnumerator ShowDelay()
         {
             yield return wait;
