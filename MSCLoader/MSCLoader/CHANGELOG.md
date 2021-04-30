@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3 (30.04.2021)
+
+### Bug Fixes
+
+- Fixed update status permamently staying on the main menu, if no mods are installed
+
 ## 1.0.2 (30.04.2021)
 
 ### Bug Fixes
