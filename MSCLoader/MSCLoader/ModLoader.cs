@@ -322,13 +322,6 @@ namespace MSCLoader
                     {   
                         Mod mod = (Mod)Activator.CreateInstance(modType);
 
-                        if (mod.Author.ToLower() == "piotrulos")
-                        {
-                            // Honestly, Piotrulos. You didn't have to act like an idiot, you could simply ask in the first place...
-                            ModPrompt.CreatePrompt($"AUTHOR OF\n\n<color=yellow>{mod.Name}</color> (ID: <color=yellow>{mod.ID}</color>)\n\nDOES NOT WISH FOR HIS MODS TO LOAD UNDER MOD LOADER PRO.", ":(");
-                            continue;
-                        }
-
                         if (!LoadedMods.Contains(mod)) // Check if mod already exists and show an error if so.
                         {
                             LoadedMods.Add(mod);
