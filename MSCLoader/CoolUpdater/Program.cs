@@ -14,7 +14,7 @@ namespace CoolUpdater
         public const string Downloads = "Downloads";
         public const string Temp = "Temp";
 
-        const string NexusHeader = "User-Agent: MSCLoaderPro/{0} ({1})";
+        const string NexusHeader = "User-Agent: mscmodloaderpro/{0} ({1})";
         const string GitHubHeader = "User-Agent: Other";
         const string ApiKeyFormat = "apikey: {0}";
 
@@ -146,7 +146,17 @@ namespace CoolUpdater
 
         private static void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            Console.WriteLine(e.Result.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],"));
+            try
+            {
+                Console.WriteLine(e.Result.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],"));
+            }
+            catch (TargetInvocationException ex)
+            {
+                if (ex.ToString().Contains("(401) Unauthorized"))
+                {
+                    Console.WriteLine("ERROR:401");
+                }
+            }
             Environment.Exit(0);
         }
 
