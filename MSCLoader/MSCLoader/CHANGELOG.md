@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 (30.04.2021)
+
+### Bug Fixes
+
+- Fixed missing null checks
+- Fixed legacy sliders not updating as they should
+
 ## 1.0.1 (30.04.2021)
 
 ### Bug Fixes
