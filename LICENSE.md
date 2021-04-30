@@ -4,6 +4,8 @@ This software is provided 'as-is', without any express or implied warranty. In n
 
 You, the end-user, may use portions of the Source Code, such as particular routines, to develop your own software, but may not duplicate the Source Code.
 
+Any portions of the Source Code used in your software, must be clearly credited.
+
 You may not duplicate the Source Code in its entirety, and label such as your own.
 
 You, the end-user, may fork, modify and create pull requests for the original software, but may not release fully standalone versions on your own, unless we, the authors, give express written permission.
