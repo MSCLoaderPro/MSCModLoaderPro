@@ -74,6 +74,12 @@ namespace MSCLoader
             }
         }
 
+        /// <summary>
+        /// Execute a command by it's assigned string.
+        /// </summary>
+        /// <param name="commandString"></param>
+        public static void ExecuteCommand(string commandString) => controller.RunCommandString(commandString);
+
         public void UpdateFontSize()
         {
             consoleText.fontSize = (int)fontSizeSlider.Value;

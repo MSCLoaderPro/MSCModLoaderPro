@@ -23,3 +23,8 @@ C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.C
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CopyComplete
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.dll
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csprojAssemblyReference.cache
+C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.csprojAssemblyReference.cache
+C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.Properties.Resources.resources
+C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.GenerateResource.cache
+C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CoreCompileInputs.cache
+C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.dll

@@ -582,6 +582,12 @@
         <member name="T:MSCLoader.ModConsole">
             <summary>The handler for the ModConsole</summary>
         </member>
+        <member name="M:MSCLoader.ModConsole.ExecuteCommand(System.String)">
+            <summary>
+            Execute a command by it's assigned string.
+            </summary>
+            <param name="commandString"></param>
+        </member>
         <member name="M:MSCLoader.ModConsole.Log(System.String)">
             <summary>Logs a string to the ModConsole and output_log.txt.</summary>
             <param name="text">Message to log.</param>

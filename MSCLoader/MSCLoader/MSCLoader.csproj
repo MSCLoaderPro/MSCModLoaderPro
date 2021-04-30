@@ -38,17 +38,13 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
       <Aliases>global</Aliases>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="MSCLoader.Legacy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Release\mysummercar_Data\Managed\MSCLoader.Legacy.dll</HintPath>
     </Reference>
     <Reference Include="NAudio">
       <HintPath>..\References\NAudio.dll</HintPath>
@@ -66,7 +62,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayMaker">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
+      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -78,35 +74,40 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
       <Aliases>global, unityUI</Aliases>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Legacy\AudioLibrary\MP3_Streaming\MP3Stream.cs" />
-    <Compile Include="Legacy\AudioLibrary\MP3_Streaming\ReadFullyStream.cs" />
-    <Compile Include="Legacy\AudioLibrary\Playlists.cs" />
-    <Compile Include="Legacy\Commands\CommandVersion.cs" />
-    <Compile Include="Legacy\ModUI.cs" />
-    <Compile Include="Legacy\PlayMakerExtensions.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\AudioFileReader.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\Manager.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\ModAudio.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\ModAudioStream.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\MP3_Streaming\MP3Stream.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\MP3_Streaming\ReadFullyStream.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
+    <Compile Include="Legacy\Legacy\AudioLibrary\Playlists.cs" />
+    <Compile Include="Legacy\Legacy\Commands\CommandVersion.cs" />
+    <Compile Include="Legacy\Legacy\ConsoleController.cs" />
+    <Compile Include="Legacy\Legacy\FsmHook.cs" />
+    <Compile Include="Legacy\Legacy\Keybind.cs" />
+    <Compile Include="Legacy\Legacy\LoadAssets.cs" />
+    <Compile Include="Legacy\Legacy\ModUI.cs" />
+    <Compile Include="Legacy\Legacy\OBJLoader.cs" />
+    <Compile Include="Legacy\Legacy\PlayMakerExtensions.cs" />
+    <Compile Include="Legacy\Legacy\SaveLoad.cs" />
+    <Compile Include="Legacy\Legacy\Settings.cs" />
     <Compile Include="ModAssets.cs" />
-    <Compile Include="Legacy\OBJLoader.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModEarlyAccess.cs" />
     <Compile Include="ModHelper.cs" />
     <Compile Include="ModINI.cs" />
-    <Compile Include="Legacy\ConsoleController.cs" />
-    <Compile Include="Legacy\FsmHook.cs" />
-    <Compile Include="Legacy\Keybind.cs" />
-    <Compile Include="Legacy\LoadAssets.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="Legacy\AudioLibrary\ModAudio.cs" />
-    <Compile Include="Legacy\AudioLibrary\ModAudioStream.cs" />
     <Compile Include="ModConsole.cs" />
     <Compile Include="ModLoader.cs" />
     <Compile Include="ModPrompt.cs" />
@@ -117,21 +118,16 @@
     <Compile Include="ModUpdater.cs" />
     <Compile Include="MSCLoader.cs" />
     <Compile Include="ModUnloader.cs" />
-    <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
     <Compile Include="MSCLoaderHarmonyPatches.cs" />
     <Compile Include="NexusMods\NexusSSO.cs" />
     <Compile Include="NexusMods\DataStorage.cs" />
     <Compile Include="NexusMods\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Legacy\AudioLibrary\AudioFileReader.cs" />
-    <Compile Include="Legacy\AudioLibrary\Manager.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Legacy\SaveLoad.cs" />
-    <Compile Include="Legacy\Settings.cs" />
     <Compile Include="ModSettingTypes.cs" />
     <Compile Include="ExternalLibrary\FastOBJImporter.cs" />
   </ItemGroup>
@@ -146,6 +142,7 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="Legacy\LICENSE" />
     <None Include="Resources\mscloadercanvas" />
   </ItemGroup>
   <ItemGroup>
