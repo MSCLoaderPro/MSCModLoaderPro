@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.6 ()
+
+### Changes
+
+- If MLP failed to compare remote and local versions of mod, it will use a fall back method, instead of throwing an exception
+
+### Bug Fixes
+
+- Fixed avatar downloading not working, if user is using Gravatar
+- Addressed "array out of range" issue in Nexus account authentication
+
 ## 1.0.5 (01.04.2021)
 
 ### Added

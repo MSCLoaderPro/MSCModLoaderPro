@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3 ()
+
+### Bug Fixes
+
+- Fixed avatar downloading not working, if user is using Gravatar
+
 ## 1.0.2 (01.05.2021)
 
 ### Added

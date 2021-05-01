@@ -294,9 +294,9 @@ namespace MSCLoader.NexusMods
             userInfo = new UserInfo();
             
             string[] arr = ReadMetadataToArray(output);
-            foreach (string s in arr)
+            try
             {
-                try
+                foreach (string s in arr)
                 {
                     if (s.Contains("name"))
                     {
@@ -319,15 +319,15 @@ namespace MSCLoader.NexusMods
                         userInfo.IsSupporter = s.Contains("true");
                     }
                 }
-                catch (Exception ex)
-                {
-                    ui.loggedIn.text = "<color=red>FAILED TO GET USER INFO :(</color>";
-                    ui.hoverText.oldText = "<color=yellow>LOG IN</color>";
-                    ui.hoverText.newText = "<color=yellow>LOG IN</color>";
-                    ui.userName.text = "";
-                    ui.memberStatus.text = "";
-                    ModConsole.LogError(ex.ToString());
-                }
+            }
+            catch (Exception ex)
+            {
+                ui.loggedIn.text = "<color=red>FAILED TO GET USER INFO :(</color>";
+                ui.hoverText.oldText = "<color=yellow>LOG IN</color>";
+                ui.hoverText.newText = "<color=yellow>LOG IN</color>";
+                ui.userName.text = "";
+                ui.memberStatus.text = "";
+                ModConsole.LogError(ex.ToString());
             }
 
             if (!Directory.Exists(NexusDataFolder))

@@ -66,7 +66,7 @@ namespace CoolUpdater
                     DownloadMetafile(link, token);
                     break;
                 case "get-file":
-                    if (!args[1].Contains("github.com") && !args[1].Contains("nexusmods.com"))
+                    if (!args[1].Contains("github.com") && !args[1].Contains("nexusmods.com") && !args[1].Contains("gravatar.com"))
                     {
                         throw new UriFormatException("Downloader only supports Nexusmods or GitHub links.");
                     }

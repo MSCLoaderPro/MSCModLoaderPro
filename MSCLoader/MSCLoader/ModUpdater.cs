@@ -621,8 +621,11 @@ namespace MSCLoader
             }
             catch
             {
-                ModConsole.LogError($"Mod Updater: Incorrectly formated version tag: {currentVersion} | {serverVersion}");
-                return false;
+                //ModConsole.LogError($"Mod Updater: Incorrectly formated version tag: {currentVersion} | {serverVersion}");
+                //return false;
+
+                // Accurate parsing failed. Try simple comparison instead.
+                return currentVersion.ToLower() != serverVersion.ToLower();
             }
         }
         #endregion
