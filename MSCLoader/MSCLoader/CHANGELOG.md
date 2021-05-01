@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.5 (01.04.2021)
+
+### Added
+
+- CoolUpdater: Added "Start Game (No Steam)" button
+
+### Bug Fixes
+
+- Fixed keybinds with None as a modifier
+
 ## 1.0.4 (30.04.2021)
 
 ### Bug Fixes
