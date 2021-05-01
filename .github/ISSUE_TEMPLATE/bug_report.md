@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **output_log.txt**
-Please provide the "output_log.txt" file form My Summer Car folder.
+Please provide the "output_log.txt" file from My Summer Car folder.
 
 **Additional context**
 Add any other context about the problem here.
