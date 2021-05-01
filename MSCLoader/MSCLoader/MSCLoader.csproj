@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,16 +34,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\Release\0Harmony.dll</HintPath>
+      <HintPath>..\Release\mysummercar_Data\Managed\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
-      <Aliases>global</Aliases>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="cInput">
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\cInput.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NAudio">
@@ -52,17 +55,19 @@
     </Reference>
     <Reference Include="NAudio.Flac">
       <HintPath>..\References\NAudio.Flac.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="NVorbis">
       <HintPath>..\References\NVorbis.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayMaker">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -74,34 +79,34 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:\SteamLibrary\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Aliases>global, unityUI</Aliases>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Legacy\Legacy\AudioLibrary\AudioFileReader.cs" />
-    <Compile Include="Legacy\Legacy\AudioLibrary\Manager.cs" />
-    <Compile Include="Legacy\Legacy\AudioLibrary\ModAudio.cs" />
-    <Compile Include="Legacy\Legacy\AudioLibrary\ModAudioStream.cs" />
-    <Compile Include="Legacy\Legacy\AudioLibrary\MP3_Streaming\MP3Stream.cs" />
-    <Compile Include="Legacy\Legacy\AudioLibrary\MP3_Streaming\ReadFullyStream.cs" />
-    <Compile Include="Legacy\Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
-    <Compile Include="Legacy\Legacy\AudioLibrary\Playlists.cs" />
-    <Compile Include="Legacy\Legacy\Commands\CommandVersion.cs" />
-    <Compile Include="Legacy\Legacy\ConsoleController.cs" />
-    <Compile Include="Legacy\Legacy\FsmHook.cs" />
-    <Compile Include="Legacy\Legacy\Keybind.cs" />
-    <Compile Include="Legacy\Legacy\LoadAssets.cs" />
-    <Compile Include="Legacy\Legacy\ModUI.cs" />
-    <Compile Include="Legacy\Legacy\OBJLoader.cs" />
-    <Compile Include="Legacy\Legacy\PlayMakerExtensions.cs" />
-    <Compile Include="Legacy\Legacy\SaveLoad.cs" />
-    <Compile Include="Legacy\Legacy\Settings.cs" />
+    <Compile Include="Legacy\AudioLibrary\AudioFileReader.cs" />
+    <Compile Include="Legacy\AudioLibrary\Manager.cs" />
+    <Compile Include="Legacy\AudioLibrary\ModAudio.cs" />
+    <Compile Include="Legacy\AudioLibrary\ModAudioStream.cs" />
+    <Compile Include="Legacy\AudioLibrary\MP3_Streaming\MP3Stream.cs" />
+    <Compile Include="Legacy\AudioLibrary\MP3_Streaming\ReadFullyStream.cs" />
+    <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
+    <Compile Include="Legacy\AudioLibrary\Playlists.cs" />
+    <Compile Include="Legacy\Commands\CommandVersion.cs" />
+    <Compile Include="Legacy\ConsoleController.cs" />
+    <Compile Include="Legacy\FsmHook.cs" />
+    <Compile Include="Legacy\Keybind.cs" />
+    <Compile Include="Legacy\LoadAssets.cs" />
+    <Compile Include="Legacy\ModUI.cs" />
+    <Compile Include="Legacy\OBJLoader.cs" />
+    <Compile Include="Legacy\PlayMakerExtensions.cs" />
+    <Compile Include="Legacy\SaveLoad.cs" />
+    <Compile Include="Legacy\Settings.cs" />
     <Compile Include="ModAssets.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModEarlyAccess.cs" />
@@ -142,7 +147,6 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
-    <None Include="Legacy\LICENSE" />
     <None Include="Resources\mscloadercanvas" />
   </ItemGroup>
   <ItemGroup>
@@ -150,8 +154,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)\$(TargetName).xml" "C:\Users\Fredrik\source\repos\MSCLoader\Release\mysummercar_Data\Managed\$(TargetFileName)"
+
+copy "$(TargetName).xml" "C:\Users\Fredrik\source\repos\MSCLoader\Release\mysummercar_Data\Managed\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

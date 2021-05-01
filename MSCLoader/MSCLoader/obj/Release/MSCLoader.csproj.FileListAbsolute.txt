@@ -20,7 +20,6 @@ E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Mana
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.Properties.Resources.resources
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.GenerateResource.cache
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CoreCompileInputs.cache
-C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CopyComplete
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.dll
 C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\obj\Release\MSCLoader.csprojAssemblyReference.cache
 C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.csprojAssemblyReference.cache
@@ -28,3 +27,5 @@ C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\
 C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.GenerateResource.cache
 C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.csproj.CoreCompileInputs.cache
 C:\Users\pross\Documents\GitHub\MSCModLoaderPro\MSCLoader\MSCLoader\obj\Release\MSCLoader.dll
+C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\bin\Release\MSCLoader.dll
+C:\Users\Fredrik\source\repos\MSCLoader\MSCLoader\bin\Release\MSCLoader.xml

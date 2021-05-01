@@ -94,6 +94,53 @@
             <param name="offset"></param>
             <param name="count"></param>
         </member>
+        <member name="T:MSCLoader.ModAudio">
+            <summary>
+            Audio library (play local *.mp3, *.ogg, *.wav, *.aiff)
+            </summary>
+        </member>
+        <member name="F:MSCLoader.ModAudio.audioSource">
+            <summary>
+            Your AudioSource goes here
+            </summary>
+        </member>
+        <member name="M:MSCLoader.ModAudio.LoadAudioFromFile(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Load audio from file
+            </summary>
+            <param name="path">Full path to audio file</param>
+            <param name="doStream">Stream from HDD instead of loading to memory (recommended)</param>
+            <param name="background">Load file in background</param>
+        </member>
+        <member name="M:MSCLoader.ModAudio.Time">
+            <summary>
+            Get current time position of audio file
+            </summary>
+            <returns>Time in TimeSpan format</returns>
+        </member>
+        <member name="M:MSCLoader.ModAudio.TotalTime">
+            <summary>
+            Get total time of audio file
+            </summary>
+            <returns>Time in TimeSpan format</returns>
+        </member>
+        <member name="M:MSCLoader.ModAudio.Play(System.Single,System.Single)">
+            <summary>
+            Play loaded audio file from specifed time.
+            </summary>
+            <param name="time">time to start</param>
+            <param name="delay">optional delay</param>
+        </member>
+        <member name="M:MSCLoader.ModAudio.Play">
+            <summary>
+            Play loaded audio file
+            </summary>
+        </member>
+        <member name="M:MSCLoader.ModAudio.Stop">
+            <summary>
+            Stop playing audio file
+            </summary>
+        </member>
         <member name="T:MSCLoader.Playlists">
             <summary>
             Parse playlists files
@@ -578,53 +625,6 @@
         </member>
         <member name="M:MSCLoader.Mod.ModSettingsClose">
             <summary>Method called whenever mod settings are closed.</summary>
-        </member>
-        <member name="T:MSCLoader.ModAudio">
-            <summary>
-            Audio library (play local *.mp3, *.ogg, *.wav, *.aiff)
-            </summary>
-        </member>
-        <member name="F:MSCLoader.ModAudio.audioSource">
-            <summary>
-            Your AudioSource goes here
-            </summary>
-        </member>
-        <member name="M:MSCLoader.ModAudio.LoadAudioFromFile(System.String,System.Boolean,System.Boolean)">
-            <summary>
-            Load audio from file
-            </summary>
-            <param name="path">Full path to audio file</param>
-            <param name="doStream">Stream from HDD instead of loading to memory (recommended)</param>
-            <param name="background">Load file in background</param>
-        </member>
-        <member name="M:MSCLoader.ModAudio.Time">
-            <summary>
-            Get current time position of audio file
-            </summary>
-            <returns>Time in TimeSpan format</returns>
-        </member>
-        <member name="M:MSCLoader.ModAudio.TotalTime">
-            <summary>
-            Get total time of audio file
-            </summary>
-            <returns>Time in TimeSpan format</returns>
-        </member>
-        <member name="M:MSCLoader.ModAudio.Play(System.Single,System.Single)">
-            <summary>
-            Play loaded audio file from specifed time.
-            </summary>
-            <param name="time">time to start</param>
-            <param name="delay">optional delay</param>
-        </member>
-        <member name="M:MSCLoader.ModAudio.Play">
-            <summary>
-            Play loaded audio file
-            </summary>
-        </member>
-        <member name="M:MSCLoader.ModAudio.Stop">
-            <summary>
-            Stop playing audio file
-            </summary>
         </member>
         <member name="T:MSCLoader.ModConsole">
             <summary>The handler for the ModConsole</summary>
