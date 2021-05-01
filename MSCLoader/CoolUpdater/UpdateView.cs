@@ -243,7 +243,8 @@ namespace CoolUpdater
         {
             btnQuit.Enabled = enabled;
             btnStartGame.Enabled = enabled;
-            btnExit.Enabled = enabled;  
+            btnExit.Enabled = enabled;
+            btnNoSteam.Enabled = enabled;
         }
 
         private void UpdateView_FormClosing(object sender, FormClosingEventArgs e)
