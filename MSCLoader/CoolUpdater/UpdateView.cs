@@ -126,6 +126,9 @@ namespace CoolUpdater
             btnStartGame.SetToCenter(logBox);
             btnExit.Click += btnQuit_Click;
             btnExit.ForeColor = Color.Red;
+
+            Font smallFont = new Font(myFont.FontFamily, 12, myFont.Style);
+            btnNoSteam.Font = smallFont;
         }
 
         private void UpdateView_Shown(object sender, EventArgs e)
@@ -217,19 +220,12 @@ namespace CoolUpdater
 
         private void btnStartGame_Click(object sender, EventArgs e)
         {
-            // Restart via .exe
-            string args = "/C start \"\" \"steam://rungameid/516750\"";
-            if (ModifierKeys.HasFlag(Keys.Shift))
-            {
-                args = "/C start \"\" \"..\\mysummercar.exe\"";
-            }
-
             Log($"Restarting game now using Steam");
             Process cmd = new Process();
             cmd.StartInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = args,
+                Arguments = "/C start \"\" \"steam://rungameid/516750\"",
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
@@ -313,6 +309,22 @@ namespace CoolUpdater
         private void btnWebsite_Click(object sender, EventArgs e)
         {
             Process.Start("https://mscloaderpro.github.io/docs/");
+        }
+
+        private void btnNoSteam_Click(object sender, EventArgs e)
+        {
+            Log($"Restarting game now using Steam");
+            Process cmd = new Process();
+            cmd.StartInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = "/C start \"\" \"..\\mysummercar.exe\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            cmd.Start();
+
+            Environment.Exit(0);
         }
     }
 

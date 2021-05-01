@@ -41,6 +41,7 @@ namespace CoolUpdater
             this.btnMinimize = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnNoSteam = new System.Windows.Forms.Button();
             this.labVer = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -79,9 +80,9 @@ namespace CoolUpdater
             // btnQuit
             // 
             this.btnQuit.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnQuit.Location = new System.Drawing.Point(15, 264);
+            this.btnQuit.Location = new System.Drawing.Point(10, 305);
             this.btnQuit.Name = "btnQuit";
-            this.btnQuit.Size = new System.Drawing.Size(297, 35);
+            this.btnQuit.Size = new System.Drawing.Size(615, 35);
             this.btnQuit.TabIndex = 3;
             this.btnQuit.Text = "QUIT";
             this.btnQuit.UseVisualStyleBackColor = true;
@@ -168,6 +169,7 @@ namespace CoolUpdater
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnNoSteam);
             this.panel2.Controls.Add(this.modsList);
             this.panel2.Controls.Add(this.updateProgress);
             this.panel2.Controls.Add(this.logBox);
@@ -175,15 +177,26 @@ namespace CoolUpdater
             this.panel2.Controls.Add(this.btnStartGame);
             this.panel2.Location = new System.Drawing.Point(12, 50);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(635, 312);
+            this.panel2.Size = new System.Drawing.Size(635, 355);
             this.panel2.TabIndex = 7;
+            // 
+            // btnNoSteam
+            // 
+            this.btnNoSteam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnNoSteam.Location = new System.Drawing.Point(10, 264);
+            this.btnNoSteam.Name = "btnNoSteam";
+            this.btnNoSteam.Size = new System.Drawing.Size(301, 35);
+            this.btnNoSteam.TabIndex = 6;
+            this.btnNoSteam.Text = "START GAME (NO STEAM)";
+            this.btnNoSteam.UseVisualStyleBackColor = true;
+            this.btnNoSteam.Click += new System.EventHandler(this.btnNoSteam_Click);
             // 
             // labVer
             // 
             this.labVer.AutoSize = true;
             this.labVer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.labVer.ForeColor = System.Drawing.Color.White;
-            this.labVer.Location = new System.Drawing.Point(14, 365);
+            this.labVer.Location = new System.Drawing.Point(12, 408);
             this.labVer.Name = "labVer";
             this.labVer.Size = new System.Drawing.Size(39, 25);
             this.labVer.TabIndex = 8;
@@ -194,7 +207,7 @@ namespace CoolUpdater
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(101)))), ((int)(((byte)(34)))), ((int)(((byte)(18)))));
-            this.ClientSize = new System.Drawing.Size(659, 398);
+            this.ClientSize = new System.Drawing.Size(659, 442);
             this.Controls.Add(this.labVer);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -229,5 +242,6 @@ namespace CoolUpdater
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnWebsite;
         private System.Windows.Forms.Label labVer;
+        private System.Windows.Forms.Button btnNoSteam;
     }
 }
