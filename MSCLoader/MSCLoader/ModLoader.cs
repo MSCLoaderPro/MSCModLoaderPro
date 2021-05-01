@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0.4";
+        public static readonly string Version = "1.0.5";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";

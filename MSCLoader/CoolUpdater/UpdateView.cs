@@ -122,7 +122,7 @@ namespace CoolUpdater
                 //control.SetToCenter(this);
             }
 
-            btnQuit.SetToCenter(modsList);
+            btnQuit.SetToCenter(this);
             btnStartGame.SetToCenter(logBox);
             btnExit.Click += btnQuit_Click;
             btnExit.ForeColor = Color.Red;
