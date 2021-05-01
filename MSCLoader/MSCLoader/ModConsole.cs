@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-#pragma warning disable CS1591, IDE1006
+#pragma warning disable CS1591, IDE1006, CS0649
 namespace MSCLoader
 {
     /// <summary>The handler for the ModConsole</summary>

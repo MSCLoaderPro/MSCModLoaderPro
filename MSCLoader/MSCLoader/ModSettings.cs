@@ -409,9 +409,9 @@ namespace MSCLoader
             keybind.ID = id;
             keybind.Name = name;
             keybind.keybind = key;
-            keybind.modifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]);
+            keybind.modifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]).Where(x => x != KeyCode.None).ToArray();
             keybind.defaultKeybind = key;
-            keybind.defaultModifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]);
+            keybind.defaultModifiers = (modifiers.Length > 0 ? modifiers : new KeyCode[0]).Where(x => x != KeyCode.None).ToArray();
             keybind.keyText.text = keybind.AdjustKeyNames();
             modContainer.keybinds.Add(keybind);
 
@@ -421,7 +421,7 @@ namespace MSCLoader
             if (configKeybind != null)
             {
                 keybind.keybind = configKeybind.keybind;
-                keybind.modifiers = configKeybind.modifiers;
+                keybind.modifiers = configKeybind.modifiers.Where(x => x != KeyCode.None).ToArray();
             }
 
             return keybind;
