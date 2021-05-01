@@ -1,0 +1,27 @@
+Version 1.0.6
+	Fixed UI scaling on ultrawide resolutions.
+	Fixed Nexus out of range exception.
+	Fixed user avatar when using Gravatar.
+
+Version 1.0.5
+	CoolUpdater: Added "Start Game (No Steam)" button.
+	Fixed keybinds with None as a modifier.
+
+Version 1.0.4
+	Mod Auto Updater should now prioritze archives with .pro.zip extension as intended.
+	CoolUpdater: Fixed "Start Game" button not starting the game with Mod Loader Pro.
+
+Version 1.0.3
+	Added "ExecuteCommand" method.
+	Fixed update status permanently staying on the main menu, if no mods are installed.
+	Fixed compatibility with Cassette mod.
+
+Version 1.0.2
+	Fixed missing null checks.
+	Fixed legacy sliders not updating as they should.
+
+Version 1.0.1
+	Removed game freezing bug with NexusMods login.
+
+Version 1.0
+	Initial Release.

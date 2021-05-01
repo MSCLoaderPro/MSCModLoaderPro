@@ -19,7 +19,7 @@ namespace MSCLoader.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -57,6 +57,30 @@ namespace MSCLoader.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version 1.0.6
+        ///	Fixed UI scaling on ultrawide resolutions.
+        ///	Fixed Nexus out of range exception.
+        ///	Fixed user avatar when using Gravatar.
+        ///
+        ///Version 1.0.5
+        ///	CoolUpdater: Added &quot;Start Game (No Steam)&quot; button.
+        ///	Fixed keybinds with None as a modifier.
+        ///
+        ///Version 1.0.4
+        ///	Mod Auto Updater should now prioritze archives with .pro.zip extension as intended.
+        ///	CoolUpdater: Fixed &quot;Start Game&quot; button not starting the game with Mod Loader Pro.
+        ///
+        ///Version 1.0.3
+        ///	Added &quot;ExecuteCommand&quot; method.
+        ///	Fixed update status per [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Changelog {
+            get {
+                return ResourceManager.GetString("Changelog", resourceCulture);
             }
         }
         
