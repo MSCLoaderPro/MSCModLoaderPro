@@ -149,7 +149,6 @@ namespace MSCLoader.NexusMods
             ModPrompt prompt = ModPrompt.CreateButtonlessPrompt();
             prompt.Text = "You will now be taken to NexusMods...";
             prompt.Title = "NexusMods Login";
-            //yield return new WaitForSeconds(1);
 
             output = "";
 
@@ -293,20 +292,27 @@ namespace MSCLoader.NexusMods
 
             userInfo = new UserInfo();
             
-            string[] arr = ReadMetadataToArray(output);
             try
             {
+                string[] arr = ReadMetadataToArray(output);
                 foreach (string s in arr)
                 {
                     if (s.Contains("name"))
                     {
                         userInfo.Name = s.Split(':')[1].Replace("\"", "").Replace(",", "").Trim();
-                    }
+                    } 
 
                     if (s.Contains("profile_url"))
                     {
-                        string[] splitted = s.Split(':');
-                        userInfo.ProfilePic = ("https:" + splitted[2]).Replace("\"", "").Replace(",", "").Trim();
+                        if (s.Contains(":null"))
+                        {
+                            userInfo.ProfilePic = null;
+                        }
+                        else
+                        {
+                            string[] splitted = s.Split(':');
+                            userInfo.ProfilePic = ("https:" + splitted[2]).Replace("\"", "").Replace(",", "").Trim();
+                        }
                     }
 
                     if (s.Contains("is_premium?"))
@@ -328,6 +334,7 @@ namespace MSCLoader.NexusMods
                 ui.userName.text = "";
                 ui.memberStatus.text = "";
                 ModConsole.LogError(ex.ToString());
+                isActive = false;
             }
 
             if (!Directory.Exists(NexusDataFolder))
@@ -344,59 +351,62 @@ namespace MSCLoader.NexusMods
             ui.hoverText.newText = "<color=red>LOG OUT</color>";
 
             // Download profile pic.
-            string pfpPath = Path.Combine(NexusDataFolder, userInfo.Name + ".png");
-
-            if (File.Exists(pfpPath))
+            if (!string.IsNullOrEmpty(userInfo.ProfilePic))
             {
-                FileInfo fi = new FileInfo(pfpPath);
-                DateTime weekAgo = DateTime.Now.AddDays(-7);
-                if (fi.LastWriteTime < weekAgo)
-                {
-                    ModConsole.Log("[Nexus SSO] Refreshing the user profile picture!");
-                    forceDownloadNewPfp = true;
-                }
-            }
+                string pfpPath = Path.Combine(NexusDataFolder, userInfo.Name + ".png");
 
-            if (!File.Exists(pfpPath) || forceDownloadNewPfp)
-            {
-                forceDownloadNewPfp = false;
-                pfpPath = "\"" + pfpPath + "\"";
-                p = new Process()
+                if (File.Exists(pfpPath))
                 {
-                    StartInfo = new ProcessStartInfo
+                    FileInfo fi = new FileInfo(pfpPath);
+                    DateTime weekAgo = DateTime.Now.AddDays(-7);
+                    if (fi.LastWriteTime < weekAgo)
                     {
-                        FileName = ModUpdater.UpdaterPath,
-                        Arguments = "get-file " + string.Join(" ", new string[] { userInfo.ProfilePic, pfpPath, apiKey }),
-                        WorkingDirectory = ModUpdater.UpdaterDirectory,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
+                        ModConsole.Log("[Nexus SSO] Refreshing the user profile picture!");
+                        forceDownloadNewPfp = true;
                     }
-                };
-
-                p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
-                p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
-                p.Start();
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-
-                downloadTime = 0;
-                while (!p.HasExited)
-                {
-                    downloadTime++;
-                    if (downloadTime > 10)
-                    {
-                        ModConsole.LogError($"[Nexus SSO] Getting profile pic timed-out.");
-                        break;
-                    }
-                    yield return new WaitForSeconds(1);
                 }
-                SetProfilePic();
-            }
-            else
-            {
-                SetProfilePic();
+
+                if (!File.Exists(pfpPath) || forceDownloadNewPfp)
+                {
+                    forceDownloadNewPfp = false;
+                    pfpPath = "\"" + pfpPath + "\"";
+                    p = new Process()
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = ModUpdater.UpdaterPath,
+                            Arguments = "get-file " + string.Join(" ", new string[] { userInfo.ProfilePic, pfpPath, apiKey }),
+                            WorkingDirectory = ModUpdater.UpdaterDirectory,
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        }
+                    };
+
+                    p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+                    p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
+                    p.Start();
+                    p.BeginOutputReadLine();
+                    p.BeginErrorReadLine();
+
+                    downloadTime = 0;
+                    while (!p.HasExited)
+                    {
+                        downloadTime++;
+                        if (downloadTime > 10)
+                        {
+                            ModConsole.LogError($"[Nexus SSO] Getting profile pic timed-out.");
+                            break;
+                        }
+                        yield return new WaitForSeconds(1);
+                    }
+                    SetProfilePic();
+                }
+                else
+                {
+                    SetProfilePic();
+                }
             }
 
             isActive = false;
@@ -410,6 +420,7 @@ namespace MSCLoader.NexusMods
 
         void SetProfilePic()
         {
+            if (string.IsNullOrEmpty(userInfo.ProfilePic)) return;
             ui.profilePicture.texture = ModAssets.LoadTexturePNG(Path.Combine(NexusDataFolder, userInfo.Name + ".png"));
         }
         void SetInterface()
