@@ -21,8 +21,6 @@
 	<TemplateContent>
 			<Project TargetFileName="$safeprojectname$.csproj" File="ProjectTemplate.csproj" ReplaceParameters="true">
 			<ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
-      <ProjectItem TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\Resources.Designer.cs">Resources.Designer.cs</ProjectItem>
 			<ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.cs">Mod.cs</ProjectItem>
 		</Project>
 	</TemplateContent>
