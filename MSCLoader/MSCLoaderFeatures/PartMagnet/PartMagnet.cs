@@ -250,5 +250,10 @@ namespace MSCLoader.PartMagnet
             PlayMakerHelper.GUIDisassemble = false;
             if (detachText != "") PlayMakerHelper.GUIInteraction = "";
         }
+
+        void OnEnable()
+        {
+            if (attached) StartCoroutine(PartAttached());
+        }
     }
 }
