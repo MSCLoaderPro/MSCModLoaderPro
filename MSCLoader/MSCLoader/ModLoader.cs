@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0.6";
+        public static readonly string Version = "1.0.7";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -171,6 +171,9 @@ namespace MSCLoader
             for (int i = 0; i < methodNames.Length; i++)
                 modString += $"\n{ModMethods[i].Count} Mod{(ModMethods[i].Count != 1 ? "s" : "")} using {methodNames[i]}.{(ModMethods[i].Count > 0 ? "\n  " : "")}{string.Join("\n  ", ModMethods[i].Select(x => x.ID).ToArray())}";
             Console.WriteLine(modString);
+
+            // Log enabled status of mods to output_log.txt
+            Console.WriteLine(string.Join("\n", LoadedMods.Select(x => $"{(x.Enabled ? "ENABLED" : "DISABLED")} - {x.Name}").ToArray()));
 
             // Load mod settings for each loaded mod. Then call OnMenuLoad
             LoadModsSettings();
