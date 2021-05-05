@@ -6,6 +6,7 @@ Version 1.0.7
 	Fixed NexusMods login failing, if user didn't have profile picture set.
 	Changed how NexusMods login is being handled, if CoolUpdater couldn't start a web browser
 	Removed resources from template, instead adding a guide on the website on how to add resources to your project.
+	Addressed an issue related with objects using PartMagnet being not detacheable, if the object has been disabled
 
 Version 1.0.6
 	Fixed UI scaling on ultrawide resolutions.
