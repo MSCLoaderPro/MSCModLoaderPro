@@ -467,7 +467,7 @@ namespace MSCLoader.NexusMods
 
         bool IsReferenceMissing()
         {
-            return !File.Exists(Path.Combine(ModUpdater.UpdaterPath, "websocket-sharp.dll"));
+            return !File.Exists(Path.Combine(ModUpdater.UpdaterDirectory, "websocket-sharp.dll"));
         }
     }
 }
