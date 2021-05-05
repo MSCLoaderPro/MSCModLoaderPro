@@ -1,6 +1,7 @@
 ﻿using MSCLoader.Helper;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace MSCLoader.PartMagnet
 {
@@ -79,6 +80,11 @@ namespace MSCLoader.PartMagnet
         [Header("(OPTIONAL) Highlight Options:")]
         public Material customHighlightMaterial;
 
+        [Header("(OPTIONAL) Event actions:")]
+        public UnityEvent OnScrew = new UnityEvent();
+        public UnityEvent OnMaxTightness = new UnityEvent();
+        public UnityEvent OnMinTightness = new UnityEvent();
+
         [HideInInspector] public float size = 0f;
         Renderer renderer;
         Material normalMaterial, highlightMaterial;
@@ -118,13 +124,16 @@ namespace MSCLoader.PartMagnet
             ratchetMode = ratchet.GetPlayMakerFSM("Switch").GetVariable<HutongGames.PlayMaker.FsmBool>("Switch");
         }
 
-        void Start() => OnEnable();
+        void Start()
+        {
+            OnEnable();
+        }
 
         void OnEnable()
         {
             SetBoltPosition();
 
-            if (boltMagnet.joint) boltMagnet.StartCoroutine(boltMagnet.SetJointBreak());
+            if (boltMagnet && boltMagnet.joint) boltMagnet.StartCoroutine(boltMagnet.SetJointBreak());
         }
 
         public void Reset()
@@ -135,13 +144,13 @@ namespace MSCLoader.PartMagnet
 
         void Update()
         {
-            if (boltDetectionParent.activeInHierarchy && boltMagnet.attached)
+            if ((!boltMagnet || boltMagnet.attached) && boltDetectionParent.activeInHierarchy)
             {
                 if (toolWrenchSize.Value == size && boltDetection.Value == gameObject)
                 {
                     boltOver = true;
-                    if (highlightBolt) 
-                        renderer.sharedMaterial = customHighlightMaterial ?? highlightMaterial;
+                    if (highlightBolt) renderer.sharedMaterial = customHighlightMaterial ?? highlightMaterial;
+
                     if (boltDelay <= 0f)
                     {
                         if (Input.GetAxis(mouseWheel) > 0f) // Scroll Up
@@ -152,7 +161,6 @@ namespace MSCLoader.PartMagnet
                             // If Ratchet is active and switch is in OUT position;
                             else if (tightness > minTightness && allowRatchetWrench && ratchet.activeSelf && !ratchetMode.Value)
                                 BoltInOut(-1);
-
                         }
                         else if (Input.GetAxis(mouseWheel) < 0f) // Scroll Down
                         {
@@ -165,13 +173,11 @@ namespace MSCLoader.PartMagnet
                         }
                     }
                 }
-                else if (boltOver)
-                    BoltOver();
+                else if (boltOver) BoltOver();
 
                 boltDelay -= Time.deltaTime;
             }
-            else if (boltOver)
-                BoltOver();
+            else if (boltOver) BoltOver();
         }
 
         public void BoltOver()
@@ -185,14 +191,17 @@ namespace MSCLoader.PartMagnet
             tightness += direction;
             SetBoltPosition();
 
-            if (boltMagnet.joint) boltMagnet.UpdateJointBreakValues();
+            if (boltMagnet && boltMagnet.joint) boltMagnet.UpdateJointBreakValues();
 
-            if (customAudioSource != null) 
-                customAudioSource.PlayOneShot(direction > 0 ? customScrewInSound : customScrewOutSound);
-            else 
-                transform.PlaySound3D("CarBuilding", "bolt_screw");
+            if (customAudioSource != null) customAudioSource.PlayOneShot(direction > 0 ? customScrewInSound : customScrewOutSound);
+            else transform.PlaySound3D("CarBuilding", "bolt_screw");
 
             boltDelay = ratchet.activeSelf ? 0.2f : 0.5f;
+
+            OnScrew.Invoke();
+
+            if (tightness == maxTightness) OnMaxTightness.Invoke();
+            if (tightness == minTightness) OnMinTightness.Invoke();
         }
 
         void SetBoltPosition()

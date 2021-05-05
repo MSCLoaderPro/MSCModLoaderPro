@@ -40,7 +40,7 @@ namespace MSCLoader.NexusMods
         Texture defaultPfp;
         bool forceDownloadNewPfp;
 
-		NexusMenuUI ui => ModLoader.UICanvas.GetComponentsInChildren<NexusMenuUI>(true)[0];
+        NexusMenuUI ui => ModLoader.UICanvas.GetComponentsInChildren<NexusMenuUI>(true)[0];
 
         public NexusSSO()
         {
@@ -85,7 +85,7 @@ namespace MSCLoader.NexusMods
                 {
                     ModConsole.Log(ex.ToString());
                     ModPrompt.CreatePrompt("Your NexusMods login data is corrupted and we could not log you into the NexusMods.\n\n Please log in again.", "Nexus Login Error");
-                    
+
                     isReady = true;
                     ui.loggedIn.text = "<color=yellow>LOG IN</color>";
                     ui.hoverText.oldText = "<color=yellow>LOG IN</color>";
@@ -309,7 +309,7 @@ namespace MSCLoader.NexusMods
             }
 
             userInfo = new UserInfo();
-            
+
             try
             {
                 string[] arr = ReadMetadataToArray(output);
@@ -318,7 +318,7 @@ namespace MSCLoader.NexusMods
                     if (s.Contains("name"))
                     {
                         userInfo.Name = s.Split(':')[1].Replace("\"", "").Replace(",", "").Trim();
-                    } 
+                    }
 
                     if (s.Contains("profile_url"))
                     {
@@ -362,7 +362,7 @@ namespace MSCLoader.NexusMods
 
             ui.loggedIn.text = "<color=lime>LOGGED IN</color>";
             ui.userName.text = userInfo.Name.ToUpper();
-            ui.userName.text = userInfo.Name.ToUpper(); 
+            ui.userName.text = userInfo.Name.ToUpper();
             ui.memberStatus.text = userInfo.IsPremium ? "PREMIUM" : (userInfo.IsSupporter ? "SUPPORTER" : "MEMBER");
             ui.loggedIn.text = "<color=red>LOG OUT</color>";
             ui.hoverText.oldText = "<color=red>LOG OUT</color>";

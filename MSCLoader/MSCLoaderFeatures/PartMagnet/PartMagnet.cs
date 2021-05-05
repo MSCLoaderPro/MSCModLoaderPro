@@ -75,6 +75,7 @@ namespace MSCLoader.PartMagnet
             playerCamera = ModHelper.GetTransform("PLAYER", "Pivot/AnimPivot/Camera/FPSCamera/FPSCamera").GetComponent<Camera>();
             partLayerMask = 1 << LayerMask.NameToLayer("Parts");
         }
+
         void OnTriggerEnter(Collider other)
         {
             if (!attached && attachmentPoints.Contains(other) && gameObject.layer == wheelLayer)

@@ -1,6 +1,11 @@
 Version 1.0.7
+	Bolt components can now operate independently from a BoltMagnet component.
+	Added OnScrew event to Bolt component, executed each screw, as well as events OnMaxTightness and OnMinTightness executed when the bolt reach max and min tightness respectively.
+	Fixed SettingSlider value text not working properly when the value went into negatives.
+	Adjusted UI text and shadows.
 	Fixed NexusMods login failing, if user didn't have profile picture set.
 	Changed how NexusMods login is being handled, if CoolUpdater couldn't start a web browser
+	Removed resources from template, instead adding a guide on the website on how to add resources to your project.
 
 Version 1.0.6
 	Fixed UI scaling on ultrawide resolutions.

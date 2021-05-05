@@ -451,7 +451,7 @@ namespace MSCLoader
 
         public void ChangeValueText()
         {
-            valueText.text = (TextValues.Length > ValueInt) ?
+            valueText.text = (TextValues.Length > ValueInt && ValueInt >= 0) ?
                 $"{ValuePrefix}{TextValues[ValueInt]}{ValueSuffix}" :
                 $"{ValuePrefix}{Value}{ValueSuffix}";
         }

@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="InteractionSystem.cs" />
     <Compile Include="MSCCar\DragRace.cs" />
+    <Compile Include="MSCCar\NPCLiftHandler.cs" />
     <Compile Include="PaintSystem\PaintCore.cs" />
     <Compile Include="PaintSystem\PaintSystem.cs" />
     <Compile Include="PartMagnet\Bolt.cs" />
