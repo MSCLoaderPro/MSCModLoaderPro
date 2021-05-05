@@ -40,7 +40,8 @@ namespace CoolUpdater
                 }
                 catch
                 {
-                    Process.Start("IEXPLORE", GetBase(this.uuid));
+                    Console.WriteLine("ERROR_NO_BROWSER");
+                    Environment.Exit(0);
                 }
             };
             webSocket.Connect();

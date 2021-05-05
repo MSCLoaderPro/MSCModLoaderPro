@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security.Cryptography;
 using System.Diagnostics;
 using UnityEngine;
 using System.Collections;
 using System.IO;
-using System.Net;
 using UnityEngine.UI;
-using MSCLoader.Helper;
 
 namespace MSCLoader.NexusMods
 {
@@ -51,7 +45,6 @@ namespace MSCLoader.NexusMods
         public NexusSSO()
         {
             instance = this;
-
             defaultPfp = ui.profilePicture.texture;
 
             string data = DataStorage.Load();
@@ -106,6 +99,13 @@ namespace MSCLoader.NexusMods
 
         internal void RequestLogin()
         {
+            if (IsReferenceMissing())
+            {
+                ModPrompt.CreatePrompt("A key assembly is missing (websocket-sharp.dll) from ModUpdater folder.\n\n" +
+                                       "Please reinstall the Mod Loader Pro.", "Fatal Error");
+                return;
+            }
+
             if (isActive)
             {
                 ModConsole.Log("[Nexus SSO] Busy!");
@@ -210,6 +210,24 @@ namespace MSCLoader.NexusMods
 
             p.Close();
             promptCancel?.gameObject.SetActive(false);
+
+            if (output.Contains("ERROR_NO_BROWSER"))
+            {
+                if (IsWindows10())
+                {
+                    ModPrompt.CreateYesNoPrompt("We could not start a web browser.\n\n" +
+                                                "Please make sure you have set a default web browser in Windows settings.\n\n" +
+                                                "Would you like to open Settings?", "NexusMods Login Error",
+                                                () => Process.Start("explorer.exe", "ms-settings:defaultapps"));
+                }
+                else
+                {
+                    ModPrompt.CreatePrompt("We could not start a web browser.\n\n" +
+                                           "Please make sure you have set a default web browser in Windows settings.", "NexusMods Login Error");
+                }
+                //ms-settings:defaultapps
+                yield break;
+            }
 
             string[] arr = output.Split('\n');
             DataStorage.Save(output);
@@ -438,6 +456,18 @@ namespace MSCLoader.NexusMods
                 }
                 catch { }
             }
+        }
+
+        bool IsWindows10()
+        {
+            string fullOS = SystemInfo.operatingSystem;
+            int build = int.Parse(fullOS.Split('(')[1].Split(')')[0].Split('.')[2]);
+            return build > 9600;
+        }
+
+        bool IsReferenceMissing()
+        {
+            return !File.Exists(Path.Combine(ModUpdater.UpdaterPath, "websocket-sharp.dll"));
         }
     }
 }
