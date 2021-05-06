@@ -24,6 +24,7 @@ namespace CoolUpdater
         {
             if (args.Length == 0)
             {
+                /*
                 Console.WriteLine("Copyright(C) Konrad \"Athlon\" Figura 2021\n\n" +
                                   "This program is a part of MSC Mod Loader Pro.\n" +
                                   "You cannot distribute, modify or use this software outside of Mod Loader Pro,\n" +
@@ -31,6 +32,9 @@ namespace CoolUpdater
                                   "Press any key to exit.");
                 Console.ReadKey();
                 Environment.Exit(0);
+                */
+                Info view = new Info();
+                Application.Run(view);
             }
 
             switch (args[0])

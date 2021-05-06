@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace CoolUpdater
 {
-    public partial class UpdateView : Form
+    public partial class Info : Form
     {
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
@@ -45,7 +45,7 @@ namespace CoolUpdater
 
         readonly Color colorBtn = Color.FromArgb(255, 199, 152, 129);
 
-        public UpdateView(string modsPath)
+        public Info()
         {
             InitializeComponent();
             this.modsPath = modsPath;
@@ -123,18 +123,15 @@ namespace CoolUpdater
             }
 
             btnQuit.SetToCenter(this);
-            btnStartGame.SetToCenter(logBox);
             btnExit.Click += btnQuit_Click;
             btnExit.ForeColor = Color.Red;
 
             Font smallFont = new Font(myFont.FontFamily, 12, myFont.Style);
-            btnNoSteam.Font = smallFont;
             btnWebsite.Font = smallFont;
         }
 
         private void UpdateView_Shown(object sender, EventArgs e)
         {
-            UpdateAll();
         }
 
         string GetSeconds(Stopwatch s)
@@ -142,111 +139,11 @@ namespace CoolUpdater
             return Math.Round(s.Elapsed.TotalSeconds, 2).ToString() + "s";
         }
 
-        private async void UpdateAll()
-        {
-            ToggleButtons(false);
-            try
-            {
-                var stopwatch = Stopwatch.StartNew();
-                Log($"({GetSeconds(stopwatch)}) Mod Loader Pro Auto-Update Tool Initialized!\n");
-
-                await Task.Run(() => Thread.Sleep(500));
-
-                Process[] mscProcess = Process.GetProcessesByName("mysummercar");
-                if (mscProcess.Length > 0)
-                {
-                    await Task.Run(() =>
-                    {
-                        foreach (Process process in mscProcess)
-                        {
-                            Log($"({GetSeconds(stopwatch)}) Killing process: {process.ProcessName}...");
-                            process.Kill();
-                        }
-                        Log($"({GetSeconds(stopwatch)}) MSC process(es) have been killed!\n");
-                    });
-                }
-
-                if (!Directory.Exists(Program.Downloads))
-                {
-                    throw new DirectoryNotFoundException("Downloads folder doesn't exist!");
-                }
-
-                // A small workaround for "not accessible files".
-                Log($"({GetSeconds(stopwatch)}) Loading update procedure...\n");
-                await Task.Run(() => Thread.Sleep(1000));
-
-                DirectoryInfo di = new DirectoryInfo(Program.Downloads);
-                FileInfo[] files = di.GetFiles("*.zip");
-
-                foreach (var f in files)
-                {
-                    modsList.Items.Add(f.Name.Split('.')[0]);
-                }
-
-                for (int i = 0; i < files.Length; i++)
-                {
-                    FileInfo file = files[i];
-                    try
-                    {
-                        await Task.Run(() =>
-                        {
-                            Log($"({GetSeconds(stopwatch)}) ({i + 1}/{files.Length}) Unpacking {file.Name}...");
-                            using (ZipFile zip = ZipFile.Read(file.FullName))
-                            {
-                                zip.ExtractAll(modsPath, ExtractExistingFileAction.OverwriteSilently);
-                            }
-                            Log($"({GetSeconds(stopwatch)}) {file.Name} unpacking completed!\n");
-                            modsList.SetItemChecked(i, true);
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"\n===============================================\nAn error has occured while extracting {file.Name} :(\n\n" + ex.ToString() + "\n\n");
-                    }
-
-                    updateProgress.Value = (int)(((double)i + 1) / files.Length * 100);
-                }
-
-                // Cleanup after install.
-                Directory.Delete(Program.Downloads, true);
-
-                Log($"({GetSeconds(stopwatch)}) All mods have been updated, have a nice day :)");
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
-            ToggleButtons(true);
-        }
-
-        private void btnStartGame_Click(object sender, EventArgs e)
-        {
-            Log($"Restarting game now using Steam");
-            Process cmd = new Process();
-            cmd.StartInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = "/C start \"\" \"steam://rungameid/516750\"",
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            cmd.Start();
-
-            Environment.Exit(0);
-        }
-
         private void btnQuit_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
         }
 
-        void ToggleButtons(bool enabled)
-        {
-            btnQuit.Enabled = enabled;
-            btnStartGame.Enabled = enabled;
-            btnExit.Enabled = enabled;
-            btnNoSteam.Enabled = enabled;
-        }
 
         private void UpdateView_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -254,11 +151,6 @@ namespace CoolUpdater
             {
                 e.Cancel = true;
             }
-        }
-
-        void Log(string s)
-        {
-            logBox.Text += s + Environment.NewLine;
         }
 
         public IEnumerable<Control> GetAllControls(Control control, Type type)
@@ -313,35 +205,16 @@ namespace CoolUpdater
             Process.Start("https://mscloaderpro.github.io/docs/");
         }
 
-        private void btnNoSteam_Click(object sender, EventArgs e)
+        int x = 0;
+        private void labVer_Click(object sender, EventArgs e)
         {
-            Log($"Restarting game now using Steam");
-            Process cmd = new Process();
-            cmd.StartInfo = new ProcessStartInfo
+            x++;
+            if (x >= 10)
             {
-                FileName = "cmd.exe",
-                Arguments = "/C start \"\" \"..\\mysummercar.exe\"",
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            cmd.Start();
+                labInfo.Text = "You are a curious person, aren't you?";
+                labInfo.SetToCenter(this);
+            }
 
-            Environment.Exit(0);
-        }
-    }
-
-    public static class CustomExtensions
-    {
-        public static void SetToCenter(this Control control, Form form)
-        {
-            int x = form.Width / 2 - control.Width / 2 - 12;
-            control.Location = new Point(x, control.Location.Y);
-        }
-
-        public static void SetToCenter(this Control control, Control other)
-        {
-            int x = (other.Left + other.Width / 2) - control.Width / 2;
-            control.Location = new Point(x, control.Location.Y);
         }
     }
 }

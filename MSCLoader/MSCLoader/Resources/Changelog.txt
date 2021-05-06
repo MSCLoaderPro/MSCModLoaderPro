@@ -8,6 +8,7 @@ Version 1.0.7
 	Removed resources from template, instead adding a guide on the website on how to add resources to your project.
 	Addressed an issue related with objects using PartMagnet being not detacheable, if the object has been disabled
 	Fixed music not playing after quitting from game to the main menu (issue #5)
+	CoolUpdater: Added info page, if CoolUpdater is open by the user
 
 Version 1.0.6
 	Fixed UI scaling on ultrawide resolutions.
