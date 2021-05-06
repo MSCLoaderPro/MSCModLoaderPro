@@ -9,6 +9,7 @@ Version 1.0.7
 	Addressed an issue related with objects using PartMagnet being not detacheable, if the object has been disabled
 	Fixed music not playing after quitting from game to the main menu (issue #5)
 	CoolUpdater: Added info page, if CoolUpdater is open by the user
+	Uninstaller: Added support for launching the Uninstaller via "Add or remove programs"
 
 Version 1.0.6
 	Fixed UI scaling on ultrawide resolutions.

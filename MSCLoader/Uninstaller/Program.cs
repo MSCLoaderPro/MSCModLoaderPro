@@ -14,6 +14,9 @@ namespace Uninstaller
         [STAThread]
         static void Main()
         {
+            string myAppPath = System.Reflection.Assembly.GetEntryAssembly().Location.Replace("Uninstaller.exe", "");
+            System.IO.Directory.SetCurrentDirectory(myAppPath);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

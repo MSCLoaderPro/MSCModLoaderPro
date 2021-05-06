@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.1 (08.04.2021)
+
+### Added
+
+- Mod Loader Pro will now be listed in "Add or remove programs" list in Windows settings
+
+### Bug Fixes
+
+- Fixed the custom Mods folder location setting sometimes not being applied as it should
+
+## 1.0 (30.04.2021)
+
+- Initial release
+
 ## GM-0.99.5
 
 ### Bug Fixes

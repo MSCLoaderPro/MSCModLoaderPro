@@ -428,12 +428,18 @@ namespace Installer
                 Directory.CreateDirectory(Path.Combine(modsPath, "Assets"));
                 Directory.CreateDirectory(Path.Combine(modsPath, "References"));
                 Directory.CreateDirectory(Path.Combine(modsPath, "Settings"));
-
-                string configFile = Path.Combine(MscPath, "ModLoaderSettings.ini");
-                string input = File.ReadAllText(configFile);
-                input = input.Replace("ModsFolderPath=Mods", "ModsFolderPath=" + txtModsFolderName.Text);
-                File.WriteAllText(configFile, input);
             }
+
+            string configFile = Path.Combine(MscPath, "ModLoaderSettings.ini");
+            string[] input = File.ReadAllText(configFile).Split('\n');
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i].Contains("ModsFolderPath="))
+                {
+                    input[i] = "ModsFolderPath=" + txtModsFolderName.Text;
+                }
+            }
+            File.WriteAllText(configFile, string.Join("\n", input));
         }
 
         internal void SetVersionString(string s)

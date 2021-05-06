@@ -4,6 +4,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using System.Threading;
+using Microsoft.Win32;
+using System.Reflection;
 
 namespace Installer
 {
@@ -189,6 +191,8 @@ namespace Installer
             UnpackZip(DebuggerPath, false, Installer.Instance.UserModsFolderName());
         }
 
+        long size;
+
         async void UnpackZip(string pathToZip, bool goToEnd = false, string toFolder = "")
         {
             Installer.Instance.UpdateStatus(100, "Extracting...");
@@ -222,11 +226,18 @@ namespace Installer
                         f.ExtractToFile(path, true);
                     });
                     stage++;
+                    size += new FileInfo(path).Length;
                 }
 
                 file.Dispose();
             }
             downloadFinished = true;
+
+            Installer.Instance.UpdateStatus(100, "Creating registry entries...");
+            await Task.Run(() =>
+            {
+                CreateUninstaller();
+            });
 
             if (goToEnd)
                 Installer.Instance.TabEnd();
@@ -244,6 +255,65 @@ namespace Installer
             catch 
             { 
 
+            }
+        }
+
+        const string UninstallGuid = "{ef4c06bc-ec46-4bbb-9250-6fc5a25323bf}";
+
+        private void CreateUninstaller()
+        {
+            using (RegistryKey parent = Registry.CurrentUser.OpenSubKey(
+                         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
+            {
+                if (parent == null)
+                {
+                    throw new Exception("Uninstall registry key not found.");
+                }
+                try
+                {
+                    RegistryKey key = null;
+
+                    try
+                    {
+                        string guidText = UninstallGuid;
+                        key = parent.OpenSubKey(guidText, true) ??
+                              parent.CreateSubKey(guidText);
+
+                        if (key == null)
+                        {
+                            throw new Exception(String.Format("Unable to create uninstaller."));
+                        }
+
+                        Assembly asm = GetType().Assembly;
+                        Version v = Assembly.LoadFrom(Path.Combine(Installer.Instance.MscPath, "mysummercar_Data/Managed/MSCLoader.dll")).GetName().Version;
+                        string exe = Path.Combine(Installer.Instance.MscPath, "Uninstaller.exe").Replace("/", "\\");
+
+
+                        key.SetValue("DisplayName", "MSC Mod Loader Pro");
+                        key.SetValue("ApplicationVersion", v.ToString());
+                        key.SetValue("Publisher", "Mod Loader Pro Team");
+                        key.SetValue("DisplayIcon", exe);
+                        key.SetValue("DisplayVersion", v.ToString());
+                        key.SetValue("URLInfoAbout", "http://mscloaderpro.github.io/");
+                        key.SetValue("Contact", "");
+                        key.SetValue("InstallDate", DateTime.Now.ToString("yyyyMMdd"));
+                        key.SetValue("UninstallString", $"\"{exe}\"");
+                        key.SetValue("EstimatedSize", size / 1000, RegistryValueKind.DWord);
+                    }
+                    finally
+                    {
+                        if (key != null)
+                        {
+                            key.Close();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(
+                        "An error occurred writing uninstall information to the registry.  The service is fully installed but can only be uninstalled manually through the command line.",
+                        ex);
+                }
             }
         }
     }

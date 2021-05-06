@@ -34,13 +34,13 @@ namespace Uninstaller
             this.btnExit = new System.Windows.Forms.Button();
             this.title = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.chkDebugger = new System.Windows.Forms.CheckBox();
             this.btnQuit = new System.Windows.Forms.Button();
             this.labQuestion = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.labVer = new System.Windows.Forms.Label();
-            this.chkDebugger = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -93,6 +93,18 @@ namespace Uninstaller
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(776, 385);
             this.panel2.TabIndex = 3;
+            // 
+            // chkDebugger
+            // 
+            this.chkDebugger.AutoSize = true;
+            this.chkDebugger.BackColor = System.Drawing.Color.Transparent;
+            this.chkDebugger.ForeColor = System.Drawing.Color.White;
+            this.chkDebugger.Location = new System.Drawing.Point(330, 65);
+            this.chkDebugger.Name = "chkDebugger";
+            this.chkDebugger.Size = new System.Drawing.Size(130, 17);
+            this.chkDebugger.TabIndex = 16;
+            this.chkDebugger.Text = "Remove Mods as well";
+            this.chkDebugger.UseVisualStyleBackColor = false;
             // 
             // btnQuit
             // 
@@ -170,21 +182,9 @@ namespace Uninstaller
             this.labVer.ForeColor = System.Drawing.Color.White;
             this.labVer.Location = new System.Drawing.Point(12, 441);
             this.labVer.Name = "labVer";
-            this.labVer.Size = new System.Drawing.Size(39, 25);
+            this.labVer.Size = new System.Drawing.Size(55, 25);
             this.labVer.TabIndex = 5;
-            this.labVer.Text = "1.0";
-            // 
-            // chkDebugger
-            // 
-            this.chkDebugger.AutoSize = true;
-            this.chkDebugger.BackColor = System.Drawing.Color.Transparent;
-            this.chkDebugger.ForeColor = System.Drawing.Color.White;
-            this.chkDebugger.Location = new System.Drawing.Point(330, 65);
-            this.chkDebugger.Name = "chkDebugger";
-            this.chkDebugger.Size = new System.Drawing.Size(130, 17);
-            this.chkDebugger.TabIndex = 16;
-            this.chkDebugger.Text = "Remove Mods as well";
-            this.chkDebugger.UseVisualStyleBackColor = false;
+            this.labVer.Text = "1.0.1";
             // 
             // Form1
             // 

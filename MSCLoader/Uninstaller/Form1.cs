@@ -41,6 +41,13 @@ namespace Uninstaller
         {
             InitializeComponent();
 
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            labVer.Text = version.Major + "." + version.Minor;
+            if (version.Build != 0)
+            {
+                labVer.Text += "." + version.Build;
+            }
+
             byte[] fontData = Properties.Resources.FugazOne_Regular;
             IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
             Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
@@ -190,6 +197,9 @@ namespace Uninstaller
             Environment.Exit(0);
         }
 
+        const string UninstallGuid = "{ef4c06bc-ec46-4bbb-9250-6fc5a25323bf}";
+        bool uninstalled;
+
         private void button1_Click(object sender, EventArgs e)
         {
             string modsFolder = GetModFolderPath();
@@ -213,6 +223,23 @@ namespace Uninstaller
             labQuestion.Text = "Mod Loader Pro has been succesfully removed from your system.";
             labQuestion.SetToCenter(this);
             chkDebugger.Visible = false;
+
+            using (RegistryKey parent = Registry.CurrentUser.OpenSubKey(
+                         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
+            {
+                try
+                {
+                    parent.DeleteSubKeyTree(UninstallGuid);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(
+                        "An error occurred while trying to remove the uninstaller registry value.",
+                        ex);
+                }
+            }
+
+            uninstalled = true;
         }
 
         void DeleteIfExists(string path)
@@ -242,6 +269,23 @@ namespace Uninstaller
 
         private void btnQuit_Click(object sender, EventArgs e)
         {
+            if (uninstalled)
+            {
+                Process p = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $"/C \"\" del Uninstaller.exe",
+                        WorkingDirectory = Directory.GetCurrentDirectory(),
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                p.Start();
+            }
+
             Environment.Exit(0);
         }
     }
