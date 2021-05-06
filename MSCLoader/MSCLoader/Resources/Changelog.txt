@@ -7,6 +7,7 @@ Version 1.0.7
 	Changed how NexusMods login is being handled, if CoolUpdater couldn't start a web browser
 	Removed resources from template, instead adding a guide on the website on how to add resources to your project.
 	Addressed an issue related with objects using PartMagnet being not detacheable, if the object has been disabled
+	Fixed music not playing after quitting from game to the main menu (issue #5)
 
 Version 1.0.6
 	Fixed UI scaling on ultrawide resolutions.

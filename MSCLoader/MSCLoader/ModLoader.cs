@@ -53,6 +53,8 @@ namespace MSCLoader
         /// <summary>Red Color for disabled mods.</summary>
         public static Color32 ModDisabledRed = new Color32(215, 0, 0, 255);
 
+        static bool audioFixApplied;
+
         Stopwatch timer;
         static bool loaderInitialized = false;
         internal static bool unloading = false, mainMenuReturn = false;
@@ -111,8 +113,11 @@ namespace MSCLoader
             MSCLoader.ModLoaderInstance.UnpatchAll("MSCModLoaderProSave");
 
             // Prevent the menu music from being heard a split second when the loader is initializing.
-            if (GameObject.Find("Music") && Application.loadedLevelName == "MainMenu")
+            if (GameObject.Find("Music") && Application.loadedLevelName == "MainMenu" && !audioFixApplied)
+            {
+                audioFixApplied = true;
                 GameObject.Find("Music").GetComponent<AudioSource>().Stop();
+            }
 
             // Get todays date from the internet or local system time
             Date = ModEarlyAccess.GetDate();
