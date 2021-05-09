@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace MSCLoader.PartMagnet
 {
-    [AddComponentMenu("Mod Loader Pro/Part Magnet")]
+    //[AddComponentMenu("Mod Loader Pro/Part Magnet")]
     [RequireComponent(typeof(Rigidbody), typeof(Collider))]
     public class PartMagnet : MonoBehaviour
     {
@@ -183,6 +183,11 @@ namespace MSCLoader.PartMagnet
             }
         }
 
+        void OnEnable()
+        {
+            if (attached) StartCoroutine(PartAttached());
+        }
+
         IEnumerator PartAttached()
         {
             yield return null;
@@ -249,11 +254,6 @@ namespace MSCLoader.PartMagnet
             mouseOver = false;
             PlayMakerHelper.GUIDisassemble = false;
             if (detachText != "") PlayMakerHelper.GUIInteraction = "";
-        }
-
-        void OnEnable()
-        {
-            if (attached) StartCoroutine(PartAttached());
         }
     }
 }

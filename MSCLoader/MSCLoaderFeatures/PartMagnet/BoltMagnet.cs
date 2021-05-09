@@ -25,7 +25,7 @@ namespace MSCLoader.PartMagnet
 
         public Collider[] attachmentPoints = new Collider[1];
         [Space(10)]
-        public Bolt[] bolts = new Bolt[1];
+        public Bolt[] bolts;
 
         [Space(10), Header("(OPTIONAL) Interaction text:")]
         public string attachText = "";

@@ -90,6 +90,7 @@ namespace MSCLoader
         public Text keyText;
         public Button keyButton;
         public Image backgroundImage;
+        public LayoutElement layoutElement;
 
         /// <summary>Should the setting be shown in the Mod Settings list?</summary>
         public bool Enabled { get => gameObject.activeSelf; set => gameObject.SetActive(value); }
@@ -117,6 +118,13 @@ namespace MSCLoader
         /// <summary>Default modifiers.</summary>
         public KeyCode[] defaultModifiers;
 
+        WaitForEndOfFrame wait = new WaitForEndOfFrame();
+
+        [SerializeField]
+        GameObject bindButtons;
+        bool cancelBind;
+        bool deleteBind;
+
         void Start()
         {
             keyText.text = AdjustKeyNames();
@@ -135,17 +143,24 @@ namespace MSCLoader
 
             keyText.text = "PRESS KEY(S)";
 
+            layoutElement.preferredHeight = 50f;
+            bindButtons.SetActive(true);
+
             while (true)
             {
+                yield return wait;
+
+                if (cancelBind) break;
+
+                if (deleteBind)
+                {
+                    keybind = KeyCode.None;
+                    modifiers = new KeyCode[0];
+                    break;
+                }
+
                 if (Input.anyKeyDown)
                 {
-                    if (Input.GetKeyDown(KeyCode.Mouse0)) break;
-                    if (Input.GetKeyDown(KeyCode.Mouse1))
-                    {
-                        keybind = KeyCode.None;
-                        modifiers = new KeyCode[0];
-                        break;
-                    }
                     foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                     {
                         if (Input.GetKeyDown(key)) keyCodes.Add(key);
@@ -159,9 +174,13 @@ namespace MSCLoader
                     modifiers = keyCodes.ToArray();
                     break;
                 }
-
-                yield return null;
             }
+
+            cancelBind = false;
+            deleteBind = false;
+
+            layoutElement.preferredHeight = 25f;
+            bindButtons.SetActive(false);
 
             keyText.text = AdjustKeyNames();
 
@@ -180,10 +199,13 @@ namespace MSCLoader
             stringBuilder.Replace("Right", "R-");
             stringBuilder.Replace("Control", "CTRL");
             stringBuilder.Replace("Keypad", "Num-");
-            stringBuilder.Replace("Mouse4", "Mb5");
-            stringBuilder.Replace("Mouse3", "Mb4");
-            stringBuilder.Replace("Mouse2", "Mb3");
             stringBuilder.Replace("Alpha", "");
+
+            stringBuilder.Replace("Mouse0", "LMB");
+            stringBuilder.Replace("Mouse1", "RMB");
+            stringBuilder.Replace("Mouse2", "MB3");
+            stringBuilder.Replace("Mouse3", "MB4");
+            stringBuilder.Replace("Mouse4", "MB5");
 
             return stringBuilder.ToString().ToUpper();
         }
@@ -239,6 +261,16 @@ namespace MSCLoader
                 }
             }
             modConfig.Keybinds.Add(new ModConfigKeybind(ID, keybind, modifiers));
+        }
+
+        public void CancelBind()
+        {
+            cancelBind = true;
+        }
+
+        public void DeleteBind()
+        {
+            deleteBind = true;
         }
     }
     /// <summary>Main Component for the Radio Buttons setting type.</summary>
