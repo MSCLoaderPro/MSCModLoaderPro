@@ -1,3 +1,8 @@
+Version 1.0.8
+	Changed the Keybind setting to allow binding the left and right mousebutton. 
+	Canceling and deleting keybinds is now done by buttons appearing when binding.
+	Deprecated the PartMagnet, BoltMagnet does the exact same thing with no bolts assigned.
+
 Version 1.0.7
 	Bolt components can now operate independently from a BoltMagnet component.
 	Added OnScrew event to Bolt component, executed each screw, as well as events OnMaxTightness and OnMinTightness executed when the bolt reach max and min tightness respectively.
