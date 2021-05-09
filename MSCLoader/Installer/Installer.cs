@@ -146,6 +146,7 @@ namespace Installer
 
             panelPath.SetToCenter(this);
             btnBrowse.Height = txtboxPath.Height - 7;
+            btnBrowseMods.Height = txtboxPath.Height - 7;
             btnDownload.SetToCenter(this);
 
             labelBadMessage.ForeColor = Color.Red;
@@ -504,32 +505,39 @@ namespace Installer
 
         string GetMscloaderPath()
         {
-            string doorstepPath = Path.Combine(MscPath, "doorstop_config.ini");
-            if (File.Exists(doorstepPath))
+            try
             {
-                string[] lines = File.ReadAllLines(doorstepPath);
-                string mods = "";
-                foreach (string s in lines)
-                { 
-                    if (s.Contains("mods="))
+                string doorstepPath = Path.Combine(MscPath, "doorstop_config.ini");
+                if (File.Exists(doorstepPath))
+                {
+                    string[] lines = File.ReadAllLines(doorstepPath);
+                    string mods = "";
+                    foreach (string s in lines)
                     {
-                        mods = s;
+                        if (s.Contains("mods="))
+                        {
+                            mods = s;
+                        }
+                    }
+
+                    switch (mods.Split('=')[1].ToUpper())
+                    {
+                        // Honestly tho, wtf is that naming?
+                        case "MD": //My Documents
+                            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"MySummerCar\Mods");
+                        case "GF": // Game Folder
+                            return "Mods";
+                        case "AD": // Application Data
+                            return Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"..\LocalLow\Amistech\My Summer Car\Mods"));
                     }
                 }
 
-                switch (mods.Split('=')[1].ToUpper())
-                {
-                    // Honestly tho, wtf is that naming?
-                    case "MD": //My Documents
-                        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"MySummerCar\Mods");
-                    case "GF": // Game Folder
-                        return "Mods";
-                    case "AD": // Application Data
-                        return Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"..\LocalLow\Amistech\My Summer Car\Mods"));
-                }
+                return null;
             }
-
-            return null;
+            catch
+            {
+                return null;
+            }
         }
 
         string oldModsPath;
@@ -559,6 +567,32 @@ namespace Installer
             StartGame(true);
 
             Environment.Exit(0);
+        }
+
+        private void btnBrowseMods_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Serach for Mods Folder:";
+
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    if (string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        btnDownload.Enabled = false;
+                        return;
+                    }
+
+                    if (File.Exists(Path.Combine(fbd.SelectedPath, "mysummercar.exe")))
+                    {
+                        return;
+                    }
+
+                    txtModsFolderName.Text = mscPath;
+                }
+            }
         }
     }
 

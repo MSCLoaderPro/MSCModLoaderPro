@@ -1,6 +1,13 @@
 # Changelog
 
-## 1.0.1 (08.04.2021)
+## 1.0.2 (09.05.2021)
+
+### Bug Fixes
+
+- Fixed crash caused by MSCLoader in some cases
+- Improved compatibility with Linux
+
+## 1.0.1 (07.04.2021)
 
 ### Added
 
