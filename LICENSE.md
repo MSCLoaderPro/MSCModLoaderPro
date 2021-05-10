@@ -14,4 +14,8 @@ You also agree that you will not use this software or Source Code for any purpos
 
 We, the authors, will provide proper credit to any contributor.
 
-We, the authors, may change this license at any time, if we have reason to. Those changes will only be in effect to the extent that they can legally apply.
+We, the Mod Loader Pro Team (Fredrik, Athlon, BrennFuchS), may change this license at any time, if we have reason to. Those changes will only be in effect to the extent that they can legally apply. The license may only be changed, if ALL of the specified persons agreed to the change. People can be added and removed from this list via Majority Vote of those listed.
+
+If a newer version of this license is available, that is the one that applies.
+
+Last Updated: 10/05/2021
