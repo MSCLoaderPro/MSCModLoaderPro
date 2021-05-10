@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.IO;
 using System.IO.Compression;
@@ -273,7 +274,12 @@ namespace Installer
 
         private void CreateUninstaller()
         {
-            try
+            if (Process.GetProcessesByName("winlogon").Length == 0) //Linux
+            {
+                return;
+            }
+            using (RegistryKey parent = Registry.CurrentUser.OpenSubKey(
+                         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
             {
                 using (RegistryKey parent = Registry.CurrentUser.OpenSubKey(
                              @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
@@ -328,8 +334,6 @@ namespace Installer
                             ex);
                     }
                 }
-            }
-            catch { }
         }
     }
 }

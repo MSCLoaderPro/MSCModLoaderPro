@@ -10,6 +10,7 @@ using System.Drawing.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Diagnostics;
+using System.Runtime.Remoting;
 using Microsoft.Win32;
 using System.Threading;
 
@@ -403,15 +404,35 @@ namespace Installer
 
         void StartGame(bool noSteam)
         {
-            Process cmd = new Process
+            Process cmd;
+            // If you ever upgrade the project to .Net 5/6 (And it works outside of Wine), replace this with 
+            // RuntimeInformation.IsOSPlatform == OsPlatform.Windows ? OsPlatform.Linux (give or take)
+            if (Process.GetProcessesByName("winlogon").Length > 0) //Windows
             {
-                StartInfo = new ProcessStartInfo
+                cmd = new Process
                 {
-                    FileName = noSteam ? Path.Combine(MscPath, "mysummercar.exe") : "steam://rungameid/516750",
-                    WorkingDirectory = MscPath,
-                    UseShellExecute = true,
-                }
-            };
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = noSteam ? Path.Combine(MscPath, "mysummercar.exe") : "steam://rungameid/516750",
+                        WorkingDirectory = MscPath,
+                        UseShellExecute = true,
+                    }
+                };
+            }
+            else 
+                // Probably Linux 
+            {
+                cmd = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = noSteam ? Path.Combine(MscPath, "mysummercar.exe") : "/usr/bin/xdg-open",
+                        WorkingDirectory = MscPath,
+                        UseShellExecute = true,
+                        Arguments = "steam://rungameid/516750"
+                    }
+                };
+            }
             cmd.Start();
         }
 
