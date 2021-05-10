@@ -221,6 +221,17 @@ namespace Installer
                         continue;
                     }
 
+                    // Store old Sources.txt
+                    if (f.Name == "Sources.txt" && File.Exists(path))
+                    {
+                        if (File.Exists(path + ".old"))
+                        {
+                            File.Delete(path + ".old");
+                        }
+
+                        File.Move(path, path + ".old");
+                    }
+
                     await Task.Run(() =>
                     {
                         f.ExtractToFile(path, true);
