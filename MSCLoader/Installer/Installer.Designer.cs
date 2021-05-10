@@ -66,6 +66,7 @@ namespace Installer
             this.chkVSTemplate = new System.Windows.Forms.CheckBox();
             this.labVer = new System.Windows.Forms.Label();
             this.btnLicenses = new System.Windows.Forms.Button();
+            this.btnBrowseMods = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabs.SuspendLayout();
@@ -314,6 +315,7 @@ namespace Installer
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Black;
+            this.tabPage3.Controls.Add(this.btnBrowseMods);
             this.tabPage3.Controls.Add(this.btnPlayNoSteam);
             this.tabPage3.Controls.Add(this.btnDevmenu);
             this.tabPage3.Controls.Add(this.labWarning);
@@ -537,6 +539,22 @@ namespace Installer
             this.btnLicenses.UseVisualStyleBackColor = false;
             this.btnLicenses.Click += new System.EventHandler(this.btnLicenses_Click);
             // 
+            // btnBrowseMods
+            // 
+            this.btnBrowseMods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnBrowseMods.FlatAppearance.BorderSize = 0;
+            this.btnBrowseMods.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBrowseMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnBrowseMods.ForeColor = System.Drawing.Color.White;
+            this.btnBrowseMods.Location = new System.Drawing.Point(581, 140);
+            this.btnBrowseMods.Name = "btnBrowseMods";
+            this.btnBrowseMods.Size = new System.Drawing.Size(53, 25);
+            this.btnBrowseMods.TabIndex = 11;
+            this.btnBrowseMods.Text = "...";
+            this.btnBrowseMods.UseCompatibleTextRendering = true;
+            this.btnBrowseMods.UseVisualStyleBackColor = false;
+            this.btnBrowseMods.Click += new System.EventHandler(this.btnBrowseMods_Click);
+            // 
             // Installer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -610,6 +628,7 @@ namespace Installer
         private System.Windows.Forms.Button btnInstallDev;
         private System.Windows.Forms.Button btnLicenses;
         private System.Windows.Forms.Button btnPlayNoSteam;
+        private System.Windows.Forms.Button btnBrowseMods;
     }
 }
 
