@@ -49,6 +49,8 @@ namespace MSCLoader
         const string InstallerName = "installer.exe";
         string InstallerPath => Path.Combine(TempPathModLoaderPro, InstallerName);
 
+        static string SourcesPath => Path.Combine(UpdaterDirectory, "Sources.txt");
+
         public ModUpdater()
         {
             instance = this;
@@ -57,6 +59,43 @@ namespace MSCLoader
         void Start()
         {
             modUpdaterDatabase = new ModUpdaterDatabase();
+
+            // First we read the Sources.txt file, and populate UpdateLink of mods that don't have a source.
+            if (File.Exists(SourcesPath))
+            {
+                string[] lines = File.ReadAllLines(SourcesPath).Where(l => !l.StartsWith("//") && !string.IsNullOrEmpty(l)).ToArray();
+                foreach (string l in lines)
+                {
+                    try
+                    {
+                        string modID = l.Split(' ')[0];
+                        string link = l.Split(' ')[1];
+
+                        if (!link.Contains("github.com") && !link.Contains("nexusmods.com"))
+                        {
+                            throw new UriFormatException("Not a NexusMods or GitHub URL.");
+                        }
+
+                        Mod mod = ModLoader.GetMod(modID);
+                        if (mod == null)
+                        {
+                            continue;
+                        }
+
+                        ModConsole.Log(modID + " " + link);
+
+                        // Overwrite only if UpdateLink is null or empty.
+                        if (string.IsNullOrEmpty(mod.UpdateLink))
+                        {
+                            mod.UpdateLink = link;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ModConsole.LogError($"[Mod Updater] Failed to read line: {l}\n{ex.Message}");
+                    }
+                }
+            }
 
             // Populate list from the database.
             if (modUpdaterDatabase.GetAll().Count > 0)
