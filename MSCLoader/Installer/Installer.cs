@@ -318,7 +318,7 @@ namespace Installer
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                fbd.Description = "Serach for My Summer Car Folder:";
+                fbd.Description = "Search for My Summer Car Folder:";
                 fbd.ShowNewFolderButton = false;
 
                 DialogResult result = fbd.ShowDialog();
