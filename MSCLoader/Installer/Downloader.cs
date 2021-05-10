@@ -281,59 +281,56 @@ namespace Installer
             using (RegistryKey parent = Registry.CurrentUser.OpenSubKey(
                          @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
             {
-                using (RegistryKey parent = Registry.CurrentUser.OpenSubKey(
-                             @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
+                if (parent == null)
                 {
-                    if (parent == null)
-                    {
-                        throw new Exception("Uninstall registry key not found.");
-                    }
+                    throw new Exception("Uninstall registry key not found.");
+                }
+                try
+                {
+                    RegistryKey key = null;
+
                     try
                     {
-                        RegistryKey key = null;
+                        string guidText = UninstallGuid;
+                        key = parent.OpenSubKey(guidText, true) ??
+                              parent.CreateSubKey(guidText);
 
-                        try
+                        if (key == null)
                         {
-                            string guidText = UninstallGuid;
-                            key = parent.OpenSubKey(guidText, true) ??
-                                  parent.CreateSubKey(guidText);
-
-                            if (key == null)
-                            {
-                                throw new Exception(String.Format("Unable to create uninstaller."));
-                            }
-
-                            Assembly asm = GetType().Assembly;
-                            Version v = Assembly.LoadFrom(Path.Combine(Installer.Instance.MscPath, "mysummercar_Data/Managed/MSCLoader.dll").Replace("\\", "/")).GetName().Version;
-                            string exe = Path.Combine(Installer.Instance.MscPath, "Uninstaller.exe").Replace("/", "\\");
-
-
-                            key.SetValue("DisplayName", "MSC Mod Loader Pro");
-                            key.SetValue("ApplicationVersion", v.ToString());
-                            key.SetValue("Publisher", "Mod Loader Pro Team");
-                            key.SetValue("DisplayIcon", exe);
-                            key.SetValue("DisplayVersion", v.ToString());
-                            key.SetValue("URLInfoAbout", "http://mscloaderpro.github.io/");
-                            key.SetValue("Contact", "");
-                            key.SetValue("InstallDate", DateTime.Now.ToString("yyyyMMdd"));
-                            key.SetValue("UninstallString", $"\"{exe}\"");
-                            key.SetValue("EstimatedSize", size / 1000, RegistryValueKind.DWord);
+                            throw new Exception(String.Format("Unable to create uninstaller."));
                         }
-                        finally
-                        {
-                            if (key != null)
-                            {
-                                key.Close();
-                            }
-                        }
+
+                        Assembly asm = GetType().Assembly;
+                        Version v = Assembly.LoadFrom(Path.Combine(Installer.Instance.MscPath, "mysummercar_Data/Managed/MSCLoader.dll").Replace("\\", "/")).GetName().Version;
+                        string exe = Path.Combine(Installer.Instance.MscPath, "Uninstaller.exe").Replace("/", "\\");
+
+
+                        key.SetValue("DisplayName", "MSC Mod Loader Pro");
+                        key.SetValue("ApplicationVersion", v.ToString());
+                        key.SetValue("Publisher", "Mod Loader Pro Team");
+                        key.SetValue("DisplayIcon", exe);
+                        key.SetValue("DisplayVersion", v.ToString());
+                        key.SetValue("URLInfoAbout", "http://mscloaderpro.github.io/");
+                        key.SetValue("Contact", "");
+                        key.SetValue("InstallDate", DateTime.Now.ToString("yyyyMMdd"));
+                        key.SetValue("UninstallString", $"\"{exe}\"");
+                        key.SetValue("EstimatedSize", size / 1000, RegistryValueKind.DWord);
                     }
-                    catch (Exception ex)
+                    finally
                     {
-                        throw new Exception(
-                            "An error occurred writing uninstall information to the registry.  The service is fully installed but can only be uninstalled manually through the command line.",
-                            ex);
+                        if (key != null)
+                        {
+                            key.Close();
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    throw new Exception(
+                        "An error occurred writing uninstall information to the registry.  The service is fully installed but can only be uninstalled manually through the command line.",
+                        ex);
+                }
+            }
         }
     }
 }
