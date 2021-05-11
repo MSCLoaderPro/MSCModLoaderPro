@@ -1,8 +1,10 @@
 Version 1.0.8
-	Changed the Keybind setting to allow binding the left and right mousebutton.
+	Changed the Keybind setting to allow binding the left and right mousebutton. 
 	Canceling and deleting keybinds is now done by buttons appearing when binding.
 	Deprecated the PartMagnet, BoltMagnet does the exact same thing with no bolts assigned.
 	Added "Sources.txt" file in ModUpdater folder - enables mods that don't natively support Mod Loader Pro to have auto updates
+	Fixed potential save issue where a different method of calling the SAVEGAME event was used.
+	Sorted the mod list after the name of the mods rather than their file names (in case they'd be different from the name).
 
 Version 1.0.7
 	Bolt components can now operate independently from a BoltMagnet component.
