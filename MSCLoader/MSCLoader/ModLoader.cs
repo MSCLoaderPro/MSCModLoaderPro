@@ -57,7 +57,7 @@ namespace MSCLoader
 
         Stopwatch timer;
         static bool loaderInitialized = false;
-        internal static bool unloading = false, mainMenuReturn = false;
+        internal static bool unloading = false, mainMenuReturn = false, hasSaved = false;
 
         GameObject modUILoadScreen;
         internal bool newGameStarted = false, vSyncEnabled = false;
@@ -333,7 +333,7 @@ namespace MSCLoader
                         if (!LoadedMods.Contains(mod)) // Check if mod already exists and show an error if so.
                         {
                             LoadedMods.Add(mod);
-                            AddToMethodLists(mod);
+                            //AddToMethodLists(mod);
                         }
                         else
                             ModConsole.LogError($"<color=orange><b>Mod with ID: <color=red>{mod.ID}</color> already loaded:</color></b>");
@@ -351,13 +351,12 @@ namespace MSCLoader
             }
 
             Console.Write($"{mscLoaderVersions}\n");
-        }
 
-        internal static void RemoveFromMethodLists(Mod mod)
-        {
-            // Start at 1 to make sure OnNewGame is always called regardless of the mod's enabled status.
-            for (int i = 1; i < ModMethods.Length; i++)
-                ModMethods[i].RemoveAll(x => x == mod);
+            // Sort the mod lists after the name of the mod rather than the file name.
+            LoadedMods = LoadedMods.OrderBy(x => x.Name).ToList();
+
+            for (int i = 0; i < LoadedMods.Count; i++)
+                AddToMethodLists(LoadedMods[i]);
         }
 
         internal static void AddToMethodLists(Mod mod)
@@ -373,6 +372,13 @@ namespace MSCLoader
                 ModMethods[7].Add(mod);
             if (!ModMethods[1].Contains(mod) && CheckEmptyMethod(mod, "OnMenuLoad")) 
                 ModMethods[1].Add(mod);
+        }
+
+        internal static void RemoveFromMethodLists(Mod mod)
+        {
+            // Start at 1 to make sure OnNewGame is always called regardless of the mod's enabled status.
+            for (int i = 1; i < ModMethods.Length; i++)
+                ModMethods[i].RemoveAll(x => x == mod);
         }
 
         static bool CheckEmptyMethod(Mod mod, string methodName)
@@ -544,8 +550,14 @@ namespace MSCLoader
             methods.AddComponent<ModUpdateCall>().modLoader = this;
             methods.AddComponent<ModFixedUpdateCall>().modLoader = this;
 
+            hasSaved = false;
+
             MethodBase broadcastMethod = typeof(Fsm).GetMethod("BroadcastEvent", new Type[] { typeof(FsmEvent), typeof(bool) });
             Harmony.HarmonyMethod prefix = new Harmony.HarmonyMethod(typeof(InjectSaving).GetMethod("Prefix"));
+            Harmony.HarmonyInstance.Create("MSCModLoaderProSave").Patch(broadcastMethod, prefix);
+
+            broadcastMethod = typeof(PlayMakerFSM).GetMethod("BroadcastEvent", new Type[] { typeof(FsmEvent) });
+            prefix = new Harmony.HarmonyMethod(typeof(InjectSaving).GetMethod("Prefix"));
             Harmony.HarmonyInstance.Create("MSCModLoaderProSave").Patch(broadcastMethod, prefix);
 
             //GameObject.Find("ITEMS").GetPlayMakerFSM("SaveItems").InsertAction("Save game", 0, new ModOnSave() { modLoader = this });
@@ -654,6 +666,9 @@ namespace MSCLoader
 
         internal void ModOnSave()
         {
+            if (hasSaved) return;
+            hasSaved = true;
+
             MethodTimerStart("OnSave");
 
             for (int i = 0; i < ModMethods[11].Count; i++)

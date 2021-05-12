@@ -163,6 +163,9 @@ namespace MSCLoader
                 {
                     foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                     {
+                        // Skip the non-numbered joystick
+                        if ((int)key >= 330 && (int)key <= 349) continue;
+
                         if (Input.GetKeyDown(key)) keyCodes.Add(key);
                     }
                 }

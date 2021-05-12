@@ -59,6 +59,7 @@ namespace MSCLoader
     }
 
     //[HarmonyPatch(typeof(HutongGames.PlayMaker.Fsm), "BroadcastEvent")]
+    //[HarmonyPatch(typeof(HutongGames.PlayMaker), "BroadcastEvent")]
     class InjectSaving
     {
         public static void Prefix(ref HutongGames.PlayMaker.FsmEvent fsmEvent)
