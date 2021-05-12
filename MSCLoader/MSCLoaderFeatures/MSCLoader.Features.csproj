@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InteractionSystem.cs" />
+    <Compile Include="LoadingScreen\LoadingScreenComponents.cs" />
     <Compile Include="MSCCar\DragRace.cs" />
     <Compile Include="MSCCar\NPCLiftHandler.cs" />
     <Compile Include="PaintSystem\PaintCore.cs" />
