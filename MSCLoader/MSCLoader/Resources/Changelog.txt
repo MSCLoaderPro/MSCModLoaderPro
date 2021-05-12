@@ -9,6 +9,7 @@ Version 1.0.8
 	Added exception handler for if user exceeds GitHub request limit
 	CoolUpdater: 403 errors should now be handled correctly
 	CoolUpdater: Updated to version 1.0.4
+	Added MSCLoader.LoadingScreen
 
 Version 1.0.7
 	Bolt components can now operate independently from a BoltMagnet component.
