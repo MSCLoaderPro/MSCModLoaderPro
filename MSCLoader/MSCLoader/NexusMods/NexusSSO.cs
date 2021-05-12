@@ -24,7 +24,7 @@ namespace MSCLoader.NexusMods
 
         const string NexusUserInfo = "https://api.nexusmods.com/v1/users/validate.json";
 
-        string NexusDataFolder => Path.Combine(ModUpdater.UpdaterDirectory, "Nexus");
+        internal static string NexusDataFolder => Path.Combine(ModUpdater.UpdaterDirectory, "Nexus");
 
         internal string ApiKey => apiKey;
 

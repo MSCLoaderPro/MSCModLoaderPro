@@ -3,6 +3,10 @@ Version 1.0.8
 	Canceling and deleting keybinds is now done by buttons appearing when binding.
 	Deprecated the PartMagnet, BoltMagnet does the exact same thing with no bolts assigned.
 	Added "Sources.txt" file in ModUpdater folder - enables mods that don't natively support Mod Loader Pro to have auto updates
+	Mods not natively supported by Mod Loader Pro (and have been added into Sources.txt) will have their info downloaded from NexusMods
+	Added exception handler for if user exceeds GitHub request limit
+	CoolUpdater: 403 errors should now be handled correctly
+	CoolUpdater: Updated to version 1.0.4
 
 Version 1.0.7
 	Bolt components can now operate independently from a BoltMagnet component.

@@ -49,7 +49,19 @@ namespace MSCLoader
         const string InstallerName = "installer.exe";
         string InstallerPath => Path.Combine(TempPathModLoaderPro, InstallerName);
 
-        static string SourcesPath => Path.Combine(UpdaterDirectory, "Sources.txt");
+        static string SourcesPath => "Sources.txt";
+        static string UserSourcesPath => "UserSources.txt";
+        const string UserSourcesContent = "// In this file you can add your own sources, in similar fashion as in Sources.txt\n" +
+                                           "// This file will NOT be overwritten by future updates (unlike Sources.txt).\n" +
+                                           "// Remember that only NexusMods and GitHub links are supported by Mod Loader Pro!\n" +
+                                           "// You can add your own sources by adding new line to this text file and following the example:\n" +
+                                           "// ModID https://nexusmods.com/mysummercar/mods/xxxxxx \n" +
+                                           "// or\n" +
+                                           "// ModID https://github.com/user/repository \n\n" +
+                                           "// Empty lines and lines starting with double-slash will be skipped\n";
+        List<Mod> backwardCompatibilityMods;
+
+        bool gitHubLimitExceeded;
 
         public ModUpdater()
         {
@@ -59,42 +71,21 @@ namespace MSCLoader
         void Start()
         {
             modUpdaterDatabase = new ModUpdaterDatabase();
+            backwardCompatibilityMods = new List<Mod>();
 
             // First we read the Sources.txt file, and populate UpdateLink of mods that don't have a source.
             if (File.Exists(SourcesPath))
             {
-                string[] lines = File.ReadAllLines(SourcesPath).Where(l => !l.StartsWith("//") && !string.IsNullOrEmpty(l)).ToArray();
-                foreach (string l in lines)
-                {
-                    try
-                    {
-                        string modID = l.Split(' ')[0];
-                        string link = l.Split(' ')[1];
+                ReadSources(SourcesPath);
+            }
 
-                        if (!link.Contains("github.com") && !link.Contains("nexusmods.com"))
-                        {
-                            throw new UriFormatException("Not a NexusMods or GitHub URL.");
-                        }
-
-                        Mod mod = ModLoader.GetMod(modID);
-                        if (mod == null)
-                        {
-                            continue;
-                        }
-
-                        ModConsole.Log(modID + " " + link);
-
-                        // Overwrite only if UpdateLink is null or empty.
-                        if (string.IsNullOrEmpty(mod.UpdateLink))
-                        {
-                            mod.UpdateLink = link;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ModConsole.LogError($"[Mod Updater] Failed to read line: {l}\n{ex.Message}");
-                    }
-                }
+            if (!File.Exists(UserSourcesPath))
+            {
+                File.WriteAllText(UserSourcesPath, UserSourcesContent);
+            }
+            else
+            {
+                ReadSources(UserSourcesPath);
             }
 
             // Populate list from the database.
@@ -128,6 +119,48 @@ namespace MSCLoader
             {
                 autoUpdateChecked = true;
                 LookForUpdates();
+                return;
+            }
+        }
+
+        void ReadSources(string filePath)
+        {
+            string[] lines = File.ReadAllLines(filePath).Where(l => !l.StartsWith("//") && !string.IsNullOrEmpty(l)).ToArray();
+            foreach (string l in lines)
+            {
+                try
+                {
+                    string modID = l.Split(' ')[0];
+                    string link = l.Split(' ')[1];
+
+                    if (!link.Contains("github.com") && !link.Contains("nexusmods.com"))
+                    {
+                        throw new UriFormatException("Not a NexusMods or GitHub URL.");
+                    }
+
+                    Mod mod = ModLoader.GetMod(modID, true);
+                    if (mod == null)
+                    {
+                        continue;
+                    }
+
+                    if (backwardCompatibilityMods.Contains(mod))
+                    {
+                        continue;
+                    }
+
+                    // Overwrite only if UpdateLink is null or empty.
+                    if (string.IsNullOrEmpty(mod.UpdateLink))
+                    {
+                        mod.UpdateLink = link;
+                        backwardCompatibilityMods.Add(mod);
+                        ModConsole.Log(modID + " " + link);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModConsole.LogError($"[Mod Updater] Failed to read line: {l}\n{ex.Message}");
+                }
             }
         }
 
@@ -291,6 +324,8 @@ namespace MSCLoader
                 // Formatting the link.
                 if (url.Contains("github.com"))
                 {
+                    if (gitHubLimitExceeded) continue;
+
                     // If is not direct api.github.com link, modify it so it matches it correctly.
                     if (!url.Contains("api."))
                     {
@@ -328,6 +363,13 @@ namespace MSCLoader
 
                     p.Close();
                     ModConsole.Log($"Mod Updater: {mod.ID} - pulling metadata succeeded!");
+                    
+                    if (lastDataOut.Contains("(403) Forbidden") && url.Contains("github.com"))
+                    {
+                        gitHubLimitExceeded = true;
+                        ModConsole.LogError("User exceeded API rate limit request on GitHub. Please try checking for updates again in an hour");
+                        yield break;
+                    }
 
                     output = lastDataOut;
 
@@ -338,6 +380,7 @@ namespace MSCLoader
                     {
                         if (url.Contains("github.com"))
                         {
+
                             if (output.Contains("\"message\": \"Not Found\"") || output.Contains("(404) Not Found"))
                             {
                                 ModConsole.LogError($"Mod Updater: Mod {mod.ID}'s GitHub repository returned \"Not found\" status.");
@@ -420,14 +463,73 @@ namespace MSCLoader
                         continue;
                     }
                     string[] output = ReadMetadataToArray();
-                    foreach (string s in output)
+                    try
                     {
-
-                        if (s.Contains("version"))
+                        foreach (string s in output)
                         {
-                            mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
-                            break;
+                            if (s.Contains("\"version\"") && mod.ModUpdateData.LatestVersion == null)
+                            {
+                                mod.ModUpdateData.LatestVersion = s.Split(':')[1].Replace("\"", "");
+                            }
+
+                            if (s.Contains("summary"))
+                            {
+                                mod.ModUpdateData.Summary = s.Split(':')[1].Replace("\"", "");
+                            }
+
+                            if (s.Contains("picture_url"))
+                            {
+                                mod.ModUpdateData.PictureUrl = GetUrl(s);
+                            }
                         }
+                    }
+                    catch 
+                    {
+                        ModConsole.Log("Error");
+                    }
+
+                    // If mod is on compatibility list, save it.
+                    if (backwardCompatibilityMods.Contains(mod))
+                    {
+                        ModConsole.Log("Pulling mod info from NexusMods.");
+                        string modInfoPath = Path.Combine(NexusSSO.NexusDataFolder, mod.ID);
+                        if (!Directory.Exists(modInfoPath))
+                        {
+                            Directory.CreateDirectory(modInfoPath);
+                        }
+
+                        string infoFile = Path.Combine(modInfoPath, "info.txt");
+                        File.WriteAllText(infoFile, mod.ModUpdateData.Summary);
+                        mod.Description = mod.ModUpdateData.Summary;
+
+                        string icon = Path.Combine(modInfoPath, "icon.png");
+                        Process p = GetFile(mod.ModUpdateData.PictureUrl, icon, NexusSSO.Instance.ApiKey);
+                        downloadTime = 0;
+                        while (!p.HasExited)
+                        {
+                            downloadTime++;
+                            if (downloadTime > TimeoutTime)
+                            {
+                                ModConsole.LogError($"Mod Updater: Getting list of files of {mod.ID} timed-out.");
+                                p.Kill();
+                                break;
+                            }
+                            yield return new WaitForSeconds(1);
+                        }
+
+                        if (File.Exists(icon))
+                        {
+                            Texture2D iconTexture = new Texture2D(1, 1);
+                            byte[] array = File.ReadAllBytes(icon);
+                            iconTexture.LoadImage(array);
+                            mod.modListElement.SetModIcon(iconTexture);
+                            mod.Description = mod.ModUpdateData.Summary;
+                        }
+                        else
+                        {
+                            ModConsole.LogError("Could not download mod picture :(");
+                        }
+
                     }
 
                     // Retrieve latest file version.
@@ -583,6 +685,37 @@ namespace MSCLoader
             };
 
             lastDataOut = "";
+            p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+            p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
+
+            p.Start();
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+            return p;
+        }
+
+        static Process GetFile(params string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                args[i] = "\"" + args[i] + "\"";
+            }
+
+            ModConsole.Log("get-file " + string.Join(" ", args));
+
+            Process p = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = UpdaterPath,
+                    Arguments = "get-file " + string.Join(" ", args),
+                    WorkingDirectory = UpdaterDirectory,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
             p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
             p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
 
@@ -942,6 +1075,13 @@ namespace MSCLoader
 
             p.Close();
             ModConsole.Log($"Mod Updater: Mod Loader Pro pulling metadata succeeded!");
+            if (lastDataOut.Contains("(403) Forbidden"))
+            {
+                gitHubLimitExceeded = true;
+                ModPrompt.CreateYesNoPrompt("Congratulations! You exceeded rate limit on GitHub! That means for next hour, you cannot connect to the GitHub services.\n\n" +
+                                      "Some mods may check for updates on GitHub, would you like continue checking for mod updates?".ToUpper(), "Rate Limit Exceeded".ToUpper(), StartLookingForUpdates);
+                yield break;
+            }
 
             string output = lastDataOut.Replace(",\"", ",\n\"").Replace(":{", ":\n{\n").Replace("},", "\n},").Replace(":[{", ":[{\n").Replace("}],", "\n}],");
             foreach (string s in output.Split('\n'))
@@ -1080,6 +1220,12 @@ namespace MSCLoader
             isBusy = false;
         }
         #endregion
+
+        static string GetUrl(string input)
+        {
+            string[] separated = input.Split(':');
+            return (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
+        }
     }
 
     enum UpdateStatus { NotChecked, NotAvailable, Available, Downloaded }
@@ -1090,6 +1236,8 @@ namespace MSCLoader
         public string ZipUrl;
         public string LatestVersion;
         public UpdateStatus UpdateStatus;
+        public string Summary;
+        public string PictureUrl;
     }
 
     internal class ModUpdaterDatabase

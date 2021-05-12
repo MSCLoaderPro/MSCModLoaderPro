@@ -1,0 +1,17 @@
+// This file contains sources of mod updates for mods that are not made for Mod Loader Pro.
+// If you want to add your own sources, DO NOT DO THAT HERE! This file will be overwritten on each update!
+// If you want to add custom sources, do that in UserSources.txt!
+
+BetterFPSCounter https://www.nexusmods.com/mysummercar/mods/378
+DeveloperToolsetII https://www.nexusmods.com/mysummercar/mods/345
+FifthGear https://www.nexusmods.com/mysummercar/mods/221
+MOP https://github.com/Athlon007/MOP
+CDPlayer https://www.nexusmods.com/mysummercar/mods/101
+ColorfulGauges3 https://www.nexusmods.com/mysummercar/mods/30
+DeliveryJobs https://www.nexusmods.com/mysummercar/mods/162
+DeveloperToolsetII https://www.nexusmods.com/mysummercar/mods/345
+FSMO https://www.nexusmods.com/mysummercar/mods/671
+GrabAnything https://www.nexusmods.com/mysummercar/mods/460
+ModsShop https://www.nexusmods.com/mysummercar/mods/149
+MokiaTownsman https://www.nexusmods.com/mysummercar/mods/66
+PsychovanzRentApartment https://www.nexusmods.com/mysummercar/mods/237

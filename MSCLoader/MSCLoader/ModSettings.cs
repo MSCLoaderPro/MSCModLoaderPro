@@ -64,6 +64,34 @@ namespace MSCLoader
 
                 modListElement.SetModIcon(iconTexture);
             }
+            else
+            {
+                string modInfoPath = Path.Combine(NexusMods.NexusSSO.NexusDataFolder, mod.ID);
+                if (Directory.Exists(modInfoPath))
+                {
+                    try
+                    {
+                        string infoFile = Path.Combine(modInfoPath, "info.txt");
+                        string icon = Path.Combine(modInfoPath, "icon.png");
+                        if (File.Exists(infoFile))
+                        {
+                            mod.Description = File.ReadAllText(infoFile);
+                        }
+
+                        if (File.Exists(icon))
+                        {
+                            Texture2D iconTexture = new Texture2D(1, 1);
+                            byte[] array = File.ReadAllBytes(icon);
+                            iconTexture.LoadImage(array);
+                            modListElement.SetModIcon(iconTexture);
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        ModConsole.LogError(ex.ToString());
+                    }
+                }
+            }
 
             modListElement.transform.SetParent(modList, false);
             modListDictionary.Add(mod, modListElement);
