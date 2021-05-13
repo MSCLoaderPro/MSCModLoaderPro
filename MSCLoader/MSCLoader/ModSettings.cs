@@ -176,6 +176,9 @@ namespace MSCLoader
 
         public RectTransform openArrowTransform;
         Vector3 openArrowOpen = new Vector3(-1, 1, 1);
+        public Shadow openArrowShadow;
+        Vector2 openArrowShadowOpen = new Vector2(-1f, -1f);
+        Vector2 openArrowShadowClosed = new Vector2(1f, -1f);
 
         /// <summary>ID for the ModListElement, gets/sets the name of the GameObject the list is on.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
@@ -205,6 +208,7 @@ namespace MSCLoader
             modSettings.gameObject.SetActive(open);
 
             openArrowTransform.localScale = open ? openArrowOpen : Vector3.one;
+            openArrowShadow.effectDistance = open ? openArrowShadowOpen : openArrowShadowClosed;
         }
 
         /// <summary>Toggle the mod's enabled state.</summary>

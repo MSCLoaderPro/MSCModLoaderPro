@@ -2,16 +2,287 @@
 // If you want to add your own sources, DO NOT DO THAT HERE! This file will be overwritten on each update!
 // If you want to add custom sources, do that in UserSources.txt!
 
-BetterFPSCounter https://www.nexusmods.com/mysummercar/mods/378
-DeveloperToolsetII https://www.nexusmods.com/mysummercar/mods/345
-FifthGear https://www.nexusmods.com/mysummercar/mods/221
-MOP https://github.com/Athlon007/MOP
-CDPlayer https://www.nexusmods.com/mysummercar/mods/101
+// PAGE 1
+
+CarryMore https://www.nexusmods.com/mysummercar/mods/1
+SleepingPills https://www.nexusmods.com/mysummercar/mods/2
+RailRoadCrossing https://www.nexusmods.com/mysummercar/mods/3
+VehicleTextureSwap https://www.nexusmods.com/mysummercar/mods/4
+FuelCover https://www.nexusmods.com/mysummercar/mods/5
+RusckoWaspRemove https://www.nexusmods.com/mysummercar/mods/6
+TwentyFourClock https://www.nexusmods.com/mysummercar/mods/7
+Standpipe https://www.nexusmods.com/mysummercar/mods/9
+RallyLights https://www.nexusmods.com/mysummercar/mods/10
+NicotineGum https://www.nexusmods.com/mysummercar/mods/12
+
+// Weird File structure:
+handbrakemod https://www.nexusmods.com/mysummercar/mods/15
+
+Alcohol_Meter https://www.nexusmods.com/mysummercar/mods/16
+CinderBlocks https://www.nexusmods.com/mysummercar/mods/17
+SteeringCap https://www.nexusmods.com/mysummercar/mods/19
+RusckoHubcap https://www.nexusmods.com/mysummercar/mods/21
+GTGrilleChrome https://www.nexusmods.com/mysummercar/mods/22
+OldGrille https://www.nexusmods.com/mysummercar/mods/23
+
+// PAGE 2
+
+Planks https://www.nexusmods.com/mysummercar/mods/25
+Trailer https://www.nexusmods.com/mysummercar/mods/26
+FirewoodJobCooldown https://www.nexusmods.com/mysummercar/mods/27
+MosquitoKill https://www.nexusmods.com/mysummercar/mods/28
+Hayosiko4x4 https://www.nexusmods.com/mysummercar/mods/29
 ColorfulGauges3 https://www.nexusmods.com/mysummercar/mods/30
-DeliveryJobs https://www.nexusmods.com/mysummercar/mods/162
-DeveloperToolsetII https://www.nexusmods.com/mysummercar/mods/345
-FSMO https://www.nexusmods.com/mysummercar/mods/671
-GrabAnything https://www.nexusmods.com/mysummercar/mods/460
-ModsShop https://www.nexusmods.com/mysummercar/mods/149
+
+// THESE ONES ARE WEIRD, TAKE CLOSER LOOK!
+OffroadHayosiko https://www.nexusmods.com/mysummercar/mods/36
+OffroadHayosikoL https://www.nexusmods.com/mysummercar/mods/36
+// NOT WEIRD ANY MORE.
+
+// MOD IS IN A SUBFOLDER IN THE ARCHIVE:
+FLYBYPLANE https://www.nexusmods.com/mysummercar/mods/37
+
+// Weird File structure:
+WoodGrainDashboard https://www.nexusmods.com/mysummercar/mods/38
+
+Fittan_Radio https://www.nexusmods.com/mysummercar/mods/39
+
+// TWO MAIN FILES, SAME ID
+Kanister https://www.nexusmods.com/mysummercar/mods/41
+
+FishingMod https://www.nexusmods.com/mysummercar/mods/42
+NewKek https://www.nexusmods.com/mysummercar/mods/45
+KekmetAddons https://www.nexusmods.com/mysummercar/mods/46
+Ricochet_Music_Changer https://www.nexusmods.com/mysummercar/mods/47
+GifuPump https://www.nexusmods.com/mysummercar/mods/48
+GifuGauges https://www.nexusmods.com/mysummercar/mods/49
+HayosikoColorfulGauges https://www.nexusmods.com/mysummercar/mods/50
+stockferndale https://www.nexusmods.com/mysummercar/mods/52
+RusckoOverhaul https://www.nexusmods.com/mysummercar/mods/53
+
+// PAGE 3
+
+EngineInfo https://www.nexusmods.com/mysummercar/mods/54
+ShowBoltSize https://www.nexusmods.com/mysummercar/mods/55
+rusckoradio https://www.nexusmods.com/mysummercar/mods/57
+hayoturbo https://www.nexusmods.com/mysummercar/mods/58
+TheRusckoRestorationProject https://www.nexusmods.com/mysummercar/mods/61
+TireRacks https://www.nexusmods.com/mysummercar/mods/63
 MokiaTownsman https://www.nexusmods.com/mysummercar/mods/66
+Ferndale_Clock https://www.nexusmods.com/mysummercar/mods/68
+Bicycle_Light https://www.nexusmods.com/mysummercar/mods/69
+Sleep_in_the_Ferndale https://www.nexusmods.com/mysummercar/mods/71
+
+// WEIRD FILE STRUCTURE TWO DLLS WITH THE SAME NAME IN DIFFERENT FOLDERS
+Antenna https://www.nexusmods.com/mysummercar/mods/72
+
+WearCheckup https://www.nexusmods.com/mysummercar/mods/76
+PaintableHayosiko https://www.nexusmods.com/mysummercar/mods/77
+RepairHammer https://www.nexusmods.com/mysummercar/mods/78
+Attachable_Roofrack https://www.nexusmods.com/mysummercar/mods/81
+AI_logging_truck https://www.nexusmods.com/mysummercar/mods/82
+
+// PAGE 4
+
+JonnezKickstand https://www.nexusmods.com/mysummercar/mods/83
+Custom_Save_Location_Mod https://www.nexusmods.com/mysummercar/mods/90
+GT_Interior https://www.nexusmods.com/mysummercar/mods/91
+Ventti_bet_simplification https://www.nexusmods.com/mysummercar/mods/93
+GT_badge https://www.nexusmods.com/mysummercar/mods/95
+Enable_Trim https://www.nexusmods.com/mysummercar/mods/96
+Cigarrete Dispose https://www.nexusmods.com/mysummercar/mods/98
+Shed https://www.nexusmods.com/mysummercar/mods/99
+CDPlayer https://www.nexusmods.com/mysummercar/mods/101
+
+// MOD IN A SUB-FOLDER IN THE ARCHIVE
+Lantern https://www.nexusmods.com/mysummercar/mods/104
+ReducedFlatTrees https://www.nexusmods.com/mysummercar/mods/112
+PuppyAirFreshener https://www.nexusmods.com/mysummercar/mods/113
+FastTravel https://www.nexusmods.com/mysummercar/mods/116
+ChaseCamera https://www.nexusmods.com/mysummercar/mods/117
+CassetteTapes https://www.nexusmods.com/mysummercar/mods/121
+
+// PAGE 5
+
+TrailerHitches https://www.nexusmods.com/mysummercar/mods/119
+
+// INCLUDES AN APPLICATION IN ARCHIVE, MOD IS IN THE MODS FOLDER
+AlivieskaGpsServer https://www.nexusmods.com/mysummercar/mods/122
+
+HQ_SFX_Pack https://www.nexusmods.com/mysummercar/mods/123
+JonnezRlight https://www.nexusmods.com/mysummercar/mods/124
+VHSPlayer https://www.nexusmods.com/mysummercar/mods/125
+FerndaleStockVersion https://www.nexusmods.com/mysummercar/mods/126
+Dust_clouds https://www.nexusmods.com/mysummercar/mods/128
+DigitalSpeedo https://www.nexusmods.com/mysummercar/mods/131
+KruFPS https://www.nexusmods.com/mysummercar/mods/132
+Shopping_bag_hang https://www.nexusmods.com/mysummercar/mods/134
+dirtmenag https://www.nexusmods.com/mysummercar/mods/135
+rotationControl https://www.nexusmods.com/mysummercar/mods/139
+jonnezmirrors https://www.nexusmods.com/mysummercar/mods/140
+MOP https://www.nexusmods.com/mysummercar/mods/146
+NotepadUI https://www.nexusmods.com/mysummercar/mods/148
+
+// PAGE 6
+
+ModsShop https://www.nexusmods.com/mysummercar/mods/149
+Toiveradio_Enhanced https://www.nexusmods.com/mysummercar/mods/153
+
+// FILE STRUCTURE IS A BIT UNUSUAL
+NewHouse https://www.nexusmods.com/mysummercar/mods/155
+
+Lifter https://www.nexusmods.com/mysummercar/mods/156
+EnableApartment https://www.nexusmods.com/mysummercar/mods/157
+JetSky https://www.nexusmods.com/mysummercar/mods/158
+coffemachine https://www.nexusmods.com/mysummercar/mods/159
+IndicatorPanel https://www.nexusmods.com/mysummercar/mods/160
+xyz.jfoster.SeatbeltChime https://www.nexusmods.com/mysummercar/mods/161
+DeliveryJobs https://www.nexusmods.com/mysummercar/mods/162
+ActualMop https://www.nexusmods.com/mysummercar/mods/163
+ImproveFPS https://www.nexusmods.com/mysummercar/mods/165
+LifterforNewHouse https://www.nexusmods.com/mysummercar/mods/166
+NewJob https://www.nexusmods.com/mysummercar/mods/167
+SatsumaMirrors https://www.nexusmods.com/mysummercar/mods/168
+BottleRecycling https://www.nexusmods.com/mysummercar/mods/171
+Preserve_steering_angle https://www.nexusmods.com/mysummercar/mods/172
+FishingMod https://www.nexusmods.com/mysummercar/mods/173
+SatsumaTurboCharger https://www.nexusmods.com/mysummercar/mods/174
+
+// PAGE 7
+
+Estate https://www.nexusmods.com/mysummercar/mods/175
+TangerinePickup https://www.nexusmods.com/mysummercar/mods/176
+EconomyGauge https://www.nexusmods.com/mysummercar/mods/179
+PhoneHolderForTangerine https://www.nexusmods.com/mysummercar/mods/180
+disketteStand https://www.nexusmods.com/mysummercar/mods/181
+
+// MOD IS IN A SUB-FOLDER
+FritoRamp https://www.nexusmods.com/mysummercar/mods/182
+// MOD IS IN A SUB-FOLDER
+MySummerDog https://www.nexusmods.com/mysummercar/mods/183
+
+4DoorFerndale https://www.nexusmods.com/mysummercar/mods/185
+AdvancedGraphics https://www.nexusmods.com/mysummercar/mods/187
+photoframe https://www.nexusmods.com/mysummercar/mods/188
+AdvancedKBMControls https://www.nexusmods.com/mysummercar/mods/201
+AirBrakesSimulation https://www.nexusmods.com/mysummercar/mods/202
+CallYourCousin https://www.nexusmods.com/mysummercar/mods/203
+DonnerTech_ECU_Mod https://www.nexusmods.com/mysummercar/mods/205
+
+// PAGE 8
+
+Projector_Headlights https://www.nexusmods.com/mysummercar/mods/214
+JonnezFuelGauge https://www.nexusmods.com/mysummercar/mods/217
+FifthGear https://www.nexusmods.com/mysummercar/mods/221
+SatsumaRSSpoiler https://www.nexusmods.com/mysummercar/mods/235
 PsychovanzRentApartment https://www.nexusmods.com/mysummercar/mods/237
+ParkingLights https://www.nexusmods.com/mysummercar/mods/245
+
+// PAGE 9
+
+disableRusckoHorn https://www.nexusmods.com/mysummercar/mods/268
+TowingMod https://www.nexusmods.com/mysummercar/mods/270
+AllAWD https://www.nexusmods.com/mysummercar/mods/279
+hubcaps https://www.nexusmods.com/mysummercar/mods/280
+CDplayerForFerndale https://www.nexusmods.com/mysummercar/mods/282
+CDplayerBase https://www.nexusmods.com/mysummercar/mods/286
+CDplayerForGifu https://www.nexusmods.com/mysummercar/mods/287
+
+// PAGE 10
+
+FerndaleStock https://www.nexusmods.com/mysummercar/mods/290
+KekmetBeaconV2 https://www.nexusmods.com/mysummercar/mods/300
+WearRate https://www.nexusmods.com/mysummercar/mods/302
+RPMLight https://www.nexusmods.com/mysummercar/mods/305
+Race Satsuma Mod https://www.nexusmods.com/mysummercar/mods/306
+CustomizableNeeds https://www.nexusmods.com/mysummercar/mods/310
+BERG https://www.nexusmods.com/mysummercar/mods/322
+JonnezNoRack https://www.nexusmods.com/mysummercar/mods/323
+Minimap https://www.nexusmods.com/mysummercar/mods/326
+BadLookHood https://www.nexusmods.com/mysummercar/mods/328
+
+// PAGE 11
+
+SatsumaNewHeadlights https://www.nexusmods.com/mysummercar/mods/329
+GaragePitCovers https://www.nexusmods.com/mysummercar/mods/333
+M67Granade https://www.nexusmods.com/mysummercar/mods/338
+SecondHelmet https://www.nexusmods.com/mysummercar/mods/339
+DeveloperToolsetII https://www.nexusmods.com/mysummercar/mods/345
+AthlonsTweaksPack https://www.nexusmods.com/mysummercar/mods/350
+HouseExtinguisherHolders https://www.nexusmods.com/mysummercar/mods/353
+BRL https://www.nexusmods.com/mysummercar/mods/355
+CampingStove https://www.nexusmods.com/mysummercar/mods/356
+RuscoFixer https://www.nexusmods.com/mysummercar/mods/357
+
+// PAGE 12
+
+JugWoodCrates https://www.nexusmods.com/mysummercar/mods/358
+BodyPillow https://www.nexusmods.com/mysummercar/mods/368
+wiperFix https://www.nexusmods.com/mysummercar/mods/371
+datsunGTtachometer https://www.nexusmods.com/mysummercar/mods/365
+BetterFPSCounter https://www.nexusmods.com/mysummercar/mods/378
+ItemDuplicator https://www.nexusmods.com/mysummercar/mods/380
+PropellerCap https://www.nexusmods.com/mysummercar/mods/383
+
+// PAGE 13
+
+MSCScramble https://www.nexusmods.com/mysummercar/mods/394
+
+// MOD IS IN A SUBFOLDER
+GifuFlatbed https://www.nexusmods.com/mysummercar/mods/396
+
+SatsumaVinPlate https://www.nexusmods.com/mysummercar/mods/398
+GTParts https://www.nexusmods.com/mysummercar/mods/393?tab=files
+Health https://www.nexusmods.com/mysummercar/mods/413
+VTECPugin https://www.nexusmods.com/mysummercar/mods/419
+
+// PAGE 14
+
+JailHarmonica https://www.nexusmods.com/mysummercar/mods/451
+RusckoTurboProject https://www.nexusmods.com/mysummercar/mods/470
+
+// PAGE 15
+
+ExternalPartsTexture https://www.nexusmods.com/mysummercar/mods/494
+AutoShifting https://www.nexusmods.com/mysummercar/mods/502
+
+// PAGE 16
+
+AutoSave https://www.nexusmods.com/mysummercar/mods/523
+QuickSave https://www.nexusmods.com/mysummercar/mods/524
+CR_map https://www.nexusmods.com/mysummercar/mods/530
+
+// MOD IS IN A SUBFOLDER
+g_NSR50_SA https://www.nexusmods.com/mysummercar/mods/563
+
+AdvancedBackpack https://www.nexusmods.com/mysummercar/mods/566
+RPS https://www.nexusmods.com/mysummercar/mods/572
+SatsumaSound https://www.nexusmods.com/mysummercar/mods/591
+HoodMascot https://www.nexusmods.com/mysummercar/mods/622
+FancySumaSounds https://www.nexusmods.com/mysummercar/mods/624
+
+// MOD IS IN A SUBFOLDER
+VehicleRamps https://www.nexusmods.com/mysummercar/mods/644
+
+// PAGE 18
+
+DrunkJack https://www.nexusmods.com/mysummercar/mods/608
+
+// MOD IS IN A SUBFOLDER
+g_maintenance_stand https://www.nexusmods.com/mysummercar/mods/666
+
+FSMO https://www.nexusmods.com/mysummercar/mods/671
+SatsumaDigidash https://www.nexusmods.com/mysummercar/mods/683
+
+// MOD IS IN A SUBFOLDER
+g_Box https://www.nexusmods.com/mysummercar/mods/686
+
+HighwayRico https://www.nexusmods.com/mysummercar/mods/688
+dazyWoodDash https://www.nexusmods.com/mysummercar/mods/690
+Targa https://www.nexusmods.com/mysummercar/mods/696
+Dukt Tape https://www.nexusmods.com/mysummercar/mods/720
+
+portableToiletReloaded https://www.nexusmods.com/mysummercar/mods/722
+vuMeters https://www.nexusmods.com/mysummercar/mods/715
+ProLoaderFixer https://www.nexusmods.com/mysummercar/mods/730
+BoxGifu https://www.nexusmods.com/mysummercar/mods/734

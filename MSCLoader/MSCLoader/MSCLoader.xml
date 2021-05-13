@@ -1258,30 +1258,21 @@
             </summary>
         </member>
         <member name="P:MSCLoader.Properties.Resources.Changelog">
-             <summary>
-               Looks up a localized string similar to Version 1.0.6
-            	Fixed UI scaling on ultrawide resolutions.
-            	Fixed Nexus out of range exception.
-            	Fixed user avatar when using Gravatar.
-            
-            Version 1.0.5
-            	CoolUpdater: Added &quot;Start Game (No Steam)&quot; button.
-            	Fixed keybinds with None as a modifier.
-            
-            Version 1.0.4
-            	Mod Auto Updater should now prioritze archives with .pro.zip extension as intended.
-            	CoolUpdater: Fixed &quot;Start Game&quot; button not starting the game with Mod Loader Pro.
-            
-            Version 1.0.3
-            	Added &quot;ExecuteCommand&quot; method.
-            	Fixed update status per [rest of string was truncated]&quot;;.
-             </summary>
+            <summary>
+              Looks up a localized string similar to Version 1.0.8
+            Changed the Keybind setting to allow binding the left and right mousebutton.
+            Canceling and deleting keybinds is now done by buttons appearing when binding.
+            Deprecated the PartMagnet, BoltMagnet does the exact same thing with no bolts assigned.
+            Added &quot;Sources.txt&quot; file in ModUpdater folder - enables mods that don&apos;t natively support Mod Loader Pro to have auto updates
+            Mods not natively supported by Mod Loader Pro (and have been added into Sources.txt) will have their info downloaded fr [rest of string was truncated]&quot;;.
+            </summary>
         </member>
         <member name="P:MSCLoader.Properties.Resources.mscloadercanvas">
             <summary>
               Looks up a localized resource of type System.Byte[].
             </summary>
         </member>
+        <!-- Badly formed XML comment ignored for member "P:MSCLoader.Properties.Resources.Sources" -->
         <member name="T:MSCLoader.ModSetting">
             <summary>Parent class for settings.</summary>
         </member>
