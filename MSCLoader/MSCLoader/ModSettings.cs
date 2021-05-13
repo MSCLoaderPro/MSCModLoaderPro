@@ -176,10 +176,9 @@ namespace MSCLoader
 
         public RectTransform openArrowTransform;
         Vector3 openArrowOpen = new Vector3(-1, 1, 1);
-
-        Shadow openArrowShadow;
-        Vector2 openArrowShadowOpen = new Vector2(-2f, -2f);
-        Vector2 openArrowShadowClosed = new Vector2(2f, -2f);
+        public Shadow openArrowShadow;
+        Vector2 openArrowShadowOpen = new Vector2(-1f, -1f);
+        Vector2 openArrowShadowClosed = new Vector2(1f, -1f);
 
         /// <summary>ID for the ModListElement, gets/sets the name of the GameObject the list is on.</summary>
         public string ID { get => gameObject.name; set => gameObject.name = value; }
@@ -199,8 +198,6 @@ namespace MSCLoader
         /// <summary>Open/Close the mod's settings window</summary>
         public void SetSettingsOpen(bool open, bool ignoreOthers = false)
         {
-            if (openArrowShadow == null) openArrowShadow = openArrowTransform.GetComponent<Shadow>();
-
             if (!ignoreOthers)
             {
                 modContainer.modLoaderSettings.SetSettingsOpen(false, true);

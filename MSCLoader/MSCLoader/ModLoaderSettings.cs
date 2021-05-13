@@ -31,9 +31,9 @@ namespace MSCLoader
 
         [SerializeField] internal RectTransform openArrowTransform;
         Vector3 openArrowOpen = new Vector3(-1, 1, 1);
-        internal Shadow openArrowShadow;
-        Vector2 openArrowShadowOpen = new Vector2(-2f, -2f);
-        Vector2 openArrowShadowClosed = new Vector2(2f, -2f);
+        [SerializeField] internal Shadow openArrowShadow;
+        Vector2 openArrowShadowOpen = new Vector2(-1f, -1f);
+        Vector2 openArrowShadowClosed = new Vector2(1f, -1f);
 
         public string Version { get => ModLoader.Version; internal set
             {
@@ -88,12 +88,11 @@ namespace MSCLoader
 
         public void SetSettingsOpen(bool open, bool ignoreOthers = false)
         {
-            if (openArrowShadow == null) openArrowShadow = openArrowTransform.GetComponent<Shadow>();
-
             if (!ignoreOthers)
                 foreach (ModListElement otherMod in modContainer.modListDictionary.Values) otherMod.SetSettingsOpen(false, true);
 
             gameObject.SetActive(open);
+
             openArrowTransform.localScale = open ? openArrowOpen : Vector3.one;
             openArrowShadow.effectDistance = open ? openArrowShadowOpen : openArrowShadowClosed;
         }
