@@ -11,6 +11,8 @@ Version 1.0.8
 	CoolUpdater: Updated to version 1.0.4
 	Added MSCLoader.LoadingScreen
 	ModUpdater class rewritten from scratch - now should be faster and more reliable
+	Added support for RAR, TAR and 7Zip archive formats for mod updates
+	CoolUpdater: Switched from Ionic.Zip to SharpCompress
 
 Version 1.0.7
 	Bolt components can now operate independently from a BoltMagnet component.

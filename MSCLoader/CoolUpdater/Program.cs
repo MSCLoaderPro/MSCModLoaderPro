@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Principal;
+using System.IO;
 
 namespace CoolUpdater
 {
@@ -24,15 +25,6 @@ namespace CoolUpdater
         {
             if (args.Length == 0)
             {
-                /*
-                Console.WriteLine("Copyright(C) Konrad \"Athlon\" Figura 2021\n\n" +
-                                  "This program is a part of MSC Mod Loader Pro.\n" +
-                                  "You cannot distribute, modify or use this software outside of Mod Loader Pro,\n" +
-                                  "unless you've received an agreement from the copyright holder.\n\n" +
-                                  "Press any key to exit.");
-                Console.ReadKey();
-                Environment.Exit(0);
-                */
                 Info view = new Info();
                 Application.Run(view);
             }
@@ -102,7 +94,8 @@ namespace CoolUpdater
                     }
 
                     string pathToMods = args.Length < 2 ? "" : args[1].Replace("%20", " ");
-                    UpdateView view = new UpdateView(pathToMods);
+                    string mscPath = args.Length < 3 ? "" : args[2].Replace("%20", " ");
+                    UpdateView view = new UpdateView(pathToMods, mscPath);
                     Application.Run(view);
                     break;
                 case "nexus-login":

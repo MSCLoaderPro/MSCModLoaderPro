@@ -737,12 +737,14 @@ namespace MSCLoader
 
             if (waitForInstall)
             {
+                string mscPath = Application.dataPath.Replace("mysummercar_Data", "").Replace(" ", "%20");
+
                 Process p = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/C \"\" CoolUpdater.exe update-all {Path.GetFullPath(ModLoader.ModsFolder).Replace(" ", "%20")}",
+                        Arguments = $"/C \"\" CoolUpdater.exe update-all {Path.GetFullPath(ModLoader.ModsFolder).Replace(" ", "%20")} {mscPath}",
                         WorkingDirectory = UpdaterDirectory,
                         UseShellExecute = true
                     }
@@ -1059,7 +1061,8 @@ namespace MSCLoader
                     continue;
                 }
 
-                string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.zip");
+                string fileFormat = mod.ModUpdateData.ZipUrl.Split('.').Last();
+                string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.{fileFormat}");
                 string args = $"get-file \"{mod.ModUpdateData.ZipUrl}\" \"{downloadToPath}\"";
                 if (mod.ModUpdateData.ZipUrl.Contains("nexusmods.com"))
                 {
