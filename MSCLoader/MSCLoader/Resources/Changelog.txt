@@ -10,6 +10,7 @@ Version 1.0.8
 	CoolUpdater: 403 errors should now be handled correctly
 	CoolUpdater: Updated to version 1.0.4
 	Added MSCLoader.LoadingScreen
+	ModUpdater class rewritten from scratch - now should be faster and more reliable
 
 Version 1.0.7
 	Bolt components can now operate independently from a BoltMagnet component.

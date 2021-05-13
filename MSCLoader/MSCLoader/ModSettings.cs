@@ -71,11 +71,12 @@ namespace MSCLoader
                 {
                     try
                     {
-                        string infoFile = Path.Combine(modInfoPath, "info.txt");
+                        string infoFile = Path.Combine(modInfoPath, "ModInfo.json");
                         string icon = Path.Combine(modInfoPath, "icon.png");
                         if (File.Exists(infoFile))
                         {
-                            mod.Description = File.ReadAllText(infoFile);
+                            var info = Newtonsoft.Json.JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.ModInfo>(File.ReadAllText(infoFile));
+                            mod.Description = info.summary;
                         }
 
                         if (File.Exists(icon))

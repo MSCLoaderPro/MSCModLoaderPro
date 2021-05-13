@@ -124,6 +124,8 @@
     <Compile Include="MSCLoader.cs" />
     <Compile Include="ModUnloader.cs" />
     <Compile Include="MSCLoaderHarmonyPatches.cs" />
+    <Compile Include="NexusMods\JSONClasses\NexusMods.cs" />
+    <Compile Include="NexusMods\JSONClasses\GitHub.cs" />
     <Compile Include="NexusMods\NexusSSO.cs" />
     <Compile Include="NexusMods\DataStorage.cs" />
     <Compile Include="NexusMods\UserInfo.cs" />

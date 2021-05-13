@@ -16,7 +16,7 @@ namespace Installer
         /// </summary>
         [STAThread]
         static void Main(string[] args)
-        {
+       {
             Modes mode = Modes.Regular;
             string arg = "";
 
