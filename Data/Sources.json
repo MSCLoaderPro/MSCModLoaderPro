@@ -329,7 +329,7 @@
     },
     {
         "id": "MOP",
-        "url": "https://www.nexusmods.com/mysummercar/mods/146"
+        "url": "https://github.com/Athlon007/MOP"
     },
     {
         "id": "NotepadUI",
@@ -377,7 +377,7 @@
     },
     {
         "id": "ActualMop",
-        "url": "https://www.nexusmods.com/mysummercar/mods/163"
+        "url": "https://github.com/Athlon007/ActualMop"
     },
     {
         "id": "ImproveFPS",
@@ -581,7 +581,7 @@
     },
     {
         "id": "AthlonsTweaksPack",
-        "url": "https://www.nexusmods.com/mysummercar/mods/350"
+        "url": "https://github.com/Athlon007/ATP_Update"
     },
     {
         "id": "HouseExtinguisherHolders",
@@ -740,6 +740,10 @@
         "url": "https://www.nexusmods.com/mysummercar/mods/696"
     },
     {
+        "id": "SaveSlots",
+        "url": "https://github.com/Athlon007/SaveSlotsUpdates"
+    },
+    {
         "id": "Dukt Tape",
         "url": "https://www.nexusmods.com/mysummercar/mods/720"
     },
@@ -753,7 +757,7 @@
     },
     {
         "id": "ProLoaderFixer",
-        "url": "https://www.nexusmods.com/mysummercar/mods/730"
+        "url": "https://github.com/Athlon007/ProLoaderFixes"
     },
     {
         "id": "BoxGifu",
