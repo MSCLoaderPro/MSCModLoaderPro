@@ -10,7 +10,6 @@ using System.Drawing.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SharpCompress;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 
@@ -18,6 +17,7 @@ namespace CoolUpdater
 {
     public partial class UpdateView : Form
     {
+        #region Style
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
 
@@ -26,8 +26,6 @@ namespace CoolUpdater
 
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
-
-        string modsPath, mscPath;
 
         [DllImport("gdi32.dll")]
         private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont,
@@ -46,6 +44,10 @@ namespace CoolUpdater
         public static extern bool ReleaseCapture();
 
         readonly Color colorBtn = Color.FromArgb(255, 199, 152, 129);
+        #endregion
+
+        string modsPath, mscPath;
+        readonly string[] SupportedArchives = { ".zip", ".rar", ".7z", ".dll" };
 
         public UpdateView(string modsPath, string mscPath)
         {
@@ -179,119 +181,138 @@ namespace CoolUpdater
                 await Task.Run(() => Thread.Sleep(1000));
 
                 DirectoryInfo di = new DirectoryInfo(Program.Downloads);
-                FileInfo[] archives = di.GetFiles("*.*");
+                FileInfo[] archives = di.GetFiles("*.*").Where(f => SupportedArchives.Contains(f.Extension)).ToArray();
 
+                // Populate mod list.
                 foreach (var f in archives)
                 {
-                    if (!f.Extension.Contains(".zip") && !f.Extension.Contains(".rar")) continue;
                     modsList.Items.Add(f.Name.Split('.')[0]);
                 }
+
                 bool hasFailed = false;
                 Directory.CreateDirectory("Temp");
                 for (int i = 0; i < archives.Length; i++)
                 {
                     FileInfo archive = archives[i];
-                    if (!archive.Extension.Contains(".zip") && !archive.Extension.Contains(".rar")) continue;
-                    string tempPath = Path.Combine("Temp", archive.Name).Replace(archive.Extension, "");
-                    if (Directory.Exists(tempPath))
+
+                    // Check if a loose library file.
+                    if (archive.Extension == ".dll")
                     {
-                        Directory.Delete(tempPath, true);
+                        // If so, move it directly into mods folder and carry on.
+                        File.Copy(archive.FullName, Path.Combine(modsPath, archive.Name), true);
                     }
-
-                    Directory.CreateDirectory(tempPath);
-
-                    try
+                    else
                     {
-                        Log($"({GetSeconds(stopwatch)}) ({i + 1}/{archive.Length}) Unpacking {archive.Name}...");
-                        await Task.Run(() =>
+                        string tempPath = Path.Combine("Temp", archive.Name).Replace(archive.Extension, "");
+                        if (Directory.Exists(tempPath))
                         {
-                            using (IArchive iArchive = ArchiveFactory.Open(archive.FullName))
-                            {
-                                foreach (var entry in iArchive.Entries)
-                                {
-                                    if (!entry.IsDirectory)
-                                    {
-                                        Console.WriteLine(entry.Key);
-                                        entry.WriteToDirectory(tempPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
-                                    }
-                                }
-                            }
-                        });
-
-                        // Now we are reading all files inside of that new folder.
-                        foreach (string filePath in Directory.GetFiles(tempPath, "*.*", SearchOption.AllDirectories))
-                        {
-                            FileInfo file = new FileInfo(filePath);
-                            string destination = Path.Combine(modsPath, file.Name);
-                            string pathInStructure = filePath.Replace(tempPath, "");
-
-                            // Move DLLs that are in References to References folder
-                            if (file.Extension == ".dll" && pathInStructure.Contains("References"))
-                            {
-                                destination = Path.Combine(destination, "References");
-                            }
-
-                            #region Outside of Mods folder
-                            // This file likely goes to Images folder.
-                            if (pathInStructure.Contains("Images"))
-                            {
-                                destination = GetSubPath(file, pathInStructure, "Images");
-                            }
-
-                            if (pathInStructure.Contains("Radio"))
-                            {
-                                destination = GetSubPath(file, pathInStructure, "Radio");
-                            }
-
-                            if (pathInStructure.Contains("CD1"))
-                            {
-                                destination = GetSubPath(file, pathInStructure, "CD1");
-                            }
-
-                            if (pathInStructure.Contains("CD2"))
-                            {
-                                destination = GetSubPath(file, pathInStructure, "CD2");
-                            }
-
-                            if (pathInStructure.Contains("CD3"))
-                            {
-                                destination = GetSubPath(file, pathInStructure, "CD3");
-                            }
-                            #endregion
-
-                            if (pathInStructure.Contains("Assets"))
-                            {
-                                string assetsFolderName = file.Directory.Name;
-                                string folderAssetsPath = Path.Combine(modsPath, "Assets", assetsFolderName);
-                                if (!Directory.Exists(folderAssetsPath))
-                                {
-                                    Directory.CreateDirectory(folderAssetsPath);
-                                }
-
-                                destination = Path.Combine(folderAssetsPath, file.Name);
-                            }
-
-                            if (pathInStructure.Contains("Settings"))
-                            {
-                                string folderSettingsPath = Path.Combine(modsPath, "Settings", file.Directory.Name);
-                                if (!Directory.Exists(folderSettingsPath))
-                                {
-                                    Directory.CreateDirectory(folderSettingsPath);
-                                }
-
-                                destination = Path.Combine(folderSettingsPath, file.Name);
-                            }
-
-                            File.Copy(file.FullName, destination, true);
+                            Directory.Delete(tempPath, true);
                         }
 
-                        modsList.SetItemChecked(i, true);
-                        Log($"({GetSeconds(stopwatch)}) {archive.Name} unpacking completed!\n");
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"\n===============================================\nAn error has occured while extracting {archive.Name} :(\n\n" + ex.ToString() + "\n\n");
-                        hasFailed = true;
+                        Directory.CreateDirectory(tempPath);
+
+                        try
+                        {
+                            Log($"({GetSeconds(stopwatch)}) ({i + 1}/{archive.Length}) Unpacking {archive.Name}...");
+                            await Task.Run(() =>
+                            {
+                                using (IArchive iArchive = ArchiveFactory.Open(archive.FullName))
+                                {
+                                    foreach (var entry in iArchive.Entries)
+                                    {
+                                        if (!entry.IsDirectory)
+                                        {
+                                            Console.WriteLine(entry.Key);
+                                            entry.WriteToDirectory(tempPath, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+                                        }
+                                    }
+                                }
+                            });
+
+                            // Now we are reading all files inside of that new folder.
+                            foreach (string filePath in Directory.GetFiles(tempPath, "*.*", SearchOption.AllDirectories))
+                            {
+                                FileInfo file = new FileInfo(filePath);
+                                string destination = Path.Combine(modsPath, file.Name);
+                                string pathInStructure = filePath.Replace(tempPath, "");
+
+                                // Move DLLs that are in References to References folder
+                                if (file.Extension == ".dll" && pathInStructure.Contains("References"))
+                                {
+                                    destination = Path.Combine(destination, "References", file.Name);
+                                }
+
+                                // EXEs to main folder of the game.
+                                if (file.Extension == ".exe" && !pathInStructure.ToLower().Contains("assets"))
+                                {
+                                    destination = Path.Combine(mscPath, file.Name);
+                                }
+
+                                if (!pathInStructure.ToLower().Contains("assets"))
+                                {
+                                    #region Outside of Mods folder
+                                    // This file likely goes to Images folder.
+                                    if (pathInStructure.ToLower().Contains("images"))
+                                    {
+                                        destination = GetSubPath(file, pathInStructure, "Images");
+                                    }
+
+                                    if (pathInStructure.ToLower().Contains("radio"))
+                                    {
+                                        destination = GetSubPath(file, pathInStructure, "Radio");
+                                    }
+
+                                    if (pathInStructure.ToLower().Contains("cd1"))
+                                    {
+                                        destination = GetSubPath(file, pathInStructure, "CD1");
+                                    }
+
+                                    if (pathInStructure.ToLower().Contains("cd2"))
+                                    {
+                                        destination = GetSubPath(file, pathInStructure, "CD2");
+                                    }
+
+                                    if (pathInStructure.ToLower().Contains("cd3"))
+                                    {
+                                        destination = GetSubPath(file, pathInStructure, "CD3");
+                                    }
+                                    #endregion
+                                }
+
+                                if (pathInStructure.ToLower().Contains("assets"))
+                                {
+                                    string assetsFolderName = file.Directory.Name;
+                                    string folderAssetsPath = Path.Combine(modsPath, "Assets", assetsFolderName);
+                                    if (!Directory.Exists(folderAssetsPath))
+                                    {
+                                        Directory.CreateDirectory(folderAssetsPath);
+                                    }
+
+                                    destination = Path.Combine(folderAssetsPath, file.Name);
+                                }
+
+                                if (pathInStructure.ToLower().Contains("settings"))
+                                {
+                                    string folderSettingsPath = Path.Combine(modsPath, "Settings", file.Directory.Name);
+                                    if (!Directory.Exists(folderSettingsPath))
+                                    {
+                                        Directory.CreateDirectory(folderSettingsPath);
+                                    }
+
+                                    destination = Path.Combine(folderSettingsPath, file.Name);
+                                }
+
+                                File.Copy(file.FullName, destination, true);
+                            }
+
+                            modsList.SetItemChecked(i, true);
+                            Log($"({GetSeconds(stopwatch)}) {archive.Name} unpacking completed!\n");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log($"\n===============================================\nAn error has occured while extracting {archive.Name} :(\n\n" + ex.ToString() + "\n\n");
+                            hasFailed = true;
+                        }
                     }
 
                     updateProgress.Value = (int)(((double)i + 1) / archive.Length * 100);
@@ -299,7 +320,10 @@ namespace CoolUpdater
 
                 // Cleanup after install.
                 if (!hasFailed)
+                {
                     Directory.Delete(Program.Downloads, true);
+                    Directory.Delete(Program.Temp, true);
+                }
 
                 Log($"({GetSeconds(stopwatch)}) All mods have been updated, have a nice day :)");
             }
