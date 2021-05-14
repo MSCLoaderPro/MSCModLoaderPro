@@ -393,7 +393,7 @@ namespace Installer
 
             // Delete unused library.
             if (File.Exists(Path.Combine(MscPath, "ModUpdater", "Ionic.Zip.dll")))
-                File.Delete(Path.Combine(MscPath, "ModUpdater",, "Ionic.Zip.dll"));
+                File.Delete(Path.Combine(MscPath, "ModUpdater", "Ionic.Zip.dll"));
         }
 
         private void btnPlay_Click(object sender, EventArgs e)
