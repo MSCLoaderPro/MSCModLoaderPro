@@ -10,6 +10,7 @@ using MSCLoader.Helper;
 using MSCLoader.NexusMods;
 using Newtonsoft.Json;
 using UnityEngine.Events;
+using System.Text.RegularExpressions;
 
 #pragma warning disable CS1591
 namespace MSCLoader
@@ -815,7 +816,7 @@ namespace MSCLoader
 
             ModConsole.Log($"Mod Updater: {mod.ID} Latest version: {mod.ModUpdateData.LatestVersion}");
             ModConsole.Log($"Mod Updater: {mod.ID} Your version:   {mod.Version}");
-            ModConsole.Log($"Mod Updater: {mod.ID} Link: {mod.ModUpdateData.ZipUrl}");
+            //ModConsole.Log($"Mod Updater: {mod.ID} Link: {mod.ModUpdateData.ZipUrl}");
         }
 
         bool IsNewerVersionAvailable(string currentVersion, string serverVersion)
@@ -830,6 +831,10 @@ namespace MSCLoader
             try
             {
                 int modMajor, modMinor, modRevision = 0;
+
+                currentVersion = Regex.Replace(currentVersion, "[^0-9.]", ""); // Remove all letters
+                serverVersion = Regex.Replace(serverVersion, "[^0-9.]", ""); // Remove all letters
+
                 string[] modVersionSpliited = currentVersion.Split('.');
                 modMajor = int.Parse(modVersionSpliited[0]);
                 modMinor = int.Parse(modVersionSpliited[1]);
