@@ -2,10 +2,6 @@
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.IO;
-using System.Threading;
-using Ionic.Zip;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Collections.Generic;

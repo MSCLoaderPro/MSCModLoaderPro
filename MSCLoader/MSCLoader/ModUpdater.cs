@@ -22,15 +22,16 @@ namespace MSCLoader
         static ModUpdater instance;
         public static ModUpdater Instance => instance;
 
+        #region UI
         public GameObject headerUpdateAllButton;
         public GameObject headerProgressBar;
         public Slider sliderProgressBar;
         public Text textProgressBar;
         public Text menuLabelUpdateText;
-
+        
         string message;
-
         const int MaxDots = 3;
+        #endregion
 
         bool isBusy;
         public bool IsBusy => isBusy;
@@ -41,20 +42,21 @@ namespace MSCLoader
         const int TimeoutTime = 10; // in seconds.
         const int TimeoutTimeDownload = 60; // in seconds.
 
-        bool autoUpdateChecked;
+        readonly string ModsDatabasePath = Path.Combine(UpdaterDirectory, "Mods.json");
 
-        ModUpdaterDatabase modUpdaterDatabase;
+        bool autoUpdateChecked;
 
         const string ModLoaderApiUri = "https://api.github.com/repos/MSCLoaderPro/MSCModLoaderPro/releases";
         const string InstallerApiUri = "https://api.github.com/repos/MSCLoaderPro/docs/releases/latest";
-        string modLoaderLatestVersion;
-        bool modLoaderUpdateAvailable, installModLoaderUpdate;
+        bool installModLoaderUpdate;
         string TempPathModLoaderPro => Path.Combine(Path.GetTempPath(), "modloaderpro");
         const string InstallerName = "installer.exe";
         string InstallerPath => Path.Combine(TempPathModLoaderPro, InstallerName);
 
-        static string SourcesPath => "Sources.txt";
-        static string UserSourcesPath => "UserSources.txt";
+        const string SourcesPath = "Sources.json";
+        const string SourcesUrl = "https://raw.githubusercontent.com/MSCLoaderPro/MSCModLoaderPro/main/Data/Sources.min.json";
+        const int SourcesUpdateEveryDays = 2; // How long until the sources file has to be updated.
+        const string UserSourcesPath = "UserSources.txt";
         const string UserSourcesContent = "// In this file you can add your own sources, in similar fashion as in Sources.txt\n" +
                                            "// This file will NOT be overwritten by future updates (unlike Sources.txt).\n" +
                                            "// Remember that only NexusMods and GitHub links are supported by Mod Loader Pro!\n" +
@@ -74,49 +76,47 @@ namespace MSCLoader
 
         void Start()
         {
-            modUpdaterDatabase = new ModUpdaterDatabase();
-            backwardCompatibilityMods = new List<Mod>();
+            if (!IsSourcesFileValid())
+            {
+                DownloadSources();
+                return;
+            }
 
             // First we read the Sources.txt file, and populate UpdateLink of mods that don't have a source.
-            if (File.Exists(SourcesPath))
-            {
-                ReadSources(SourcesPath);
-            }
-
-            if (!File.Exists(UserSourcesPath))
-            {
-                File.WriteAllText(UserSourcesPath, UserSourcesContent);
-            }
-            else
-            {
-                ReadSources(UserSourcesPath);
-            }
+            ReadSources(SourcesPath);
 
             // Populate list from the database.
-            if (modUpdaterDatabase.GetAll().Count > 0)
-            {
-                foreach (var f in modUpdaterDatabase.GetAll())
-                {
-                    Mod mod = ModLoader.LoadedMods.FirstOrDefault(m => m.ID == f.Key);
-                    if (mod != null)
-                    {
-                        mod.ModUpdateData = f.Value;
 
-                        if (IsNewerVersionAvailable(mod.Version, mod.ModUpdateData.LatestVersion))
+            if (File.Exists(ModsDatabasePath))
+            {
+                var modUpdaterDatabase = JsonConvert.DeserializeObject<ModUpdateData[]>(File.ReadAllText(ModsDatabasePath));
+                if (modUpdaterDatabase.Length > 0)
+                {
+                    foreach (var f in modUpdaterDatabase)
+                    {
+                        Mod mod = ModLoader.LoadedMods.FirstOrDefault(m => m.ID == f.ID);
+                        if (mod != null)
                         {
-                            mod.ModUpdateData.UpdateStatus = UpdateStatus.Available;
-                            mod.modListElement.ToggleUpdateButton(true);
-                            headerUpdateAllButton.SetActive(true);
-                            ModLoader.modContainer.UpdateModCountText();
-                        }
-                        else
-                        {
-                            mod.ModUpdateData.UpdateStatus = UpdateStatus.NotChecked;
+                            mod.ModUpdateData = f;
+
+                            string localModVersion = !string.IsNullOrEmpty(mod.ModUpdateData.VersionDownloaded) ? mod.ModUpdateData.VersionDownloaded : mod.Version;
+
+                            if (IsNewerVersionAvailable(localModVersion, mod.ModUpdateData.LatestVersion))
+                            {
+                                mod.ModUpdateData.UpdateStatus = UpdateStatus.Available;
+                                mod.modListElement.ToggleUpdateButton(true);
+                                headerUpdateAllButton.SetActive(true);
+                                ModLoader.modContainer.UpdateModCountText();
+                            }
+                            else
+                            {
+                                mod.ModUpdateData.UpdateStatus = UpdateStatus.NotChecked;
+                            }
                         }
                     }
-                }
 
-                StartCoroutine(NotifyUpdatesAvailable());
+                    StartCoroutine(NotifyUpdatesAvailable());
+                }
             }
 
             if (ShouldCheckForUpdates())
@@ -141,9 +141,10 @@ namespace MSCLoader
                 return;
             }
 
+            ModLoader.modLoaderSettings.RefreshUpdateCheckTime();
             isBusy = true;
             message = "LOOKING FOR MOD LOADER UPDATES PRO";
-            currentSliderText = UpdateSliderText();
+            currentSliderText = UpdateSliderText("FINISHED LOOKING FOR UPDATES");
             StartCoroutine(currentSliderText);
 
             StartCoroutine(PullMetadata(ReadModLoaderProUpdate, ModLoaderApiUri));
@@ -254,7 +255,7 @@ namespace MSCLoader
 
             isBusy = true;
             message = "LOOKING FOR MOD UPDATES";
-            if (currentSliderText == null) StartCoroutine(UpdateSliderText());
+            if (currentSliderText == null) StartCoroutine(UpdateSliderText("FINISHED LOOKING FOR UPDATES"));
             
             modsToCheck = mods.ToList();
 
@@ -388,7 +389,9 @@ namespace MSCLoader
             }
             else
             {
-                mod.ModUpdateData = new ModUpdateData();
+                if (mod.ModUpdateData.Equals(default(ModUpdateData))) mod.ModUpdateData = new ModUpdateData();
+                mod.ModUpdateData.ID = mod.ID;
+                mod.ModUpdateData.IsNexusMods = false;
 
                 // Reading the metadata file info that we want.
                 try
@@ -431,7 +434,10 @@ namespace MSCLoader
         #region Nexus
         void NexusModInfo(Mod mod, int lastIndex)
         {
-            mod.ModUpdateData = new ModUpdateData();
+            if (mod.ModUpdateData.Equals(default(ModUpdateData))) mod.ModUpdateData = new ModUpdateData();
+            mod.ModUpdateData.ID = mod.ID;
+            mod.ModUpdateData.IsNexusMods = true;
+
             bool error = false;
             try
             {
@@ -519,33 +525,10 @@ namespace MSCLoader
                     var file = modFiles.files[i];
                     if (file.mod_version == mod.ModUpdateData.LatestVersion)
                     {
-                        fileID = file.file_id;
-
-                        if (file.file_name.Contains("Mod Loader Pro") || file.file_name.Contains("ProLoader"))
-                        {
-                            break;
-                        }
+                        if (fileID == -1 || (file.file_name.Contains("Mod Loader Pro") || file.file_name.Contains("ProLoader")))
+                            mod.ModUpdateData.LatestFileID = file.file_id;
                     }
                 }
-
-                if (fileID != -1)
-                {
-                    string requestDownloads = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{mod.ModUpdateData.ModID}/files/{fileID}/download_link.json";
-                    StartCoroutine(DownloadFile(() => NexusDownloadSources(mod, lastIndex), requestDownloads, NexusSSO.Instance.ApiKey));
-                }
-            }
-            catch
-            {
-                StartModUpdateCheck(lastIndex);
-            }
-        }
-
-        void NexusDownloadSources(Mod mod, int lastIndex)
-        {
-            try
-            {
-                var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.DownloadSources[]>(lastDataOut);
-                mod.ModUpdateData.ZipUrl = json[0].URI;
             }
             catch
             {
@@ -553,23 +536,23 @@ namespace MSCLoader
             StartModUpdateCheck(lastIndex);
         }
 
-        #endregion
-        #region DownloadUpdates
-        public void UpdateAll()
+        void NexusDownloadSources(Mod mod, int lastIndex)
         {
-            if (isBusy) return;
+            // We are requesting this JUST BEFORE WE WANT TO DOWNLOAD A FILE!!!
 
-            Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
-            foreach (Mod mod in mods)
+            try
             {
-                if (!updateDownloadQueue.Contains(mod))
-                {
-                    updateDownloadQueue.Add(mod);
-                }
+                var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.DownloadSources>(lastDataOut);
+                ModConsole.Log(json.name.ToString());
+                mod.ModUpdateData.ZipUrl = json.URI;
             }
-
-            StartDownload();
+            catch (Exception ex)
+            {
+                ModConsole.LogError(ex.ToString());
+            }
+            StartModUpdateCheck(lastIndex);
         }
+
         #endregion
 
         // Helper functions.
@@ -721,7 +704,10 @@ namespace MSCLoader
         // Unity function: https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnApplicationQuit.html
         void OnApplicationQuit()
         {
-            modUpdaterDatabase.Save();
+            // Save ModUpdateDatas.
+            ModUpdateData[] datas = ModLoader.LoadedMods.Where(m => m.ModUpdateData.ID != null).Select(m => m.ModUpdateData).ToArray();
+            string json = JsonConvert.SerializeObject(datas);
+            File.WriteAllText(ModsDatabasePath, json);
 
             if (currentProcess != null && !currentProcess.HasExited)
             {
@@ -756,9 +742,8 @@ namespace MSCLoader
         #endregion
         #region UI
         IEnumerator currentSliderText;
-        IEnumerator UpdateSliderText()
+        IEnumerator UpdateSliderText(string finishedMessage)
         {
-            const string finishedMessage = "UPDATE CHECKING COMPLETE";
             menuLabelUpdateText.gameObject.SetActive(true);
             WaitForSeconds wait = new WaitForSeconds(0.25f);
             int numberOfDots = 0;
@@ -814,7 +799,8 @@ namespace MSCLoader
         #region Helpers
         void CheckIfNewerVersionAvailable(Mod mod)
         {
-            if (IsNewerVersionAvailable(mod.Version, mod.ModUpdateData.LatestVersion))
+            string localModVersion = !string.IsNullOrEmpty(mod.ModUpdateData.VersionDownloaded) ? mod.ModUpdateData.VersionDownloaded : mod.Version;
+            if (IsNewerVersionAvailable(localModVersion, mod.ModUpdateData.LatestVersion))
             {
                 mod.ModUpdateData.UpdateStatus = UpdateStatus.Available;
                 ModConsole.Log($"<color=green>{mod.ID} has an update available!</color>");
@@ -883,9 +869,6 @@ namespace MSCLoader
             }
             catch
             {
-                //ModConsole.LogError($"Mod Updater: Incorrectly formated version tag: {currentVersion} | {serverVersion}");
-                //return false;
-
                 // Accurate parsing failed. Try simple comparison instead.
                 return currentVersion.ToLower() != serverVersion.ToLower();
             }
@@ -916,58 +899,83 @@ namespace MSCLoader
             }
         }
 
-        static string GetUrl(string input)
-        {
-            string[] separated = input.Split(':');
-            return (separated[1] + ":" + separated[2]).Replace("\"", "").Replace("}", "").Replace("]", "");
-        }
         #endregion
         #region Sources
+        bool IsSourcesFileValid()
+        {
+            if (!File.Exists(SourcesPath))
+            {
+                return false;
+            }
+
+            // Redownload Sources every 2 days.
+            FileInfo fi = new FileInfo(SourcesPath);
+
+            if (fi.LastWriteTime.AddDays(SourcesUpdateEveryDays) < DateTime.Now)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        void DownloadSources()
+        {
+            isBusy = true;
+            message = "UPDATING SOURCES";
+            StartCoroutine(UpdateSliderText("SOURCES UPDATED!"));
+            string gamePath = Application.dataPath.Replace("mysummercar_Data", "").Replace(" ", "%20");
+            StartCoroutine(DownloadFile(() => { isBusy = false;  Start(); }, SourcesUrl, Path.Combine(gamePath, SourcesPath)));
+        }
+
         void ReadSources(string filePath)
         {
-            string[] lines = File.ReadAllLines(filePath).Where(l => !l.StartsWith("//") && !string.IsNullOrEmpty(l)).ToArray();
-            foreach (string l in lines)
+            backwardCompatibilityMods = new List<Mod>();
+            var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.ProLoader.Sources[]>(File.ReadAllText(filePath)).ToArray();
+            for (int i = 0; i < json.Length; i++)
             {
-                try
+                var info = json[i];
+                Mod mod = ModLoader.GetMod(info.id, true);
+                if (mod == null)
                 {
-                    string modID = l.Split(' ')[0];
-                    string link = l.Split(' ')[1];
+                    continue;
+                }    
 
-                    if (!link.Contains("github.com") && !link.Contains("nexusmods.com"))
-                    {
-                        throw new UriFormatException("Not a NexusMods or GitHub URL.");
-                    }
-
-                    Mod mod = ModLoader.GetMod(modID, true);
-                    if (mod == null)
-                    {
-                        continue;
-                    }
-
-                    if (backwardCompatibilityMods.Contains(mod))
-                    {
-                        continue;
-                    }
-
-                    // Overwrite only if UpdateLink is null or empty.
-                    if (string.IsNullOrEmpty(mod.UpdateLink))
-                    {
-                        mod.UpdateLink = link;
-                        backwardCompatibilityMods.Add(mod);
-                        ModConsole.Log(modID + " " + link);
-                    }
+                if (backwardCompatibilityMods.Contains(mod))
+                {
+                    continue;
                 }
-                catch (Exception ex)
+
+                if (string.IsNullOrEmpty(mod.UpdateLink))
                 {
-                    ModConsole.LogError($"[Mod Updater] Failed to read line: {l}\n{ex.Message}");
+                    mod.UpdateLink = info.url;
+                    backwardCompatibilityMods.Add(mod);
+                    ModConsole.Log(info.id + " " + info.url);
                 }
             }
         }
         #endregion
         #region Downloading the updates
         List<Mod> updateDownloadQueue = new List<Mod>();
-        int currentModInQueue;
 
+        // Attached to "Update All" button.
+        public void UpdateAll()
+        {
+            if (isBusy) return;
+
+            Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
+            foreach (Mod mod in mods)
+            {
+                if (!updateDownloadQueue.Contains(mod))
+                {
+                    updateDownloadQueue.Add(mod);
+                }
+            }
+
+            StartDownload();
+        }
+
+        // Attached to specific mod downlaod button.
         public void DownloadModUpdate(Mod mod)
         {
             if (!File.Exists(UpdaterPath))
@@ -975,18 +983,15 @@ namespace MSCLoader
                 throw new MissingComponentException("Updater component is missing!");
             }
 
-            if (mod.UpdateLink.Contains("nexusmods.com"))
+            if (mod.UpdateLink.Contains("nexusmods.com") && !NexusSSO.Instance.IsPremium)
             {
-                if (!NexusSSO.Instance.IsPremium)
-                {
-                    ModPrompt.CreateYesNoPrompt($"MOD <color=yellow>{mod.Name}</color> USES NEXUSMODS FOR UPDATE DOWNLOADS. " +
-                                            $"UNFORTUNATELY, DUE TO NEXUSMODS POLICY, ONLY PREMIUM USERS CAN USE AUTO UPDATE FEATURE.\n\n" +
-                                            $"YOUR VERSION IS <color=yellow>{mod.Version}</color> AND THE NEWEST VERSION IS <color=yellow>{mod.ModUpdateData.LatestVersion}</color>.\n\n" +
-                                            $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n\n" +
-                                            $"<color=red>WARNING: THIS WILL OPEN YOUR DEFAULT WEB BROWSER.</color>"
-                                            , "MOD UPDATER", () => ModHelper.OpenWebsite(mod.UpdateLink));
-                    return;
-                }
+                ModPrompt.CreateYesNoPrompt($"MOD <color=yellow>{mod.Name}</color> USES NEXUSMODS FOR UPDATE DOWNLOADS. " +
+                                        $"UNFORTUNATELY, DUE TO NEXUSMODS POLICY, ONLY PREMIUM USERS CAN USE AUTO UPDATE FEATURE.\n\n" +
+                                        $"YOUR VERSION IS <color=yellow>{mod.Version}</color> AND THE NEWEST VERSION IS <color=yellow>{mod.ModUpdateData.LatestVersion}</color>.\n\n" +
+                                        $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n\n" +
+                                        $"<color=red>WARNING: THIS WILL OPEN YOUR DEFAULT WEB BROWSER.</color>"
+                                        , "MOD UPDATER", () => ModHelper.OpenWebsite(mod.UpdateLink));
+                return;
             }
 
             if (ModLoader.modLoaderSettings.AskBeforeDownload)
@@ -1023,99 +1028,101 @@ namespace MSCLoader
                 return;
             }
 
-            if (currentDownloadRoutine != null)
-            {
-                return;
-            }
-            currentDownloadRoutine = DownloadModUpdateRoutine();
-            StartCoroutine(currentDownloadRoutine);
+            DownloadingUpdates();
         }
 
-        private IEnumerator currentDownloadRoutine;
-        IEnumerator DownloadModUpdateRoutine()
+        bool nexusSkipCheck;
+        void DownloadingUpdates(int lastIndex = -1)
         {
             isBusy = true;
 
-            int i = 0;
-            sliderProgressBar.value = i;
-            headerProgressBar.SetActive(true);
             message = "DOWNLOADING UPDATES";
-            StartCoroutine(UpdateSliderText());
+            StartCoroutine(UpdateSliderText("UPDATES DOWNLOADED!"));
 
-            for (; currentModInQueue < updateDownloadQueue.Count(); currentModInQueue++)
+            for (int i = lastIndex + 1; i < updateDownloadQueue.Count; i++)
             {
-                Mod mod = updateDownloadQueue[currentModInQueue];
-                ModConsole.Log($"\nMod Updater: Downloading mod update of {mod.ID}...");
-
-                if (!Directory.Exists(DownloadsDirectory))
+                try
                 {
-                    Directory.CreateDirectory(DownloadsDirectory);
-                }
+                    sliderProgressBar.value = i;
+                    sliderProgressBar.maxValue = updateDownloadQueue.Count;
+                    headerProgressBar.SetActive(true);
+                    Mod mod = updateDownloadQueue[i];
+                    ModConsole.Log($"\nMod Updater: Downloading mod update of {mod.ID}...");
 
-                // If a ZipUrl couldn't be obtained, or the link doesn't end with .ZIP file, we open the Mod.UpdateLink website.
-                // We are also assuming that mod has been updated by the user.
-                if (string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) || !mod.ModUpdateData.ZipUrl.Contains(".zip"))
-                {
-                    Process.Start(mod.UpdateLink);
-                    mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
-                    continue;
-                }
-
-                string fileFormat = mod.ModUpdateData.ZipUrl.Split('.').Last();
-                string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.{fileFormat}");
-                string args = $"get-file \"{mod.ModUpdateData.ZipUrl}\" \"{downloadToPath}\"";
-                if (mod.ModUpdateData.ZipUrl.Contains("nexusmods.com"))
-                {
-                    args += $" \"{NexusSSO.Instance.ApiKey}\"";
-                }
-
-                Process p = new Process
-                {
-                    StartInfo = new ProcessStartInfo
+                    if (!Directory.Exists(DownloadsDirectory))
                     {
-                        FileName = UpdaterPath,
-                        Arguments = args,
-                        WorkingDirectory = UpdaterDirectory,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    }
-                };
-                p.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
-                p.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandler);
-
-                p.Start();
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-                int downloadTime = 0;
-                while (!p.HasExited)
-                {
-                    downloadTime++;
-                    if (downloadTime > TimeoutTimeDownload)
-                    {
-                        ModConsole.LogError($"Mod Update Check for {mod.ID} timed-out.");
-                        p.Kill();
-                        break;
+                        Directory.CreateDirectory(DownloadsDirectory);
                     }
 
-                    yield return new WaitForSeconds(1);
-                }
+                    // Get Link first, if it's NexusMods mod.
+                    if (mod.ModUpdateData.IsNexusMods)
+                    {
+                        if (!nexusSkipCheck)
+                        {
+                            string url = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{mod.ModUpdateData.ModID}/files/{mod.ModUpdateData.LatestFileID}/download_link.json";
+                            nexusSkipCheck = true;
+                            StartCoroutine(PullMetadata(() => DownloadingUpdates(i - 1), url, NexusSSO.Instance.ApiKey));
+                            return;
+                        }
+                        nexusSkipCheck = false;
+                        // We got metadata! Get link now!
+                        var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.DownloadSources[]>(lastDataOut);
+                        mod.ModUpdateData.ZipUrl = json[0].URI;
+                        ModConsole.Log(mod.ModUpdateData.ZipUrl);
+                    }
 
-                if (File.Exists(downloadToPath))
-                {
-                    ModConsole.Log($"Mod Updater: Update downloading for {mod.ID} completed!");
-                    mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
+                    if (string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl))
+                    {
+                        Process.Start(mod.UpdateLink);
+                        mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
+                        continue;
+                    }
+
+                    string extension = "";
+                    if (mod.ModUpdateData.IsNexusMods)
+                    {
+                        extension = mod.ModUpdateData.ZipUrl.Split('?')[0].Split('.').Last();
+                    }
+                    else
+                    {
+                        extension = mod.ModUpdateData.ZipUrl.Split('.').Last();
+                    }
+                    string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.{extension}").Replace(" ", "%20");
+                    mod.modListElement.ToggleUpdateButton(false);
+                    if (mod.ModUpdateData.IsNexusMods)
+                    {
+                        StartCoroutine(DownloadFile(() =>
+                        {
+                            mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
+                            mod.ModUpdateData.VersionDownloaded = mod.ModUpdateData.LatestVersion;
+                            DownloadingUpdates(i);
+                        },
+                        mod.ModUpdateData.ZipUrl,
+                        downloadToPath,
+                        NexusSSO.Instance.ApiKey));
+                    }
+                    else
+                    {
+                        StartCoroutine(DownloadFile(() =>
+                        {
+                            mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
+                            mod.ModUpdateData.VersionDownloaded = mod.ModUpdateData.LatestVersion;
+                            DownloadingUpdates(i);
+                        },
+                        mod.ModUpdateData.ZipUrl,
+                        downloadToPath));
+                    }
+                    return;
                 }
-                else
+                catch (Exception ex)
                 {
-                    ModConsole.Log($"<color=red>Mod Updater: Update downloading for {mod.ID} failed.</color>");
+                    ModConsole.LogError($"Unable to download mod update {updateDownloadQueue[i].ID} :(\n\n{ex.ToString()}");
                 }
-                i++;
-                sliderProgressBar.value = i;
             }
 
-            currentDownloadRoutine = null;
+            sliderProgressBar.value = sliderProgressBar.maxValue;
+
+            headerUpdateAllButton.SetActive(false);
             isBusy = false;
 
             // Asking user if he wants to update now or later.
@@ -1136,89 +1143,17 @@ namespace MSCLoader
     /// <summary> Stores the info about mod update found. </summary>
     internal struct ModUpdateData
     {
+        public string ID;
         public string ZipUrl;
         public string LatestVersion;
         public UpdateStatus UpdateStatus;
+        public string VersionDownloaded;
 
         // Nexus
+        public bool IsNexusMods;
         public int ModID;
         public string Summary; 
         public string PictureUrl;
-    }
-
-    internal class ModUpdaterDatabase
-    {
-        // Because of some weird conflict between Newtonsoft.Json.Linq and System.Linq conflict,
-        // we are forced to use a custom database solution.
-
-        string DatabaseFile = Path.Combine(ModUpdater.UpdaterDirectory, "Updater.txt");
-
-        Dictionary<string, ModUpdateData> modUpdateData;
-
-        public ModUpdaterDatabase()
-        {
-            if (!File.Exists(DatabaseFile))
-            {
-                File.Create(DatabaseFile);
-            }
-
-            modUpdateData = new Dictionary<string, ModUpdateData>();
-
-            string[] fileContent = File.ReadAllLines(DatabaseFile);
-            foreach (var s in fileContent)
-            {
-                if (string.IsNullOrEmpty(s))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    string id, url, latest = "";
-                    string[] spliitted = s.Split(',');
-                    id = spliitted[0];
-                    url = spliitted[1];
-                    latest = spliitted[2];
-
-                    ModUpdateData data = new ModUpdateData
-                    {
-                        ZipUrl = url,
-                        LatestVersion = latest
-                    };
-
-                    modUpdateData.Add(id, data);
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-        }
-
-        internal void Save()
-        {
-            IEnumerable<Mod> mods = ModLoader.LoadedMods.Where(m => m.ModUpdateData.UpdateStatus == UpdateStatus.Available);
-            string output = "";
-            foreach (Mod mod in mods)
-            {
-                string updateLink = string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl) ? mod.UpdateLink : mod.ModUpdateData.ZipUrl;
-                output += $"{mod.ID},{updateLink},{mod.ModUpdateData.LatestVersion}\n";
-            }
-
-            if (File.Exists(DatabaseFile))
-                File.Delete(DatabaseFile);
-
-            File.WriteAllText(DatabaseFile, output);
-        }
-
-        internal ModUpdateData Get(Mod mod)
-        {
-            return modUpdateData.FirstOrDefault(m => m.Key == mod.ID).Value;
-        }
-
-        internal Dictionary<string, ModUpdateData> GetAll()
-        {
-            return modUpdateData;
-        }
+        public int LatestFileID;
     }
 }

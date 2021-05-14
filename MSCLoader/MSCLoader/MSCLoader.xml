@@ -1227,15 +1227,19 @@
             <param name="value">Default value of the setting.</param>
             <returns>Added SettingNumber</returns>
         </member>
-        <member name="M:MSCLoader.ModUpdater.LookForUpdates">
-            <summary> Starts looking for the update of the specific mod. </summary>
-        </member>
-        <member name="M:MSCLoader.ModUpdater.CheckForModUpdates(System.Collections.Generic.IEnumerable{MSCLoader.Mod})">
-            <summary> Goes through all mods and checks if an update on GitHub or Nexus is available for them. </summary>
-        </member>
-        <member name="M:MSCLoader.ModUpdater.UpdateAll">
+        <member name="M:MSCLoader.ModUpdater.PullMetadata(UnityEngine.Events.UnityAction,System.String[])">
             <summary>
-            Populates the queue list with all mods with the UpdateStatus.Available state.
+            Arguments:<br></br><br></br>
+            1 - Link<br></br>
+            2 - (Optional) Nexus Token<br></br>
+            </summary>
+        </member>
+        <member name="M:MSCLoader.ModUpdater.DownloadFile(UnityEngine.Events.UnityAction,System.String[])">
+            <summary>
+            Arguments:<br></br><br></br>
+            1 - Link<br></br>
+            2 - Download Path<br></br>
+            3 - (Optional) Nexus Token<br></br>
             </summary>
         </member>
         <member name="T:MSCLoader.ModUpdateData">

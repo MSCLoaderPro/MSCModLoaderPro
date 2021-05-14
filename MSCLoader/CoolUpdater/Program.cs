@@ -20,6 +20,8 @@ namespace CoolUpdater
         const string GitHubHeader = "User-Agent: Other";
         const string ApiKeyFormat = "apikey: {0}";
 
+        readonly static string[] AllowedDownloadSources = { "github.com", "githubusercontent.com", "nexusmods.com", "gravatar.com" };
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -62,7 +64,8 @@ namespace CoolUpdater
                     DownloadMetafile(link, token);
                     break;
                 case "get-file":
-                    if (!args[1].Contains("github.com") && !args[1].Contains("nexusmods.com") && !args[1].Contains("gravatar.com"))
+                    //if (!args[1].Contains("github.com") && !args[1].Contains("nexusmods.com") && !args[1].Contains("gravatar.com
+                    if (AllowedDownloadSources.Contains(args[1]))
                     {
                         throw new UriFormatException("Downloader only supports Nexusmods or GitHub links.");
                     }
@@ -73,12 +76,12 @@ namespace CoolUpdater
                     }
 
                     string token2 = "";
-                    if (args[0].Contains("nexusmods.com"))
+                    if (args[1].Contains("nexusmods.com"))
                     {
-                        token2 = args[2];
+                        token2 = args[3];
                     }
 
-                    DownloadFile(args[1], args[2], token2);
+                    DownloadFile(args[1], args[2].Replace("%20", " "), token2);
                     break;
                 case "update-all":
                     if (!IsUserAdministrator())
