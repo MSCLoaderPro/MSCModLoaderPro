@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.0.3 (14.05.2021)
+
+### Added
+
+- Unused Ionic.Zip.dll in ModUpdater will be automatically removed
+
 ## 1.0.2 (09.05.2021)
 
 ### Bug Fixes
