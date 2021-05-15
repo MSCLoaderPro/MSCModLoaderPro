@@ -4,6 +4,7 @@ Version 1.0.9
 	Fixed ModUpdater glitching out, if the user was not logged in
 	Fixed bunch of issues related to non-premium NexusMods users in mod updating system
 	Fixed cancelling NexusMods login causing it to not work until after game restart
+	Fixed mod updater getting stuck, if mod does not have a default picture set on NexusMods
 
 Version 1.0.8
 	Changed the Keybind setting to allow binding the left and right mousebutton.

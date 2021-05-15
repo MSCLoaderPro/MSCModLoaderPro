@@ -198,6 +198,7 @@ namespace MSCLoader
                     }
 
                     // Then the picture.
+                    if (string.IsNullOrEmpty(mod.ModUpdateData.PictureUrl)) continue;
                     StartCoroutine(DownloadFile(() =>
                     {
                         if (File.Exists(Path.Combine(thisModPath, "icon.png")))
@@ -579,6 +580,7 @@ namespace MSCLoader
             string infoFile = Path.Combine(modInfoPath, "ModInfo.json");
             File.WriteAllText(infoFile, jsonString);
             mod.Description = mod.ModUpdateData.Summary;
+            mod.modSettings.Description = mod.Description;
 
             string icon = Path.Combine(modInfoPath, "icon.png");
 
@@ -604,6 +606,7 @@ namespace MSCLoader
                 }
             };
 
+            if (string.IsNullOrEmpty(mod.ModUpdateData.PictureUrl)) return;
             StartCoroutine(DownloadFile(postDownloadAction, mod.ModUpdateData.PictureUrl, icon, NexusSSO.Instance.ApiKey));
         }
 
