@@ -21,8 +21,6 @@ namespace CoolUpdater
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
 
-        string modsPath;
-
         [DllImport("gdi32.dll")]
         private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont,
            IntPtr pdv, [In] ref uint pcFonts);
@@ -44,7 +42,6 @@ namespace CoolUpdater
         public Info()
         {
             InitializeComponent();
-            this.modsPath = modsPath;
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_HIDE);
 

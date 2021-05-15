@@ -70,6 +70,8 @@ namespace MSCLoader
 
         bool gitHubLimitExceeded;
 
+        ModUpdateData[] modUpdaterDatabase;
+
         public ModUpdater()
         {
             instance = this;
@@ -90,7 +92,7 @@ namespace MSCLoader
 
             if (File.Exists(ModsDatabasePath))
             {
-                var modUpdaterDatabase = JsonConvert.DeserializeObject<ModUpdateData[]>(File.ReadAllText(ModsDatabasePath));
+                modUpdaterDatabase = JsonConvert.DeserializeObject<ModUpdateData[]>(File.ReadAllText(ModsDatabasePath));
                 if (modUpdaterDatabase.Length > 0)
                 {
                     foreach (var f in modUpdaterDatabase)
@@ -126,6 +128,97 @@ namespace MSCLoader
                 LookForUpdates();
                 return;
             }
+            else
+            {
+                RefreshNexusInfo();
+            }
+        }
+
+        public void RefreshNexusInfo()
+        {
+            // If user does not auto update, look through mods that are in backwardCompatibilityList,
+            // and download mod info.
+            if (!NexusSSO.Instance.IsValid) return;
+
+            if (modUpdaterDatabase != null && backwardCompatibilityMods != null)
+            {
+                isBusy = true;
+                message = "REFRESHING MOD INFO FROM NEXUSMODS";
+                StartCoroutine(UpdateSliderText("MOD INFO REFRESHED"));
+                RefreshNexusInfoStart();
+            }
+        }
+
+        bool ShouldUpdateNexusInfo(string thisModPath)
+        {
+            if (!Directory.Exists(thisModPath) || !File.Exists(Path.Combine(thisModPath, "ModInfo.json")) || !File.Exists(Path.Combine(thisModPath, "icon.png")))
+                return true;
+
+            if (File.Exists(Path.Combine(thisModPath, "ModInfo.json")))
+            {
+                FileInfo fi = new FileInfo(Path.Combine(thisModPath, "ModInfo.json"));
+                if (fi.LastWriteTime.AddDays(SourcesUpdateEveryDays) < DateTime.Now)
+                    return true;
+            }
+
+            return false;
+        }
+
+        void RefreshNexusInfoStart(int lastIndex = -1, bool postLoadStuffImage = false)
+        {
+            for (int i = lastIndex + 1; i < backwardCompatibilityMods.Count; i++)
+            {
+                Mod mod = backwardCompatibilityMods[i];
+
+                if (mod.UpdateLink.Contains("github.com")) continue;
+
+                string thisModPath = Path.Combine(NexusSSO.NexusDataFolder, mod.ID);
+                string nexusID = mod.UpdateLink.Split('/').Last();
+                string mainModInfo = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{nexusID}.json";
+                if (ShouldUpdateNexusInfo(thisModPath))
+                {
+                    Directory.CreateDirectory(thisModPath);
+                    ModConsole.Log(mod.ID);
+                    if (!postLoadStuffImage)
+                    {
+                        // First pull mod info.
+                        StartCoroutine(PullMetadata(() =>
+                        {
+                            File.WriteAllText(Path.Combine(thisModPath, "ModInfo.json"), lastDataOut);
+                            var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.ModInfo>(lastDataOut);
+                            mod.Description = json.summary;
+                            mod.modSettings.Description = json.summary;
+                            mod.ModUpdateData.PictureUrl = json.picture_url;
+
+                            RefreshNexusInfoStart(i - 1, true);
+                        }, 
+                        mainModInfo, 
+                        NexusSSO.Instance.ApiKey));
+                        return;
+                    }
+
+                    // Then the picture.
+                    StartCoroutine(DownloadFile(() =>
+                    {
+                        if (File.Exists(Path.Combine(thisModPath, "icon.png")))
+                        {
+                            Texture2D iconTexture = new Texture2D(1, 1);
+                            byte[] array = File.ReadAllBytes(Path.Combine(thisModPath, "icon.png"));
+                            iconTexture.LoadImage(array);
+                            mod.modListElement.SetModIcon(iconTexture);
+
+                            RefreshNexusInfoStart(i, false);
+                        }
+                    },
+                    mod.ModUpdateData.PictureUrl,
+                    Path.Combine(thisModPath, "icon.png"),
+                    NexusSSO.Instance.ApiKey
+                    ));
+                    return;
+                }
+            }
+
+            isBusy = false;
         }
 
         void LookForUpdates()
@@ -499,6 +592,7 @@ namespace MSCLoader
                         iconTexture.LoadImage(array);
                         mod.modListElement.SetModIcon(iconTexture);
                         mod.Description = mod.ModUpdateData.Summary;
+                        mod.modSettings.Description = mod.Description;
                     }
                     else
                     {
@@ -544,7 +638,6 @@ namespace MSCLoader
             try
             {
                 var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.DownloadSources>(lastDataOut);
-                ModConsole.Log(json.name.ToString());
                 mod.ModUpdateData.ZipUrl = json.URI;
             }
             catch (Exception ex)
@@ -559,7 +652,6 @@ namespace MSCLoader
         // Helper functions.
         #region External Program
         static string lastDataOut;
-        static string lastDownloadData;
         Process currentProcess;
         /// <summary>
         /// Arguments:<br></br><br></br>
@@ -572,17 +664,16 @@ namespace MSCLoader
                 yield return null;
 
             string oldMessage = message;
-            message = "COMMUNICATING WITH NEXUSMODS";
             int waitTime = 0;
             while (!NexusSSO.Instance.IsReady)
             {
+                message = "COMMUNICATING WITH NEXUSMODS";
                 waitTime++;
                 if (waitTime > 20)
                     break;
 
                 yield return new WaitForSeconds(1);
             }
-
             message = oldMessage;
 
             currentProcess = new Process
@@ -635,6 +726,19 @@ namespace MSCLoader
             while (currentProcess != null && !currentProcess.HasExited) // wait for it to exit first.
                 yield return null;
 
+            string oldMessage = message;
+            message = "COMMUNICATING WITH NEXUSMODS";
+            int waitTime = 0;
+            while (!NexusSSO.Instance.IsReady)
+            {
+                waitTime++;
+                if (waitTime > 20)
+                    break;
+
+                yield return new WaitForSeconds(1);
+            }
+            message = oldMessage;
+
             for (int i = 0; i < args.Length; i++)
             {
                 args[i] = "\"" + args[i] + "\"";
@@ -654,7 +758,7 @@ namespace MSCLoader
                 }
             };
 
-            lastDownloadData= "";
+            //lastDownloadData= "";
             currentProcess.OutputDataReceived += new DataReceivedEventHandler(OutputHandlerDownload);
             currentProcess.ErrorDataReceived += new DataReceivedEventHandler(ErrorHandlerDownload);
 
@@ -692,12 +796,10 @@ namespace MSCLoader
         static void ErrorHandlerDownload(object sender, DataReceivedEventArgs e)
         {
             UnityEngine.Debug.Log(e.Data);
-            lastDownloadData += e.Data + "\n";
         }
 
         static void OutputHandlerDownload(object sendingProcess, DataReceivedEventArgs e)
         {
-            lastDownloadData += e.Data + "\n";
         }
 
         #endregion
@@ -816,7 +918,6 @@ namespace MSCLoader
 
             ModConsole.Log($"Mod Updater: {mod.ID} Latest version: {mod.ModUpdateData.LatestVersion}");
             ModConsole.Log($"Mod Updater: {mod.ID} Your version:   {mod.Version}");
-            //ModConsole.Log($"Mod Updater: {mod.ID} Link: {mod.ModUpdateData.ZipUrl}");
         }
 
         bool IsNewerVersionAvailable(string currentVersion, string serverVersion)
@@ -955,7 +1056,6 @@ namespace MSCLoader
                 {
                     mod.UpdateLink = info.url;
                     backwardCompatibilityMods.Add(mod);
-                    ModConsole.Log(info.id + " " + info.url);
                 }
             }
         }
@@ -995,7 +1095,7 @@ namespace MSCLoader
                                         $"YOUR VERSION IS <color=yellow>{mod.Version}</color> AND THE NEWEST VERSION IS <color=yellow>{mod.ModUpdateData.LatestVersion}</color>.\n\n" +
                                         $"WOULD YOU LIKE TO OPEN MOD PAGE TO DOWNLOAD THE UPDATE MANUALLY?\n\n" +
                                         $"<color=red>WARNING: THIS WILL OPEN YOUR DEFAULT WEB BROWSER.</color>"
-                                        , "MOD UPDATER", () => ModHelper.OpenWebsite(mod.UpdateLink));
+                                        , "MOD UPDATER", () => { mod.ModUpdateData.VersionDownloaded = mod.ModUpdateData.LatestVersion; ModHelper.OpenWebsite(mod.UpdateLink); });
                 return;
             }
 
@@ -1062,6 +1162,14 @@ namespace MSCLoader
                     // Get Link first, if it's NexusMods mod.
                     if (mod.ModUpdateData.IsNexusMods)
                     {
+                        if (!NexusSSO.Instance.IsPremium)
+                        {
+                            ModHelper.OpenWebsite(mod.UpdateLink);
+                            mod.ModUpdateData.UpdateStatus = UpdateStatus.Downloaded;
+                            mod.ModUpdateData.VersionDownloaded = mod.ModUpdateData.LatestVersion;
+                            continue;
+                        }
+
                         if (!nexusSkipCheck)
                         {
                             string url = $"https://api.nexusmods.com/v1/games/mysummercar/mods/{mod.ModUpdateData.ModID}/files/{mod.ModUpdateData.LatestFileID}/download_link.json";
@@ -1073,7 +1181,6 @@ namespace MSCLoader
                         // We got metadata! Get link now!
                         var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.DownloadSources[]>(lastDataOut);
                         mod.ModUpdateData.ZipUrl = json[0].URI;
-                        ModConsole.Log(mod.ModUpdateData.ZipUrl);
                     }
 
                     if (string.IsNullOrEmpty(mod.ModUpdateData.ZipUrl))

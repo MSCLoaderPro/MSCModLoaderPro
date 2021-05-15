@@ -250,11 +250,17 @@ namespace MSCLoader.NexusMods
 
         void CancelLogin()
         {
-            cancel = true;
+            StopCoroutine(request);
             promptCancel.gameObject.SetActive(false);
             p.Kill();
             isActive = false;
             ModPrompt.CreatePrompt("Log in procedure has been canceled.", "NexusMods Login");
+
+            ui.loggedIn.text = "<color=yellow>LOG IN</color>";
+            ui.hoverText.oldText = "<color=yellow>LOG IN</color>";
+            ui.hoverText.newText = "<color=yellow>LOG IN</color>";
+            ui.userName.text = "";
+            ui.memberStatus.text = "";
         }
 
         void VerifyAccount()
@@ -429,6 +435,8 @@ namespace MSCLoader.NexusMods
 
             isActive = false;
             isReady = true;
+
+            ModUpdater.Instance.RefreshNexusInfo();
         }
 
         static string[] ReadMetadataToArray(string input)

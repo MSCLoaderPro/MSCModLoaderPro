@@ -69,10 +69,10 @@ namespace MSCLoader
                 string modInfoPath = Path.Combine(NexusMods.NexusSSO.NexusDataFolder, mod.ID);
                 if (Directory.Exists(modInfoPath))
                 {
+                    string infoFile = Path.Combine(modInfoPath, "ModInfo.json");
+                    string icon = Path.Combine(modInfoPath, "icon.png");
                     try
                     {
-                        string infoFile = Path.Combine(modInfoPath, "ModInfo.json");
-                        string icon = Path.Combine(modInfoPath, "icon.png");
                         if (File.Exists(infoFile))
                         {
                             var info = Newtonsoft.Json.JsonConvert.DeserializeObject<NexusMods.JSONClasses.NexusMods.ModInfo>(File.ReadAllText(infoFile));
@@ -87,9 +87,11 @@ namespace MSCLoader
                             modListElement.SetModIcon(iconTexture);
                         }
                     }
-                    catch (System.Exception ex)
+                    catch
                     {
-                        ModConsole.LogError(ex.ToString());
+                        ModConsole.LogError($"Unable to load info of mod {mod.ID}.");
+                        if (File.Exists(infoFile))
+                            File.Delete(infoFile);
                     }
                 }
             }
