@@ -1,1 +1,4 @@
 
+[submodule "MSCLoader/MSCLoader/Legacy"]
+	path = MSCLoader/MSCLoader/Legacy
+	url = https://github.com/MSCLoaderPro/MSCLoaderLegacy.git
