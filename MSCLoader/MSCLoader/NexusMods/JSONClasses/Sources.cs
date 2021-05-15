@@ -1,4 +1,6 @@
-﻿namespace MSCLoader.NexusMods.JSONClasses.ProLoader
+﻿
+#pragma warning disable IDE1006
+namespace MSCLoader.NexusMods.JSONClasses.ProLoader
 {
     class Sources
     {

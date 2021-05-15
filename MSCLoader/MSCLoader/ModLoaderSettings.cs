@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-#pragma warning disable CS1591
+#pragma warning disable CS1591, CS0649
 namespace MSCLoader
 {
     public class ModLoaderSettings : MonoBehaviour

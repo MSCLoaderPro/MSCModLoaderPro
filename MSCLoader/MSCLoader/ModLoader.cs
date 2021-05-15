@@ -10,7 +10,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-#pragma warning disable CS1591
+#pragma warning disable CS1591, CS0618
 namespace MSCLoader
 {
     /// <summary> Enumeration of the game's scenes.</summary>
@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0.8";
+        public static readonly string Version = "1.0.9";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -749,15 +749,5 @@ namespace MSCLoader
     {
         public ModLoader modLoader;
         void FixedUpdate() => modLoader.ModFixedUpdate();
-    }
-
-    class ModOnSave : FsmStateAction
-    {
-        public ModLoader modLoader;
-        public override void OnEnter()
-        {
-            modLoader.ModOnSave();
-            Finish();
-        }
     }
 }

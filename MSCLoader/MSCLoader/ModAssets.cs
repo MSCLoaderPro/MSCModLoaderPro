@@ -203,8 +203,7 @@ namespace MSCLoader
         /// <returns>Loaded Mesh.</returns>
         public static Mesh LoadMeshOBJ(string filePath)
         {
-            // http://wiki.unity3d.com/index.php/FastObjImporter
-            return FastObjImporter.Instance.ImportFile(filePath);
+            return ObjImporter.LoadMesh(filePath);
         }
     }
 }

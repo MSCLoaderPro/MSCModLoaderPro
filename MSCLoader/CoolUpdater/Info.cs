@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+#pragma warning disable IDE1006
 namespace CoolUpdater
 {
     public partial class Info : Form
@@ -20,8 +21,6 @@ namespace CoolUpdater
 
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
-
-        string modsPath;
 
         [DllImport("gdi32.dll")]
         private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont,
@@ -44,7 +43,6 @@ namespace CoolUpdater
         public Info()
         {
             InitializeComponent();
-            this.modsPath = modsPath;
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_HIDE);
 

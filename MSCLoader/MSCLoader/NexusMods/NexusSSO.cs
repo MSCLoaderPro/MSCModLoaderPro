@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using UnityEngine.UI;
 
+#pragma warning disable CS0169, IDE1006
 namespace MSCLoader.NexusMods
 {
     class NexusSSO : MonoBehaviour

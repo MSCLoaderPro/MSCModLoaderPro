@@ -13,6 +13,7 @@ using System.Reflection;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 
+#pragma warning disable IDE1006
 namespace CoolUpdater
 {
     public partial class UpdateView : Form
@@ -347,13 +348,15 @@ namespace CoolUpdater
         private void btnStartGame_Click(object sender, EventArgs e)
         {
             Log($"Restarting game now using Steam");
-            Process cmd = new Process();
-            cmd.StartInfo = new ProcessStartInfo
+            Process cmd = new Process
             {
-                FileName = "cmd.exe",
-                Arguments = "/C start \"\" \"steam://rungameid/516750\"",
-                UseShellExecute = false,
-                CreateNoWindow = true
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/C start \"\" \"steam://rungameid/516750\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
             };
             cmd.Start();
 
@@ -441,13 +444,15 @@ namespace CoolUpdater
         private void btnNoSteam_Click(object sender, EventArgs e)
         {
             Log($"Restarting game now using Steam");
-            Process cmd = new Process();
-            cmd.StartInfo = new ProcessStartInfo
+            Process cmd = new Process
             {
-                FileName = "cmd.exe",
-                Arguments = "/C start \"\" \"..\\mysummercar.exe\"",
-                UseShellExecute = false,
-                CreateNoWindow = true
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/C start \"\" \"..\\mysummercar.exe\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
             };
             cmd.Start();
 

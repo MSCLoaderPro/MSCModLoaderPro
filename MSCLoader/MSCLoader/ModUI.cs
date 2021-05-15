@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-#pragma warning disable CS1591, IDE1006
+#pragma warning disable CS1591, IDE1006, CS0649
 namespace MSCLoader
 {
     internal class SwitchToggleGraphic : MonoBehaviour

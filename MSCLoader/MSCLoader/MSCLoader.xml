@@ -4,96 +4,6 @@
         <name>MSCLoader</name>
     </assembly>
     <members>
-        <member name="E:AudioLibrary.MP3_Streaming.ReadFullyStream.StreamTitleChanged">
-            <summary>
-            Is fired, when a new StreamTitle is received
-            </summary>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.ParseMetaInfo(System.Byte[])">
-            <summary>
-            Parses the received Meta Info
-            </summary>
-            <param name="metaInfo"></param>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.OnStreamTitleChanged">
-            <summary>
-            Fires the StreamTitleChanged event
-            </summary>
-        </member>
-        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanRead">
-            <summary>
-            Gets a value that indicates whether the ShoutcastStream supports reading.
-            </summary>
-        </member>
-        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanSeek">
-            <summary>
-            Gets a value that indicates whether the ShoutcastStream supports seeking.
-            This property will always be false.
-            </summary>
-        </member>
-        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanWrite">
-            <summary>
-            Gets a value that indicates whether the ShoutcastStream supports writing.
-            This property will always be false.
-            </summary>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Flush">
-            <summary>
-            Flushes data from the stream.
-            This method is currently not supported
-            </summary>
-        </member>
-        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.Length">
-            <summary>
-            Gets the length of the data available on the Stream.
-            This property is not currently supported and always thows a <see cref="T:System.NotSupportedException"/>.
-            </summary>
-        </member>
-        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.Position">
-            <summary>
-            Gets or sets the current position in the stream.
-            This property is not currently supported and always thows a <see cref="T:System.NotSupportedException"/>.
-            </summary>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Reads data from the ShoutcastStream.
-            </summary>
-            <param name="buffer">An array of bytes to store the received data from the ShoutcastStream.</param>
-            <param name="offset">The location in the buffer to begin storing the data to.</param>
-            <param name="count">The number of bytes to read from the ShoutcastStream.</param>
-            <returns>The number of bytes read from the ShoutcastStream.</returns>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Close">
-            <summary>
-            Closes the ShoutcastStream.
-            </summary>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Seek(System.Int64,System.IO.SeekOrigin)">
-            <summary>
-            Sets the current position of the stream to the given value.
-            This Method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
-            </summary>
-            <param name="offset"></param>
-            <param name="origin"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.SetLength(System.Int64)">
-            <summary>
-            Sets the length of the stream.
-            This Method always throws a <see cref="T:System.NotSupportedException"/>.
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Write(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Writes data to the ShoutcastStream.
-            This method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
-            </summary>
-            <param name="buffer"></param>
-            <param name="offset"></param>
-            <param name="count"></param>
-        </member>
         <member name="T:MSCLoader.ModAudio">
             <summary>
             Audio library (play local *.mp3, *.ogg, *.wav, *.aiff)
@@ -173,44 +83,6 @@
             </summary>
             <param name="stream">File stream</param>
             <returns>List of paths to files/urls</returns>
-        </member>
-        <member name="T:MSCLoader.PlayMakerExtensions">
-            <summary>
-            PlayMaker extensions for Unity API
-            </summary>
-        </member>
-        <member name="M:MSCLoader.PlayMakerExtensions.GetPlayMaker(UnityEngine.GameObject,System.String)">
-            <summary>
-            Get PlayMaker from this object by Name
-            </summary>
-            <param name="obj">this game object</param>
-            <param name="playMakerName">Name of the PlayMaker</param>
-            <returns>PlayMakerFSM</returns>
-        </member>
-        <member name="M:MSCLoader.PlayMakerExtensions.GetPlayMaker(UnityEngine.Transform,System.String)">
-            <summary>
-            Get PlayMaker from this object by Name
-            </summary>
-            <param name="t">this transform</param>
-            <param name="playMakerName">Name of the PlayMaker</param>
-            <returns>PlayMakerFSM</returns>
-        </member>
-        <member name="M:MSCLoader.PlayMakerExtensions.GetPlayMakerState(UnityEngine.GameObject,System.String)">
-            <summary>
-            Get PlayMaker state from this object by Name
-            </summary>
-            <param name="obj">this game object</param>
-            <param name="stateName">Name of the PlayMaker state</param>
-            <returns>FsmState</returns>
-        </member>
-        <member name="M:MSCLoader.PlayMakerExtensions.FsmInject(UnityEngine.GameObject,System.String,System.Action)">
-            <summary>
-            FSM Inject as extension (same as old FsmHook.FsmInject)
-            </summary>
-            <param name="gameObject">GameObject where to hook</param>
-            <param name="stateName">Name of the state</param>
-            <param name="hook">Your function to hook</param>
-            <example><code lang="C#" title="Fsm Inject as Extension">GameObject.Find("Some game object").FsmInject("state name", function);</code></example>
         </member>
         <member name="T:MSCLoader.ModAssets">
             <summary>Holder class for all things related to asset loading.</summary>
@@ -299,6 +171,34 @@
         </member>
         <member name="T:MSCLoader.ModEarlyAccess">
             <summary>Class containing useful features pertaining to Early Access for mods.</summary>
+        </member>
+        <member name="M:MSCLoader.ModEarlyAccess.CheckDateAndDisable(MSCLoader.Mod,System.String,System.String,System.String,System.Boolean)">
+            <summary> Checks the current date and disables the mod if the date is outside specified date interval. </summary>
+            <param name="mod">Mod in question.</param>
+            <param name="startDate">Starting date of the interval.</param>
+            <param name="endDate">End date of the interval.</param>
+            <param name="disableMessage">Message to show the user if outside the date interval.</param>
+            <param name="onlineTimeOnly">Check online time only.</param>
+        </member>
+        <member name="M:MSCLoader.ModEarlyAccess.CheckDate(System.String,System.String,System.Boolean)">
+            <summary> Check if the current date is outside the specified date interval</summary>
+            <param name="startDate">Starting date of the interval.</param>
+            <param name="endDate">End date of the interval.</param>
+            <param name="onlineTimeOnly">Check online time only.</param>
+            <returns>Whether or not the current date is outside the specified date interval.</returns>
+        </member>
+        <member name="M:MSCLoader.ModEarlyAccess.DisableMod(MSCLoader.Mod,System.String)">
+            <summary> Disables a mod completely, hiding it from the mod list.</summary>
+            <param name="mod">Mod in question.</param>
+            <param name="disableMessage">Message to show the user.</param>
+        </member>
+        <member name="M:MSCLoader.ModEarlyAccess.GetDate">
+            <summary> Get the current date, online with offline backup.</summary>
+            <returns>The current date.</returns>
+        </member>
+        <member name="M:MSCLoader.ModEarlyAccess.GetOnlineDate">
+            <summary> Get the current date, online.</summary>
+            <returns>The current date.</returns>
         </member>
         <member name="T:MSCLoader.Helper.ModHelper">
             <summary> Container for useful helper methods </summary>
@@ -1276,7 +1176,11 @@
               Looks up a localized resource of type System.Byte[].
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:MSCLoader.Properties.Resources.Sources" -->
+        <member name="P:MSCLoader.Properties.Resources.Sources">
+            <summary>
+              Looks up a localized string similar to 
+            </summary>
+        </member>
         <member name="T:MSCLoader.ModSetting">
             <summary>Parent class for settings.</summary>
         </member>
@@ -1604,6 +1508,96 @@
         </member>
         <member name="F:MSCLoader.SettingString.Value">
             <summary>Current setting value.</summary>
+        </member>
+        <member name="E:AudioLibrary.MP3_Streaming.ReadFullyStream.StreamTitleChanged">
+            <summary>
+            Is fired, when a new StreamTitle is received
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.ParseMetaInfo(System.Byte[])">
+            <summary>
+            Parses the received Meta Info
+            </summary>
+            <param name="metaInfo"></param>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.OnStreamTitleChanged">
+            <summary>
+            Fires the StreamTitleChanged event
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanRead">
+            <summary>
+            Gets a value that indicates whether the ShoutcastStream supports reading.
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanSeek">
+            <summary>
+            Gets a value that indicates whether the ShoutcastStream supports seeking.
+            This property will always be false.
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.CanWrite">
+            <summary>
+            Gets a value that indicates whether the ShoutcastStream supports writing.
+            This property will always be false.
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Flush">
+            <summary>
+            Flushes data from the stream.
+            This method is currently not supported
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.Length">
+            <summary>
+            Gets the length of the data available on the Stream.
+            This property is not currently supported and always thows a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+        </member>
+        <member name="P:AudioLibrary.MP3_Streaming.ReadFullyStream.Position">
+            <summary>
+            Gets or sets the current position in the stream.
+            This property is not currently supported and always thows a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads data from the ShoutcastStream.
+            </summary>
+            <param name="buffer">An array of bytes to store the received data from the ShoutcastStream.</param>
+            <param name="offset">The location in the buffer to begin storing the data to.</param>
+            <param name="count">The number of bytes to read from the ShoutcastStream.</param>
+            <returns>The number of bytes read from the ShoutcastStream.</returns>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Close">
+            <summary>
+            Closes the ShoutcastStream.
+            </summary>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Sets the current position of the stream to the given value.
+            This Method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="offset"></param>
+            <param name="origin"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.SetLength(System.Int64)">
+            <summary>
+            Sets the length of the stream.
+            This Method always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AudioLibrary.MP3_Streaming.ReadFullyStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes data to the ShoutcastStream.
+            This method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="buffer"></param>
+            <param name="offset"></param>
+            <param name="count"></param>
         </member>
         <member name="P:NAudio.Vorbis.VorbisWaveReader.UpperBitrate">
             <summary>
