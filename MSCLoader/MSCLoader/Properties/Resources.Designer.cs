@@ -85,15 +85,7 @@ namespace MSCLoader.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // This file contains sources of mod updates for mods that are not made for Mod Loader Pro.
-        ///// If you want to add your own sources, DO NOT DO THAT HERE! This file will be overwritten on each update!
-        ///// If you want to add custom sources, do that in UserSources.txt!
-        ///
-        ///BetterFPSCounter https://www.nexusmods.com/mysummercar/mods/378
-        ///DeveloperToolsetII https://www.nexusmods.com/mysummercar/mods/345
-        ///FifthGear https://www.nexusmods.com/mysummercar/mods/221
-        ///MOP https://github.com/Athlon007/MOP
-        ///CDPlayer https [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to 
         /// </summary>
         internal static string Sources {
             get {

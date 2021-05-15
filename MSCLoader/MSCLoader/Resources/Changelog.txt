@@ -1,4 +1,6 @@
 Version 1.0.9
+	Fixed how OBJ model importing loads files not made with Blender.
+	Cleaned up legacy code.
 	Fixed ModUpdater glitching out, if the user was not logged in
 	Fixed bunch of issues related to non-premium NexusMods users in mod updating system
 	Fixed cancelling NexusMods login causing it to not work until after game restart

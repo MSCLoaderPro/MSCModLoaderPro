@@ -116,6 +116,15 @@ namespace MSCLoader.Helper
         public static string GetCD1Folder() => $@"{Path.GetFullPath(".")}\CD1";
         public static string GetCD2Folder() => $@"{Path.GetFullPath(".")}\CD2";
         public static string GetCD3Folder() => $@"{Path.GetFullPath(".")}\CD3";
+
+        public static bool StartsWithAny(this string text, params string[] values)
+        {
+            for (int i = 0; i < values.Length; i++)
+                if (text.StartsWith(values[i])) 
+                    return true;
+
+            return false;
+        }
     }
     /// <summary>Container for PlayMaker related helper and extension methods.</summary>
     public static class PlayMakerHelper

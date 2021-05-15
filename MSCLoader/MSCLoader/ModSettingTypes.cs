@@ -10,7 +10,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Outline = unityUI.UnityEngine.UI.Outline;
 
-#pragma warning disable CS1591
+#pragma warning disable CS1591, CS0649
 namespace MSCLoader
 {
     /// <summary>Parent class for settings.</summary>
@@ -120,8 +120,7 @@ namespace MSCLoader
 
         WaitForEndOfFrame wait = new WaitForEndOfFrame();
 
-        [SerializeField]
-        GameObject bindButtons;
+        [SerializeField] GameObject bindButtons;
         bool cancelBind;
         bool deleteBind;
 

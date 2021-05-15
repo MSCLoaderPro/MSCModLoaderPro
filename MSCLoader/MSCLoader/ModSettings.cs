@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-#pragma warning disable CS1591
+#pragma warning disable CS1591, CS0649
 namespace MSCLoader
 {
     /// <summary>Handler for all the mod windows.</summary>

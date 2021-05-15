@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+#pragma warning disable CS1591, IDE1006
 namespace MSCLoader.NexusMods.JSONClasses.GitHub
 {
     class GitHubReleases

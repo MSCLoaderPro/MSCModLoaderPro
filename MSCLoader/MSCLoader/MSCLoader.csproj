@@ -34,19 +34,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>F:\SteamGames\steamapps\common\MSC ModLoader OG\My Summer Car\mysummercar_Data\Managed\0Harmony.dll</HintPath>
+      <HintPath>..\Release\mysummercar_Data\Managed\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="cInput">
-      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\cInput.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\cInput.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NAudio">
@@ -67,7 +67,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayMaker">
-      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\PlayMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -79,16 +79,17 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>F:\SteamGames\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>E:\Spelmapp 3\Steam Library\steamapps\common\My Summer Car\mysummercar_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Aliases>global, unityUI</Aliases>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExternalLibrary\OBJImporter.cs" />
     <Compile Include="Legacy\AudioLibrary\AudioFileReader.cs" />
     <Compile Include="Legacy\AudioLibrary\Manager.cs" />
     <Compile Include="Legacy\AudioLibrary\ModAudio.cs" />
@@ -103,7 +104,6 @@
     <Compile Include="Legacy\Keybind.cs" />
     <Compile Include="Legacy\LoadAssets.cs" />
     <Compile Include="Legacy\ModUI.cs" />
-    <Compile Include="Legacy\OBJLoader.cs" />
     <Compile Include="Legacy\PlayMakerExtensions.cs" />
     <Compile Include="Legacy\SaveLoad.cs" />
     <Compile Include="Legacy\Settings.cs" />
@@ -124,8 +124,9 @@
     <Compile Include="MSCLoader.cs" />
     <Compile Include="ModUnloader.cs" />
     <Compile Include="MSCLoaderHarmonyPatches.cs" />
-    <Compile Include="NexusMods\JSONClasses\NexusMods.cs" />
     <Compile Include="NexusMods\JSONClasses\GitHub.cs" />
+    <Compile Include="NexusMods\JSONClasses\NexusMods.cs" />
+    <Compile Include="NexusMods\JSONClasses\Sources.cs" />
     <Compile Include="NexusMods\NexusSSO.cs" />
     <Compile Include="NexusMods\DataStorage.cs" />
     <Compile Include="NexusMods\UserInfo.cs" />
@@ -136,7 +137,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ModSettingTypes.cs" />
-    <Compile Include="ExternalLibrary\FastOBJImporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -149,6 +149,7 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="Resources\mscloadercanvas" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Credits.txt" />
@@ -157,7 +158,6 @@
     <EmbeddedResource Include="Resources\Changelog.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\mscloadercanvas" />
     <None Include="Resources\Sources.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

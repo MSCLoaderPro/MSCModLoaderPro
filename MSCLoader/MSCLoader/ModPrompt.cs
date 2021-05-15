@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+#pragma warning disable CS1591
 namespace MSCLoader
 {
     /// <summary>ModPrompt Component for a prompt window.</summary>
