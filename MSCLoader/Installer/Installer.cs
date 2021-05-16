@@ -60,146 +60,302 @@ namespace Installer
 
             instance = this;
 
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            labVer.Text = version.Major + "." + version.Minor;
-            if (version.Build != 0)
+            try
             {
-                labVer.Text += "." + version.Build;
+                Version version = Assembly.GetExecutingAssembly().GetName().Version;
+                labVer.Text = version.Major + "." + version.Minor;
+                if (version.Build != 0)
+                {
+                    labVer.Text += "." + version.Build;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "VER_LABEL\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
             }
 
-            byte[] fontData = Properties.Resources.FugazOne_Regular;
-            IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
-            Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
-            uint dummy = 0;
-            fonts.AddMemoryFont(fontPtr, Properties.Resources.FugazOne_Regular.Length);
-            AddFontMemResourceEx(fontPtr, (uint)Properties.Resources.FugazOne_Regular.Length, IntPtr.Zero, ref dummy);
-            Marshal.FreeCoTaskMem(fontPtr);
-
-            myFont = new Font(fonts.Families[0], 16.0F);
-
-            title.Font = myFont;
-            title.SetToCenter(this);
-            title.BackColor = Color.Transparent;
-            title.MouseMove += DragWindowByThis;
-
-            panel1.Paint += WhiteBorder;
-            panel1.MouseMove += DragWindowByThis;
-            panel2.Paint += WhiteBorder;
-
-            foreach (Control control in GetAllControls(this, typeof(Button)))
+            try
             {
-                control.Font = myFont;
-                (control as Button).TextAlign = ContentAlignment.MiddleCenter;
-                (control as Button).BackColor = colorBtn;
-                (control as Button).ForeColor = Color.Yellow;   
-                (control as Button).UseCompatibleTextRendering = true;
-                (control as Button).FlatStyle = FlatStyle.Flat;
-                (control as Button).FlatAppearance.BorderSize = 0;
+                byte[] fontData = Properties.Resources.FugazOne_Regular;
+                IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+                Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
+                uint dummy = 0;
+                fonts.AddMemoryFont(fontPtr, Properties.Resources.FugazOne_Regular.Length);
+                AddFontMemResourceEx(fontPtr, (uint)Properties.Resources.FugazOne_Regular.Length, IntPtr.Zero, ref dummy);
+                Marshal.FreeCoTaskMem(fontPtr);
+
+                myFont = new Font(fonts.Families[0], 16.0F);
+
+                title.Font = myFont;
+                title.SetToCenter(this);
+                title.BackColor = Color.Transparent;
+                title.MouseMove += DragWindowByThis;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "FONT_LOAD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
             }
 
-            foreach (Control control in GetAllControls(this, typeof(Label)))
+            try
             {
-                control.Font = myFont;
-                control.BackColor = Color.Transparent;
-                (control as Label).ForeColor = Color.White;
-                if (control.Name == "labVer") continue;
-                control.SetToCenter(this);
-                (control as Label).TextAlign = ContentAlignment.MiddleCenter;
+                panel1.Paint += WhiteBorder;
+                panel1.MouseMove += DragWindowByThis;
+                panel2.Paint += WhiteBorder;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "BORDER_RENDER\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
             }
 
-            foreach (Control control in GetAllControls(this, typeof(TextBox)))
+            try
             {
-                control.Font = myFont;
-                (control as TextBox).BackColor = colorBtn;
-                (control as TextBox).ForeColor = Color.White;
-                (control as TextBox).BorderStyle = BorderStyle.None;
+                foreach (Control control in GetAllControls(this, typeof(Button)))
+                {
+                    control.Font = myFont;
+                    (control as Button).TextAlign = ContentAlignment.MiddleCenter;
+                    (control as Button).BackColor = colorBtn;
+                    (control as Button).ForeColor = Color.Yellow;
+                    (control as Button).UseCompatibleTextRendering = true;
+                    (control as Button).FlatStyle = FlatStyle.Flat;
+                    (control as Button).FlatAppearance.BorderSize = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "BUTTON_MOD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
             }
 
-            foreach (Control control in GetAllControls(this, typeof(ProgressBar)))
+            try
             {
-                (control as ProgressBar).ForeColor = Color.Yellow;
-                control.BackColor = colorBtn;
-                control.SetToCenter(this);
-                (control as ProgressBar).Style = ProgressBarStyle.Continuous;
+                foreach (Control control in GetAllControls(this, typeof(Label)))
+                {
+                    control.Font = myFont;
+                    control.BackColor = Color.Transparent;
+                    (control as Label).ForeColor = Color.White;
+                    if (control.Name == "labVer") continue;
+                    control.SetToCenter(this);
+                    (control as Label).TextAlign = ContentAlignment.MiddleCenter;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "LABEL_MOD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
             }
 
-            foreach (Control control in GetAllControls(this, typeof(CheckBox)))
+            try
             {
-                control.Font = myFont;
-                control.BackColor = Color.Transparent;
-                (control as CheckBox).ForeColor = Color.White;
-                control.SetToCenter(this);
+                foreach (Control control in GetAllControls(this, typeof(TextBox)))
+                {
+                    control.Font = myFont;
+                    (control as TextBox).BackColor = colorBtn;
+                    (control as TextBox).ForeColor = Color.White;
+                    (control as TextBox).BorderStyle = BorderStyle.None;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "TEXTBOX_MOD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
             }
 
-            tabs.Appearance = TabAppearance.FlatButtons;
-            tabs.ItemSize = new Size(0, 1);
-            tabs.SizeMode = TabSizeMode.Fixed;
-            tabs.Left = -1;
-            tabs.Top = -2;
-            tabs.Width = tabs.Parent.Width + 1;
-            tabs.Height = tabs.Parent.Height + 2;
-
-            foreach (TabPage theTab in tabs.TabPages)
+            try
             {
-                theTab.BackColor = this.BackColor;
-                theTab.BorderStyle = BorderStyle.None;
+                foreach (Control control in GetAllControls(this, typeof(ProgressBar)))
+                {
+                    (control as ProgressBar).ForeColor = Color.Yellow;
+                    control.BackColor = colorBtn;
+                    control.SetToCenter(this);
+                    (control as ProgressBar).Style = ProgressBarStyle.Continuous;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "PROGRESS_MOD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
             }
 
-            panelPath.SetToCenter(this);
-            btnBrowse.Height = txtboxPath.Height - 7;
-            btnBrowseMods.Height = txtboxPath.Height - 7;
-            btnDownload.SetToCenter(this);
+            try
+            {
+                foreach (Control control in GetAllControls(this, typeof(CheckBox)))
+                {
+                    control.Font = myFont;
+                    control.BackColor = Color.Transparent;
+                    (control as CheckBox).ForeColor = Color.White;
+                    control.SetToCenter(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
 
-            labelBadMessage.ForeColor = Color.Red;
+                System.IO.File.WriteAllText("CRASH.txt", "BUTTON_MOD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
+            }
 
-            btnExit.ForeColor = Color.Red;
-            btnClose.Click += btnExit_Click;
+            try
+            {
+                tabs.Appearance = TabAppearance.FlatButtons;
+                tabs.ItemSize = new Size(0, 1);
+                tabs.SizeMode = TabSizeMode.Fixed;
+                tabs.Left = -1;
+                tabs.Top = -2;
+                tabs.Width = tabs.Parent.Width + 1;
+                tabs.Height = tabs.Parent.Height + 2;
 
-            Font smallFont = new Font(myFont.FontFamily, 12, myFont.Style);
-            labWarning.Font = smallFont;
-            labWarning.SetToCenter(this);
+                foreach (TabPage theTab in tabs.TabPages)
+                {
+                    theTab.BackColor = this.BackColor;
+                    theTab.BorderStyle = BorderStyle.None;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
 
-            txtboxPath.ShortcutsEnabled = false;
-            txtModsFolderName.ShortcutsEnabled = false;
+                System.IO.File.WriteAllText("CRASH.txt", "TABS_MOD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
+            }
 
-            btnPlay.SetToCenter(this);
-            btnClose.SetToCenter(this);
-            btnDevmenu.SetToCenter(this);
-            btnInstallDev.SetToCenter(this);
-            btnPlayNoSteam.SetToCenter(this);
-            btnPlayNoSteam.Font = smallFont;
-            btnLicenses.Font = smallFont;
-            btnWebsite.Font = smallFont;
+            try
+            {
+                panelPath.SetToCenter(this);
+                btnBrowse.Height = txtboxPath.Height - 7;
+                btnBrowseMods.Height = txtboxPath.Height - 7;
+                btnDownload.SetToCenter(this);
+
+                labelBadMessage.ForeColor = Color.Red;
+
+                btnExit.ForeColor = Color.Red;
+                btnClose.Click += btnExit_Click;
+
+                Font smallFont = new Font(myFont.FontFamily, 12, myFont.Style);
+                labWarning.Font = smallFont;
+                labWarning.SetToCenter(this);
+
+                txtboxPath.ShortcutsEnabled = false;
+                txtModsFolderName.ShortcutsEnabled = false;
+
+                btnPlay.SetToCenter(this);
+                btnClose.SetToCenter(this);
+                btnDevmenu.SetToCenter(this);
+                btnInstallDev.SetToCenter(this);
+                btnPlayNoSteam.SetToCenter(this);
+                btnPlayNoSteam.Font = smallFont;
+                btnLicenses.Font = smallFont;
+                btnWebsite.Font = smallFont;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                "Please file a bug report with the content of that error.");
+
+                System.IO.File.WriteAllText("CRASH.txt", "MINOR_MOD\n\n" + ex.ToString());
+                System.Diagnostics.Process.Start("CRASH.txt");
+            }
 
             switch (mode)
             {
                 default:
-                    // Get MSC Path;
-                    mscPath = CustomExtensions.GetMSCPath();
-                    if (!string.IsNullOrEmpty(mscPath))
+                    try
                     {
-                        SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
-                        txtboxPath.Text = mscPath;
-                        btnDownload.Enabled = true;
-                        CheckOldMscloaderModFolder();
+                        // Get MSC Path;
+                        mscPath = CustomExtensions.GetMSCPath();
+                        if (!string.IsNullOrEmpty(mscPath))
+                        {
+                            SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
+                            txtboxPath.Text = mscPath;
+                            btnDownload.Enabled = true;
+                            CheckOldMscloaderModFolder();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                        "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                        "Please file a bug report with the content of that error.");
+
+                        System.IO.File.WriteAllText("CRASH.txt", "LOAD_DEFAULT\n\n" + ex.ToString());
+                        System.Diagnostics.Process.Start("CRASH.txt");
                     }
                     break;
                 case Modes.FastInstall:
-                    this.mscPath = arg.Replace("\\", "/");
-                    DoFastInstall();
+                    try
+                    {
+                        this.mscPath = arg.Replace("\\", "/");
+                        DoFastInstall();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                        "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                        "Please file a bug report with the content of that error.");
+
+                        System.IO.File.WriteAllText("CRASH.txt", "LOAD_FAST\n\n" + ex.ToString());
+                        System.Diagnostics.Process.Start("CRASH.txt");
+                    }
                     break;
                 case Modes.OfflineInstall:
-                    labVer.Text += " (OFFLINE MODE)";
-                    mscPath = CustomExtensions.GetMSCPath();
-                    if (!string.IsNullOrEmpty(mscPath))
+                    try
                     {
-                        SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
-                        txtboxPath.Text = mscPath;
-                        btnDownload.Enabled = true;
+                        labVer.Text += " (OFFLINE MODE)";
+                        mscPath = CustomExtensions.GetMSCPath();
+                        if (!string.IsNullOrEmpty(mscPath))
+                        {
+                            SetBadMessage("My Summer Car folder found automatically!", Color.LightGreen);
+                            txtboxPath.Text = mscPath;
+                            btnDownload.Enabled = true;
+                        }
+                        OfflineMode = true;
+                        OfflineZipPath = arg;
+                        btnDevmenu.Enabled = false;
                     }
-                    OfflineMode = true;
-                    OfflineZipPath = arg;
-                    btnDevmenu.Enabled = false;
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error has occured and Installer could not be started.\n" +
+                                        "An error log has been created into a TXT file that will open automatically, after you close this window.\n\n" +
+                                        "Please file a bug report with the content of that error.");
+
+                        System.IO.File.WriteAllText("CRASH.txt", "LOAD_OFFLINE\n\n" + ex.ToString());
+                        System.Diagnostics.Process.Start("CRASH.txt");
+                    }
                     break;
             }
         }

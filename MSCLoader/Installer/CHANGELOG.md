@@ -1,6 +1,12 @@
 # Changelog
 
-### 1.0.3 (14.05.2021)
+## 1.0.4 (16.05.02021)
+
+### Changes
+
+- Installer should throw an error, if it fails to load
+
+## 1.0.3 (14.05.2021)
 
 ### Added
 
