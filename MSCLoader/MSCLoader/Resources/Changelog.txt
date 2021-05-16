@@ -8,6 +8,7 @@ Version 1.0.9
 	Fixed Credits button linking to the wrong URL.
 	Extended logging for some of the features.
 	Fixed the top menu label text disappearing too soon.
+	Fixed mod auto updates not working for people who have Mods folder outside of MSC
 
 Version 1.0.8
 	Changed the Keybind setting to allow binding the left and right mousebutton.

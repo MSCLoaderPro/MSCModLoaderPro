@@ -316,7 +316,7 @@ namespace MSCLoader
 
         void StartInstaller()
         {
-            string pathToGame = Path.GetFullPath(ModLoader.ModsFolder).Replace("\\" + MSCLoader.settings.ModsFolderPath, "").Replace(" ", "%20");
+            string pathToGame = Application.dataPath.Replace("mysummercar_Data", "").Replace(" ", "%20");
 
             Process p = new Process
             {
