@@ -77,20 +77,14 @@ namespace MSCLoader
         public virtual void ModSettingsClose() { }
 
         #region Obsolete Methods
-        [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual bool UseAssetsFolder => false;
-        [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual bool LoadInMenu => false;
-        [Obsolete("Deprecated, not needed."), EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual bool SecondPass => false;
-        [Obsolete("Deprecated, use PostLoad() instead."), EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual void SecondPassOnLoad() { }
-        [Obsolete("Deprecated, use MenuOnLoad() instead."), EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual void OnMenuLoad() { }
+        internal virtual bool UseAssetsFolder => false;
+        internal virtual bool LoadInMenu => false;
+        internal virtual bool SecondPass => false;
+        internal virtual void SecondPassOnLoad() { }
+        internal virtual void OnMenuLoad() { }
 
         internal bool disabled = false;
-        [Obsolete("Deprecated, use Enabled instead."), EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual bool isDisabled { get => !enabled; internal set { enabled = !value; modListElement.SetModEnabled(!value); } }
+        internal virtual bool isDisabled { get => !enabled; set { enabled = !value; modListElement.SetModEnabled(!value); } }
 
         bool update = false;
         internal virtual bool hasUpdate { get => update;  set => update = value; }

@@ -118,7 +118,7 @@ namespace MSCLoader
                         }
                     }
 
-                    StartCoroutine(NotifyUpdatesAvailable());
+                    NotifyUpdatesAvailable();
                 }
             }
 
@@ -850,8 +850,11 @@ namespace MSCLoader
         IEnumerator currentSliderText;
         IEnumerator UpdateSliderText(string finishedMessage)
         {
+            labelTextTimer = 0f;
             menuLabelUpdateText.gameObject.SetActive(true);
+
             WaitForSeconds wait = new WaitForSeconds(0.25f);
+
             int numberOfDots = 0;
             while (isBusy)
             {
@@ -875,10 +878,7 @@ namespace MSCLoader
                 menuLabelUpdateText.text += $"<color=#87f032>{updateMessage}</color>";
             }
 
-            yield return new WaitForSeconds(5f);
-
-            headerProgressBar.SetActive(false);
-            menuLabelUpdateText.gameObject.SetActive(false);
+            labelTextTimer = 5f;
         }
 
         void ClearSliderText()
@@ -887,20 +887,39 @@ namespace MSCLoader
             menuLabelUpdateText.gameObject.SetActive(false);
         }
 
-        IEnumerator NotifyUpdatesAvailable()
+        void NotifyUpdatesAvailable()
         {
             int updateCount = ModLoader.LoadedMods.Count(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
+
             if (updateCount > 0)
             {
+                labelTextTimer = 0f;
                 menuLabelUpdateText.gameObject.SetActive(true);
 
                 string updateMessage = updateCount > 1 ? $" THERE ARE {updateCount} MOD UPDATES AVAILABLE!" : $" THERE IS {updateCount} MOD UPDATE AVAILABLE!";
                 menuLabelUpdateText.text = $"<color=#87f032>{updateMessage}</color>";
 
-                yield return new WaitForSeconds(5f);
-                if (!IsBusy) menuLabelUpdateText.gameObject.SetActive(false);
+                labelTextTimer = 5f;
             }
         }
+
+        float labelTextTimer = 0f;
+
+        void Update()
+        {
+            if (labelTextTimer > 0f)
+            {
+                labelTextTimer -= Time.deltaTime;
+
+                if (labelTextTimer <= 0f)
+                {
+                    menuLabelUpdateText.gameObject.SetActive(false);
+                    headerProgressBar.SetActive(false);
+                }
+
+            }
+        }
+
         #endregion
         #region Helpers
         void CheckIfNewerVersionAvailable(Mod mod)
@@ -1231,7 +1250,7 @@ namespace MSCLoader
                 }
                 catch (Exception ex)
                 {
-                    ModConsole.LogError($"Unable to download mod update {updateDownloadQueue[i].ID} :(\n\n{ex.ToString()}");
+                    ModConsole.LogError($"Unable to download mod update {updateDownloadQueue[i].ID} :(\n\n{ex}");
                 }
             }
 

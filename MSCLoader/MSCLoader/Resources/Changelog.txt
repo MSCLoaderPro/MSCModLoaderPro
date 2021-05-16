@@ -1,10 +1,13 @@
 Version 1.0.9
 	Fixed how OBJ model importing loads files not made with Blender.
 	Cleaned up legacy code.
-	Fixed ModUpdater glitching out, if the user was not logged in
-	Fixed bunch of issues related to non-premium NexusMods users in mod updating system
-	Fixed cancelling NexusMods login causing it to not work until after game restart
-	Fixed mod updater getting stuck, if mod does not have a default picture set on NexusMods
+	Fixed ModUpdater glitching out, if the user was not logged in.
+	Fixed bunch of issues related to non-premium NexusMods users in mod updating system.
+	Fixed cancelling NexusMods login causing it to not work until after game restart.
+	Fixed mod updater getting stuck, if mod does not have a default picture set on NexusMods.
+	Fixed Credits button linking to the wrong URL.
+	Extended logging for some of the features.
+	Fixed the top menu label text disappearing too soon.
 
 Version 1.0.8
 	Changed the Keybind setting to allow binding the left and right mousebutton.
@@ -12,18 +15,18 @@ Version 1.0.8
 	Deprecated the PartMagnet, BoltMagnet does the exact same thing with no bolts assigned.
 	Fixed potential save issue where a different method of calling the SAVEGAME event was used.
 	Sorted the mod list after the name of the mods rather than their file names (in case they'd be different from the name).
-	Added exception handler for if user exceeds GitHub request limit
-	CoolUpdater: 403 errors should now be handled correctly
-	CoolUpdater: Updated to version 1.0.4
-	Added MSCLoader.LoadingScreen
-	ModUpdater class rewritten from scratch - now should be faster and more reliable
-	Fixed shadow direction on the open settings arrows.
-	Added support for ".rar" and ".7z" archive formats, as well as support for "loose" libraries and executables (if they are a part of an archive)
-	CoolUpdater: Switched from Ionic.Zip to SharpCompress
-	Improved speed and reliability of update checking system
-	Added "Sources.json" file in ModUpdater folder - enables mods that don't natively support Mod Loader Pro to have auto updates
-	"Sources" file is updated automatically every 2 days
-	Mods not natively supported by Mod Loader Pro (and have been added into Sources.json) will have their info downloaded from NexusMods
+	Added exception handler for if user exceeds GitHub request limit.
+	Added MSCLoader.LoadingScreen.
+	Fixed shadow direction on the open settings arrows.	
+	ModUpdater class rewritten from scratch - now should be faster and more reliable.
+	Added support for ".rar" and ".7z" archive formats, as well as support for "loose" libraries and executables (if they are a part of an archive).
+	Improved speed and reliability of update checking system.
+	Added "Sources.json" file in ModUpdater folder - enables mods that don't natively support Mod Loader Pro to have auto updates.
+	"Sources" file is updated automatically every 2 days.
+	Mods not natively supported by Mod Loader Pro (and have been added into Sources.json) will have their info downloaded from NexusMods.
+	CoolUpdater: Updated to version 1.0.4.
+	CoolUpdater: 403 errors should now be handled correctly.
+	CoolUpdater: Switched from Ionic.Zip to SharpCompress.
 
 Version 1.0.7
 	Bolt components can now operate independently from a BoltMagnet component.

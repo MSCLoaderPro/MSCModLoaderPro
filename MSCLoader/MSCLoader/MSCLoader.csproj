@@ -98,7 +98,6 @@
     <Compile Include="Legacy\AudioLibrary\MP3_Streaming\ReadFullyStream.cs" />
     <Compile Include="Legacy\AudioLibrary\NAudio.Vorbis\VorbisWaveReader.cs" />
     <Compile Include="Legacy\AudioLibrary\Playlists.cs" />
-    <Compile Include="Legacy\Commands\CommandVersion.cs" />
     <Compile Include="Legacy\ConsoleController.cs" />
     <Compile Include="Legacy\FsmHook.cs" />
     <Compile Include="Legacy\Keybind.cs" />

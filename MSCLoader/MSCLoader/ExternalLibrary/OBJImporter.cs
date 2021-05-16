@@ -1,12 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Diagnostics;
-using System.Linq;
 using MSCLoader.Helper;
-using System;
 using static System.Convert;
 
 #pragma warning disable CS1591, IDE0017, IDE1006
@@ -67,9 +63,6 @@ namespace MSCLoader
         {
             int triangles = 0, vertices = 0, vt = 0, vn = 0, face = 0;
 
-            MeshData mesh = new MeshData();
-            mesh.fileName = Path.GetFileName(path);
-
             using (StreamReader stream = File.OpenText(path))
             {
                 string entireText = stream.ReadToEnd();
@@ -112,11 +105,14 @@ namespace MSCLoader
                 }
             }
 
-            mesh.triangles = new int[triangles];
+            MeshData mesh = new MeshData();
+
             mesh.vertices = new Vector3[vertices];
-            mesh.uv = new Vector2[vt];
             mesh.normals = new Vector3[vn];
             mesh.faceData = new Vector3[face];
+            mesh.uv = new Vector2[vt];
+            mesh.triangles = new int[triangles];
+            mesh.fileName = Path.GetFileName(path);
 
             return mesh;
         }
@@ -137,11 +133,6 @@ namespace MSCLoader
 
                     while (currentText != null)
                     {
-                        //!currentText.StartsWith("f ") && !currentText.StartsWith("v ") && !currentText.StartsWith("vt ") &&
-                        //!currentText.StartsWith("vn ") && !currentText.StartsWith("g ") && !currentText.StartsWith("usemtl ") &&
-                        //!currentText.StartsWith("mtllib ") && !currentText.StartsWith("vt1 ") && !currentText.StartsWith("vt2 ") &&
-                        //!currentText.StartsWith("vc ") && !currentText.StartsWith("usemap "))
-
                         if (!currentText.StartsWithAny("f ", "v ", "vt ", "vn ", "g ", "usemtl ", "mtllib ", "vt1 ", "vt2 ", "vc ", "usemap "))
                         {
                             currentText = reader.ReadLine();
@@ -183,21 +174,23 @@ namespace MSCLoader
                                     {
                                         Vector3 temp = new Vector3();
                                         brokenBrokenString = brokenString[j].Split(splitIdentifier2, 3);    //Separate the face into individual components (vert, uv, normal)
-                                        temp.x = System.Convert.ToInt32(brokenBrokenString[0]);
+                                        temp.x = ToInt32(brokenBrokenString[0]);
+
                                         if (brokenBrokenString.Length > 1)                                  //Some .obj files skip UV and normal
                                         {
                                             if (brokenBrokenString[1] != "")                                    //Some .obj files skip the uv and not the normal
-                                            {
-                                                temp.y = System.Convert.ToInt32(brokenBrokenString[1]);
-                                            }
-                                            temp.z = System.Convert.ToInt32(brokenBrokenString[2]);
+                                                temp.y = ToInt32(brokenBrokenString[1]);
+
+                                            temp.z = ToInt32(brokenBrokenString[2]);
                                         }
-                                        j++;
 
                                         mesh.faceData[f2] = temp;
                                         intArray.Add(f2);
                                         f2++;
+
+                                        j++;
                                     }
+
                                     j = 1;
                                     while (j + 2 < brokenString.Length)     //Create triangles out of the face data.  There will generally be more than 1 triangle per face.
                                     {
@@ -215,7 +208,6 @@ namespace MSCLoader
 
                             currentText = reader.ReadLine();
                             if (currentText != null) currentText = currentText.Replace("  ", " ");       //Some .obj files insert double spaces, this removes them.
-
                         }
                     }
                 }

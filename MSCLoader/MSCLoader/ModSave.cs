@@ -60,13 +60,15 @@ namespace MSCLoader
                     }
                     File.WriteAllText(filePath, clearText);
                 }
+
+                ModConsole.Log($"MODSAVE: File {fileName} successfully saved!");
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.LogError(ex);
-                ModConsole.LogError($"{fileName}: Couldn't be saved. \n{ex}");
+                ModConsole.LogError($"MODSAVE: File {fileName} couldn't be saved.\n{exception}");
             }
         }
+
         /// <summary>Loads a save file with the specified name.</summary>
         /// <typeparam name="T">Class to load.</typeparam>
         /// <param name="fileName">Name of the save file. (excluding extension)</param>
@@ -108,17 +110,20 @@ namespace MSCLoader
                     XmlReader xmlReader = XmlReader.Create(input);
 					T t = xmlSerializer.Deserialize(xmlReader) as T;
                     input.Close();
+
+                    ModConsole.Log($"MODSAVE: File {fileName} successfully loaded!");
+
                     return t;
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.LogError(ex);
-                ModConsole.LogError($"{fileName}: {ex}");
+                ModConsole.LogError($"MODSAVE: File {fileName} couldn't be loaded.\n{exception}");
             }
 
             return new T();
         }
+
         /// <summary>Deletes a save file of the specified name.</summary>
         /// <param name="fileName">Name of the save file. (excluding extension)</param>
         public static void Delete(string fileName)
@@ -127,9 +132,9 @@ namespace MSCLoader
             if (File.Exists(path))
             {
                 File.Delete(path);
-                ModConsole.Log(fileName + ": Savefile found and deleted, mod is reset.");
+                ModConsole.Log($"MODSAVE: File {fileName} found and deleted, mod is reset.");
             }
-            else ModConsole.Log(fileName + ": Savefile not found, mod is already reset.");
+            else ModConsole.Log($"MODSAVE: File {fileName} not found, save is already reset.");
         }
     }
 }

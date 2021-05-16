@@ -30,8 +30,9 @@ namespace MSCLoader
         [SerializeField] internal SettingSlider consoleWindowHeight, consoleWindowWidth;
 
         [SerializeField] internal RectTransform openArrowTransform;
-        Vector3 openArrowOpen = new Vector3(-1, 1, 1);
         [SerializeField] internal Shadow openArrowShadow;
+
+        Vector3 openArrowOpen = new Vector3(-1, 1, 1);
         Vector2 openArrowShadowOpen = new Vector2(-1f, -1f);
         Vector2 openArrowShadowClosed = new Vector2(1f, -1f);
 
@@ -60,9 +61,9 @@ namespace MSCLoader
         
         internal NexusMods.NexusSSO nexusSSO;
 
-        [SerializeField] internal DateTime lastUpdateCheckDate;
+        internal DateTime lastUpdateCheckDate;
 
-        [SerializeField] internal bool disableSave = false;
+        internal bool disableSave = false;
         public void SaveSettings()
         {
             if (currentSaveToINI != null) StopCoroutine(currentSaveToINI);
@@ -107,9 +108,9 @@ namespace MSCLoader
         public void OpenCredits()
         {
                ModPrompt.CreateYesNoPrompt(
-                $"THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.\n\n{ModLoader.modLoaderURL}/#/Credits", 
+                $"THIS WILL OPEN A WEBSITE IN YOUR DEFAULT WEB BROWSER AND MINIMIZE THE GAME.\n\n{ModLoader.modLoaderURL}/docs/#/Credits", 
                 "OPEN MOD LOADER WEBSITE?", 
-                () => ModHelper.OpenWebsite($"{ModLoader.modLoaderURL}/#/Credits"));
+                () => ModHelper.OpenWebsite($"{ModLoader.modLoaderURL}/docs/#/Credits"));
         }
         public void OpenModsFolder()
         {
@@ -142,7 +143,7 @@ namespace MSCLoader
 
         public void LoginNexus() 
         {
-            this.nexusSSO.RequestLogin();
+            nexusSSO.RequestLogin();
         }
 
         public void RefreshUpdateCheckTime()

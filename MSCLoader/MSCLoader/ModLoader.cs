@@ -330,23 +330,18 @@ namespace MSCLoader
                     {   
                         Mod mod = (Mod)Activator.CreateInstance(modType);
 
-                        if (!LoadedMods.Contains(mod)) // Check if mod already exists and show an error if so.
-                        {
+                        if (!LoadedMods.Any(x => x.ID == mod.ID)) // Check if mod already exists and show an error if so.
                             LoadedMods.Add(mod);
-                            //AddToMethodLists(mod);
-                        }
                         else
-                            ModConsole.LogError($"<color=orange><b>Mod with ID: <color=red>{mod.ID}</color> already loaded:</color></b>");
+                            ModConsole.LogError($"Mod with ID: {mod.ID} already loaded, possible duplicate or a conflicting ID with another mod. Contact the mod author ({mod.Author}) for {mod.Name}!");
                     }
 
                     if (referenceList.Any(x => x.Name == "MSCLoader"))
                         mscLoaderVersions += $"{file.Split('\\').Last()}:\n    {referenceList.FirstOrDefault(x => x.Name == "MSCLoader").Version}\n";
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded as a mod. Contact the mod author and ask for help.");
-                    ModConsole.LogError(e.ToString());
-                    Console.WriteLine(e);
+                    ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded as a mod. Contact the mod author and ask for help.\n{exception}");
                 }
             }
 
@@ -384,7 +379,7 @@ namespace MSCLoader
         static bool CheckEmptyMethod(Mod mod, string methodName)
         {
             // Check if a method with the specified name is overridden in the Mod sub-class then check if it's not empty.
-            MethodInfo method = mod.GetType().GetMethod(methodName);
+            MethodInfo method = mod.GetType().GetMethod(methodName) ?? mod.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
             return (method.IsVirtual && method.DeclaringType == mod.GetType() && method.GetMethodBody().GetILAsByteArray().Length > 2);
         }
 
@@ -684,23 +679,13 @@ namespace MSCLoader
         [Obsolete("Does not do anything."), EditorBrowsable(EditorBrowsableState.Never)]
         public static bool CheckSteam() => true;
         [EditorBrowsable(EditorBrowsableState.Never)]
-        internal static string steamID = "NOYOUDONT";
+        internal static string steamID = "12551291016475899";
         [Obsolete("Deprecated, use ModLoaderVersion instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static readonly string MSCLoader_Ver = Version;
         [Obsolete("Deprecated, doesn't do anything."), EditorBrowsable(EditorBrowsableState.Never)]
         public static bool LogAllErrors = false;
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool CheckIfExperimental()
-        {
-            try
-            {
-                return Steamworks.SteamApps.GetCurrentBetaName(out string Name, 128) && Name != "default_32bit";
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        [Obsolete("Deprecated, doesn't do anything."), EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool CheckIfExperimental() => false;
         [Obsolete("Deprecated, use GetModSettingsFolder() instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public static string GetModConfigFolder(Mod mod) => GetModSettingsFolder(mod);
         [Obsolete("Deprecated, use ModLoader.CurrentScene instead."), EditorBrowsable(EditorBrowsableState.Never)]
