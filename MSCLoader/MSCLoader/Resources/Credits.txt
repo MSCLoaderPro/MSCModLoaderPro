@@ -2,6 +2,9 @@
 ModHelper PlayMakerProxyUtility
 BrennFuchS
 
+CONTRIBUTORS
+Krutonium
+
 FASTOBJIMPORTER
 FastOBJImporter
 Marc Kusters (Nighteyes)
