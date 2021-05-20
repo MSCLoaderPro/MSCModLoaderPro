@@ -1,3 +1,6 @@
+Version 1.0.10
+	Fixed ModSave decryption overwriting the file, making it readable as a plain text.
+
 Version 1.0.9
 	Fixed how OBJ model importing loads files not made with Blender.
 	Cleaned up legacy code.

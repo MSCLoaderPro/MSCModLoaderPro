@@ -80,11 +80,14 @@ namespace MSCLoader
             {
                 string path = Path.Combine(Application.persistentDataPath, $"{fileName}.xml");
 
+                StreamReader input = new StreamReader(path);
+                MemoryStream memoryInput = null;
+
                 if (File.Exists(path))
                 {
                     if (!string.IsNullOrEmpty(encryptionKey))
                     {
-                        string cipherText = File.ReadAllText(path).Replace(" ", "+");
+                        string cipherText = input.ReadToEnd().Replace(" ", "+");
                         byte[] cipherBytes = Convert.FromBase64String(cipherText);
                         using (Aes encryptor = Aes.Create())
                         {
@@ -102,12 +105,20 @@ namespace MSCLoader
                             }
                         }
 
-                        File.WriteAllText(path, cipherText);
+                        //File.WriteAllText(path, cipherText);
+                        memoryInput = new MemoryStream(Encoding.UTF8.GetBytes(cipherText));
                     }
 
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
-                    StreamReader input = new StreamReader(path);
-                    XmlReader xmlReader = XmlReader.Create(input);
+                    XmlReader xmlReader;
+                    if (memoryInput != null)
+                    {
+                        xmlReader = XmlReader.Create(memoryInput);
+                    }
+                    else
+                    {
+                        xmlReader = XmlReader.Create(input); 
+                    }
 					T t = xmlSerializer.Deserialize(xmlReader) as T;
                     input.Close();
 
