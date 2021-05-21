@@ -14,13 +14,13 @@ using UnityEngine;
 namespace MSCLoader
 {
     /// <summary> Enumeration of the game's scenes.</summary>
-    public enum CurrentScene { MainMenu, Game, NewGameIntro }
+    public enum CurrentScene { MainMenu, Game, NewGameIntro, Ending }
 
     /// <summary></summary>
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.0.9";
+        public static readonly string Version = "1.1.0";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -29,7 +29,7 @@ namespace MSCLoader
         public static List<Mod> LoadedMods { get; internal set; }
         /// <summary> List of used Mod Class methods. </summary>
         public static List<Mod>[] ModMethods { get; internal set; }
-        static string[] methodNames = { "OnNewGame", "MenuOnLoad", "MenuOnGUI", "MenuUpdate", "MenuFixedUpdate", "PreLoad", "OnLoad", "PostLoad", "OnGUI", "Update", "FixedUpdate", "OnSave" };
+        static string[] methodNames = { "OnNewGame", "MenuOnLoad", "MenuOnGUI", "MenuUpdate", "MenuFixedUpdate", "PreLoad", "OnLoad", "PostLoad", "OnGUI", "Update", "FixedUpdate", "OnSave", "UniversalOnGUI", "UniversalUpdate", "UniversalFixedUpdate", "OnLevelLoaded" };
         /// <summary>Load handler for the UI. Add your GameObject to the extra list if you want your UI to be disabled when the game loads a scene.</summary>
         public static UILoadHandler modSceneLoadHandler;
 
@@ -110,7 +110,7 @@ namespace MSCLoader
         void Awake()
         {
             // Unpatch saving
-            MSCLoader.ModLoaderInstance.UnpatchAll("MSCModLoaderProSave");
+            MSCLoader.ModLoaderInstance.UnpatchAll("ProLoaderSave");
 
             // Prevent the menu music from being heard a split second when the loader is initializing.
             if (GameObject.Find("Music") && Application.loadedLevelName == "MainMenu" && !audioFixApplied)
@@ -161,6 +161,10 @@ namespace MSCLoader
                 new List<Mod>(), // 9 - Update
                 new List<Mod>(), // 10 - FixedUpdate
                 new List<Mod>(), // 11 - OnSave
+                new List<Mod>(), // 12 - UniversalOnGUI
+                new List<Mod>(), // 13 - UniversalUpdate
+                new List<Mod>(), // 14 - UniversalFixedUpdate
+                new List<Mod>(), // 15 - OnLevelLoaded
             };
             ModConsole.Log($"MOD LOADER PRO <b>{Version}</b> READY!");
 
@@ -183,6 +187,11 @@ namespace MSCLoader
             // Load mod settings for each loaded mod. Then call OnMenuLoad
             LoadModsSettings();
             CallMenuOnLoad();
+
+            // Prepare Universal methods
+            gameObject.AddComponent<ModUniversalOnGUICall>().modLoader = this;
+            gameObject.AddComponent<ModUniversalUpdateCall>().modLoader = this;
+            gameObject.AddComponent<ModUniversalFixedUpdateCall>().modLoader = this;
 
             // Update the mod count in the mod list.
             modContainer.UpdateModCountText();
@@ -235,7 +244,14 @@ namespace MSCLoader
                     // Lastly start the mod loading.
                     StartCoroutine(LoadMods());
                     break;
+
+                case "Ending":
+                    CurrentScene = CurrentScene.Ending;
+                    break;
             }
+
+            // Execute OnLevelLoaded for all applicable mods.
+            CallOnLevelLoaded();
         }
 
         void SetupFolders()
@@ -326,8 +342,23 @@ namespace MSCLoader
                     if (referenceList.Any(assembly => assembly.Name == "Assembly-CSharp-firstpass") && (fileString.Contains("Steamworks") || fileString.Contains("GetSteamID")))
                         throw new Exception("Targeting forbidden reference.");
 
-                    foreach (Type modType in modAssembly.GetTypes().Where(type => typeof(Mod).IsAssignableFrom(type)))
-                    {   
+                    Type[] modAssemblyTypes;
+                    try
+                    {
+                        modAssemblyTypes = modAssembly.GetTypes();
+                    }
+                    catch (ReflectionTypeLoadException exception)
+                    {
+                        ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded successfully. Maybe a missing mod requirement? Consult the mod's download page and look for help there.");
+                        foreach (Exception loaderException in exception.LoaderExceptions)
+                            ModConsole.LogError($"{loaderException}");
+
+                        modAssemblyTypes = exception.Types.Where(x => x != null).ToArray();
+                    }
+
+
+                    foreach (Type modType in modAssemblyTypes.Where(type => typeof(Mod).IsAssignableFrom(type)))
+                    {
                         Mod mod = (Mod)Activator.CreateInstance(modType);
 
                         if (!LoadedMods.Any(x => x.ID == mod.ID)) // Check if mod already exists and show an error if so.
@@ -335,13 +366,12 @@ namespace MSCLoader
                         else
                             ModConsole.LogError($"Mod with ID: {mod.ID} already loaded, possible duplicate or a conflicting ID with another mod. Contact the mod author ({mod.Author}) for {mod.Name}!");
                     }
-
                     if (referenceList.Any(x => x.Name == "MSCLoader"))
                         mscLoaderVersions += $"{file.Split('\\').Last()}:\n    {referenceList.FirstOrDefault(x => x.Name == "MSCLoader").Version}\n";
                 }
                 catch (Exception exception)
                 {
-                    ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded as a mod. Contact the mod author and ask for help.\n{exception}");
+                    ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded as a mod. Maybe a missing mod requirement? Consult the mod's download page and look for help there.\n{exception}");
                 }
             }
 
@@ -450,6 +480,18 @@ namespace MSCLoader
             menuMethods.AddComponent<ModMenuFixedUpdateCall>().modLoader = this;
         }
 
+        void CallOnLevelLoaded()
+        {
+            if (ModMethods != null && ModMethods[15].Count > 0)
+            {
+                for (int i = 0; i < ModMethods[15].Count; i++)
+                {
+                    try { ModMethods[15][i].OnLevelLoaded(); }
+                    catch (Exception exception) { Console.WriteLine(exception); }
+                }
+            }
+        }
+
         IEnumerator LoadMods()
         {
             modUILoadScreen.SetActive(true);
@@ -547,13 +589,15 @@ namespace MSCLoader
 
             hasSaved = false;
 
+            Harmony.HarmonyInstance saveInstance = Harmony.HarmonyInstance.Create("ProLoaderSave");
+
             MethodBase broadcastMethod = typeof(Fsm).GetMethod("BroadcastEvent", new Type[] { typeof(FsmEvent), typeof(bool) });
             Harmony.HarmonyMethod prefix = new Harmony.HarmonyMethod(typeof(InjectSaving).GetMethod("Prefix"));
-            Harmony.HarmonyInstance.Create("MSCModLoaderProSave").Patch(broadcastMethod, prefix);
+            saveInstance.Patch(broadcastMethod, prefix);
 
             broadcastMethod = typeof(PlayMakerFSM).GetMethod("BroadcastEvent", new Type[] { typeof(FsmEvent) });
             prefix = new Harmony.HarmonyMethod(typeof(InjectSaving).GetMethod("Prefix"));
-            Harmony.HarmonyInstance.Create("MSCModLoaderProSave").Patch(broadcastMethod, prefix);
+            saveInstance.Patch(broadcastMethod, prefix);
 
             //GameObject.Find("ITEMS").GetPlayMakerFSM("SaveItems").InsertAction("Save game", 0, new ModOnSave() { modLoader = this });
 
@@ -584,7 +628,6 @@ namespace MSCLoader
         // Below Methods handle the various recurring methods in the mod class.
         internal void ModMenuOnGUI()
         {
-            GUI.skin = modLoaderSkin;
             for (int i = 0; i < ModMethods[2].Count; i++)
             {
                 try { ModMethods[2][i].MenuOnGUI(); }
@@ -633,7 +676,6 @@ namespace MSCLoader
 
         internal void ModOnGUI()
         {
-            GUI.skin = modLoaderSkin;
             for (int i = 0; i < ModMethods[8].Count; i++)
             {
                 try { ModMethods[8][i].OnGUI(); }
@@ -673,6 +715,34 @@ namespace MSCLoader
             }
 
             MethodTimerStop("OnSave");
+        }
+
+        internal void ModUniversalOnGUI()
+        {
+            GUI.skin = modLoaderSkin;
+            for (int i = 0; i < ModMethods[12].Count; i++)
+            {
+                try { ModMethods[12][i].UniversalOnGUI(); }
+                catch (Exception exception) { Console.WriteLine(exception); }
+            }
+        }
+
+        internal void ModUniversalUpdate()
+        {
+            for (int i = 0; i < ModMethods[13].Count; i++)
+            {
+                try { ModMethods[13][i].UniversalUpdate(); }
+                catch (Exception exception) { Console.WriteLine(exception); }
+            }
+        }
+
+        internal void ModUniversalFixedUpdate()
+        {
+            for (int i = 0; i < ModMethods[14].Count; i++)
+            {
+                try { ModMethods[14][i].UniversalFixedUpdate(); }
+                catch (Exception exception) { Console.WriteLine(exception); }
+            }
         }
 
         // LEGACY
@@ -734,5 +804,23 @@ namespace MSCLoader
     {
         public ModLoader modLoader;
         void FixedUpdate() => modLoader.ModFixedUpdate();
+    }
+
+    class ModUniversalOnGUICall : MonoBehaviour
+    {
+        public ModLoader modLoader;
+        void OnGUI() => modLoader.ModUniversalOnGUI();
+    }
+
+    class ModUniversalUpdateCall : MonoBehaviour
+    {
+        public ModLoader modLoader;
+        void Update() => modLoader.ModUniversalUpdate();
+    }
+
+    class ModUniversalFixedUpdateCall : MonoBehaviour
+    {
+        public ModLoader modLoader;
+        void FixedUpdate() => modLoader.ModUniversalFixedUpdate();
     }
 }

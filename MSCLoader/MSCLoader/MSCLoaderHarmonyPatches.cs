@@ -13,7 +13,7 @@ namespace MSCLoader
             ModLoader.Init();
             // Start the click through fix after the Main Menu has been loaded fully
             MSCLoader.ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.MousePickEvent).GetMethod("DoRaycast", BindingFlags.Instance | BindingFlags.NonPublic), new Harmony.HarmonyMethod(typeof(InjectUIClickFix).GetMethod("Prefix")));
-            MSCLoader.ModLoaderInstance.UnpatchAll("MSCModLoaderProInit");
+            MSCLoader.ModLoaderInstance.UnpatchAll("ProLoaderInit");
         }
     }
 
@@ -26,7 +26,7 @@ namespace MSCLoader
             {
                 System.Console.WriteLine("MODLOADER: SKIP SPLASH");
                 Application.LoadLevel(1);
-                MSCLoader.ModLoaderInstance.UnpatchAll("MSCModLoaderProSplash");
+                MSCLoader.ModLoaderInstance.UnpatchAll("ProLoaderSplash");
 
             }
         }

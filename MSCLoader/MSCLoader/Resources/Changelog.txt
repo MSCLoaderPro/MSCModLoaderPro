@@ -1,4 +1,8 @@
-Version 1.0.10
+Version 1.1.0
+	Fixed Open Console keybind binding.
+	Added UniversalOnGUI, UniversalUpdate and UniversalFixedUpdate methods to the Mod class, called at all times in any scene.
+	Ädded OnLevelLoaded method to the Mod class, called whenever a new scene is loaded.
+	Mods with missing requirement can now be partially loaded, potentially giving some additional information on what is wrong. 
 	Fixed ModSave decryption overwriting the file, making it readable as a plain text.
 
 Version 1.0.9

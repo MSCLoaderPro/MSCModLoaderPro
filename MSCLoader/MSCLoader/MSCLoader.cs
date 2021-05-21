@@ -35,17 +35,17 @@ namespace MSCLoader
             {
                 //Harmony.HarmonyInstance.DEBUG = true;
                 Console.WriteLine("MODLOADER: PATCHING METHODS!");
-                ModLoaderInstance = Harmony.HarmonyInstance.Create("MSCModLoaderPro");
+                ModLoaderInstance = Harmony.HarmonyInstance.Create("ProLoader");
                 if (settings.EnableModLoader)
                 {
-                    Harmony.HarmonyInstance.Create("MSCModLoaderProInit").Patch(typeof(PlayMakerArrayListProxy).GetMethod("Awake"), new Harmony.HarmonyMethod(typeof(InjectModLoaderInit).GetMethod("Prefix")));
-                    Harmony.HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new Harmony.HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
+                    Harmony.HarmonyInstance.Create("ProLoaderInit").Patch(typeof(PlayMakerArrayListProxy).GetMethod("Awake"), new Harmony.HarmonyMethod(typeof(InjectModLoaderInit).GetMethod("Prefix")));
+                    Harmony.HarmonyInstance.Create("ProLoaderSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new Harmony.HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
                     
                     ModLoaderInstance.Patch(typeof(HutongGames.PlayMaker.Actions.LoadLevel).GetMethod("OnEnter"), new Harmony.HarmonyMethod(typeof(InjectLoadSceneFix).GetMethod("Prefix")));
                 }
                 else if (settings.SkipSplashScreen)
                 {
-                    Harmony.HarmonyInstance.Create("MSCModLoaderProSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new Harmony.HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
+                    Harmony.HarmonyInstance.Create("ProLoaderSplash").Patch(typeof(PlayMakerFSM).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic), new Harmony.HarmonyMethod(typeof(InjectSplashSkip).GetMethod("Prefix")));
                 }
             }
             catch (Exception exception)

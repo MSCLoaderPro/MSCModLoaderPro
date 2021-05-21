@@ -526,6 +526,18 @@
         <member name="M:MSCLoader.Mod.ModSettingsClose">
             <summary>Method called whenever mod settings are closed.</summary>
         </member>
+        <member name="M:MSCLoader.Mod.UniversalOnGUI">
+            <summary> OnGUI method for all scenes. Order of execution: Every GUI frame </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.UniversalUpdate">
+            <summary> Update method for all scenes. Order of execution: Every frame </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.UniversalFixedUpdate">
+            <summary> FixedUpdate method for all scenes. Order of execution: Every fixed time step </summary>
+        </member>
+        <member name="M:MSCLoader.Mod.OnLevelLoaded">
+            <summary> Method called whenever a scene is loaded. Order of execution: Every scene load </summary>
+        </member>
         <member name="T:MSCLoader.ModConsole">
             <summary>The handler for the ModConsole</summary>
         </member>

@@ -76,6 +76,15 @@ namespace MSCLoader
         /// <summary>Method called whenever mod settings are closed.</summary>
         public virtual void ModSettingsClose() { }
 
+        /// <summary> OnGUI method for all scenes. Order of execution: Every GUI frame </summary>
+        public virtual void UniversalOnGUI() { }
+        /// <summary> Update method for all scenes. Order of execution: Every frame </summary>
+		public virtual void UniversalUpdate() { }
+        /// <summary> FixedUpdate method for all scenes. Order of execution: Every fixed time step </summary>
+        public virtual void UniversalFixedUpdate() { }
+        /// <summary> Method called whenever a scene is loaded. Order of execution: Every scene load </summary>
+        public virtual void OnLevelLoaded() { }
+
         #region Obsolete Methods
         internal virtual bool UseAssetsFolder => false;
         internal virtual bool LoadInMenu => false;
