@@ -80,6 +80,8 @@ namespace MSCLoader
             {
                 string path = Path.Combine(Application.persistentDataPath, $"{fileName}.xml");
 
+                if (!File.Exists(path)) return new T();
+
                 StreamReader input = new StreamReader(path);
                 MemoryStream memoryInput = null;
 
