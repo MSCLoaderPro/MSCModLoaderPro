@@ -31,6 +31,9 @@ namespace Installer
         bool downloadFinished;
         public bool DownloadFinished => downloadFinished;
 
+        StreamWriter logWriter;
+        public readonly string InstallLogPath;
+
         public Downloader()
         {
             if (Installer.Instance.OfflineMode)
@@ -42,12 +45,17 @@ namespace Installer
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
+            InstallLogPath = Path.Combine(TempPath, $"install_log_{DateTime.Now:yyyy-MM-dd-HH-mm}.txt");
+            logWriter = new StreamWriter(InstallLogPath);
+            Log($"Installer {Installer.Version}");
+
             try
             {
                 Installer.Instance.UpdateStatus(0, "Creating temporary folder...");
                 if (!Directory.Exists(TempPath))
                 {
                     Directory.CreateDirectory(TempPath);
+                    Log($"Created new TempPath.");
                 }
 
                 Installer.Instance.UpdateStatus(0, "Getting latest version info...");
@@ -57,6 +65,7 @@ namespace Installer
                     client.Headers.Add(GitHubHeader);
                     client.DownloadStringCompleted += Client_DownloadStringCompleted;
                     client.DownloadStringAsync(new Uri(MetadataUrl));
+                    Log($"Downloading metadata: {MetadataUrl}");
                 }
             }
             catch
@@ -75,7 +84,9 @@ namespace Installer
                 if (s.Contains("\"tag_name\"") && !verFound)
                 {
                     verFound = true;
-                    Installer.Instance.SetVersionString(s.Split(':')[1].Replace("\"", "").Replace(",", "").Trim());
+                    string version = s.Split(':')[1].Replace("\"", "").Replace(",", "").Trim();
+                    Installer.Instance.SetVersionString(version);
+                    Log($"Mod Loader Pro version {version}");
                 }
 
                 if (s.Contains("\"browser_download_url\""))
@@ -207,43 +218,42 @@ namespace Installer
                 {
                     int percentage = (int)(((double)stage / (double)file.Entries.Count) * 100);
 
-                    Installer.Instance.UpdateStatus(percentage, $"Extracting ({percentage}%)...");
-                    string path = Path.Combine(extractPath, f.FullName);
-                    if (path.EndsWith("/")) continue;
-                    string directory = f.FullName.Replace(f.Name, "");
-                    if (!string.IsNullOrEmpty(directory) && !Directory.Exists(Path.Combine(extractPath, directory)))
+                    try
                     {
-                        Directory.CreateDirectory(Path.Combine(extractPath, directory));
-                    }
-
-                    // Don't override user settings.
-                    if (f.Name == "ModLoaderSettings.ini" && File.Exists(path))
-                    {
-                        continue;
-                    }
-
-                    // Store old Sources.txt
-                    if (f.Name == "Sources.txt" && File.Exists(path))
-                    {
-                        if (File.Exists(path + ".old"))
+                        Installer.Instance.UpdateStatus(percentage, $"Extracting ({percentage}%)...");
+                        string path = Path.Combine(extractPath, f.FullName);
+                        if (path.EndsWith("/")) continue;
+                        string directory = f.FullName.Replace(f.Name, "");
+                        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(Path.Combine(extractPath, directory)))
                         {
-                            File.Delete(path + ".old");
+                            Directory.CreateDirectory(Path.Combine(extractPath, directory));
                         }
 
-                        File.Move(path, path + ".old");
-                    }
+                        // Don't override user settings.
+                        if (f.Name == "ModLoaderSettings.ini" && File.Exists(path))
+                        {
+                            continue;
+                        }
 
-                    await Task.Run(() =>
+                        await Task.Run(() =>
+                        {
+                            f.ExtractToFile(path, true);
+                        });
+                        stage++;
+                        size += new FileInfo(path).Length;
+                        Log($"Successfully extracted {f.FullName}");
+                    }
+                    catch (Exception ex)
                     {
-                        f.ExtractToFile(path, true);
-                    });
-                    stage++;
-                    size += new FileInfo(path).Length;
+                        Log($"Failed to unpack file {f.FullName}: {ex}");
+                    }
                 }
 
                 file.Dispose();
             }
             downloadFinished = true;
+
+            Log($"Finished installing. Final size: {size / 100000} MB");
 
             Installer.Instance.UpdateStatus(100, "Creating registry entries...");
             await Task.Run(() =>
@@ -251,8 +261,17 @@ namespace Installer
                 CreateUninstaller();
             });
 
+            logWriter.Close();
+            logWriter = null;
+
             if (goToEnd)
                 Installer.Instance.TabEnd();
+        }
+
+        void Log(string input)
+        {
+            if (logWriter == null) logWriter = new StreamWriter(InstallLogPath);
+            logWriter.WriteLine(input);
         }
 
         internal void DeleteTemporaryFiles()
@@ -276,8 +295,12 @@ namespace Installer
         {
             if (Process.GetProcessesByName("winlogon").Length == 0) //Linux
             {
+                Log("winlogon not found. Skipping Uninstaller creation.");
                 return;
             }
+
+            Log("Creating uninstaller.");
+
             using (RegistryKey parent = Registry.CurrentUser.OpenSubKey(
                          @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
             {
@@ -329,6 +352,7 @@ namespace Installer
                     throw new Exception(
                         "An error occurred writing uninstall information to the registry.  The service is fully installed but can only be uninstalled manually through the Uninstaller.exe.",
                         ex);
+                    Log("Failed to create uninstaller.");
                 }
             }
         }

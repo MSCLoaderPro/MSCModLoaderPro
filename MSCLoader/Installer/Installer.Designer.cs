@@ -50,6 +50,8 @@ namespace Installer
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.labelStatus = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnInstallLog = new System.Windows.Forms.Button();
+            this.btnBrowseMods = new System.Windows.Forms.Button();
             this.btnPlayNoSteam = new System.Windows.Forms.Button();
             this.btnDevmenu = new System.Windows.Forms.Button();
             this.labWarning = new System.Windows.Forms.Label();
@@ -66,7 +68,6 @@ namespace Installer
             this.chkVSTemplate = new System.Windows.Forms.CheckBox();
             this.labVer = new System.Windows.Forms.Label();
             this.btnLicenses = new System.Windows.Forms.Button();
-            this.btnBrowseMods = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabs.SuspendLayout();
@@ -315,6 +316,7 @@ namespace Installer
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Black;
+            this.tabPage3.Controls.Add(this.btnInstallLog);
             this.tabPage3.Controls.Add(this.btnBrowseMods);
             this.tabPage3.Controls.Add(this.btnPlayNoSteam);
             this.tabPage3.Controls.Add(this.btnDevmenu);
@@ -330,6 +332,38 @@ namespace Installer
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             // 
+            // btnInstallLog
+            // 
+            this.btnInstallLog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnInstallLog.FlatAppearance.BorderSize = 0;
+            this.btnInstallLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInstallLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnInstallLog.ForeColor = System.Drawing.Color.White;
+            this.btnInstallLog.Location = new System.Drawing.Point(270, 303);
+            this.btnInstallLog.Name = "btnInstallLog";
+            this.btnInstallLog.Size = new System.Drawing.Size(230, 35);
+            this.btnInstallLog.TabIndex = 12;
+            this.btnInstallLog.Text = "INSTALLATION LOG";
+            this.btnInstallLog.UseCompatibleTextRendering = true;
+            this.btnInstallLog.UseVisualStyleBackColor = false;
+            this.btnInstallLog.Click += new System.EventHandler(this.btnInstallLog_Click);
+            // 
+            // btnBrowseMods
+            // 
+            this.btnBrowseMods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
+            this.btnBrowseMods.FlatAppearance.BorderSize = 0;
+            this.btnBrowseMods.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBrowseMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btnBrowseMods.ForeColor = System.Drawing.Color.White;
+            this.btnBrowseMods.Location = new System.Drawing.Point(581, 106);
+            this.btnBrowseMods.Name = "btnBrowseMods";
+            this.btnBrowseMods.Size = new System.Drawing.Size(53, 25);
+            this.btnBrowseMods.TabIndex = 11;
+            this.btnBrowseMods.Text = "...";
+            this.btnBrowseMods.UseCompatibleTextRendering = true;
+            this.btnBrowseMods.UseVisualStyleBackColor = false;
+            this.btnBrowseMods.Click += new System.EventHandler(this.btnBrowseMods_Click);
+            // 
             // btnPlayNoSteam
             // 
             this.btnPlayNoSteam.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
@@ -337,7 +371,7 @@ namespace Installer
             this.btnPlayNoSteam.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPlayNoSteam.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnPlayNoSteam.ForeColor = System.Drawing.Color.White;
-            this.btnPlayNoSteam.Location = new System.Drawing.Point(270, 245);
+            this.btnPlayNoSteam.Location = new System.Drawing.Point(270, 211);
             this.btnPlayNoSteam.Name = "btnPlayNoSteam";
             this.btnPlayNoSteam.Size = new System.Drawing.Size(230, 35);
             this.btnPlayNoSteam.TabIndex = 10;
@@ -353,7 +387,7 @@ namespace Installer
             this.btnDevmenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDevmenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnDevmenu.ForeColor = System.Drawing.Color.White;
-            this.btnDevmenu.Location = new System.Drawing.Point(270, 337);
+            this.btnDevmenu.Location = new System.Drawing.Point(270, 344);
             this.btnDevmenu.Name = "btnDevmenu";
             this.btnDevmenu.Size = new System.Drawing.Size(230, 35);
             this.btnDevmenu.TabIndex = 9;
@@ -367,7 +401,7 @@ namespace Installer
             this.labWarning.AutoSize = true;
             this.labWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.labWarning.ForeColor = System.Drawing.Color.White;
-            this.labWarning.Location = new System.Drawing.Point(218, 176);
+            this.labWarning.Location = new System.Drawing.Point(218, 142);
             this.labWarning.Name = "labWarning";
             this.labWarning.Size = new System.Drawing.Size(336, 25);
             this.labWarning.TabIndex = 8;
@@ -378,7 +412,7 @@ namespace Installer
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(293, 102);
+            this.label3.Location = new System.Drawing.Point(293, 68);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(184, 25);
             this.label3.TabIndex = 7;
@@ -386,7 +420,7 @@ namespace Installer
             // 
             // txtModsFolderName
             // 
-            this.txtModsFolderName.Location = new System.Drawing.Point(201, 140);
+            this.txtModsFolderName.Location = new System.Drawing.Point(201, 106);
             this.txtModsFolderName.Name = "txtModsFolderName";
             this.txtModsFolderName.Size = new System.Drawing.Size(374, 20);
             this.txtModsFolderName.TabIndex = 6;
@@ -399,7 +433,7 @@ namespace Installer
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnClose.ForeColor = System.Drawing.Color.White;
-            this.btnClose.Location = new System.Drawing.Point(270, 286);
+            this.btnClose.Location = new System.Drawing.Point(270, 252);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(230, 35);
             this.btnClose.TabIndex = 5;
@@ -414,7 +448,7 @@ namespace Installer
             this.btnPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.btnPlay.ForeColor = System.Drawing.Color.White;
-            this.btnPlay.Location = new System.Drawing.Point(270, 204);
+            this.btnPlay.Location = new System.Drawing.Point(270, 170);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(230, 35);
             this.btnPlay.TabIndex = 4;
@@ -428,7 +462,7 @@ namespace Installer
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(148, 38);
+            this.label2.Location = new System.Drawing.Point(148, 16);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(482, 25);
             this.label2.TabIndex = 3;
@@ -539,22 +573,6 @@ namespace Installer
             this.btnLicenses.UseVisualStyleBackColor = false;
             this.btnLicenses.Click += new System.EventHandler(this.btnLicenses_Click);
             // 
-            // btnBrowseMods
-            // 
-            this.btnBrowseMods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(152)))), ((int)(((byte)(129)))));
-            this.btnBrowseMods.FlatAppearance.BorderSize = 0;
-            this.btnBrowseMods.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBrowseMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.btnBrowseMods.ForeColor = System.Drawing.Color.White;
-            this.btnBrowseMods.Location = new System.Drawing.Point(581, 140);
-            this.btnBrowseMods.Name = "btnBrowseMods";
-            this.btnBrowseMods.Size = new System.Drawing.Size(53, 25);
-            this.btnBrowseMods.TabIndex = 11;
-            this.btnBrowseMods.Text = "...";
-            this.btnBrowseMods.UseCompatibleTextRendering = true;
-            this.btnBrowseMods.UseVisualStyleBackColor = false;
-            this.btnBrowseMods.Click += new System.EventHandler(this.btnBrowseMods_Click);
-            // 
             // Installer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -629,6 +647,7 @@ namespace Installer
         private System.Windows.Forms.Button btnLicenses;
         private System.Windows.Forms.Button btnPlayNoSteam;
         private System.Windows.Forms.Button btnBrowseMods;
+        private System.Windows.Forms.Button btnInstallLog;
     }
 }
 

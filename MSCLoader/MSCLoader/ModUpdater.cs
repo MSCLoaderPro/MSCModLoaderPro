@@ -88,6 +88,11 @@ namespace MSCLoader
             // First we read the Sources.txt file, and populate UpdateLink of mods that don't have a source.
             ReadSources(SourcesPath);
 
+            if (!Directory.Exists(TempPathModLoaderPro))
+            {
+                Directory.CreateDirectory(TempPathModLoaderPro);
+            }
+
             // Populate list from the database.
 
             if (File.Exists(ModsDatabasePath))
@@ -238,7 +243,7 @@ namespace MSCLoader
 
             ModLoader.modLoaderSettings.RefreshUpdateCheckTime();
             isBusy = true;
-            message = "LOOKING FOR MOD LOADER UPDATES PRO";
+            message = "LOOKING FOR MOD LOADER PRO UPDATES";
             currentSliderText = UpdateSliderText("FINISHED LOOKING FOR UPDATES");
             StartCoroutine(currentSliderText);
 

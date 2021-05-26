@@ -54,6 +54,8 @@ namespace Installer
 
         Downloader downloader;
 
+        public static string Version;
+
         public Installer(Modes mode = Modes.Regular, string arg = "")
         {
             InitializeComponent();
@@ -68,6 +70,8 @@ namespace Installer
                 {
                     labVer.Text += "." + version.Build;
                 }
+
+                Version = labVer.Text;
             }
             catch (Exception ex)
             {
@@ -277,6 +281,7 @@ namespace Installer
                 btnDevmenu.SetToCenter(this);
                 btnInstallDev.SetToCenter(this);
                 btnPlayNoSteam.SetToCenter(this);
+                btnInstallLog.SetToCenter(this);
                 btnPlayNoSteam.Font = smallFont;
                 btnLicenses.Font = smallFont;
                 btnWebsite.Font = smallFont;
@@ -773,6 +778,14 @@ namespace Installer
 
                     txtModsFolderName.Text = mscPath;
                 }
+            }
+        }
+
+        private void btnInstallLog_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(downloader?.InstallLogPath))
+            {
+                Process.Start(downloader.InstallLogPath);
             }
         }
     }
