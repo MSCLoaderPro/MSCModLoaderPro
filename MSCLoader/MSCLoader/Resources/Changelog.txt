@@ -1,3 +1,6 @@
+Version 1.1.1
+	Mod Loader Pro will now notify you about missing references, or if a newer mod version is required
+
 Version 1.1.0
 	Fixed Open Console keybind binding.
 	Added UniversalOnGUI, UniversalUpdate and UniversalFixedUpdate methods to the Mod class, called at all times in any scene.
