@@ -249,7 +249,17 @@
     },
     {
         "id": "CDPlayer",
-        "url": "https://www.nexusmods.com/mysummercar/mods/101"
+        "url": "https://www.nexusmods.com/mysummercar/mods/101",
+        "dependencies": [
+            {
+                "id": "ProLoaderFixer",
+                "url": "https://github.com/Athlon007/ProLoaderFixes"
+            },
+            {
+                "id": "ModsShop",
+                "url": "https://www.nexusmods.com/mysummercar/mods/149"
+            }
+        ]
     },
     {
         "id": "Lantern",
@@ -329,7 +339,8 @@
     },
     {
         "id": "MOP",
-        "url": "https://github.com/Athlon007/MOP"
+        "url": "https://github.com/Athlon007/MOP",
+        "min_ver": "3.2"
     },
     {
         "id": "NotepadUI",
@@ -361,11 +372,23 @@
     },
     {
         "id": "coffemachine",
-        "url": "https://www.nexusmods.com/mysummercar/mods/159"
+        "url": "https://www.nexusmods.com/mysummercar/mods/159",
+        "dependencies": [
+            {
+                "id": "ProLoaderFixer",
+                "url": "https://github.com/Athlon007/ProLoaderFixes"
+            }
+        ]
     },
     {
         "id": "IndicatorPanel",
-        "url": "https://www.nexusmods.com/mysummercar/mods/160"
+        "url": "https://www.nexusmods.com/mysummercar/mods/160",
+        "dependencies": [
+            {
+                "id": "ProLoaderFixer",
+                "url": "https://github.com/Athlon007/ProLoaderFixes"
+            }
+        ]
     },
     {
         "id": "xyz.jfoster.SeatbeltChime",
@@ -373,7 +396,13 @@
     },
     {
         "id": "DeliveryJobs",
-        "url": "https://www.nexusmods.com/mysummercar/mods/162"
+        "url": "https://www.nexusmods.com/mysummercar/mods/162",
+        "dependencies": [
+            {
+                "id": "ProLoaderFixer",
+                "url": "https://github.com/Athlon007/ProLoaderFixes"
+            }
+        ]
     },
     {
         "id": "ActualMop",
@@ -393,7 +422,13 @@
     },
     {
         "id": "SatsumaMirrors",
-        "url": "https://www.nexusmods.com/mysummercar/mods/168"
+        "url": "https://www.nexusmods.com/mysummercar/mods/168",
+        "dependencies": [
+            {
+                "id": "ProLoaderFixer",
+                "url": "https://github.com/Athlon007/ProLoaderFixes"
+            }
+        ]
     },
     {
         "id": "BottleRecycling",
@@ -477,7 +512,8 @@
     },
     {
         "id": "FifthGear",
-        "url": "https://www.nexusmods.com/mysummercar/mods/221"
+        "url": "https://www.nexusmods.com/mysummercar/mods/221",
+        "min_ver": "0.2"
     },
     {
         "id": "SatsumaRSSpoiler",
@@ -749,7 +785,13 @@
     },
     {
         "id": "portableToiletReloaded",
-        "url": "https://www.nexusmods.com/mysummercar/mods/722"
+        "url": "https://www.nexusmods.com/mysummercar/mods/722",
+        "dependencies": [
+            {
+                "id": "ModsShop",
+                "url": "https://www.nexusmods.com/mysummercar/mods/149"
+            }
+        ]
     },
     {
         "id": "vuMeters",
