@@ -73,6 +73,15 @@ namespace MSCLoader.Helper
         /// <returns>Whether or not the layer is in the </returns>
         public static bool InLayerMask(this LayerMask layerMask, string layer) => 
             layerMask == (layerMask | (1 << LayerMask.NameToLayer(layer)));
+
+        public static void AddToLayerMask(this ref LayerMask layerMask, params int[] layers)
+        {
+            foreach(int layer in layers) layerMask |= (1 << layer);
+        }
+        public static void AddToLayerMask(this ref LayerMask layerMask, params string[] layers)
+        {
+            foreach (string layer in layers) layerMask |= (1 << LayerMask.NameToLayer(layer));
+        }
         /// <summary>Extension of SetParent, with this you can specify the new position, rotation, scale and name of the transform.</summary>
         /// <param name="transform">Transform to change parent of.</param>
         /// <param name="parent">New parent Transform.</param>

@@ -20,7 +20,7 @@ namespace MSCLoader
     public class ModLoader : MonoBehaviour
     {
         /// <summary> Current Mod Loader Version. </summary>
-        public static readonly string Version = "1.1.0";
+        public static readonly string Version = "1.1.1";
         internal static string ModsFolder = $@"Mods";
         internal static string AssetsFolder = $@"{ModsFolder}\Assets";
         internal static string SettingsFolder = $@"{ModsFolder}\Settings";
@@ -350,8 +350,7 @@ namespace MSCLoader
                     catch (ReflectionTypeLoadException exception)
                     {
                         ModConsole.LogError($"<b>{Path.GetFileName(file)}</b> can't be loaded successfully. Maybe a missing mod requirement? Consult the mod's download page and look for help there.");
-                        foreach (Exception loaderException in exception.LoaderExceptions)
-                            ModConsole.LogError($"{loaderException}");
+                        foreach (Exception loaderException in exception.LoaderExceptions) ModConsole.LogError($"{loaderException}");
 
                         modAssemblyTypes = exception.Types.Where(x => x != null).ToArray();
                     }
@@ -628,6 +627,7 @@ namespace MSCLoader
         // Below Methods handle the various recurring methods in the mod class.
         internal void ModMenuOnGUI()
         {
+            GUI.skin = modLoaderSkin;
             for (int i = 0; i < ModMethods[2].Count; i++)
             {
                 try { ModMethods[2][i].MenuOnGUI(); }
@@ -676,6 +676,7 @@ namespace MSCLoader
 
         internal void ModOnGUI()
         {
+            GUI.skin = modLoaderSkin;
             for (int i = 0; i < ModMethods[8].Count; i++)
             {
                 try { ModMethods[8][i].OnGUI(); }
