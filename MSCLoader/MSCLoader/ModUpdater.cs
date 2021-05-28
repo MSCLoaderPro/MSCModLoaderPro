@@ -72,6 +72,8 @@ namespace MSCLoader
 
         ModUpdateData[] modUpdaterDatabase;
 
+        List<Mod> dummyMods;
+
         public ModUpdater()
         {
             instance = this;
@@ -84,17 +86,19 @@ namespace MSCLoader
                 DownloadSources();
                 return;
             }
-
-            // First we read the Sources.txt file, and populate UpdateLink of mods that don't have a source.
-            ReadSources(SourcesPath);
-
+            
             if (!Directory.Exists(TempPathModLoaderPro))
             {
                 Directory.CreateDirectory(TempPathModLoaderPro);
             }
 
-            // Populate list from the database.
+            // First we read the Sources.txt file, and populate UpdateLink of mods that don't have a source.
+            ReadSources(SourcesPath);
+        }
 
+        void ContinueLoad()
+        {
+            // Populate list from the database.
             if (File.Exists(ModsDatabasePath))
             {
                 modUpdaterDatabase = JsonConvert.DeserializeObject<ModUpdateData[]>(File.ReadAllText(ModsDatabasePath));
@@ -131,7 +135,6 @@ namespace MSCLoader
             {
                 autoUpdateChecked = true;
                 LookForUpdates();
-                return;
             }
             else
             {
@@ -183,7 +186,6 @@ namespace MSCLoader
                 if (ShouldUpdateNexusInfo(thisModPath))
                 {
                     Directory.CreateDirectory(thisModPath);
-                    ModConsole.Log(mod.ID);
                     if (!postLoadStuffImage)
                     {
                         // First pull mod info.
@@ -342,7 +344,14 @@ namespace MSCLoader
         #region Look For Mod Updates
         void UpdateAllMods()
         {
-            LookForModUpdates(ModLoader.LoadedMods.Where(x => !string.IsNullOrEmpty(x.UpdateLink)));
+            var f = ModLoader.LoadedMods.Where(x => !string.IsNullOrEmpty(x.UpdateLink)).ToList();
+
+            if (dummyMods?.Count > 0)
+            {
+                f.AddRange(dummyMods);
+            }
+
+            LookForModUpdates(f.AsEnumerable());
         }
 
         void LookForModUpdates(IEnumerable<Mod> mods)
@@ -527,6 +536,7 @@ namespace MSCLoader
                 }
             }
 
+            ModConsole.Log(mod.ModUpdateData.ZipUrl);
             if (!error)
                 CheckIfNewerVersionAvailable(mod);
             StartModUpdateCheck(lastIndex); // Continue where we left off.
@@ -877,6 +887,7 @@ namespace MSCLoader
             menuLabelUpdateText.text = finishedMessage;
 
             int updateCount = ModLoader.LoadedMods.Count(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
+
             if (updateCount > 0)
             {
                 string updateMessage = updateCount > 1 ? $" THERE ARE {updateCount} MOD UPDATES AVAILABLE!" : $" THERE IS {updateCount} MOD UPDATE AVAILABLE!";
@@ -934,13 +945,13 @@ namespace MSCLoader
             {
                 mod.ModUpdateData.UpdateStatus = UpdateStatus.Available;
                 ModConsole.Log($"<color=green>{mod.ID} has an update available!</color>");
-                mod.modListElement.ToggleUpdateButton(true);
+                mod.modListElement?.ToggleUpdateButton(true);
             }
             else
             {
                 mod.ModUpdateData.UpdateStatus = UpdateStatus.NotAvailable;
                 ModConsole.Log($"<color=green>{mod.ID} is up-to-date!</color>");
-                mod.modListElement.ToggleUpdateButton(false);
+                mod.modListElement?.ToggleUpdateButton(false);
             }
 
             ModConsole.Log($"Mod Updater: {mod.ID} Latest version: {mod.ModUpdateData.LatestVersion}");
@@ -1007,12 +1018,52 @@ namespace MSCLoader
             }
         }
 
+        bool IsNewerOrSameVersion(string currentVersion, string remoteVersion)
+        {
+            // Messy af, but reliably compares version numbers of the currently installed mod,
+            // and the version that is available on the server.
+
+            // The best thing is it won't show an outdated mod info, 
+            // if the local mod version is newer than the publicly available one.
+
+            // First we convert string version to individual integers.
+            try
+            {
+                int modMajor, modMinor, modRevision = 0;
+
+                currentVersion = Regex.Replace(currentVersion, "[^0-9.]", ""); // Remove all letters
+                remoteVersion = Regex.Replace(remoteVersion, "[^0-9.]", ""); // Remove all letters
+
+                string[] modVersionSpliited = currentVersion.Split('.');
+                modMajor = int.Parse(modVersionSpliited[0]);
+                modMinor = int.Parse(modVersionSpliited[1]);
+                if (modVersionSpliited.Length == 3)
+                    modRevision = int.Parse(modVersionSpliited[2]);
+
+                // Same for the newest server version.
+                int major, minor, revision = 0;
+                string[] verSplitted = remoteVersion.Split('.');
+                major = int.Parse(verSplitted[0]);
+                minor = int.Parse(verSplitted[1]);
+                if (verSplitted.Length == 3)
+                    revision = int.Parse(verSplitted[2]);
+
+                Version localVersion = new Version(modMajor, modMinor, modRevision);
+                Version serverVersion = new Version(major, minor, revision);
+
+                return localVersion >= serverVersion;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        bool forceUpdate;
         bool ShouldCheckForUpdates()
         {
-            if (autoUpdateChecked)
-            {
-                return false;
-            }
+            if (forceUpdate) { forceUpdate = false; return true; }
+            if (autoUpdateChecked) return false;
 
             DateTime now = DateTime.Now;
             DateTime lastCheck = ModLoader.modLoaderSettings.lastUpdateCheckDate;
@@ -1065,25 +1116,131 @@ namespace MSCLoader
         {
             backwardCompatibilityMods = new List<Mod>();
             var json = JsonConvert.DeserializeObject<NexusMods.JSONClasses.ProLoader.Sources[]>(File.ReadAllText(filePath)).ToArray();
+
+            // MOD, MIN_VER
+            Dictionary<Mod, string> modsToBeUpdated = new Dictionary<Mod, string>();
+            // MOD, DEPENDENCIES IDs
+            Dictionary<Mod, NexusMods.JSONClasses.ProLoader.Dependency[]> modsRequiringDependency = new Dictionary<Mod, NexusMods.JSONClasses.ProLoader.Dependency[]>();
+
             for (int i = 0; i < json.Length; i++)
             {
-                var info = json[i];
-                Mod mod = ModLoader.GetMod(info.id, true);
-                if (mod == null)
+                try
                 {
-                    continue;
-                }    
+                    var info = json[i];
+                    Mod mod = ModLoader.GetMod(info.id, true);
+                    if (mod == null)
+                    {
+                        continue;
+                    }
 
-                if (backwardCompatibilityMods.Contains(mod))
+                    if (backwardCompatibilityMods.Contains(mod))
+                    {
+                        continue;
+                    }
+
+                    if (string.IsNullOrEmpty(mod.UpdateLink))
+                    {
+                        mod.UpdateLink = info.url;
+                        backwardCompatibilityMods.Add(mod);
+                    }
+
+                    // Check if minimum required version is installed.
+                    if (!string.IsNullOrEmpty(info.min_ver) && !IsNewerOrSameVersion(mod.Version, info.min_ver))
+                    {
+                        modsToBeUpdated.Add(mod, info.min_ver);
+                        ModConsole.Log("asd");
+                    }
+
+                    // Check if dependencies are present.
+                    if (info.dependencies != null && info.dependencies.Length > 0)
+                    {
+                        List<NexusMods.JSONClasses.ProLoader.Dependency> missing = new List<NexusMods.JSONClasses.ProLoader.Dependency>();
+                        foreach (var f in info.dependencies)
+                        {
+                            if (ModLoader.GetMod(f.id, true) == null)
+                                missing.Add(f);
+                        }
+
+                        if (missing.Count > 0)
+                        {
+                            modsRequiringDependency.Add(mod, info.dependencies);
+                        }
+                    }
+                }
+                catch (Exception ex)
                 {
-                    continue;
+                    ModConsole.LogError($"Failed to read one of the JSON variables: {ex.ToString()}");
+                }
+            }
+
+            if (modsToBeUpdated.Count > 0 || modsRequiringDependency.Count > 0)
+            {
+                string msg = "";
+                if (modsToBeUpdated.Count > 0)
+                {
+                    msg += $"Following mods need to be updated first:\n\n<color=yellow>";
+                    foreach (var f in modsToBeUpdated)
+                    {
+                        msg += $"{f.Key.Name}: {f.Key.Version} -> {f.Value} (or better)\n";
+                    }
+                    msg += "</color>";
                 }
 
-                if (string.IsNullOrEmpty(mod.UpdateLink))
+                if (modsRequiringDependency.Count > 0)
                 {
-                    mod.UpdateLink = info.url;
-                    backwardCompatibilityMods.Add(mod);
+                    if (msg.Length > 0)
+                    {
+                        msg += "\nAdditionally, following mods require these dependencies:\n\n<color=yellow>";
+                    }
+                    else
+                    {
+                        msg += $"Following mods require these dependencies:\n\n<color=yellow>";
+                    }
+                    
+                    foreach (var f in modsRequiringDependency)
+                    {
+                        msg += $"{f.Key.Name}: {string.Join(", ", f.Value.Select(m => m.id).ToArray())}\n";
+                    }
+
+                    msg += "</color>";
                 }
+
+                msg += "\n\nIf you don't update and/or install dependencies, these mods may <color=red>NOT</color> work!\n" +
+                       "Would you like to download them (this will start automatic update check)?";
+
+                ModPrompt.CreateYesNoPrompt(msg, "Mod Updater", onYes: () =>
+                {
+                    forceUpdate = true;
+                    dummyMods = new List<Mod>();
+                    if (modsRequiringDependency.Count > 0)
+                    {
+                        foreach (var m in modsRequiringDependency)
+                        {
+                            foreach (var n in m.Value)
+                            {
+                                DummyMod dummy = new DummyMod();
+                                dummy.UpdateLink = n.url;
+                                dummy.ModUpdateData = new ModUpdateData();
+                                dummyMods.Add(dummy);
+                            }
+                        }
+                    }
+                }, onPromptClose: () =>
+                {
+                    // Silly fix for a small problem.
+                    // The onPromptClose is called before onYes, resulting in the update forcing not working.
+                    // We delay the ContinueLoad() a single frame, so it gets executed as intended.
+                    IEnumerator DelayStart()
+                    {
+                        yield return null;
+                        ContinueLoad();
+                    }
+                    StartCoroutine(DelayStart());
+                });
+            }
+            else
+            {
+                ContinueLoad();
             }
         }
         #endregion
@@ -1095,7 +1252,9 @@ namespace MSCLoader
         {
             if (isBusy) return;
 
-            Mod[] mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToArray();
+            List<Mod> mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToList();
+            if (dummyMods.Count > 0)
+                mods.AddRange(dummyMods);
             foreach (Mod mod in mods)
             {
                 if (!updateDownloadQueue.Contains(mod))
@@ -1171,6 +1330,8 @@ namespace MSCLoader
             message = "DOWNLOADING UPDATES";
             StartCoroutine(UpdateSliderText("UPDATES DOWNLOADED!"));
 
+            int references = 0;
+
             for (int i = lastIndex + 1; i < updateDownloadQueue.Count; i++)
             {
                 try
@@ -1226,8 +1387,16 @@ namespace MSCLoader
                     {
                         extension = mod.ModUpdateData.ZipUrl.Split('.').Last();
                     }
-                    string downloadToPath = Path.Combine(DownloadsDirectory, $"{mod.ID}.{extension}").Replace(" ", "%20");
-                    mod.modListElement.ToggleUpdateButton(false);
+
+                    string id = mod.ID;
+                    if (id == "ModLoaderProModReference")
+                    {
+                        id += references;
+                        references++;
+                    }
+
+                    string downloadToPath = Path.Combine(DownloadsDirectory, $"{id}.{extension}").Replace(" ", "%20");
+                    mod.modListElement?.ToggleUpdateButton(false);
                     if (mod.ModUpdateData.IsNexusMods)
                     {
                         StartCoroutine(DownloadFile(() =>
@@ -1266,6 +1435,7 @@ namespace MSCLoader
 
             // Asking user if he wants to update now or later.
             int downloadedUpdates = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Downloaded).Count();
+            downloadedUpdates += dummyMods.Count;
             if (downloadedUpdates > 0)
             {
                 ModPrompt.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
@@ -1294,5 +1464,12 @@ namespace MSCLoader
         public string Summary; 
         public string PictureUrl;
         public int LatestFileID;
+    }
+
+    class DummyMod : Mod
+    {
+        public override string ID => "ModLoaderProModReference";
+        public override string Author => "Mod Loader Pro Internal";
+        public override string Version => "0.0.0";
     }
 }

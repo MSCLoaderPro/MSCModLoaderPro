@@ -45,9 +45,6 @@ namespace Installer
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            InstallLogPath = Path.Combine(TempPath, $"install_log_{DateTime.Now:yyyy-MM-dd-HH-mm}.txt");
-            logWriter = new StreamWriter(InstallLogPath);
-            Log($"Installer {Installer.Version}");
 
             try
             {
@@ -55,10 +52,13 @@ namespace Installer
                 if (!Directory.Exists(TempPath))
                 {
                     Directory.CreateDirectory(TempPath);
-                    Log($"Created new TempPath.");
                 }
 
                 Installer.Instance.UpdateStatus(0, "Getting latest version info...");
+
+                InstallLogPath = Path.Combine(TempPath, $"install_log_{DateTime.Now:yyyy-MM-dd-HH-mm}.txt");
+                logWriter = new StreamWriter(InstallLogPath);
+                Log($"Installer {Installer.Version}");
 
                 using (WebClient client = new WebClient())
                 {
