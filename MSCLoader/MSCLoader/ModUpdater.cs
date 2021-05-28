@@ -1457,6 +1457,7 @@ namespace MSCLoader
         public int LatestFileID;
     }
 
+    // We are using it in a place when we need to download a mod reference.
     class DummyMod : Mod
     {
         public override string ID => "ModLoaderProModReference";
