@@ -55,17 +55,8 @@ namespace MSCLoader
         string InstallerPath => Path.Combine(TempPathModLoaderPro, InstallerName);
 
         const string SourcesPath = "Sources.json";
-        const string SourcesUrl = "https://raw.githubusercontent.com/MSCLoaderPro/MSCModLoaderPro/main/Data/Sources.min.json";
+        const string SourcesUrl = "https://raw.githubusercontent.com/MSCLoaderPro/MSCModLoaderPro/main/Data/Sources.json";
         const int SourcesUpdateEveryDays = 2; // How long until the sources file has to be updated.
-        const string UserSourcesPath = "UserSources.txt";
-        const string UserSourcesContent = "// In this file you can add your own sources, in similar fashion as in Sources.txt\n" +
-                                           "// This file will NOT be overwritten by future updates (unlike Sources.txt).\n" +
-                                           "// Remember that only NexusMods and GitHub links are supported by Mod Loader Pro!\n" +
-                                           "// You can add your own sources by adding new line to this text file and following the example:\n" +
-                                           "// ModID https://nexusmods.com/mysummercar/mods/xxxxxx \n" +
-                                           "// or\n" +
-                                           "// ModID https://github.com/user/repository \n\n" +
-                                           "// Empty lines and lines starting with double-slash will be skipped\n";
         List<Mod> backwardCompatibilityMods;
 
         bool gitHubLimitExceeded;
@@ -461,6 +452,7 @@ namespace MSCLoader
             headerUpdateAllButton.SetActive(modsToCheck.Any(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available));
             ModLoader.modContainer.UpdateModCountText();
 
+            isBusy = false;
             IEnumerable<Mod> modsWithUpdates = modsToCheck.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available);
             if (modsWithUpdates.Count() > 0)
             {
@@ -484,7 +476,6 @@ namespace MSCLoader
                 }
             }
 
-            isBusy = false;
         }
         #endregion
         void GithubLatestRelease(Mod mod, string url, int lastIndex)
@@ -1251,12 +1242,11 @@ namespace MSCLoader
         public void UpdateAll()
         {
             if (isBusy) return;
+            ModConsole.Log("A");
 
-            List<Mod> mods = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available).ToList();
-            if (dummyMods.Count > 0)
-                mods.AddRange(dummyMods);
-            foreach (Mod mod in mods)
+            foreach (Mod mod in ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Available))
             {
+                ModConsole.Log(mod.Name);
                 if (!updateDownloadQueue.Contains(mod))
                 {
                     updateDownloadQueue.Add(mod);
@@ -1435,13 +1425,14 @@ namespace MSCLoader
 
             // Asking user if he wants to update now or later.
             int downloadedUpdates = ModLoader.LoadedMods.Where(x => x.ModUpdateData.UpdateStatus == UpdateStatus.Downloaded).Count();
-            downloadedUpdates += dummyMods.Count;
+            if (dummyMods != null)
+                downloadedUpdates += dummyMods.Count;
             if (downloadedUpdates > 0)
             {
                 ModPrompt.CreateYesNoPrompt($"THERE {(downloadedUpdates > 1 ? "ARE" : "IS")} <color=yellow>{downloadedUpdates}</color> MOD UPDATE{(downloadedUpdates > 1 ? "S" : "")} READY TO BE INSTALLED.\n\n" +
-                                        $"WOULD YOU LIKE TO INSTALL THEM NOW?\n\n" +
-                                        $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>",
-                                        "MOD UPDATER", () => { waitForInstall = true; Application.Quit(); }, null, () => { waitForInstall = true; });
+                                            $"WOULD YOU LIKE TO INSTALL THEM NOW?\n\n" +
+                                            $"<color=red>WARNING: THIS WILL CLOSE YOUR GAME, AND ALL UNSAVED PROGRESS WILL BE LOST!</color>",
+                                            "MOD UPDATER", () => { waitForInstall = true; Application.Quit(); }, null, () => { waitForInstall = true; });
             }
         }
         #endregion

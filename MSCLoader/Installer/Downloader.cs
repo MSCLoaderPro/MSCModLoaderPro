@@ -261,6 +261,12 @@ namespace Installer
                 CreateUninstaller();
             });
 
+            // This will ensure that the Sources file is up-to-date post update
+            if (File.Exists(Path.Combine(Installer.Instance.MscPath, "Sources.json")))
+            {
+                File.Delete(Path.Combine(Installer.Instance.MscPath, "Sources.json"));
+            }
+
             logWriter.Close();
             logWriter = null;
 
