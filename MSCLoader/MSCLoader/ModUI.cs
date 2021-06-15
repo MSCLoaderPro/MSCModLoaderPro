@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using HutongGames.PlayMaker.Actions;
+using MSCLoader.Helper;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +9,31 @@ using UnityEngine.UI;
 #pragma warning disable CS1591, IDE1006, CS0649
 namespace MSCLoader
 {
+    public class MenuButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
+    {
+        PlaySound hoverAction, clickAction;
+
+        void Start()
+        {
+            PlayMakerFSM button = ModHelper.GetTransform("Interface", "Buttons/ButtonContinue").GetPlayMakerFSM("SetSize");
+            button.Initialize();
+            hoverAction = button.GetAction<PlaySound>("Action", 0);
+            clickAction = button.GetAction<PlaySound>("Reset globals 2", 0);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (hoverAction.Enabled)
+                AudioSource.PlayClipAtPoint(hoverAction.clip.Value as AudioClip, Vector3.zero, 0.4f);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.pointerId == -1 && clickAction.Enabled)
+                AudioSource.PlayClipAtPoint(clickAction.clip.Value as AudioClip, Vector3.zero, 0.4f);
+        }
+
+    }
     internal class SwitchToggleGraphic : MonoBehaviour
     {
         public Toggle toggle;

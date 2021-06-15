@@ -9,6 +9,7 @@ namespace MSCLoader
         internal static LoaderSettings settings;
         internal static Harmony.HarmonyInstance ModLoaderInstance;
         static string[] arguments;
+        static bool loaderInitialized = false;
 
         internal static void Main()
         {
@@ -16,14 +17,17 @@ namespace MSCLoader
             settings = new LoaderSettings();
             ExtraTweaks();
             if (FindArgument("-disableModLoader")) return;
+
+            ModLoader.loadedAssemblies = new System.Collections.Generic.List<string>();
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyWatcher;
         }
 
         static void AssemblyWatcher(object sender, AssemblyLoadEventArgs args)
         {
-            if (args.LoadedAssembly.GetName().Name == "System")
+            ModLoader.loadedAssemblies.Add(args.LoadedAssembly.GetName().Name);
+            if (args.LoadedAssembly.GetName().Name == "System" && !loaderInitialized)
             {
-                AppDomain.CurrentDomain.AssemblyLoad -= AssemblyWatcher;
+                loaderInitialized = true;
                 Console.WriteLine("STARTING MOD LOADER PRO!");
                 StartModLoader();
             }

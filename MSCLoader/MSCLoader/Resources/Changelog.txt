@@ -2,6 +2,7 @@ Version 1.1.1
 	Mod Loader Pro will now notify you about missing references, or if a newer mod version is required.
 	Fixed PaintCore PLAYER search in PreLoad().
 	Fixed custom UI skin not being applied properly.
+	Fixed Mods button not making a sound.
 
 Version 1.1.0
 	Fixed Open Console keybind binding.

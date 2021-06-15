@@ -30,6 +30,9 @@ namespace MSCLoader
         /// <summary> List of used Mod Class methods. </summary>
         public static List<Mod>[] ModMethods { get; internal set; }
         static string[] methodNames = { "OnNewGame", "MenuOnLoad", "MenuOnGUI", "MenuUpdate", "MenuFixedUpdate", "PreLoad", "OnLoad", "PostLoad", "OnGUI", "Update", "FixedUpdate", "OnSave", "UniversalOnGUI", "UniversalUpdate", "UniversalFixedUpdate", "OnLevelLoaded" };
+        internal static List<string> loadedAssemblies;
+        
+        
         /// <summary>Load handler for the UI. Add your GameObject to the extra list if you want your UI to be disabled when the game loads a scene.</summary>
         public static UILoadHandler modSceneLoadHandler;
 
@@ -326,20 +329,34 @@ namespace MSCLoader
         void InitializeMods()
         {
             string mscLoaderVersions = "\nAssembly MSCLoader version:\n";
-            foreach (string file in Directory.GetFiles(ModsFolder, "*.dll"))
+
+            string[] files = Directory.GetFiles(ModsFolder, "*.dll");
+            List<Assembly> modAssemblies = new List<Assembly>();
+
+            for (int i = 0; i < files.Length; i++) 
+                modAssemblies.Add(Assembly.LoadFrom(files[i]));
+
+            Assembly modAssembly;
+            string file;
+
+            //ModConsole.Log(loadedAssemblies);
+
+            for (int i = 0; i < modAssemblies.Count; i++)
             {
+                modAssembly = modAssemblies[i];
+                file = files[i];
+
                 try
                 {
-                    Assembly modAssembly = Assembly.LoadFrom(file);
-
                     AssemblyName[] referenceList = modAssembly.GetReferencedAssemblies();
 
-                    // Check if the dll is referencing either the registry or Steamworks by string.
-                    string fileString = File.ReadAllText(file);
-                    if (fileString.Contains("RegistryKey") || fileString.Contains("Steamworks")) throw new FileLoadException("Using forbidden key phrases.");
+                    //ModConsole.Log($"\n\n{file.Split('\\').Last()}");
+                    //ModConsole.Log(referenceList.Select(x => x.Name).ToList());
 
+                    // Check if the dll is referencing either the registry or Steamworks by string.
                     // Check if the dll is referencing Steamworks.
-                    if (referenceList.Any(assembly => assembly.Name == "Assembly-CSharp-firstpass") && (fileString.Contains("Steamworks") || fileString.Contains("GetSteamID")))
+                    string fileString = File.ReadAllText(file);
+                    if (referenceList.Any(assembly => assembly.Name == "Assembly-CSharp-firstpass") && (fileString.Contains("Steamworks") || fileString.Contains("GetSteamID") || fileString.Contains("RegistryKey") || fileString.Contains("Steamworks")))
                         throw new Exception("Targeting forbidden reference.");
 
                     Type[] modAssemblyTypes;
@@ -355,7 +372,6 @@ namespace MSCLoader
                         modAssemblyTypes = exception.Types.Where(x => x != null).ToArray();
                     }
 
-
                     foreach (Type modType in modAssemblyTypes.Where(type => typeof(Mod).IsAssignableFrom(type)))
                     {
                         Mod mod = (Mod)Activator.CreateInstance(modType);
@@ -365,6 +381,7 @@ namespace MSCLoader
                         else
                             ModConsole.LogError($"Mod with ID: {mod.ID} already loaded, possible duplicate or a conflicting ID with another mod. Contact the mod author ({mod.Author}) for {mod.Name}!");
                     }
+
                     if (referenceList.Any(x => x.Name == "MSCLoader"))
                         mscLoaderVersions += $"{file.Split('\\').Last()}:\n    {referenceList.FirstOrDefault(x => x.Name == "MSCLoader").Version}\n";
                 }
@@ -409,7 +426,7 @@ namespace MSCLoader
         {
             // Check if a method with the specified name is overridden in the Mod sub-class then check if it's not empty.
             MethodInfo method = mod.GetType().GetMethod(methodName) ?? mod.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-            return (method.IsVirtual && method.DeclaringType == mod.GetType() && method.GetMethodBody().GetILAsByteArray().Length > 2);
+            return (method.IsVirtual && method.DeclaringType == mod.GetType());
         }
 
         void SetupModList()
