@@ -759,7 +759,9 @@ namespace Installer
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                fbd.Description = "Serach for Mods Folder:";
+                fbd.Description = "Search for Mods Folder:";
+                fbd.SelectedPath = Path.IsPathRooted(txtModsFolderName.Text) ? txtModsFolderName.Text.Replace("/", "\\") : Path.Combine(mscPath, txtModsFolderName.Text).Replace("/", "\\");
+                fbd.ShowNewFolderButton = true;
 
                 DialogResult result = fbd.ShowDialog();
 
@@ -773,10 +775,18 @@ namespace Installer
 
                     if (File.Exists(Path.Combine(fbd.SelectedPath, "mysummercar.exe")))
                     {
+                        MessageBox.Show("Mods Path cannot be MSC root path!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    txtModsFolderName.Text = mscPath;
+                    string modsPath = fbd.SelectedPath.Replace('\\', '/');
+
+                    if (modsPath.Contains(mscPath.Replace('\\', '/')))
+                    {
+                        modsPath = modsPath.Replace(mscPath.Replace('\\', '/'), "").Replace("/", "");
+                    }
+
+                    txtModsFolderName.Text = modsPath;
                 }
             }
         }
