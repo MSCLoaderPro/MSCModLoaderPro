@@ -6,5 +6,5 @@ This contributor license applies to MSC Mod Loader Pro project.
 2. While you get credited for your work, you may not demand any additional rights or obligations to your contribution.
 3. To signify Agreement, Check the box below and type your (user)name.
 
-[]
+[x] Tresquel
 ___________
