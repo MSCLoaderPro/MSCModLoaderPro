@@ -174,7 +174,7 @@ namespace CoolUpdater
 
                 if (!Directory.Exists(Program.Downloads))
                 {
-                    throw new DirectoryNotFoundException("Downloads folder doesn't exist!");
+                    Directory.CreateDirectory(Program.Downloads);
                 }
 
                 // A small workaround for "not accessible files".
