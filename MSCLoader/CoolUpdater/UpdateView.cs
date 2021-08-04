@@ -171,7 +171,7 @@ namespace CoolUpdater
                         Log($"({GetSeconds(stopwatch)}) MSC process(es) have been killed!\n");
                     });
                 }
-
+                // I think this will work as a workaround
                 if (!Directory.Exists(Program.Downloads))
                 {
                     Directory.CreateDirectory(Program.Downloads);
