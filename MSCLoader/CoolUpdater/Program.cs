@@ -172,7 +172,7 @@ namespace CoolUpdater
 
                 if (ex.ToString().Contains("(403) Forbidden"))
                 {
-                    Console.WriteLine("ERROR:403");
+                    Console.WriteLine("ERROR:401");
                 }
             }
             Environment.Exit(0);
